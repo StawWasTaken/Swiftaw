@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Swiftaw Blog</title>
+<title>Blog - Swiftaw</title>
 <meta name="description" content="Latest news, updates, and announcements from Swiftaw and Fortized."/>
 <meta name="theme-color" content="#0a0a0a"/>
 <meta property="og:type" content="website"/>
@@ -17,14 +17,17 @@
 <meta name="twitter:description" content="Latest news, updates, and announcements from Swiftaw and Fortized."/>
 <meta name="twitter:image" content="https://swiftaw.com/Swiftaw Banner2.png"/>
 <link rel="icon" type="image/png" href="/SwiftawFavicon.png"/>
+<link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
 <style>
-::selection{background:rgba(255,249,62,.2);}
+::selection{background:rgba(255,249,62,.25);}
 :root{
+  --brand-deep:#241f3c;--brand-yellow:#fff93e;--brand-orange:#ff9c3c;
   --acc:#fff93e;--acc-dim:rgba(255,249,62,.08);--acc-b:rgba(255,249,62,.18);--acc-g:rgba(255,249,62,.3);
   --bg:#080a0f;--panel:#0c0f1a;--panel-r:#0f1220;--bd:rgba(255,255,255,.06);--bd2:#1a2030;
-  --mu:#4a5568;--mu-l:#8b95a8;--tx:#c8d0dc;--nav-h:68px;
+  --mu:#4a5568;--mu-l:#8b95a8;--tx:#c8d0dc;--nav-h:64px;
   --ease:cubic-bezier(.22,1,.36,1);
+  --font-display:'Afronaut Test','Syne',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 img{-webkit-user-drag:none;user-select:none;-khtml-user-drag:none;-moz-user-drag:none;-o-user-drag:none;}
@@ -60,7 +63,7 @@ a{text-decoration:none;color:inherit}
 .hero-breadcrumb a{color:var(--mu-l);transition:.15s}.hero-breadcrumb a:hover{color:#fff}
 .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);background:rgba(255,249,62,.06);border:1px solid rgba(255,249,62,.16);border-radius:100px;padding:5px 14px;margin-bottom:22px}
 .hero-eyebrow::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--acc)}
-.hero h1{font-family:'Syne',sans-serif;font-size:58px;font-weight:800;letter-spacing:-2.5px;line-height:.96;margin-bottom:18px;color:#fff}
+.hero h1{font-family:var(--font-display);font-size:58px;font-weight:400;letter-spacing:-2.5px;line-height:.96;margin-bottom:18px;color:#fff}
 .hero h1 em{font-style:normal;color:var(--acc)}
 .hero-sub{font-size:15px;color:var(--mu-l);line-height:1.65;max-width:520px}
 .hero-stats{display:flex;align-items:center;gap:22px;background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:24px 28px}
@@ -231,16 +234,17 @@ img.emoji{height:1.15em;width:1.15em;margin:0 .05em;vertical-align:-0.15em}
 
 <nav class="nav">
   <a href="/" class="nav-logo">
-    <img src="/SwiftawLogo.png" alt="Swiftaw"/>
+    <img src="/Swiftaw logomark black.png" alt="Swiftaw" style="filter:brightness(0) invert(1);"/>
     <span class="nav-logo-word">Swiftaw</span>
   </a>
   <div class="nav-pill-group">
     <a href="/" class="nav-pill">Home</a>
     <a href="/blog" class="nav-pill active">Blog</a>
+    <a href="/research" class="nav-pill">Research</a>
     <a href="https://fortized.com" class="nav-pill">Fortized</a>
   </div>
   <div class="nav-sp"></div>
-  <a href="https://fortized.com" class="nav-btn">Fortized &rarr;</a>
+  <a href="https://fortized.com" class="nav-btn">Try Fortized</a>
 </nav>
 
 <!-- ── BLOG LIST ──────────────────────────── -->
@@ -316,7 +320,7 @@ img.emoji{height:1.15em;width:1.15em;margin:0 .05em;vertical-align:-0.15em}
 <footer>
   <div class="footer-left">
     <a href="/" class="footer-logo">
-      <img src="/SwiftawLogo.png" alt="Swiftaw"/>
+      <img src="/Swiftaw logomark black.png" alt="Swiftaw" style="filter:brightness(0) invert(1);"/>
       <span>Swiftaw</span>
     </a>
     <div class="footer-socials">
@@ -333,6 +337,7 @@ img.emoji{height:1.15em;width:1.15em;margin:0 .05em;vertical-align:-0.15em}
   </div>
   <div class="footer-links">
     <a href="/blog">Blog</a>
+    <a href="/research">Research</a>
     <a href="https://fortized.com">Fortized</a>
   </div>
 </footer>
@@ -518,7 +523,7 @@ function renderArticle(id) {
     </div>
     <div class="article-prose">${a.content}</div>
   `;
-  document.title = `${a.title} — Swiftaw Blog`;
+  document.title = `${a.title} - Swiftaw`;
   document.getElementById('blog-list-view').classList.add('hidden');
   document.getElementById('article-view').classList.add('open');
   if (typeof twemoji !== 'undefined') twemoji.parse(document.getElementById('article-content'), { folder: 'svg', ext: '.svg' });
@@ -541,7 +546,7 @@ function closeArticle() {
   history.pushState({ articleId: null }, '', url.toString());
   document.getElementById('blog-list-view').classList.remove('hidden');
   document.getElementById('article-view').classList.remove('open');
-  document.title = 'Swiftaw Blog';
+  document.title = 'Blog - Swiftaw';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -551,7 +556,7 @@ window.addEventListener('popstate', function(e) {
   else {
     document.getElementById('blog-list-view').classList.remove('hidden');
     document.getElementById('article-view').classList.remove('open');
-    document.title = 'Swiftaw Blog';
+    document.title = 'Blog - Swiftaw';
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });

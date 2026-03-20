@@ -3,105 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Page Not Found — Swiftaw</title>
+<title>Page Not Found - Swiftaw</title>
 <meta name="description" content="This page doesn't exist on Swiftaw.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="icon" type="image/png" href="/SwiftawFavicon.png">
+<link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
 <style>
-::selection { background: rgba(255,156,60,.2); }
+::selection { background: rgba(255,249,62,.25); }
 :root {
+  --brand-deep: #241f3c;
+  --brand-yellow: #fff93e;
+  --brand-orange: #ff9c3c;
   --bg: #ffffff;
   --text: #0a0a0a;
   --text-light: #555;
   --text-muted: #888;
   --border: #e5e5e5;
-  --accent: #ff9c3c;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Newsreader', Georgia, serif;
+  --font-display: 'Afronaut Test', 'Newsreader', sans-serif;
 }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
+  background: var(--bg); color: var(--text);
+  font-family: var(--font-sans); -webkit-font-smoothing: antialiased;
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
 }
-.container {
-  text-align: center;
-  max-width: 480px;
-  padding: 40px 24px;
-}
+img { display: block; -webkit-user-drag: none; user-select: none; }
+a { text-decoration: none; color: inherit; }
+.container { text-align: center; max-width: 480px; padding: 40px 24px; }
 .logo {
   display: flex; align-items: center; justify-content: center; gap: 10px;
   margin-bottom: 48px;
-  text-decoration: none;
 }
-.logo img { height: 28px; }
+.logo img { height: 26px; }
 .logo span { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
 .code {
-  font-family: var(--font-serif);
-  font-size: 96px;
-  font-weight: 400;
-  color: var(--accent);
-  line-height: 1;
+  font-family: var(--font-display);
+  font-size: 96px; font-weight: 400;
+  color: var(--brand-yellow); line-height: 1;
   margin-bottom: 16px;
+  text-shadow: 0 0 60px rgba(255,249,62,.15);
 }
 .title {
-  font-family: var(--font-serif);
-  font-size: 24px;
-  font-weight: 400;
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 400;
   margin-bottom: 12px;
 }
-.desc {
-  font-size: 15px;
-  color: var(--text-light);
-  line-height: 1.65;
-  margin-bottom: 12px;
-}
+.desc { font-size: 15px; color: var(--text-light); line-height: 1.65; margin-bottom: 12px; }
 .path {
-  display: inline-block;
-  font-size: 13px;
-  color: var(--text-muted);
-  background: #f5f5f5;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 16px;
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  margin-bottom: 32px;
-  word-break: break-all;
+  display: inline-block; font-size: 13px; color: var(--text-muted);
+  background: #f5f5f5; border: 1px solid var(--border); border-radius: 8px;
+  padding: 6px 16px; font-family: monospace; margin-bottom: 32px; word-break: break-all;
 }
-.actions {
-  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
-}
+.actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 28px;
-  border-radius: 100px;
-  font-size: 14px; font-weight: 600;
-  text-decoration: none;
-  transition: .2s;
+  padding: 12px 28px; border-radius: 100px;
+  font-size: 14px; font-weight: 600; transition: .2s;
 }
-.btn-primary {
-  background: var(--text);
-  color: #fff;
-}
-.btn-primary:hover { opacity: .8; transform: translateY(-1px); }
-.btn-ghost {
-  background: transparent;
-  color: var(--text);
-  border: 1.5px solid var(--border);
-}
+.btn-yellow { background: var(--brand-yellow); color: var(--brand-deep); }
+.btn-yellow:hover { box-shadow: 0 0 24px rgba(255,249,62,.4); transform: translateY(-1px); }
+.btn-ghost { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
 .btn-ghost:hover { border-color: #999; transform: translateY(-1px); }
-.footer-note {
-  margin-top: 48px;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-.footer-note a { color: var(--accent); text-decoration: none; }
+.footer-note { margin-top: 48px; font-size: 12px; color: var(--text-muted); }
+.footer-note a { color: var(--brand-orange); }
 .footer-note a:hover { text-decoration: underline; }
+.highlight-bar {
+  height: 3px; max-width: 40px; margin: 0 auto 24px;
+  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange));
+  border-radius: 2px;
+}
 @media (max-width: 480px) {
   .code { font-size: 72px; }
   .actions { flex-direction: column; }
@@ -112,15 +85,16 @@ body {
 <body>
 <div class="container">
   <a href="/" class="logo">
-    <img src="/SwiftawLogo.png" alt="Swiftaw">
+    <img src="/Swiftaw logomark black.png" alt="Swiftaw">
     <span>Swiftaw</span>
   </a>
   <div class="code">404</div>
+  <div class="highlight-bar"></div>
   <h1 class="title">Page not found</h1>
   <p class="desc">The page you're looking for doesn't exist or has been moved.</p>
   <div class="path" id="path"></div>
   <div class="actions">
-    <a href="/" class="btn btn-primary">
+    <a href="/" class="btn btn-yellow">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Go home
     </a>

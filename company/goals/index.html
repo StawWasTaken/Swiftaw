@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goals for the World - Swiftaw</title>
+<link rel="icon" type="image/png" href="/SwiftawFavicon.png">
+<link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-display: 'Afronaut Test', 'Newsreader', sans-serif;
+  --brand-deep: #241f3c;
+  --brand-yellow: #fff93e;
+  --brand-orange: #ff9c3c;
+  --bg: #ffffff;
+  --bg-dark: #0a0a0a;
+  --text: #0a0a0a;
+  --text-light: #555;
+  --text-muted: #888;
+  --border: #e5e5e5;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+::selection { background: rgba(255,249,62,.25); }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-sans); color: var(--text); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* NAV */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
+.nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 32px; height: 64px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; margin-right: 36px; flex-shrink: 0; }
+.nav-logo img { height: 30px; width: auto; }
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nav-link { padding: 8px 14px; font-size: .9rem; font-weight: 500; color: var(--text-light); border-radius: 8px; transition: background .2s, color .2s; cursor: pointer; white-space: nowrap; }
+.nav-link:hover { background: #f5f5f5; color: var(--text); }
+.nav-link.has-dropdown { display: flex; align-items: center; gap: 4px; user-select: none; }
+.caret { font-size: .65em; opacity: .55; }
+.nav-dropdown-wrap { position: relative; }
+.nav-dropdown { display: none; position: absolute; top: calc(100% + 8px); left: 0; min-width: 220px; background: #fff; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.10); padding: 8px; z-index: 100; }
+.nav-dropdown-wrap:hover .nav-dropdown { display: block; }
+.nav-dropdown a { display: block; padding: 10px 14px; border-radius: 8px; font-size: .88rem; font-weight: 500; transition: background .15s; }
+.nav-dropdown a:hover { background: #f7f7f7; }
+.dd-desc { display: block; font-size: .78rem; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
+.nav-spacer { flex: 1; }
+.nav-cta { padding: 9px 22px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-size: .88rem; font-weight: 600; transition: box-shadow .2s; white-space: nowrap; }
+.nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); }
+
+/* BUTTONS */
+.btn-yellow { display: inline-block; padding: 14px 32px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-weight: 600; font-size: .95rem; transition: opacity .2s; border: none; cursor: pointer; }
+.btn-yellow:hover { opacity: .88; }
+.btn-dark { display: inline-block; padding: 14px 32px; background: var(--brand-deep); color: #fff; border-radius: 100px; font-weight: 600; font-size: .95rem; transition: opacity .2s; border: none; cursor: pointer; }
+.btn-dark:hover { opacity: .88; }
+.btn-outline { display: inline-block; padding: 14px 32px; background: transparent; color: var(--text); border: 1.5px solid var(--border); border-radius: 100px; font-weight: 600; font-size: .95rem; transition: border-color .2s, color .2s; cursor: pointer; }
+.btn-outline:hover { border-color: var(--text); }
+
+/* HIGHLIGHT BAR */
+.highlight-bar { width: 80px; height: 3px; background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange)); border-radius: 3px; }
+
+/* HERO */
+.hero { padding: 160px 32px 100px; text-align: center; max-width: 860px; margin: 0 auto; }
+.eyebrow { font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px; }
+.hero h1 { font-family: var(--font-display); font-size: clamp(2.6rem, 6vw, 4.2rem); font-weight: 700; line-height: 1.1; margin-bottom: 24px; color: var(--text); }
+.hero p { font-size: 1.15rem; color: var(--text-light); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+
+/* SECTIONS */
+.section { padding: 100px 32px; max-width: 1100px; margin: 0 auto; }
+.section-alt { background: #fafafa; }
+.section-dark { background: var(--bg-dark); color: #fff; }
+.section h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; margin-bottom: 20px; line-height: 1.15; }
+.section p { font-size: 1.05rem; color: var(--text-light); line-height: 1.75; max-width: 720px; }
+.section p + p { margin-top: 16px; }
+
+/* FEATURE CARDS */
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-top: 48px; }
+.feature-card { padding: 40px 32px; border: 1px solid var(--border); border-radius: 16px; transition: box-shadow .2s, transform .2s; }
+.feature-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.06); transform: translateY(-2px); }
+.feature-card .card-icon { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange)); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 1.3rem; }
+.feature-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 12px; }
+.feature-card p { font-size: .95rem; color: var(--text-light); line-height: 1.65; max-width: none; }
+
+/* GOAL SECTIONS */
+.goal-block { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.goal-block + .goal-block { margin-top: 100px; }
+.goal-block.reverse { direction: rtl; }
+.goal-block.reverse > * { direction: ltr; }
+.goal-visual { background: linear-gradient(135deg, #f8f8f8, #f0f0f0); border-radius: 20px; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; }
+.goal-visual .visual-number { font-family: var(--font-display); font-size: 5rem; font-weight: 700; background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+/* CTA */
+.cta-section { padding: 100px 32px; text-align: center; background: var(--bg-dark); color: #fff; }
+.cta-section h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; margin-bottom: 16px; }
+.cta-section p { font-size: 1.05rem; color: #aaa; margin-bottom: 36px; max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+.cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+/* FOOTER */
+footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px 32px 32px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-brand p { font-size: .9rem; color: var(--text-muted); margin-top: 16px; line-height: 1.6; max-width: 300px; }
+.footer-col { display: flex; flex-direction: column; gap: 10px; }
+.footer-col-title { font-weight: 600; font-size: .85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text); margin-bottom: 4px; }
+.footer-col a { font-size: .9rem; color: var(--text-light); transition: color .2s; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); }
+.footer-copy { font-size: .82rem; color: var(--text-muted); }
+.footer-socials { display: flex; gap: 16px; }
+.footer-socials a { color: var(--text-muted); transition: color .2s; }
+.footer-socials a:hover { color: var(--text); }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .goal-block, .goal-block.reverse { grid-template-columns: 1fr; gap: 40px; direction: ltr; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .hero { padding: 140px 24px 80px; }
+  .section { padding: 72px 24px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="/Swiftaw logomark black.png" alt="Swiftaw"><span>Swiftaw</span></a>
+    <div class="nav-links">
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
+          <a href="https://nexis.swiftaw.com">Try Nexis<span class="dd-desc">Intelligent digital ecosystem</span></a>
+        </div>
+      </div>
+      <a href="/research" class="nav-link">Research</a>
+      <a href="/blog" class="nav-link">Blog</a>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/departments/rd">R&amp;D</a>
+          <a href="/departments/safety">Safety</a>
+          <a href="/departments/communication">Communication</a>
+        </div>
+      </div>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Company <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/company/about">About</a>
+          <a href="/company/goals">Goals for the World</a>
+          <a href="/company/commitments">Commitments</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-spacer"></div>
+    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <p class="eyebrow">Our Goals</p>
+  <h1>Transforming how the world connects.</h1>
+  <p>We are setting ambitious goals to reshape digital connectivity and collaboration for communities everywhere. These are not just aspirations. They are commitments to action.</p>
+</section>
+
+<section class="section">
+  <div class="goal-block">
+    <div>
+      <div class="highlight-bar" style="margin-bottom:24px;"></div>
+      <h2>Global Connectivity</h2>
+      <p>The internet promised to bring the world together, but too many communities remain fragmented across platforms that were never designed with them in mind.</p>
+      <p>Swiftaw is building infrastructure that makes meaningful digital connection accessible to everyone, regardless of where they are or what language they speak. We are creating platforms that break down barriers and foster genuine cross-cultural dialogue.</p>
+    </div>
+    <div class="goal-visual">
+      <span class="visual-number">01</span>
+    </div>
+  </div>
+
+  <div class="goal-block reverse">
+    <div>
+      <div class="highlight-bar" style="margin-bottom:24px;"></div>
+      <h2>Digital Collaboration</h2>
+      <p>The future of work and creativity depends on tools that make collaboration feel effortless. Current solutions force people to adapt to rigid systems rather than adapting to how people naturally think and create.</p>
+      <p>We are developing intelligent collaboration tools that understand context, anticipate needs, and get out of the way so teams can focus on what matters: doing great work together.</p>
+    </div>
+    <div class="goal-visual">
+      <span class="visual-number">02</span>
+    </div>
+  </div>
+
+  <div class="goal-block">
+    <div>
+      <div class="highlight-bar" style="margin-bottom:24px;"></div>
+      <h2>Community Empowerment</h2>
+      <p>Communities are the foundation of everything we build. When communities thrive, people thrive. But too often, platforms extract value from communities without giving anything back.</p>
+      <p>Our goal is to empower communities with ownership, tools, and autonomy. We want every community on our platforms to feel like they have a home they control, with the resources to grow on their own terms.</p>
+    </div>
+    <div class="goal-visual">
+      <span class="visual-number">03</span>
+    </div>
+  </div>
+</section>
+
+<div class="section-alt">
+  <section class="section">
+    <div style="text-align:center; margin-bottom:16px;">
+      <div class="highlight-bar" style="margin:0 auto 24px;"></div>
+      <h2>How We Get There</h2>
+      <p style="margin:0 auto;">Every goal needs a plan. Here is how we are turning ambition into reality across our ecosystem.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="card-icon">&#9889;</div>
+        <h3>Platform-Native Intelligence</h3>
+        <p>We embed AI directly into our platforms to help communities moderate, organize, and grow without requiring technical expertise.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">&#127760;</div>
+        <h3>Cross-Platform Bridges</h3>
+        <p>We are building interoperability into our ecosystem so communities can connect across different tools and platforms seamlessly.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">&#128274;</div>
+        <h3>Open Standards</h3>
+        <p>We contribute to and adopt open standards that prevent vendor lock-in and ensure our users always own their data and content.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">&#129309;</div>
+        <h3>Community Grants</h3>
+        <p>We invest directly in the communities that use our platforms, providing grants, tools, and mentorship to help them scale their impact.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">&#128640;</div>
+        <h3>Developer Ecosystem</h3>
+        <p>We are building robust APIs and developer tools that let creators extend our platforms in ways we have not even imagined yet.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon">&#127891;</div>
+        <h3>Digital Literacy</h3>
+        <p>We partner with educators and nonprofits to promote digital literacy and help people use technology more intentionally and safely.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="cta-section">
+  <h2>Be part of the transformation.</h2>
+  <p>Our goals are ambitious, but we do not pursue them alone. Explore our products and join a community that is building something meaningful.</p>
+  <div class="cta-buttons">
+    <a href="https://fortized.com" class="btn-yellow">Try Fortized</a>
+    <a href="/company/commitments" class="btn-outline" style="color:#fff; border-color:rgba(255,255,255,.25);">Our Commitments</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo" style="margin-right:0;"><img src="/Swiftaw logomark black.png" alt="Swiftaw"><span>Swiftaw</span></a>
+        <p>Building the ultimate digital ecosystem. Mastering human connection and machine intelligence.</p>
+      </div>
+      <div class="footer-col"><div class="footer-col-title">Products</div><a href="https://fortized.com">Fortized</a><a href="https://nexis.swiftaw.com">Nexis</a></div>
+      <div class="footer-col"><div class="footer-col-title">Company</div><a href="/company/about">About</a><a href="/company/goals">Goals</a><a href="/company/commitments">Commitments</a><a href="/blog">Blog</a></div>
+      <div class="footer-col"><div class="footer-col-title">Departments</div><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a><a href="/research">Research</a></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Swiftaw</p>
+      <div class="footer-socials">
+        <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a href="https://www.youtube.com/@swiftaw" target="_blank" rel="noopener" title="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
