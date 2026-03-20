@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About - Swiftaw</title>
+<link rel="icon" type="image/png" href="/SwiftawFavicon.png">
+<link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-display: 'Afronaut Test', 'Newsreader', sans-serif;
+  --brand-deep: #241f3c;
+  --brand-yellow: #fff93e;
+  --brand-orange: #ff9c3c;
+  --bg: #ffffff;
+  --bg-dark: #0a0a0a;
+  --text: #0a0a0a;
+  --text-light: #555;
+  --text-muted: #888;
+  --border: #e5e5e5;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+::selection { background: rgba(255,249,62,.25); }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-sans); color: var(--text); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* NAV */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
+.nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 32px; height: 64px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; margin-right: 36px; flex-shrink: 0; }
+.nav-logo img { height: 30px; width: auto; }
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nav-link { padding: 8px 14px; font-size: .9rem; font-weight: 500; color: var(--text-light); border-radius: 8px; transition: background .2s, color .2s; cursor: pointer; white-space: nowrap; }
+.nav-link:hover { background: #f5f5f5; color: var(--text); }
+.nav-link.has-dropdown { display: flex; align-items: center; gap: 4px; user-select: none; }
+.caret { font-size: .65em; opacity: .55; }
+.nav-dropdown-wrap { position: relative; }
+.nav-dropdown { display: none; position: absolute; top: calc(100% + 8px); left: 0; min-width: 220px; background: #fff; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.10); padding: 8px; z-index: 100; }
+.nav-dropdown-wrap:hover .nav-dropdown { display: block; }
+.nav-dropdown a { display: block; padding: 10px 14px; border-radius: 8px; font-size: .88rem; font-weight: 500; transition: background .15s; }
+.nav-dropdown a:hover { background: #f7f7f7; }
+.dd-desc { display: block; font-size: .78rem; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
+.nav-spacer { flex: 1; }
+.nav-cta { padding: 9px 22px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-size: .88rem; font-weight: 600; transition: box-shadow .2s; white-space: nowrap; }
+.nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); }
+
+/* BUTTONS */
+.btn-yellow { display: inline-block; padding: 14px 32px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-weight: 600; font-size: .95rem; transition: opacity .2s; border: none; cursor: pointer; }
+.btn-yellow:hover { opacity: .88; }
+.btn-dark { display: inline-block; padding: 14px 32px; background: var(--brand-deep); color: #fff; border-radius: 100px; font-weight: 600; font-size: .95rem; transition: opacity .2s; border: none; cursor: pointer; }
+.btn-dark:hover { opacity: .88; }
+.btn-outline { display: inline-block; padding: 14px 32px; background: transparent; color: var(--text); border: 1.5px solid var(--border); border-radius: 100px; font-weight: 600; font-size: .95rem; transition: border-color .2s, color .2s; cursor: pointer; }
+.btn-outline:hover { border-color: var(--text); }
+
+/* HIGHLIGHT BAR */
+.highlight-bar { width: 80px; height: 3px; background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange)); border-radius: 3px; }
+
+/* HERO */
+.hero { padding: 160px 32px 100px; text-align: center; max-width: 860px; margin: 0 auto; }
+.eyebrow { font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px; }
+.hero h1 { font-family: var(--font-display); font-size: clamp(2.6rem, 6vw, 4.2rem); font-weight: 700; line-height: 1.1; margin-bottom: 24px; color: var(--text); }
+.hero p { font-size: 1.15rem; color: var(--text-light); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+
+/* SECTIONS */
+.section { padding: 100px 32px; max-width: 1100px; margin: 0 auto; }
+.section-alt { background: #fafafa; }
+.section-dark { background: var(--bg-dark); color: #fff; }
+.section-dark .text-light { color: #aaa; }
+.section h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; margin-bottom: 20px; line-height: 1.15; }
+.section p { font-size: 1.05rem; color: var(--text-light); line-height: 1.75; max-width: 720px; }
+.section p + p { margin-top: 16px; }
+
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+
+/* QUOTE */
+.quote-section { padding: 80px 32px; max-width: 800px; margin: 0 auto; text-align: center; }
+.quote-section blockquote { font-family: var(--font-serif); font-style: italic; font-size: clamp(1.3rem, 3vw, 1.8rem); line-height: 1.6; color: var(--text); }
+.quote-section cite { display: block; margin-top: 20px; font-family: var(--font-sans); font-style: normal; font-size: .9rem; color: var(--text-muted); }
+
+/* VALUES GRID */
+.values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; margin-top: 48px; }
+.value-card { padding: 32px; border: 1px solid var(--border); border-radius: 16px; transition: box-shadow .2s; }
+.value-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.06); }
+.value-card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; }
+.value-card p { font-size: .95rem; color: var(--text-light); line-height: 1.65; }
+
+/* CTA */
+.cta-section { padding: 100px 32px; text-align: center; background: var(--bg-dark); color: #fff; }
+.cta-section h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; margin-bottom: 16px; }
+.cta-section p { font-size: 1.05rem; color: #aaa; margin-bottom: 36px; max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+.cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+/* FOOTER */
+footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px 32px 32px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-brand p { font-size: .9rem; color: var(--text-muted); margin-top: 16px; line-height: 1.6; max-width: 300px; }
+.footer-col { display: flex; flex-direction: column; gap: 10px; }
+.footer-col-title { font-weight: 600; font-size: .85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text); margin-bottom: 4px; }
+.footer-col a { font-size: .9rem; color: var(--text-light); transition: color .2s; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); }
+.footer-copy { font-size: .82rem; color: var(--text-muted); }
+.footer-socials { display: flex; gap: 16px; }
+.footer-socials a { color: var(--text-muted); transition: color .2s; }
+.footer-socials a:hover { color: var(--text); }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .split { grid-template-columns: 1fr; gap: 40px; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .hero { padding: 140px 24px 80px; }
+  .section { padding: 72px 24px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="/Swiftaw logomark black.png" alt="Swiftaw"><span>Swiftaw</span></a>
+    <div class="nav-links">
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
+          <a href="https://nexis.swiftaw.com">Try Nexis<span class="dd-desc">Intelligent digital ecosystem</span></a>
+        </div>
+      </div>
+      <a href="/research" class="nav-link">Research</a>
+      <a href="/blog" class="nav-link">Blog</a>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/departments/rd">R&amp;D</a>
+          <a href="/departments/safety">Safety</a>
+          <a href="/departments/communication">Communication</a>
+        </div>
+      </div>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Company <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/company/about">About</a>
+          <a href="/company/goals">Goals for the World</a>
+          <a href="/company/commitments">Commitments</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-spacer"></div>
+    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <p class="eyebrow">About Swiftaw</p>
+  <h1>Building what matters.</h1>
+  <p>We are a technology company driven by the belief that the digital world should bring people closer together, not push them apart. Every product we create starts with a simple question: does this make life better?</p>
+</section>
+
+<section class="section">
+  <div class="split">
+    <div>
+      <div class="highlight-bar" style="margin-bottom:24px;"></div>
+      <h2>Our Mission</h2>
+      <p>Swiftaw exists to build the ultimate digital ecosystem&mdash;one that masters the balance between human connection and machine intelligence. We believe technology should amplify what makes us human, not replace it.</p>
+      <p>From gaming communities to intelligent platforms, every product in our ecosystem is designed with intentionality, crafted to serve people first and metrics second.</p>
+    </div>
+    <div>
+      <div class="highlight-bar" style="margin-bottom:24px;"></div>
+      <h2>Team Philosophy</h2>
+      <p>We hire builders, not bystanders. Our team is small by design, because the best work happens when every person at the table has a voice and a stake in the outcome.</p>
+      <p>We value clarity over complexity, shipping over perfecting, and empathy over ego. Everyone here is expected to think like a founder and care like a user.</p>
+    </div>
+  </div>
+</section>
+
+<div class="section-alt">
+  <section class="section">
+    <div style="text-align:center; max-width:720px; margin:0 auto;">
+      <div class="highlight-bar" style="margin:0 auto 24px;"></div>
+      <h2>Shaping Global Communication</h2>
+      <p style="margin:0 auto;">The way the world communicates is evolving faster than ever. Swiftaw is at the forefront of that evolution, building platforms that give communities the tools to connect authentically across borders, languages, and cultures.</p>
+      <p style="margin:16px auto 0;">We are not just building apps. We are building the infrastructure for how the next generation will share ideas, form relationships, and collaborate on the things that matter most. Communication is a fundamental human need, and we treat it with the seriousness it deserves.</p>
+    </div>
+  </section>
+</div>
+
+<section class="section">
+  <div style="max-width:720px;">
+    <div class="highlight-bar" style="margin-bottom:24px;"></div>
+    <h2>The Founding Story</h2>
+    <p>Swiftaw was born from a simple frustration: the digital platforms we used every day felt hollow. They optimized for attention instead of meaning. They measured engagement but forgot about connection.</p>
+    <p>We set out to build something different. A company that would put craft and care back into technology. A company where every pixel, every interaction, and every line of code reflects a deeper purpose.</p>
+    <p>Our vision has always been the same: to create a digital ecosystem that people genuinely love using, one that respects their time, protects their privacy, and empowers their creativity.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div style="text-align:center; margin-bottom:16px;">
+    <div class="highlight-bar" style="margin:0 auto 24px;"></div>
+    <h2>Our Values</h2>
+  </div>
+  <div class="values-grid">
+    <div class="value-card">
+      <h3>People First</h3>
+      <p>Every decision starts with the people who will use what we build. We design for humans, not algorithms.</p>
+    </div>
+    <div class="value-card">
+      <h3>Radical Craft</h3>
+      <p>We obsess over the details. Great products are built one thoughtful decision at a time.</p>
+    </div>
+    <div class="value-card">
+      <h3>Honest Technology</h3>
+      <p>We build tools that are transparent about what they do and why. No dark patterns, no manipulative design.</p>
+    </div>
+    <div class="value-card">
+      <h3>Long-term Thinking</h3>
+      <p>We make decisions for the decade, not the quarter. Sustainable growth beats explosive burnout every time.</p>
+    </div>
+    <div class="value-card">
+      <h3>Inclusive by Default</h3>
+      <p>Our platforms are built for everyone. Accessibility and inclusion are foundations, not afterthoughts.</p>
+    </div>
+    <div class="value-card">
+      <h3>Courage to Ship</h3>
+      <p>Perfection is the enemy of progress. We move fast, learn from real users, and iterate relentlessly.</p>
+    </div>
+  </div>
+</section>
+
+<section class="quote-section">
+  <blockquote>"We do not build technology for the sake of technology. We build it because the world deserves platforms that treat people with dignity, spark genuine connection, and stand the test of time."</blockquote>
+  <cite>Swiftaw Founding Team</cite>
+</section>
+
+<section class="cta-section">
+  <h2>Join us on the journey.</h2>
+  <p>We are always looking for people who share our vision of technology that serves humanity.</p>
+  <div class="cta-buttons">
+    <a href="https://fortized.com" class="btn-yellow">Try Fortized</a>
+    <a href="/company/goals" class="btn-outline" style="color:#fff; border-color:rgba(255,255,255,.25);">See Our Goals</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo" style="margin-right:0;"><img src="/Swiftaw logomark black.png" alt="Swiftaw"><span>Swiftaw</span></a>
+        <p>Building the ultimate digital ecosystem. Mastering human connection and machine intelligence.</p>
+      </div>
+      <div class="footer-col"><div class="footer-col-title">Products</div><a href="https://fortized.com">Fortized</a><a href="https://nexis.swiftaw.com">Nexis</a></div>
+      <div class="footer-col"><div class="footer-col-title">Company</div><a href="/company/about">About</a><a href="/company/goals">Goals</a><a href="/company/commitments">Commitments</a><a href="/blog">Blog</a></div>
+      <div class="footer-col"><div class="footer-col-title">Departments</div><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a><a href="/research">Research</a></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Swiftaw</p>
+      <div class="footer-socials">
+        <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a href="https://www.youtube.com/@swiftaw" target="_blank" rel="noopener" title="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
