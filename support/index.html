@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Support — Fortized</title>
+<meta name="description" content="Get help with your Fortized account, Bastions, and more."/>
+<meta name="theme-color" content="#fff93e"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Fortized"/>
+<meta property="og:title" content="Support — Fortized"/>
+<meta property="og:description" content="Get help with your Fortized account, Bastions, and more."/>
+<meta property="og:image" content="https://fortized.com/Fortized banner.png"/>
+<meta property="og:url" content="https://fortized.com/support"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Support — Fortized"/>
+<meta name="twitter:description" content="Get help with your Fortized account, Bastions, and more."/>
+<meta name="twitter:image" content="https://fortized.com/Fortized banner.png"/>
+<link rel="icon" type="image/png" href="/Fortized icon2.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
+<style>
+::selection{background:rgba(255,249,62,.2);}
+:root{
+  --acc:#fff93e;--acc-dim:rgba(255,249,62,.08);--acc-b:rgba(255,249,62,.18);--acc-g:rgba(255,249,62,.3);
+  --bg:#080a0f;--panel:#0c0f1a;--panel-r:#0f1220;--bd:rgba(255,255,255,.06);--bd2:#1a2030;
+  --mu:#4a5568;--mu-l:#8b95a8;--tx:#c8d0dc;--nav-h:68px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+img{-webkit-user-drag:none;user-select:none;-khtml-user-drag:none;-moz-user-drag:none;-o-user-drag:none;}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#1e2535;border-radius:10px}
+
+/* ── Nav ── */
+.nav{position:sticky;top:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;padding:0 40px;background:rgba(8,10,15,.96);backdrop-filter:blur(28px) saturate(200%);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav-logo{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-right:32px}
+.nav-logo img{height:28px;width:28px;object-fit:contain}
+.nav-logo-word{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.nav-pill-group{display:flex;align-items:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:4px;gap:1px}
+.nav-pill{font-size:13.5px;font-weight:500;color:var(--mu-l);padding:7px 14px;border-radius:9px;transition:color .15s,background .15s}
+.nav-pill:hover{color:#fff;background:rgba(255,255,255,.06)}
+.nav-pill.active{color:var(--acc);background:var(--acc-dim)}
+.nav-sp{flex:1}
+.nav-btn{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#101010;background:var(--acc);padding:9px 20px;border-radius:10px;transition:.15s}
+.nav-btn:hover{background:#ffe55c;box-shadow:0 0 20px var(--acc-g)}
+
+/* ── Hero with banner ── */
+.hero{padding:72px 72px 56px;border-bottom:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden;text-align:center}
+.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgba(8,10,15,1) 40%,rgba(8,10,15,.84) 100%);z-index:1}
+.hero-banner{position:absolute;inset:0;z-index:0}
+.hero-banner img{width:100%;height:100%;object-fit:cover;opacity:.12}
+.grid-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(255,249,62,.009) 1px,transparent 1px),linear-gradient(90deg,rgba(255,249,62,.009) 1px,transparent 1px);background-size:64px 64px}
+.hero-inner{position:relative;z-index:2}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);background:rgba(255,249,62,.06);border:1px solid rgba(255,249,62,.16);border-radius:100px;padding:5px 14px;margin-bottom:22px}
+.hero-eyebrow::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--acc)}
+.hero h1{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;letter-spacing:-2px;line-height:.96;margin-bottom:14px;color:#fff}
+.hero-sub{font-size:15px;color:var(--mu-l);line-height:1.65}
+
+.wrap{max-width:960px;margin:0 auto;padding:48px 40px 80px}
+.section-h{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:18px;color:#fff}
+
+/* ── Status ── */
+.status-card{background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:40px}
+.status-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--bd)}
+.status-row:last-child{border-bottom:none}
+.status-name{font-size:14px;font-weight:500}
+.status-badge{font-size:11px;font-weight:700;letter-spacing:.04em;border-radius:6px;padding:3px 10px;display:flex;align-items:center;gap:6px}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.st-ok .status-dot{background:#4ade80;box-shadow:0 0 8px rgba(74,222,128,.4)}
+.st-ok{color:#4ade80;background:rgba(74,222,128,.08)}
+.st-warn .status-dot{background:#fbbf24;box-shadow:0 0 8px rgba(251,191,36,.4);animation:pulse-dot 2s infinite}
+.st-warn{color:#fbbf24;background:rgba(251,191,36,.08)}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ── Help cards ── */
+.help-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:40px}
+.help-card{background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:24px;transition:all .2s var(--ease);cursor:pointer}
+.help-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.1);box-shadow:0 16px 48px rgba(0,0,0,.4)}
+.help-ic{width:44px;height:44px;border-radius:12px;background:var(--acc-dim);border:1px solid var(--acc-b);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.help-ic svg{width:20px;height:20px;color:var(--acc)}
+.help-card h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:4px}
+.help-card p{font-size:12.5px;color:var(--mu-l);line-height:1.5}
+
+/* ── FAQ ── */
+.faq{background:var(--panel);border:1px solid var(--bd);border-radius:14px;overflow:hidden;margin-bottom:6px}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;font-size:14px;font-weight:600;color:#fff;transition:background .15s var(--ease)}
+.faq-q:hover{background:rgba(255,255,255,.02)}
+.faq-q svg{width:16px;height:16px;color:var(--mu);transition:transform .25s var(--ease);flex-shrink:0}
+.faq.open .faq-q svg{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 20px}
+.faq.open .faq-a{max-height:300px;padding:0 20px 16px}
+.faq-a-inner{font-size:13.5px;color:var(--mu-l);line-height:1.7}
+
+/* ── Knowledge Base ── */
+.kb-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:40px}
+.kb-card{background:var(--panel);border:1px solid var(--bd);border-radius:14px;padding:20px;cursor:pointer;transition:all .2s var(--ease);display:flex;gap:14px;align-items:flex-start}
+.kb-card:hover{border-color:rgba(255,255,255,.1);background:var(--panel-r)}
+.kb-ic{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.kb-ic svg{width:18px;height:18px;color:var(--acc)}
+.kb-card h4{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#fff;margin-bottom:3px}
+.kb-card p{font-size:12px;color:var(--mu-l);line-height:1.5}
+
+/* ── Guide Modal ── */
+.modal-bg{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);align-items:center;justify-content:center}
+.modal-bg.on{display:flex}
+.modal{background:var(--panel-r);border:1px solid var(--bd);border-radius:20px;width:100%;max-width:680px;max-height:80vh;overflow:hidden;display:flex;flex-direction:column}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--bd)}
+.modal-head h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff}
+.modal-close{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--mu);transition:.15s}
+.modal-close:hover{color:#fff;background:rgba(255,255,255,.08)}
+.modal-body{padding:24px;overflow-y:auto;font-size:14px;line-height:1.8;color:var(--mu-l)}
+.modal-body h4{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;margin:1.2em 0 .4em}
+.modal-body .step{display:flex;gap:12px;margin-bottom:14px}
+.modal-body .step-n{width:24px;height:24px;border-radius:7px;background:var(--acc-dim);color:var(--acc);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.modal-body .tip{background:rgba(255,249,62,.04);border:1px solid var(--acc-b);border-left:3px solid var(--acc);padding:12px 16px;border-radius:0 10px 10px 0;margin:12px 0;font-size:13px}
+
+/* ── Contact Form ── */
+.contact-card{background:var(--panel);border:1px solid var(--bd);border-radius:18px;padding:32px;margin-top:40px}
+.contact-card h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:6px}
+.contact-card .sub{font-size:13.5px;color:var(--mu-l);margin-bottom:24px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.form-field label{font-size:12px;font-weight:600;color:var(--mu-l);letter-spacing:.02em}
+.form-field input,.form-field textarea,.form-field select{background:rgba(255,255,255,.04);border:1.5px solid var(--bd);border-radius:10px;padding:12px 16px;font-size:14px;color:var(--tx);outline:none;transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+.form-field input:focus,.form-field textarea:focus,.form-field select:focus{border-color:rgba(255,249,62,.35);box-shadow:0 0 0 3px rgba(255,249,62,.06)}
+.form-field input::placeholder,.form-field textarea::placeholder{color:rgba(255,255,255,.18)}
+.form-field textarea{resize:vertical;min-height:120px}
+.form-field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238b95a8' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:10px;padding-right:36px}
+.char-count{font-size:11px;color:var(--mu);text-align:right;margin-top:-8px}
+.submit-btn{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#0a0d14;background:var(--acc);padding:12px 28px;border-radius:12px;border:none;cursor:pointer;transition:all .18s var(--ease);box-shadow:0 2px 12px rgba(255,249,62,.18)}
+.submit-btn:hover{background:#f5f16a;transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,249,62,.25)}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.form-success{display:none;text-align:center;padding:24px}
+.form-success .check{width:52px;height:52px;border-radius:50%;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.form-success .check svg{width:24px;height:24px;color:#4ade80}
+.form-success h3{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#fff;margin-bottom:6px}
+.form-success p{font-size:13.5px;color:var(--mu-l);margin-bottom:16px}
+.form-success button{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--acc);background:var(--acc-dim);border:1px solid var(--acc-b);padding:8px 18px;border-radius:10px;cursor:pointer;transition:.15s}
+.form-success button:hover{background:rgba(255,249,62,.12)}
+
+/* ── Footer ── */
+footer{border-top:1px solid rgba(255,255,255,.05);padding:32px 72px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px}
+.footer-left{display:flex;align-items:center;gap:16px}
+.footer-logo{display:flex;align-items:center;gap:9px}
+.footer-logo img{height:20px;width:20px;object-fit:contain;opacity:.6}
+.footer-logo span{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff}
+.footer-socials{display:flex;gap:8px}
+.footer-socials a{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;color:var(--mu);transition:.15s}
+.footer-socials a:hover{color:#fff;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
+.footer-center{text-align:center}
+.copy{font-size:12px;color:#2d3548}
+.footer-links{display:flex;gap:18px;justify-content:flex-end}
+.footer-links a{font-size:12px;color:#374151;transition:.15s}
+.footer-links a:hover{color:var(--mu-l)}
+
+@media(max-width:900px){
+  .nav-pill-group{display:none}
+  .help-grid{grid-template-columns:1fr}
+  .kb-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .nav{padding:0 20px}
+  .hero{padding:48px 24px 36px}.hero h1{font-size:32px}
+  .wrap{padding:32px 20px 60px}
+  footer{padding:24px;grid-template-columns:1fr;text-align:center;gap:14px}
+  .footer-left{justify-content:center;flex-wrap:wrap}
+  .footer-links{justify-content:center;flex-wrap:wrap}
+}
+img.emoji{height:1.15em;width:1.15em;margin:0 .05em;vertical-align:-0.15em}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/Fortized icon.png" alt="Fortized" onerror="this.src='/Fortized icon2.png'"/>
+    <span class="nav-logo-word">Fortized</span>
+  </a>
+  <div class="nav-pill-group">
+    <a href="/" class="nav-pill">Home</a>
+    <a href="/blog" class="nav-pill">Blog</a>
+    <a href="/support" class="nav-pill active">Support</a>
+    <a href="/download" class="nav-pill">Download</a>
+    <a href="/legal" class="nav-pill">Legal</a>
+  </div>
+  <div class="nav-sp"></div>
+  <a href="/app" class="nav-btn">Open App &rarr;</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-banner"><img src="/Fortized banner.png" alt=""/></div>
+  <div class="grid-overlay"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Help Center</div>
+    <h1>How can we help?</h1>
+    <p class="hero-sub">Search for answers, browse guides, or get in touch with our team.</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- System Status -->
+  <h2 class="section-h">System Status</h2>
+  <div class="status-card">
+    <div class="status-row">
+      <span class="status-name">Platform</span>
+      <div class="status-badge st-ok"><div class="status-dot"></div>Operational</div>
+    </div>
+    <div class="status-row">
+      <span class="status-name">Messaging</span>
+      <div class="status-badge st-ok"><div class="status-dot"></div>Operational</div>
+    </div>
+    <div class="status-row">
+      <span class="status-name">Bastions</span>
+      <div class="status-badge st-ok"><div class="status-dot"></div>Operational</div>
+    </div>
+    <div class="status-row">
+      <span class="status-name">Authentication</span>
+      <div class="status-badge st-ok"><div class="status-dot"></div>Operational</div>
+    </div>
+  </div>
+
+  <!-- Help Center Resources -->
+  <h2 class="section-h">Help Center</h2>
+  <div class="help-grid">
+    <div class="help-card" onclick="location.hash='faq'">
+      <div class="help-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+      <h3>FAQ</h3>
+      <p>Quick answers to the most common questions about Fortized.</p>
+    </div>
+    <div class="help-card" onclick="location.hash='guides'">
+      <div class="help-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+      <h3>Guides</h3>
+      <p>Step-by-step walkthroughs for features, tools, and settings.</p>
+    </div>
+    <div class="help-card" onclick="location.hash='contact'">
+      <div class="help-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+      <h3>Contact Us</h3>
+      <p>Reach our support team directly for help with your account.</p>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <h2 class="section-h" id="faq">Common Questions</h2>
+
+  <div class="faq" onclick="toggleFaq(this)">
+    <div class="faq-q">What is Fortized?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    <div class="faq-a"><div class="faq-a-inner">Fortized is a real-time social platform by Swiftaw. Users join Bastions (community servers), send direct messages, and connect with friends in a secure, modern environment.</div></div>
+  </div>
+  <div class="faq" onclick="toggleFaq(this)">
+    <div class="faq-q">What is a Bastion?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    <div class="faq-a"><div class="faq-a-inner">A Bastion is a community server on Fortized. Each Bastion has its own channels, roles, and member list. Bastion owners have full administrative control over their community.</div></div>
+  </div>
+  <div class="faq" onclick="toggleFaq(this)">
+    <div class="faq-q">How do I send a DM?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    <div class="faq-a"><div class="faq-a-inner">Click on a user's profile and select "Send Message" to start a direct message conversation. You can also find your DM list in the left sidebar of the app.</div></div>
+  </div>
+  <div class="faq" onclick="toggleFaq(this)">
+    <div class="faq-q">How do friend requests work?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    <div class="faq-a"><div class="faq-a-inner">You can send a friend request to any user from their profile. Once accepted, you'll be able to see each other's online status and quickly access DMs.</div></div>
+  </div>
+  <div class="faq" onclick="toggleFaq(this)">
+    <div class="faq-q">Is my data stored securely?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    <div class="faq-a"><div class="faq-a-inner">Yes. Fortized uses Firebase for persistent storage with real-time encryption. Account data is protected and we never sell or share your personal information with third parties.</div></div>
+  </div>
+  <div class="faq" onclick="toggleFaq(this)">
+    <div class="faq-q">Can I delete my account?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    <div class="faq-a"><div class="faq-a-inner">Yes. Go to Settings > Account > Danger Zone > Delete Account. This will permanently remove your account, messages, and all associated data.</div></div>
+  </div>
+
+  <!-- Knowledge Base -->
+  <h2 class="section-h" id="guides" style="margin-top:40px">Knowledge Base</h2>
+  <div class="kb-grid">
+    <div class="kb-card" onclick="openGuide('bastion')">
+      <div class="kb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+      <div><h4>Creating Your First Bastion</h4><p>Learn how to create, configure, and manage a Bastion community.</p></div>
+    </div>
+    <div class="kb-card" onclick="openGuide('messaging')">
+      <div class="kb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <div><h4>Getting Started with Messaging</h4><p>The complete guide to DMs, group chats, and channel messaging.</p></div>
+    </div>
+    <div class="kb-card" onclick="openGuide('profile')">
+      <div class="kb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div><h4>Customizing Your Profile</h4><p>Set up your display name, profile picture, status, and activity.</p></div>
+    </div>
+    <div class="kb-card" onclick="openGuide('roles')">
+      <div class="kb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div><h4>Roles &amp; Permissions</h4><p>Manage who can do what inside your Bastion.</p></div>
+    </div>
+    <div class="kb-card" onclick="openGuide('safety')">
+      <div class="kb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <div><h4>Safety &amp; Reporting</h4><p>How to report content, block users, and stay safe.</p></div>
+    </div>
+    <div class="kb-card" onclick="openGuide('account')">
+      <div class="kb-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+      <div><h4>Account Settings</h4><p>Manage your password, email, and account preferences.</p></div>
+    </div>
+  </div>
+
+  <!-- Contact Form -->
+  <div class="contact-card" id="contact">
+    <div id="contact-form">
+      <h2>Contact Support</h2>
+      <p class="sub">Fill out the form below and we'll get back to you as soon as possible.</p>
+      <div class="form-row">
+        <div class="form-field"><label>Email</label><input type="email" id="cf-email" placeholder="you@email.com"/></div>
+        <div class="form-field"><label>Username</label><input type="text" id="cf-uname" placeholder="@username"/></div>
+      </div>
+      <div class="form-field"><label>Category</label>
+        <select id="cf-cat">
+          <option value="">Select a category...</option>
+          <option>Account Issue</option>
+          <option>Bug Report</option>
+          <option>Feature Request</option>
+          <option>Content Report</option>
+          <option>Bastion Issue</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-field"><label>Subject</label><input type="text" id="cf-subject" placeholder="Brief description of your issue"/></div>
+      <div class="form-field"><label>Message</label><textarea id="cf-msg" placeholder="Tell us more about your issue..." maxlength="2000" oninput="updateCharCount()"></textarea></div>
+      <div class="char-count"><span id="cf-chars">0</span> / 2000</div>
+      <button class="submit-btn" onclick="submitContact()">Send Message</button>
+    </div>
+    <div class="form-success" id="contact-success">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h3>Message Sent</h3>
+      <p>Thanks for reaching out. We'll get back to you soon.</p>
+      <button onclick="resetContact()">Submit Another Request</button>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-left">
+    <a href="/" class="footer-logo">
+      <img src="/Fortized icon.png" alt="" onerror="this.src='/Fortized icon2.png'"/>
+      <span>Fortized</span>
+    </a>
+    <div class="footer-socials">
+      <a href="https://www.youtube.com/@swiftaw" target="_blank" rel="noopener" title="YouTube">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      </a>
+      <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X (Twitter)">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="footer-center">
+    <p class="copy">&copy; 2026 Fortized &middot; <img src="/SwiftawLogo.png" alt="Swiftaw" style="height:14px;vertical-align:middle;margin-right:3px;">Swiftaw</p>
+  </div>
+  <div class="footer-links">
+    <a href="/blog">Blog</a>
+    <a href="/legal">Legal</a>
+    <a href="/download">Download</a>
+  </div>
+</footer>
+
+<!-- Guide Modal -->
+<div class="modal-bg" id="guide-modal" onclick="if(event.target===this)closeGuide()">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="guide-title"></h3>
+      <div class="modal-close" onclick="closeGuide()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+    </div>
+    <div class="modal-body" id="guide-body"></div>
+  </div>
+</div>
+
+<script>
+/* FAQ accordion — only one open at a time */
+function toggleFaq(el){
+  const wasOpen=el.classList.contains('open');
+  document.querySelectorAll('.faq.open').forEach(f=>f.classList.remove('open'));
+  if(!wasOpen)el.classList.add('open');
+}
+
+/* Char counter */
+function updateCharCount(){
+  document.getElementById('cf-chars').textContent=document.getElementById('cf-msg').value.length;
+}
+
+/* Contact form */
+function submitContact(){
+  const email=document.getElementById('cf-email').value.trim();
+  const msg=document.getElementById('cf-msg').value.trim();
+  if(!email||!msg)return;
+  document.getElementById('contact-form').style.display='none';
+  document.getElementById('contact-success').style.display='block';
+}
+function resetContact(){
+  document.getElementById('contact-form').style.display='block';
+  document.getElementById('contact-success').style.display='none';
+  document.getElementById('cf-email').value='';
+  document.getElementById('cf-uname').value='';
+  document.getElementById('cf-cat').selectedIndex=0;
+  document.getElementById('cf-subject').value='';
+  document.getElementById('cf-msg').value='';
+  document.getElementById('cf-chars').textContent='0';
+}
+
+/* Knowledge Base guides */
+const guides={
+  bastion:{title:'Creating Your First Bastion',body:`
+    <h4>Getting Started</h4>
+    <div class="step"><div class="step-n">1</div><div>Click the <strong>+</strong> button in the Bastion sidebar to create a new Bastion.</div></div>
+    <div class="step"><div class="step-n">2</div><div>Choose a name and optionally upload an icon for your Bastion.</div></div>
+    <div class="step"><div class="step-n">3</div><div>Create channels for different topics (e.g., #general, #announcements).</div></div>
+    <div class="step"><div class="step-n">4</div><div>Invite friends by sharing your Bastion's invite link.</div></div>
+    <div class="tip"><strong>Tip:</strong> Set up roles and permissions early to keep your community organized as it grows.</div>
+  `},
+  messaging:{title:'Getting Started with Messaging',body:`
+    <h4>Direct Messages &amp; Channels</h4>
+    <p>Fortized supports direct messages, group chats, and Bastion channel messaging — all in real-time.</p>
+    <div class="step"><div class="step-n">1</div><div>Click on a friend's name or the DM icon to start a conversation.</div></div>
+    <div class="step"><div class="step-n">2</div><div>Type your message and press Enter to send. Messages appear instantly.</div></div>
+    <div class="step"><div class="step-n">3</div><div>Use reactions to respond to messages without typing.</div></div>
+    <div class="step"><div class="step-n">4</div><div>In Bastion channels, messages are visible to all members with access.</div></div>
+    <div class="tip"><strong>Tip:</strong> You'll see typing indicators when someone is composing a message.</div>
+  `},
+  profile:{title:'Customizing Your Profile',body:`
+    <h4>Your Identity on Fortized</h4>
+    <p>Your profile is how others see you across the platform.</p>
+    <div class="step"><div class="step-n">1</div><div>Go to <strong>Settings</strong> to access your profile options.</div></div>
+    <div class="step"><div class="step-n">2</div><div>Upload a profile picture and set your display name.</div></div>
+    <div class="step"><div class="step-n">3</div><div>Set a custom status message to let friends know what you're up to.</div></div>
+    <div class="tip"><strong>Tip:</strong> Your game activity status updates automatically when linked apps are detected.</div>
+  `},
+  roles:{title:'Roles & Permissions',body:`
+    <h4>Managing Your Bastion</h4>
+    <p>Roles let you control what members can do inside your Bastion.</p>
+    <div class="step"><div class="step-n">1</div><div>Go to your Bastion's <strong>Settings > Roles</strong> to manage roles.</div></div>
+    <div class="step"><div class="step-n">2</div><div>Create roles with specific permissions (e.g., Moderator, Member).</div></div>
+    <div class="step"><div class="step-n">3</div><div>Assign roles to members from the member list.</div></div>
+    <div class="step"><div class="step-n">4</div><div>Set channel-specific permissions to control access per channel.</div></div>
+    <div class="tip"><strong>Tip:</strong> The Bastion owner always has full permissions regardless of role settings.</div>
+  `},
+  safety:{title:'Safety & Reporting',body:`
+    <h4>Staying Safe on Fortized</h4>
+    <p>Fortized takes safety seriously. Here's how to use our tools.</p>
+    <div class="step"><div class="step-n">1</div><div><strong>Report Content:</strong> Right-click any message and select Report to flag it.</div></div>
+    <div class="step"><div class="step-n">2</div><div><strong>Block Users:</strong> Visit a user's profile and click Block to prevent them from interacting with you.</div></div>
+    <div class="step"><div class="step-n">3</div><div><strong>Privacy Settings:</strong> Control who can message and friend request you from Settings > Privacy.</div></div>
+    <div class="tip"><strong>Important:</strong> All reports are reviewed by the Fortized Security Department. We take action on violations promptly.</div>
+  `},
+  account:{title:'Account Settings',body:`
+    <h4>Managing Your Account</h4>
+    <div class="step"><div class="step-n">1</div><div>Go to <strong>Settings</strong> in the sidebar to access account options.</div></div>
+    <div class="step"><div class="step-n">2</div><div><strong>Change Password:</strong> Enter your current password and set a new one.</div></div>
+    <div class="step"><div class="step-n">3</div><div><strong>Update Email:</strong> Change the email associated with your account.</div></div>
+    <div class="step"><div class="step-n">4</div><div><strong>Delete Account:</strong> Found in Danger Zone. This permanently removes all your data.</div></div>
+    <div class="tip"><strong>Note:</strong> Account deletion is irreversible. Make sure to save any content you want to keep first.</div>
+  `}
+};
+
+function openGuide(id){
+  const g=guides[id];
+  if(!g)return;
+  document.getElementById('guide-title').textContent=g.title;
+  document.getElementById('guide-body').innerHTML=g.body;
+  document.getElementById('guide-modal').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeGuide(){
+  document.getElementById('guide-modal').classList.remove('on');
+  document.body.style.overflow='';
+}
+
+/* Hash routing */
+if(location.hash){
+  const el=document.querySelector(location.hash);
+  if(el)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+if (typeof twemoji !== 'undefined') { twemoji.parse(document.body, { folder: 'svg', ext: '.svg' }); }
+</script>
+</body>
+</html>

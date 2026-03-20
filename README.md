@@ -1,2 +1,2 @@
-# Swiftaw
-Exploring the future of digital creativity.
+# Fortized
+Fortized is a modern gaming chat-app.

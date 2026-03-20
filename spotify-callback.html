@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotify Connected — Fortized</title>
+<style>
+::selection{background:rgba(255,249,62,.2);}
+body{margin:0;background:#080a0f;color:#fff;font-family:'DM Sans',system-ui,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;}
+.wrap{text-align:center;padding:40px;}
+.icon{margin-bottom:16px;}
+.icon svg{width:48px;height:48px;}
+h2{font-size:20px;font-weight:700;margin-bottom:8px;}
+p{font-size:14px;color:rgba(255,255,255,.5);}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="#1DB954" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+<h2 id="title">Connecting...</h2>
+<p id="msg">Please wait while we link your Spotify account.</p>
+</div>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var code = params.get('code');
+  var state = params.get('state');
+  var titleEl = document.getElementById('title');
+  var msgEl = document.getElementById('msg');
+
+  if (code && state) {
+    // Send the code + state to the server for token exchange
+    fetch('https://fortized.onrender.com/api/spotify-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ state: state, code: code })
+    }).then(function(r) {
+      if (!r.ok) throw new Error('Server returned ' + r.status);
+      return r.json();
+    }).then(function(data) {
+      if (data.ok) {
+        titleEl.textContent = 'Spotify Connected!';
+        msgEl.textContent = 'You can close this window now.';
+      } else {
+        titleEl.textContent = 'Connection Failed';
+        msgEl.textContent = data.error || 'Token exchange failed. Please try again.';
+      }
+      setTimeout(function() { window.close(); }, 2000);
+    }).catch(function(err) {
+      titleEl.textContent = 'Connection Failed';
+      msgEl.textContent = 'Could not reach the server (' + (err.message || 'unknown error') + '). The server may need to be restarted.';
+    });
+  } else {
+    titleEl.textContent = 'Connection Failed';
+    msgEl.textContent = 'No authorization code received from Spotify.';
+  }
+})();
+</script>
+</body>
+</html>
