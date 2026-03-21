@@ -3,19 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swiftaw - Move Beyond the Ordinary</title>
-<meta name="description" content="Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence to reshape how the world communicates, thinks, and solves problems.">
+<title>Blog — swiftaw</title>
+<meta name="description" content="Thoughts on social technology, AI, and the digital future from the swiftaw team.">
 <meta name="theme-color" content="#0a0a0a">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Swiftaw">
-<meta property="og:title" content="Swiftaw - Move Beyond the Ordinary">
-<meta property="og:description" content="Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence.">
-<meta property="og:image" content="https://swiftaw.com/Swiftaw Banner2.png">
-<meta property="og:url" content="https://swiftaw.com/">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Swiftaw - Move Beyond the Ordinary">
-<meta name="twitter:image" content="https://swiftaw.com/Swiftaw Banner2.png">
-<link rel="icon" type="image/png" href="SwiftawFavicon.png">
+<link rel="icon" type="image/png" href="SwiftawLogo.png">
 <link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <style>
@@ -31,7 +22,6 @@
   --text-light: #555;
   --text-muted: #888;
   --border: #e5e5e5;
-  --border-light: #f0f0f0;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Newsreader', Georgia, serif;
   --font-display: 'Afronaut Test', 'Newsreader', sans-serif;
@@ -52,9 +42,7 @@ body {
 img { display: block; -webkit-user-drag: none; user-select: none; }
 a { text-decoration: none; color: inherit; }
 
-/* ═══════════════════════════════════════════
-   NAV
-═══════════════════════════════════════════ */
+/* ═══ NAV (shared) ═══ */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   height: var(--nav-h);
@@ -68,375 +56,316 @@ a { text-decoration: none; color: inherit; }
   max-width: var(--max-w); width: 100%; margin: 0 auto;
   display: flex; align-items: center;
 }
-.nav-logo { display: flex; align-items: center; gap: 10px; margin-right: 36px; }
-.nav-logo img { height: 26px; }
-.nav-logo span {
-  font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -.3px;
-}
+.nav-logo { display: flex; align-items: center; margin-right: 36px; }
+.nav-logo img { height: 28px; }
 .nav-links { display: flex; align-items: center; gap: 4px; }
 .nav-link {
   font-size: 14px; font-weight: 500; color: var(--text-light);
   padding: 8px 14px; border-radius: 8px;
   transition: color .15s, background .15s;
-  position: relative;
 }
 .nav-link:hover { color: var(--text); background: rgba(0,0,0,.03); }
+.nav-link.active { color: var(--text); background: rgba(0,0,0,.05); }
 .nav-link.has-dropdown { cursor: default; }
-.nav-link .caret {
-  display: inline-block; margin-left: 3px;
-  font-size: 10px; opacity: .5; transition: transform .2s;
-}
+.nav-link .caret { display: inline-block; margin-left: 3px; font-size: 10px; opacity: .5; transition: transform .2s; }
 .nav-dropdown-wrap { position: relative; }
 .nav-dropdown-wrap:hover .nav-link .caret { transform: rotate(180deg); }
 .nav-dropdown {
   position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-  min-width: 200px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 6px;
+  min-width: 200px; background: #fff;
+  border: 1px solid var(--border); border-radius: 12px; padding: 6px;
   box-shadow: 0 12px 40px rgba(0,0,0,.08);
   opacity: 0; visibility: hidden;
   transition: opacity .18s, visibility .18s, transform .18s;
-  transform: translateX(-50%) translateY(4px);
-  z-index: 300;
+  transform: translateX(-50%) translateY(4px); z-index: 300;
 }
-.nav-dropdown-wrap:hover .nav-dropdown {
-  opacity: 1; visibility: visible;
-  transform: translateX(-50%) translateY(0);
-}
+.nav-dropdown-wrap:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 .nav-dropdown a {
   display: block; padding: 10px 14px; border-radius: 8px;
   font-size: 14px; font-weight: 500; color: var(--text-light);
   transition: background .12s, color .12s;
 }
 .nav-dropdown a:hover { background: rgba(0,0,0,.03); color: var(--text); }
-.nav-dropdown a .dd-desc {
-  display: block; font-size: 12px; color: var(--text-muted);
-  font-weight: 400; margin-top: 2px;
-}
+.nav-dropdown a .dd-desc { display: block; font-size: 12px; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
 .nav-spacer { flex: 1; }
 .nav-cta {
-  font-size: 13px; font-weight: 600;
-  color: var(--brand-deep);
-  background: var(--brand-yellow);
-  padding: 8px 20px; border-radius: 100px;
+  font-size: 13px; font-weight: 600; color: var(--brand-deep);
+  background: var(--brand-yellow); padding: 8px 20px; border-radius: 100px;
   transition: box-shadow .2s, transform .15s;
 }
 .nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); transform: translateY(-1px); }
+.nav-hamburger { display: none; cursor: pointer; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: transparent; }
+.nav-hamburger span { display: block; width: 18px; height: 1.5px; background: var(--text); border-radius: 2px; margin: 4px 0; }
 
-/* Mobile nav toggle */
-.nav-hamburger {
-  display: none; cursor: pointer; padding: 8px;
-  border-radius: 8px; border: 1px solid var(--border);
-  background: transparent;
-}
-.nav-hamburger span {
-  display: block; width: 18px; height: 1.5px;
-  background: var(--text); border-radius: 2px;
-  margin: 4px 0; transition: .2s;
-}
-
-/* ═══════════════════════════════════════════
-   HERO
-═══════════════════════════════════════════ */
-.hero {
-  min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
-  padding: calc(var(--nav-h) + 80px) var(--pad) 100px;
-  position: relative; overflow: hidden;
-}
-.hero-orb {
-  position: absolute;
-  width: 800px; height: 800px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,249,62,.1) 0%, rgba(255,156,60,.05) 40%, transparent 70%);
-  top: 5%; left: 50%; transform: translateX(-50%);
-  pointer-events: none; z-index: 0;
-  animation: orbFloat 14s ease-in-out infinite;
-}
-@keyframes orbFloat {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-25px); }
-}
-.hero-content {
-  max-width: 780px; text-align: center;
-  position: relative; z-index: 2;
-}
-.hero-eyebrow {
-  font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--brand-orange); margin-bottom: 24px;
-}
-.hero h1 {
-  font-family: var(--font-display);
-  font-size: clamp(2.8rem, 5.5vw, 4.5rem);
-  font-weight: 400; line-height: 1.08; letter-spacing: -.02em;
-  margin-bottom: 28px;
-}
-.hero h1 em { font-style: italic; color: var(--brand-orange); }
-.hero-sub {
-  font-size: 17px; color: var(--text-light);
-  line-height: 1.72; max-width: 620px;
-  margin: 0 auto 44px;
-}
-.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.btn-yellow {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 15px; font-weight: 600;
-  color: var(--brand-deep); background: var(--brand-yellow);
-  padding: 14px 32px; border-radius: 100px;
-  transition: box-shadow .2s, transform .15s;
-}
-.btn-yellow:hover { box-shadow: 0 0 32px rgba(255,249,62,.4); transform: translateY(-1px); }
-.btn-outline {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 15px; font-weight: 600;
-  color: var(--text); background: transparent;
-  padding: 14px 32px; border-radius: 100px;
-  border: 1.5px solid var(--border);
-  transition: border-color .15s, transform .15s;
-}
-.btn-outline:hover { border-color: #999; transform: translateY(-1px); }
-.btn-dark {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 15px; font-weight: 600;
-  color: #fff; background: var(--brand-deep);
-  padding: 14px 32px; border-radius: 100px;
-  transition: opacity .15s, transform .15s;
-}
-.btn-dark:hover { opacity: .85; transform: translateY(-1px); }
-
-/* ═══════════════════════════════════════════
-   BANNER
-═══════════════════════════════════════════ */
-.banner-section { padding: 0 var(--pad) 120px; }
-.banner-img {
+/* ═══ BLOG HERO ═══ */
+.blog-hero {
+  padding: calc(var(--nav-h) + 80px) var(--pad) 80px;
   max-width: var(--max-w); margin: 0 auto;
-  border-radius: 20px; overflow: hidden;
-  border: 1px solid var(--border);
-  box-shadow: 0 24px 64px rgba(0,0,0,.06);
+  position: relative;
 }
-.banner-img img { width: 100%; height: auto; }
-
-/* ═══════════════════════════════════════════
-   SECTION COMMONS
-═══════════════════════════════════════════ */
-.section {
-  padding: 100px var(--pad);
-  max-width: var(--max-w); margin: 0 auto;
+.blog-hero-orb {
+  position: absolute; top: 0; right: -10%;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,249,62,.08) 0%, transparent 70%);
+  pointer-events: none;
 }
-.section-eyebrow {
+.blog-eyebrow {
   font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
   color: var(--brand-orange); margin-bottom: 14px;
 }
-.section-heading {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 3.5vw, 3rem);
-  font-weight: 400; line-height: 1.12; letter-spacing: -.015em;
-  margin-bottom: 16px;
-}
-.section-desc {
-  font-size: 16px; color: var(--text-light); line-height: 1.72;
-  max-width: 540px; margin-bottom: 56px;
-}
-
-/* ═══════════════════════════════════════════
-   HIGHLIGHT BAR (yellow accent strip)
-═══════════════════════════════════════════ */
 .highlight-bar {
   height: 3px;
-  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange));
-  border-radius: 2px;
-  margin-bottom: 40px;
-  max-width: 80px;
+  background: linear-gradient(90deg, var(--brand-deep), var(--brand-yellow), var(--brand-orange));
+  border-radius: 2px; margin-bottom: 32px; max-width: 80px;
+}
+.blog-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  font-weight: 400; line-height: 1.1; letter-spacing: -.02em;
+  margin-bottom: 16px;
+}
+.blog-hero p {
+  font-size: 17px; color: var(--text-light); line-height: 1.72; max-width: 520px;
 }
 
-/* ═══════════════════════════════════════════
-   FEATURES GRID
-═══════════════════════════════════════════ */
-.features-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1px; background: var(--border);
-  border: 1px solid var(--border); border-radius: 16px;
-  overflow: hidden;
+/* ═══ BLOG FILTER TABS ═══ */
+.blog-filters {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--pad) 40px;
+  display: flex; gap: 8px; flex-wrap: wrap;
 }
-.feature-card {
-  background: var(--bg); padding: 40px 36px;
-  transition: background .2s;
+.filter-tab {
+  font-size: 13px; font-weight: 600;
+  padding: 8px 18px; border-radius: 100px;
+  border: 1.5px solid var(--border);
+  color: var(--text-light); background: transparent;
+  cursor: pointer; transition: all .15s;
 }
-.feature-card:hover { background: #fafafa; }
-.feature-icon {
-  width: 44px; height: 44px; border-radius: 12px;
-  background: var(--brand-deep);
+.filter-tab:hover { border-color: var(--brand-yellow); color: var(--text); }
+.filter-tab.active {
+  background: var(--brand-deep); color: var(--brand-yellow);
+  border-color: var(--brand-deep);
+}
+
+/* ═══ FEATURED POST ═══ */
+.blog-featured {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--pad) 64px;
+}
+.featured-post {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0; border: 1px solid var(--border); border-radius: 20px;
+  overflow: hidden; transition: box-shadow .2s;
+}
+.featured-post:hover { box-shadow: 0 20px 60px rgba(0,0,0,.06); }
+.featured-post-image {
+  background: linear-gradient(135deg, var(--brand-deep) 0%, #1a1530 50%, #0d0b1a 100%);
+  min-height: 360px;
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px; font-size: 20px; color: var(--brand-yellow);
-}
-.feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-.feature-card p { font-size: 14px; color: var(--text-light); line-height: 1.65; }
-
-/* ═══════════════════════════════════════════
-   DARK SECTION
-═══════════════════════════════════════════ */
-.dark-section {
-  background: var(--bg-dark); color: #fff;
-  padding: 120px var(--pad);
   position: relative; overflow: hidden;
 }
-.dark-section .section-inner {
-  max-width: var(--max-w); margin: 0 auto;
-  position: relative; z-index: 2;
+.featured-post-image .image-glow {
+  position: absolute; width: 300px; height: 300px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,249,62,.15) 0%, rgba(255,156,60,.08) 40%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
 }
-.dark-section .section-eyebrow { color: var(--brand-yellow); }
-.dark-section .section-heading { color: #fff; }
-.dark-section .section-desc { color: rgba(255,255,255,.5); }
-.dark-section .highlight-bar {
-  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange));
-}
-.dark-glow {
-  position: absolute; top: -200px; right: -200px;
-  width: 600px; height: 600px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,249,62,.06) 0%, transparent 70%);
-  pointer-events: none; z-index: 0;
-}
-.dark-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-}
-.dark-card {
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 16px; padding: 36px;
-  transition: border-color .2s, background .2s;
-}
-.dark-card:hover {
-  border-color: rgba(255,249,62,.2);
-  background: rgba(255,255,255,.06);
-}
-.dark-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-.dark-card p { font-size: 14px; color: rgba(255,255,255,.5); line-height: 1.65; }
-
-/* ═══════════════════════════════════════════
-   DEPARTMENTS PREVIEW
-═══════════════════════════════════════════ */
-.dept-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-}
-.dept-card {
-  border: 1px solid var(--border); border-radius: 16px;
-  padding: 36px; transition: border-color .2s, box-shadow .2s;
-}
-.dept-card:hover {
-  border-color: rgba(255,249,62,.4);
-  box-shadow: 0 12px 40px rgba(0,0,0,.06);
-}
-.dept-card-icon {
-  width: 48px; height: 48px; border-radius: 14px;
-  background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange));
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px; font-size: 22px;
-}
-.dept-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
-.dept-card p { font-size: 14px; color: var(--text-light); line-height: 1.65; }
-.dept-card .dept-link {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 13px; font-weight: 600; color: var(--brand-orange);
-  margin-top: 16px; transition: gap .15s;
-}
-.dept-card:hover .dept-link { gap: 8px; }
-
-/* ═══════════════════════════════════════════
-   ECOSYSTEM QUOTE
-═══════════════════════════════════════════ */
-.quote-section {
-  padding: 100px var(--pad);
-  text-align: center;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.quote-section blockquote {
-  max-width: 720px; margin: 0 auto;
+.featured-post-image .image-label {
   font-family: var(--font-display);
-  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
-  font-weight: 400; font-style: italic;
-  line-height: 1.5; color: var(--text-light);
+  font-size: clamp(2rem, 4vw, 3rem); color: rgba(255,255,255,.08);
+  letter-spacing: -.02em; position: relative; z-index: 1;
+  text-align: center; padding: 40px;
 }
-.quote-section blockquote em { font-style: normal; color: var(--brand-orange); }
-
-/* ═══════════════════════════════════════════
-   CTA
-═══════════════════════════════════════════ */
-.cta-section {
-  padding: 120px var(--pad); text-align: center;
+.featured-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  position: absolute; top: 24px; left: 24px; z-index: 2;
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  background: var(--brand-yellow); color: var(--brand-deep);
+  padding: 5px 12px; border-radius: 100px;
 }
-.cta-section h2 {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  font-weight: 400; line-height: 1.12;
-  margin-bottom: 20px;
-}
-.cta-section h2 em { font-style: italic; color: var(--brand-orange); }
-.cta-section p {
-  font-size: 16px; color: var(--text-light); margin-bottom: 36px;
-  max-width: 480px; margin-left: auto; margin-right: auto;
-}
-
-/* ═══════════════════════════════════════════
-   FOOTER
-═══════════════════════════════════════════ */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 48px var(--pad) 40px;
-}
-.footer-inner {
-  max-width: var(--max-w); margin: 0 auto;
-}
-.footer-top {
-  display: grid;
-  grid-template-columns: 1.5fr repeat(3, 1fr);
-  gap: 40px;
-  margin-bottom: 40px;
-}
-.footer-brand p {
-  font-size: 13px; color: var(--text-muted);
-  line-height: 1.65; max-width: 260px; margin-top: 12px;
-}
-.footer-col-title {
+.featured-post-body { padding: 48px; display: flex; flex-direction: column; justify-content: center; }
+.post-category {
   font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--text-muted); margin-bottom: 14px;
+  color: var(--brand-orange); margin-bottom: 16px;
 }
-.footer-col a {
-  display: block; font-size: 13px; color: var(--text-light);
-  padding: 4px 0; transition: color .15s;
+.featured-post-body h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 400; line-height: 1.2; letter-spacing: -.01em;
+  margin-bottom: 16px;
 }
-.footer-col a:hover { color: var(--text); }
-.footer-bottom {
+.featured-post-body p {
+  font-size: 15px; color: var(--text-light); line-height: 1.72; margin-bottom: 32px;
+}
+.post-meta {
+  display: flex; align-items: center; gap: 16px;
+  font-size: 13px; color: var(--text-muted);
+}
+.post-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); }
+.post-author {
+  display: flex; align-items: center; gap: 8px;
+}
+.post-author-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand-deep), var(--brand-yellow), var(--brand-orange));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--brand-deep);
+}
+.read-more {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: var(--brand-orange);
+  margin-top: 24px; transition: gap .15s;
+}
+.featured-post:hover .read-more { gap: 10px; }
+
+/* ═══ POSTS GRID ═══ */
+.blog-grid-section {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--pad) 100px;
+}
+.blog-grid-heading {
+  font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 28px;
+  padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+.posts-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  margin-bottom: 60px;
+}
+.post-card {
+  border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden; transition: box-shadow .2s, border-color .2s;
+  display: flex; flex-direction: column;
+}
+.post-card:hover {
+  box-shadow: 0 12px 40px rgba(0,0,0,.06);
+  border-color: rgba(255,249,62,.3);
+}
+.post-card-image {
+  height: 180px;
+  background: linear-gradient(135deg, var(--brand-deep) 0%, #1a1530 100%);
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.post-card-image.ai-theme {
+  background: linear-gradient(135deg, #0d0b1a 0%, #241f3c 100%);
+}
+.post-card-image.social-theme {
+  background: linear-gradient(135deg, #1a0a00 0%, #3d1f00 100%);
+}
+.post-card-image.product-theme {
+  background: linear-gradient(135deg, #0a1a0a 0%, #0d3d0d 100%);
+}
+.post-card-image-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 60% 40%, rgba(255,249,62,.12) 0%, transparent 60%);
+}
+.post-card-image-label {
+  font-family: var(--font-display);
+  font-size: 2.2rem; color: rgba(255,255,255,.07);
+  position: relative; z-index: 1;
+}
+.post-card-cat {
+  position: absolute; top: 14px; left: 14px; z-index: 2;
+  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  background: rgba(255,255,255,.12); color: rgba(255,255,255,.7);
+  backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 100px;
+  border: 1px solid rgba(255,255,255,.1);
+}
+.post-card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+.post-card-body h3 {
+  font-size: 15px; font-weight: 600; line-height: 1.4;
+  margin-bottom: 10px; letter-spacing: -.01em;
+}
+.post-card-body p {
+  font-size: 13px; color: var(--text-light); line-height: 1.65; flex: 1; margin-bottom: 20px;
+}
+.post-card-footer {
   display: flex; align-items: center; justify-content: space-between;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
+  padding-top: 16px; border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--text-muted);
 }
+.post-card-footer .read-link {
+  font-size: 12px; font-weight: 600; color: var(--brand-orange);
+  transition: gap .15s; display: flex; align-items: center; gap: 4px;
+}
+.post-card:hover .read-link { gap: 8px; }
+
+/* ═══ NEWSLETTER ═══ */
+.blog-newsletter {
+  background: var(--bg-dark); color: #fff;
+  padding: 80px var(--pad);
+  position: relative; overflow: hidden;
+}
+.blog-newsletter .inner {
+  max-width: var(--max-w); margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  align-items: center; position: relative; z-index: 2;
+}
+.newsletter-glow {
+  position: absolute; top: -100px; right: -100px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,249,62,.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.blog-newsletter .section-eyebrow { color: var(--brand-yellow); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+.blog-newsletter h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+  font-weight: 400; line-height: 1.15; color: #fff; margin-bottom: 12px;
+}
+.blog-newsletter p { font-size: 15px; color: rgba(255,255,255,.5); line-height: 1.7; }
+.newsletter-form { display: flex; gap: 10px; }
+.newsletter-input {
+  flex: 1; font-size: 14px; font-family: var(--font-sans);
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+  color: #fff; padding: 14px 20px; border-radius: 100px;
+  outline: none; transition: border-color .15s;
+}
+.newsletter-input::placeholder { color: rgba(255,255,255,.3); }
+.newsletter-input:focus { border-color: rgba(255,249,62,.4); }
+.newsletter-btn {
+  font-size: 14px; font-weight: 600;
+  color: var(--brand-deep); background: var(--brand-yellow);
+  padding: 14px 28px; border-radius: 100px; border: none; cursor: pointer;
+  white-space: nowrap; transition: box-shadow .2s, transform .15s;
+}
+.newsletter-btn:hover { box-shadow: 0 0 24px rgba(255,249,62,.3); transform: translateY(-1px); }
+
+/* ═══ FOOTER ═══ */
+footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
+.footer-inner { max-width: var(--max-w); margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 40px; margin-bottom: 40px; }
+.footer-brand p { font-size: 13px; color: var(--text-muted); line-height: 1.65; max-width: 260px; margin-top: 12px; }
+.footer-brand-logo { display: flex; align-items: center; gap: 10px; }
+.footer-brand-logo img { height: 26px; }
+.footer-brand-logo span {
+  font-family: var(--font-display); font-size: 16px; font-weight: 400; letter-spacing: -.01em;
+  background: linear-gradient(135deg, var(--brand-deep), var(--brand-yellow), var(--brand-orange));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.footer-col-title { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
+.footer-col a { display: block; font-size: 13px; color: var(--text-light); padding: 4px 0; transition: color .15s; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 1px solid var(--border); }
 .footer-copy { font-size: 12px; color: var(--text-muted); }
-.footer-socials {
-  display: flex; gap: 12px;
-}
-.footer-socials a {
-  color: var(--text-muted); transition: color .15s;
-  display: flex; align-items: center;
-}
+.footer-socials { display: flex; gap: 12px; }
+.footer-socials a { color: var(--text-muted); transition: color .15s; display: flex; align-items: center; }
 .footer-socials a:hover { color: var(--text); }
 
-/* ═══════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════ */
 @media (max-width: 900px) {
   .nav-links { display: none; }
   .nav-hamburger { display: flex; flex-direction: column; }
-  .features-grid, .dept-grid { grid-template-columns: 1fr; }
-  .dark-grid { grid-template-columns: 1fr; }
+  .featured-post { grid-template-columns: 1fr; }
+  .featured-post-image { min-height: 220px; }
+  .posts-grid { grid-template-columns: 1fr 1fr; }
+  .blog-newsletter .inner { grid-template-columns: 1fr; gap: 32px; }
   .footer-top { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 600px) {
-  .hero h1 { font-size: 2.2rem; }
-  .hero-actions { flex-direction: column; align-items: center; }
+  .posts-grid { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  .newsletter-form { flex-direction: column; }
 }
 </style>
 </head>
@@ -446,25 +375,18 @@ footer {
 <nav class="nav">
   <div class="nav-inner">
     <a href="/" class="nav-logo">
-      <img src="Swiftaw logomark black.png" alt="Swiftaw">
-      <span>Swiftaw</span>
+      <img src="Swiftaw logomark black.png" alt="swiftaw">
     </a>
     <div class="nav-links">
       <div class="nav-dropdown-wrap">
         <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
         <div class="nav-dropdown">
-          <a href="https://fortized.com">
-            Try Fortized
-            <span class="dd-desc">Gaming community platform</span>
-          </a>
-          <a href="https://nexis.swiftaw.com">
-            Try Nexis
-            <span class="dd-desc">Intelligent digital ecosystem</span>
-          </a>
+          <a href="https://fortized.com">Try Fortized<span class="dd-desc">Social gaming community platform</span></a>
+          <a href="https://nexis.swiftaw.com/">Try Nexis<span class="dd-desc">AI-powered digital ecosystem</span></a>
         </div>
       </div>
       <a href="/research" class="nav-link">Research</a>
-      <a href="/blog" class="nav-link">Blog</a>
+      <a href="/blog" class="nav-link active">Blog</a>
       <div class="nav-dropdown-wrap">
         <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
         <div class="nav-dropdown">
@@ -490,125 +412,172 @@ footer {
   </div>
 </nav>
 
-<!-- ═══ HERO ═══ -->
-<section class="hero">
-  <div class="hero-orb"></div>
-  <div class="hero-content">
-    <div class="hero-eyebrow">Swiftaw</div>
-    <h1>Move Beyond<br>the <em>Ordinary.</em></h1>
-    <p class="hero-sub">Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence to reshape how the world communicates, thinks, and solves problems.</p>
-    <div class="hero-actions">
-      <a href="https://fortized.com" class="btn-yellow">Try Fortized</a>
-      <a href="https://nexis.swiftaw.com" class="btn-dark">Explore Nexis</a>
-      <a href="#research" class="btn-outline">Learn More</a>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ BANNER ═══ -->
-<div class="banner-section">
-  <div class="banner-img">
-    <img src="Swiftaw Theme Banner.png" alt="Swiftaw Ecosystem">
-  </div>
-</div>
-
-<!-- ═══ RESEARCH & INNOVATION ═══ -->
-<div class="section" id="research">
-  <div class="section-eyebrow">Research &amp; Innovation</div>
+<!-- ═══ BLOG HERO ═══ -->
+<div class="blog-hero">
+  <div class="blog-hero-orb"></div>
+  <div class="blog-eyebrow">swiftaw Blog</div>
   <div class="highlight-bar"></div>
-  <div class="section-heading">Breakthroughs in chat,<br>intelligence, and connection.</div>
-  <div class="section-desc">We're pioneering the technologies that power human-machine interaction — from real-time chat engines to data intelligence systems that learn and adapt.</div>
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">&#9889;</div>
-      <h3>Chat Technology</h3>
-      <p>Next-generation messaging systems built for speed, reliability, and scale. Real-time communication that feels instant.</p>
+  <h1>Ideas that move<br>the world forward.</h1>
+  <p>Thoughts on social technology, artificial intelligence, and the digital future — from the team building it.</p>
+</div>
+
+<!-- ═══ FILTER TABS ═══ -->
+<div class="blog-filters">
+  <button class="filter-tab active">All</button>
+  <button class="filter-tab">Social & Chat</button>
+  <button class="filter-tab">Artificial Intelligence</button>
+  <button class="filter-tab">Product</button>
+  <button class="filter-tab">Research</button>
+  <button class="filter-tab">Company</button>
+</div>
+
+<!-- ═══ FEATURED POST ═══ -->
+<div class="blog-featured">
+  <a href="#" class="featured-post">
+    <div class="featured-post-image">
+      <div class="image-glow"></div>
+      <div class="featured-tag">&#9733; Featured</div>
+      <div class="image-label">Nexis</div>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">&#129504;</div>
-      <h3>Machine Intelligence</h3>
-      <p>Developing the backbone that powers human-machine interaction. Intelligent systems that understand context and intent.</p>
+    <div class="featured-post-body">
+      <div class="post-category">Artificial Intelligence</div>
+      <h2>Why AI and social platforms must converge — and how we're building that future with Nexis</h2>
+      <p>The next decade of digital life won't be defined by standalone apps — it'll be defined by ecosystems where intelligence and community amplify each other. Here's our vision.</p>
+      <div class="post-meta">
+        <div class="post-author">
+          <div class="post-author-avatar">S</div>
+          <span>Staw</span>
+        </div>
+        <div class="post-meta-dot"></div>
+        <span>March 2026</span>
+        <div class="post-meta-dot"></div>
+        <span>8 min read</span>
+      </div>
+      <span class="read-more">Read article &rarr;</span>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">&#127760;</div>
-      <h3>Digital Ecosystems</h3>
-      <p>Building interconnected platforms where communities thrive, data flows securely, and experiences feel seamless.</p>
-    </div>
+  </a>
+</div>
+
+<!-- ═══ POSTS GRID ═══ */-->
+<div class="blog-grid-section">
+  <div class="blog-grid-heading">Latest Posts</div>
+  <div class="posts-grid">
+
+    <a href="#" class="post-card">
+      <div class="post-card-image social-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">⚡</div>
+        <div class="post-card-cat">Social &amp; Chat</div>
+      </div>
+      <div class="post-card-body">
+        <h3>How Fortized's Bastion system reinvents online community structure</h3>
+        <p>Traditional servers and groups weren't built for the way modern gamers actually organize. Bastions are.</p>
+        <div class="post-card-footer">
+          <span>Feb 2026 · 5 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="post-card">
+      <div class="post-card-image ai-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">&#129504;</div>
+        <div class="post-card-cat">Artificial Intelligence</div>
+      </div>
+      <div class="post-card-body">
+        <h3>Building AI that understands context, not just commands</h3>
+        <p>The gap between AI that responds and AI that understands is where Nexis is focused. Here's our approach.</p>
+        <div class="post-card-footer">
+          <span>Feb 2026 · 7 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="post-card">
+      <div class="post-card-image product-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">&#128300;</div>
+        <div class="post-card-cat">Product</div>
+      </div>
+      <div class="post-card-body">
+        <h3>The Onyx economy: why we built an earned-not-bought rewards system</h3>
+        <p>Pay-to-win is broken. We built an entirely different model — one where your participation is your currency.</p>
+        <div class="post-card-footer">
+          <span>Jan 2026 · 4 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="post-card">
+      <div class="post-card-image ai-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">&#127760;</div>
+        <div class="post-card-cat">Research</div>
+      </div>
+      <div class="post-card-body">
+        <h3>Real-time communication at scale: lessons from building Fortized's chat engine</h3>
+        <p>Millions of simultaneous messages. Zero compromises on latency. What it actually takes to build at this scale.</p>
+        <div class="post-card-footer">
+          <span>Jan 2026 · 9 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="post-card">
+      <div class="post-card-image social-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">&#128737;</div>
+        <div class="post-card-cat">Safety</div>
+      </div>
+      <div class="post-card-body">
+        <h3>Safety as a first-class feature: how AutoMod and encryption protect swiftaw communities</h3>
+        <p>Security isn't a feature you bolt on at the end. Here's how our Safety Department builds from day one.</p>
+        <div class="post-card-footer">
+          <span>Dec 2025 · 6 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="post-card">
+      <div class="post-card-image product-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">&#128172;</div>
+        <div class="post-card-cat">Company</div>
+      </div>
+      <div class="post-card-body">
+        <h3>Why swiftaw's two pillars — social and AI — are stronger together</h3>
+        <p>We didn't build Fortized and Nexis as separate bets. We built them as two halves of one vision.</p>
+        <div class="post-card-footer">
+          <span>Nov 2025 · 5 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
   </div>
 </div>
 
-<!-- ═══ DARK SECTION — PRODUCTS ═══ -->
-<div class="dark-section">
-  <div class="dark-glow"></div>
-  <div class="section-inner">
-    <div class="section-eyebrow">Our Products</div>
-    <div class="highlight-bar"></div>
-    <div class="section-heading">Platforms that amplify<br>human connection.</div>
-    <div class="section-desc">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence — moving beyond the limitations of today's technology.</div>
-    <div class="dark-grid">
-      <div class="dark-card">
-        <h3>Fortized</h3>
-        <p>A modern community platform built for gamers. Organize your ranks with Bastions, rally your allies, and conquer together. Free to join, no credit card needed.</p>
-      </div>
-      <div class="dark-card">
-        <h3>Nexis</h3>
-        <p>The intelligent digital ecosystem. Nexis connects people, data, and experiences into a unified platform that learns and evolves with you.</p>
-      </div>
-      <div class="dark-card">
-        <h3>Earned, Not Bought</h3>
-        <p>Our Onyx economy lets members earn premium perks through genuine participation. Your engagement is your currency — no paywalls, no tricks.</p>
-      </div>
-      <div class="dark-card">
-        <h3>Iron Security</h3>
-        <p>Every product ships with safety as a first-class feature. AutoMod, raid protection, end-to-end encryption, and the Swiftaw Safety Department.</p>
-      </div>
+<!-- ═══ NEWSLETTER ═══ -->
+<div class="blog-newsletter">
+  <div class="newsletter-glow"></div>
+  <div class="inner">
+    <div>
+      <div class="section-eyebrow">Stay in the loop</div>
+      <h2>Get swiftaw insights<br>in your inbox.</h2>
+      <p>New posts on social tech, AI, and the future of digital ecosystems — no spam, ever.</p>
     </div>
-  </div>
-</div>
-
-<!-- ═══ DEPARTMENTS ═══ -->
-<div class="section" id="departments">
-  <div class="section-eyebrow">Swiftaw Departments</div>
-  <div class="highlight-bar"></div>
-  <div class="section-heading">The teams building<br>the future.</div>
-  <div class="section-desc">Each department drives a critical piece of the Swiftaw ecosystem — from research to safety to how we communicate with the world.</div>
-  <div class="dept-grid">
-    <a href="/departments/rd" class="dept-card">
-      <div class="dept-card-icon">&#128300;</div>
-      <h3>R&amp;D</h3>
-      <p>Innovative digital platforms, chat engines, and intelligent systems. The engineering heart of Swiftaw.</p>
-      <span class="dept-link">Learn more &rarr;</span>
-    </a>
-    <a href="/departments/safety" class="dept-card">
-      <div class="dept-card-icon">&#128737;</div>
-      <h3>Safety</h3>
-      <p>Protecting communities with advanced moderation, encryption, and responsible technology practices.</p>
-      <span class="dept-link">Learn more &rarr;</span>
-    </a>
-    <a href="/departments/communication" class="dept-card">
-      <div class="dept-card-icon">&#128172;</div>
-      <h3>Communication</h3>
-      <p>Improving connectivity, user engagement, and the digital experience across every touchpoint.</p>
-      <span class="dept-link">Learn more &rarr;</span>
-    </a>
-  </div>
-</div>
-
-<!-- ═══ QUOTE ═══ -->
-<div class="quote-section">
-  <blockquote>
-    &ldquo;Swiftaw powers a digital ecosystem that <em>amplifies human connection</em> and intelligence — moving beyond the limitations of today's technology.&rdquo;
-  </blockquote>
-</div>
-
-<!-- ═══ CTA ═══ -->
-<div class="cta-section">
-  <h2>The future of community<br>starts <em>here.</em></h2>
-  <p>Join the ecosystem. Build with Fortized. Explore with Nexis. Shape the future with Swiftaw.</p>
-  <div class="hero-actions">
-    <a href="https://fortized.com/signup" class="btn-yellow">Try Fortized</a>
-    <a href="https://nexis.swiftaw.com" class="btn-dark">Explore Nexis</a>
-    <a href="/blog" class="btn-outline">Read our blog</a>
+    <div>
+      <div class="newsletter-form">
+        <input type="email" class="newsletter-input" placeholder="your@email.com">
+        <button class="newsletter-btn">Subscribe</button>
+      </div>
+      <p style="font-size:12px;color:rgba(255,255,255,.3);margin-top:12px;">We respect your privacy. Unsubscribe any time.</p>
+    </div>
   </div>
 </div>
 
@@ -617,16 +586,16 @@ footer {
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <a href="/" class="nav-logo" style="margin-right:0;">
-          <img src="Swiftaw logomark black.png" alt="Swiftaw">
-          <span>Swiftaw</span>
-        </a>
-        <p>Building the ultimate digital ecosystem. Mastering human connection and machine intelligence.</p>
+        <div class="footer-brand-logo">
+          <img src="Swiftaw logomark black.png" alt="swiftaw">
+          <span>swiftaw</span>
+        </div>
+        <p>Building digital technologies — social platforms and AI — to reshape how the world connects and thinks.</p>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Products</div>
         <a href="https://fortized.com">Fortized</a>
-        <a href="https://nexis.swiftaw.com">Nexis</a>
+        <a href="https://nexis.swiftaw.com/">Nexis</a>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Company</div>
@@ -644,7 +613,7 @@ footer {
       </div>
     </div>
     <div class="footer-bottom">
-      <p class="footer-copy">&copy; 2026 Swiftaw</p>
+      <p class="footer-copy">&copy; 2026 swiftaw</p>
       <div class="footer-socials">
         <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -656,6 +625,16 @@ footer {
     </div>
   </div>
 </footer>
+
+<script>
+// Filter tabs interactivity
+document.querySelectorAll('.filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+</script>
 
 </body>
 </html>
