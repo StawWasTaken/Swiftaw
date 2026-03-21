@@ -4,9 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Swiftaw - Move Beyond the Ordinary</title>
-<meta name="description" content="Swiftaw builds digital technologies — social platforms and AI — to reshape how the world connects and thinks.">
+<meta name="description" content="Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence to reshape how the world communicates, thinks, and solves problems.">
 <meta name="theme-color" content="#0a0a0a">
-<link rel="icon" type="image/png" href="SwiftawLogo.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Swiftaw">
+<meta property="og:title" content="Swiftaw - Move Beyond the Ordinary">
+<meta property="og:description" content="Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence.">
+<meta property="og:image" content="https://swiftaw.com/Swiftaw Banner2.png">
+<meta property="og:url" content="https://swiftaw.com/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Swiftaw - Move Beyond the Ordinary">
+<meta name="twitter:image" content="https://swiftaw.com/Swiftaw Banner2.png">
+<link rel="icon" type="image/png" href="SwiftawFavicon.png">
 <link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <style>
@@ -43,7 +52,9 @@ body {
 img { display: block; -webkit-user-drag: none; user-select: none; }
 a { text-decoration: none; color: inherit; }
 
-/* ═══ NAV ═══ */
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   height: var(--nav-h);
@@ -57,9 +68,11 @@ a { text-decoration: none; color: inherit; }
   max-width: var(--max-w); width: 100%; margin: 0 auto;
   display: flex; align-items: center;
 }
-/* Logo: only the logomark, no text */
-.nav-logo { display: flex; align-items: center; margin-right: 36px; }
-.nav-logo img { height: 28px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; margin-right: 36px; }
+.nav-logo img { height: 26px; }
+.nav-logo span {
+  font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -.3px;
+}
 .nav-links { display: flex; align-items: center; gap: 4px; }
 .nav-link {
   font-size: 14px; font-weight: 500; color: var(--text-light);
@@ -112,6 +125,7 @@ a { text-decoration: none; color: inherit; }
 }
 .nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); transform: translateY(-1px); }
 
+/* Mobile nav toggle */
 .nav-hamburger {
   display: none; cursor: pointer; padding: 8px;
   border-radius: 8px; border: 1px solid var(--border);
@@ -123,7 +137,9 @@ a { text-decoration: none; color: inherit; }
   margin: 4px 0; transition: .2s;
 }
 
-/* ═══ HERO ═══ */
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
 .hero {
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
@@ -155,20 +171,8 @@ a { text-decoration: none; color: inherit; }
   font-size: clamp(2.8rem, 5.5vw, 4.5rem);
   font-weight: 400; line-height: 1.08; letter-spacing: -.02em;
   margin-bottom: 28px;
-  /* gradient text on display font */
-  background: linear-gradient(135deg, var(--brand-deep) 0%, var(--brand-yellow) 60%, var(--brand-orange) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
-/* em inside gradient h1: keep orange */
-.hero h1 em {
-  font-style: italic;
-  background: linear-gradient(135deg, var(--brand-yellow) 0%, var(--brand-orange) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+.hero h1 em { font-style: italic; color: var(--brand-orange); }
 .hero-sub {
   font-size: 17px; color: var(--text-light);
   line-height: 1.72; max-width: 620px;
@@ -201,7 +205,9 @@ a { text-decoration: none; color: inherit; }
 }
 .btn-dark:hover { opacity: .85; transform: translateY(-1px); }
 
-/* ═══ BANNER ═══ */
+/* ═══════════════════════════════════════════
+   BANNER
+═══════════════════════════════════════════ */
 .banner-section { padding: 0 var(--pad) 120px; }
 .banner-img {
   max-width: var(--max-w); margin: 0 auto;
@@ -211,7 +217,9 @@ a { text-decoration: none; color: inherit; }
 }
 .banner-img img { width: 100%; height: auto; }
 
-/* ═══ SECTION COMMONS ═══ */
+/* ═══════════════════════════════════════════
+   SECTION COMMONS
+═══════════════════════════════════════════ */
 .section {
   padding: 100px var(--pad);
   max-width: var(--max-w); margin: 0 auto;
@@ -231,16 +239,20 @@ a { text-decoration: none; color: inherit; }
   max-width: 540px; margin-bottom: 56px;
 }
 
-/* Gradient bar: always #241f3c → #fff93e → #ff9c3c */
+/* ═══════════════════════════════════════════
+   HIGHLIGHT BAR (yellow accent strip)
+═══════════════════════════════════════════ */
 .highlight-bar {
   height: 3px;
-  background: linear-gradient(90deg, var(--brand-deep), var(--brand-yellow), var(--brand-orange));
+  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange));
   border-radius: 2px;
   margin-bottom: 40px;
   max-width: 80px;
 }
 
-/* ═══ FEATURES GRID ═══ */
+/* ═══════════════════════════════════════════
+   FEATURES GRID
+═══════════════════════════════════════════ */
 .features-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 1px; background: var(--border);
@@ -254,14 +266,16 @@ a { text-decoration: none; color: inherit; }
 .feature-card:hover { background: #fafafa; }
 .feature-icon {
   width: 44px; height: 44px; border-radius: 12px;
-  background: linear-gradient(135deg, var(--brand-deep), var(--brand-yellow), var(--brand-orange));
+  background: var(--brand-deep);
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px; font-size: 20px; color: var(--brand-deep);
+  margin-bottom: 20px; font-size: 20px; color: var(--brand-yellow);
 }
 .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
 .feature-card p { font-size: 14px; color: var(--text-light); line-height: 1.65; }
 
-/* ═══ DARK SECTION ═══ */
+/* ═══════════════════════════════════════════
+   DARK SECTION
+═══════════════════════════════════════════ */
 .dark-section {
   background: var(--bg-dark); color: #fff;
   padding: 120px var(--pad);
@@ -275,7 +289,7 @@ a { text-decoration: none; color: inherit; }
 .dark-section .section-heading { color: #fff; }
 .dark-section .section-desc { color: rgba(255,255,255,.5); }
 .dark-section .highlight-bar {
-  background: linear-gradient(90deg, var(--brand-deep), var(--brand-yellow), var(--brand-orange));
+  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange));
 }
 .dark-glow {
   position: absolute; top: -200px; right: -200px;
@@ -299,7 +313,9 @@ a { text-decoration: none; color: inherit; }
 .dark-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
 .dark-card p { font-size: 14px; color: rgba(255,255,255,.5); line-height: 1.65; }
 
-/* ═══ DEPARTMENTS ═══ */
+/* ═══════════════════════════════════════════
+   DEPARTMENTS PREVIEW
+═══════════════════════════════════════════ */
 .dept-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
 }
@@ -313,7 +329,7 @@ a { text-decoration: none; color: inherit; }
 }
 .dept-card-icon {
   width: 48px; height: 48px; border-radius: 14px;
-  background: linear-gradient(135deg, var(--brand-deep), var(--brand-yellow), var(--brand-orange));
+  background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange));
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 20px; font-size: 22px;
 }
@@ -326,7 +342,9 @@ a { text-decoration: none; color: inherit; }
 }
 .dept-card:hover .dept-link { gap: 8px; }
 
-/* ═══ QUOTE ═══ */
+/* ═══════════════════════════════════════════
+   ECOSYSTEM QUOTE
+═══════════════════════════════════════════ */
 .quote-section {
   padding: 100px var(--pad);
   text-align: center;
@@ -342,7 +360,9 @@ a { text-decoration: none; color: inherit; }
 }
 .quote-section blockquote em { font-style: normal; color: var(--brand-orange); }
 
-/* ═══ CTA ═══ */
+/* ═══════════════════════════════════════════
+   CTA
+═══════════════════════════════════════════ */
 .cta-section {
   padding: 120px var(--pad); text-align: center;
 }
@@ -358,12 +378,16 @@ a { text-decoration: none; color: inherit; }
   max-width: 480px; margin-left: auto; margin-right: auto;
 }
 
-/* ═══ FOOTER ═══ */
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
 footer {
   border-top: 1px solid var(--border);
   padding: 48px var(--pad) 40px;
 }
-.footer-inner { max-width: var(--max-w); margin: 0 auto; }
+.footer-inner {
+  max-width: var(--max-w); margin: 0 auto;
+}
 .footer-top {
   display: grid;
   grid-template-columns: 1.5fr repeat(3, 1fr);
@@ -373,14 +397,6 @@ footer {
 .footer-brand p {
   font-size: 13px; color: var(--text-muted);
   line-height: 1.65; max-width: 260px; margin-top: 12px;
-}
-.footer-brand-logo { display: flex; align-items: center; gap: 10px; }
-.footer-brand-logo img { height: 26px; }
-.footer-brand-logo span {
-  font-family: var(--font-display);
-  font-size: 16px; font-weight: 400; letter-spacing: -.01em;
-  background: linear-gradient(135deg, var(--brand-deep), var(--brand-yellow), var(--brand-orange));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .footer-col-title {
   font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
@@ -393,16 +409,22 @@ footer {
 .footer-col a:hover { color: var(--text); }
 .footer-bottom {
   display: flex; align-items: center; justify-content: space-between;
-  padding-top: 24px; border-top: 1px solid var(--border);
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
 }
 .footer-copy { font-size: 12px; color: var(--text-muted); }
-.footer-socials { display: flex; gap: 12px; }
+.footer-socials {
+  display: flex; gap: 12px;
+}
 .footer-socials a {
   color: var(--text-muted); transition: color .15s;
   display: flex; align-items: center;
 }
 .footer-socials a:hover { color: var(--text); }
 
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
 @media (max-width: 900px) {
   .nav-links { display: none; }
   .nav-hamburger { display: flex; flex-direction: column; }
@@ -423,9 +445,9 @@ footer {
 <!-- ═══ NAV ═══ -->
 <nav class="nav">
   <div class="nav-inner">
-    <!-- Logo: logomark only, no text label -->
     <a href="/" class="nav-logo">
-      <img src="Swiftaw logomark black.png" alt="swiftaw">
+      <img src="Swiftaw logomark black.png" alt="Swiftaw">
+      <span>Swiftaw</span>
     </a>
     <div class="nav-links">
       <div class="nav-dropdown-wrap">
@@ -433,11 +455,11 @@ footer {
         <div class="nav-dropdown">
           <a href="https://fortized.com">
             Try Fortized
-            <span class="dd-desc">Social gaming community platform</span>
+            <span class="dd-desc">Gaming community platform</span>
           </a>
-          <a href="https://nexis.swiftaw.com/">
+          <a href="https://nexis.swiftaw.com">
             Try Nexis
-            <span class="dd-desc">AI-powered digital ecosystem</span>
+            <span class="dd-desc">Intelligent digital ecosystem</span>
           </a>
         </div>
       </div>
@@ -472,12 +494,12 @@ footer {
 <section class="hero">
   <div class="hero-orb"></div>
   <div class="hero-content">
-    <div class="hero-eyebrow">swiftaw</div>
+    <div class="hero-eyebrow">Swiftaw</div>
     <h1>Move Beyond<br>the <em>Ordinary.</em></h1>
-    <p class="hero-sub">swiftaw builds digital technologies - from social platforms that connect people to AI systems that reshape how the world thinks and solves problems.</p>
+    <p class="hero-sub">Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence to reshape how the world communicates, thinks, and solves problems.</p>
     <div class="hero-actions">
       <a href="https://fortized.com" class="btn-yellow">Try Fortized</a>
-      <a href="https://nexis.swiftaw.com/" class="btn-dark">Explore Nexis</a>
+      <a href="https://nexis.swiftaw.com" class="btn-dark">Explore Nexis</a>
       <a href="#research" class="btn-outline">Learn More</a>
     </div>
   </div>
@@ -486,7 +508,7 @@ footer {
 <!-- ═══ BANNER ═══ -->
 <div class="banner-section">
   <div class="banner-img">
-    <img src="Swiftaw Theme Banner.png" alt="swiftaw Ecosystem">
+    <img src="Swiftaw Theme Banner.png" alt="Swiftaw Ecosystem">
   </div>
 </div>
 
@@ -494,23 +516,23 @@ footer {
 <div class="section" id="research">
   <div class="section-eyebrow">Research &amp; Innovation</div>
   <div class="highlight-bar"></div>
-  <div class="section-heading">Breakthroughs in social tech<br>and artificial intelligence.</div>
-  <div class="section-desc">We're pioneering the technologies that define how people connect and how machines think — from real-time social platforms to adaptive AI systems.</div>
+  <div class="section-heading">Breakthroughs in chat,<br>intelligence, and connection.</div>
+  <div class="section-desc">We're pioneering the technologies that power human-machine interaction — from real-time chat engines to data intelligence systems that learn and adapt.</div>
   <div class="features-grid">
     <div class="feature-card">
       <div class="feature-icon">&#9889;</div>
-      <h3>Social Technology</h3>
-      <p>Next-generation chat and community systems built for speed, reliability, and scale. Real-time connection that feels instant — powering Fortized and beyond.</p>
+      <h3>Chat Technology</h3>
+      <p>Next-generation messaging systems built for speed, reliability, and scale. Real-time communication that feels instant.</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">&#129504;</div>
-      <h3>Artificial Intelligence</h3>
-      <p>Building the intelligence layer of the digital world. Nexis powers human-machine interaction through AI that understands context, intent, and meaning.</p>
+      <h3>Machine Intelligence</h3>
+      <p>Developing the backbone that powers human-machine interaction. Intelligent systems that understand context and intent.</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">&#127760;</div>
       <h3>Digital Ecosystems</h3>
-      <p>Interconnected apps and services where communities thrive, data flows securely, and experiences feel seamless across every platform we build.</p>
+      <p>Building interconnected platforms where communities thrive, data flows securely, and experiences feel seamless.</p>
     </div>
   </div>
 </div>
@@ -521,16 +543,16 @@ footer {
   <div class="section-inner">
     <div class="section-eyebrow">Our Products</div>
     <div class="highlight-bar"></div>
-    <div class="section-heading">Social. AI. Built<br>by swiftaw.</div>
-    <div class="section-desc">Two pillars. One ecosystem. swiftaw's products cover the full spectrum of digital life — the way you connect, and the way you think.</div>
+    <div class="section-heading">Platforms that amplify<br>human connection.</div>
+    <div class="section-desc">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence — moving beyond the limitations of today's technology.</div>
     <div class="dark-grid">
       <div class="dark-card">
-        <h3>Fortized — Social</h3>
+        <h3>Fortized</h3>
         <p>A modern community platform built for gamers. Organize your ranks with Bastions, rally your allies, and conquer together. Free to join, no credit card needed.</p>
       </div>
       <div class="dark-card">
-        <h3>Nexis — AI</h3>
-        <p>The AI-powered digital ecosystem. Nexis connects people, data, and intelligence into a unified platform that learns and evolves with every interaction.</p>
+        <h3>Nexis</h3>
+        <p>The intelligent digital ecosystem. Nexis connects people, data, and experiences into a unified platform that learns and evolves with you.</p>
       </div>
       <div class="dark-card">
         <h3>Earned, Not Bought</h3>
@@ -538,7 +560,7 @@ footer {
       </div>
       <div class="dark-card">
         <h3>Iron Security</h3>
-        <p>Every product ships with safety as a first-class feature. AutoMod, raid protection, end-to-end encryption, and the swiftaw Safety Department.</p>
+        <p>Every product ships with safety as a first-class feature. AutoMod, raid protection, end-to-end encryption, and the Swiftaw Safety Department.</p>
       </div>
     </div>
   </div>
@@ -546,27 +568,27 @@ footer {
 
 <!-- ═══ DEPARTMENTS ═══ -->
 <div class="section" id="departments">
-  <div class="section-eyebrow">swiftaw Departments</div>
+  <div class="section-eyebrow">Swiftaw Departments</div>
   <div class="highlight-bar"></div>
   <div class="section-heading">The teams building<br>the future.</div>
-  <div class="section-desc">Each department drives a critical piece of the swiftaw ecosystem — from research to safety to how we communicate with the world.</div>
+  <div class="section-desc">Each department drives a critical piece of the Swiftaw ecosystem — from research to safety to how we communicate with the world.</div>
   <div class="dept-grid">
     <a href="/departments/rd" class="dept-card">
       <div class="dept-card-icon">&#128300;</div>
       <h3>R&amp;D</h3>
-      <p>Social platforms, AI engines, and intelligent systems. The engineering core of swiftaw — building Fortized and Nexis from the ground up.</p>
+      <p>Innovative digital platforms, chat engines, and intelligent systems. The engineering heart of Swiftaw.</p>
       <span class="dept-link">Learn more &rarr;</span>
     </a>
     <a href="/departments/safety" class="dept-card">
       <div class="dept-card-icon">&#128737;</div>
       <h3>Safety</h3>
-      <p>Protecting communities with advanced moderation, encryption, and responsible technology practices across all swiftaw products.</p>
+      <p>Protecting communities with advanced moderation, encryption, and responsible technology practices.</p>
       <span class="dept-link">Learn more &rarr;</span>
     </a>
     <a href="/departments/communication" class="dept-card">
       <div class="dept-card-icon">&#128172;</div>
       <h3>Communication</h3>
-      <p>Improving connectivity, user engagement, and the digital experience across every touchpoint — social or AI.</p>
+      <p>Improving connectivity, user engagement, and the digital experience across every touchpoint.</p>
       <span class="dept-link">Learn more &rarr;</span>
     </a>
   </div>
@@ -575,17 +597,17 @@ footer {
 <!-- ═══ QUOTE ═══ -->
 <div class="quote-section">
   <blockquote>
-    &ldquo;swiftaw builds the technologies that <em>connect people</em> and <em>amplify intelligence</em> — moving beyond the limits of today's digital world.&rdquo;
+    &ldquo;Swiftaw powers a digital ecosystem that <em>amplifies human connection</em> and intelligence — moving beyond the limitations of today's technology.&rdquo;
   </blockquote>
 </div>
 
 <!-- ═══ CTA ═══ -->
 <div class="cta-section">
-  <h2>The future of social<br>and AI starts <em>here.</em></h2>
-  <p>Join the ecosystem. Build community with Fortized. Unlock intelligence with Nexis.</p>
+  <h2>The future of community<br>starts <em>here.</em></h2>
+  <p>Join the ecosystem. Build with Fortized. Explore with Nexis. Shape the future with Swiftaw.</p>
   <div class="hero-actions">
     <a href="https://fortized.com/signup" class="btn-yellow">Try Fortized</a>
-    <a href="https://nexis.swiftaw.com/" class="btn-dark">Explore Nexis</a>
+    <a href="https://nexis.swiftaw.com" class="btn-dark">Explore Nexis</a>
     <a href="/blog" class="btn-outline">Read our blog</a>
   </div>
 </div>
@@ -595,16 +617,16 @@ footer {
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="footer-brand-logo">
-          <img src="Swiftaw logomark black.png" alt="swiftaw">
-          <span>swiftaw</span>
-        </div>
-        <p>Building digital technologies — social platforms and AI — to reshape how the world connects and thinks.</p>
+        <a href="/" class="nav-logo" style="margin-right:0;">
+          <img src="Swiftaw logomark black.png" alt="Swiftaw">
+          <span>Swiftaw</span>
+        </a>
+        <p>Building the ultimate digital ecosystem. Mastering human connection and machine intelligence.</p>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Products</div>
         <a href="https://fortized.com">Fortized</a>
-        <a href="https://nexis.swiftaw.com/">Nexis</a>
+        <a href="https://nexis.swiftaw.com">Nexis</a>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Company</div>
@@ -622,7 +644,7 @@ footer {
       </div>
     </div>
     <div class="footer-bottom">
-      <p class="footer-copy">&copy; 2026 swiftaw</p>
+      <p class="footer-copy">&copy; 2026 Swiftaw</p>
       <div class="footer-socials">
         <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
