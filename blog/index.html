@@ -1,754 +1,640 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Blog - Swiftaw</title>
-<meta name="description" content="Latest news, updates, and announcements from Swiftaw and Fortized."/>
-<meta name="theme-color" content="#0a0a0a"/>
-<meta property="og:type" content="website"/>
-<meta property="og:site_name" content="Swiftaw"/>
-<meta property="og:title" content="Swiftaw Blog"/>
-<meta property="og:description" content="Latest news, updates, and announcements from Swiftaw and Fortized."/>
-<meta property="og:image" content="https://swiftaw.com/Swiftaw Banner2.png"/>
-<meta property="og:url" content="https://swiftaw.com/blog"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="Swiftaw Blog"/>
-<meta name="twitter:description" content="Latest news, updates, and announcements from Swiftaw and Fortized."/>
-<meta name="twitter:image" content="https://swiftaw.com/Swiftaw Banner2.png"/>
-<link rel="icon" type="image/png" href="/SwiftawFavicon.png"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — swiftaw</title>
+<meta name="description" content="Thoughts on social technology, AI, and the digital future from the swiftaw team.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" type="image/png" href="SwiftawLogo.png">
 <link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <style>
-::selection{background:rgba(255,249,62,.25);}
-:root{
-  --brand-deep:#241f3c;--brand-yellow:#fff93e;--brand-orange:#ff9c3c;
-  --acc:#fff93e;--acc-dim:rgba(255,249,62,.08);--acc-b:rgba(255,249,62,.18);--acc-g:rgba(255,249,62,.3);
-  --bg:#080a0f;--panel:#0c0f1a;--panel-r:#0f1220;--bd:rgba(255,255,255,.06);--bd2:#1a2030;
-  --mu:#4a5568;--mu-l:#8b95a8;--tx:#c8d0dc;--nav-h:64px;
-  --ease:cubic-bezier(.22,1,.36,1);
-  --font-display:'Afronaut Test','Syne',sans-serif;
+::selection { background: rgba(255,249,62,.25); }
+
+:root {
+  --brand-deep: #241f3c;
+  --brand-yellow: #fff93e;
+  --brand-orange: #ff9c3c;
+  --bg: #ffffff;
+  --bg-dark: #0a0a0a;
+  --text: #0a0a0a;
+  --text-light: #555;
+  --text-muted: #888;
+  --border: #e5e5e5;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-display: 'Afronaut Test', 'Newsreader', sans-serif;
+  --nav-h: 64px;
+  --max-w: 1200px;
+  --pad: clamp(1.5rem, 4vw, 5rem);
 }
-*{margin:0;padding:0;box-sizing:border-box}
-img{-webkit-user-drag:none;user-select:none;-khtml-user-drag:none;-moz-user-drag:none;-o-user-drag:none;}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-a{text-decoration:none;color:inherit}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#1e2535;border-radius:10px}
 
-/* ── Nav (Clipode-unified) ── */
-.nav{position:sticky;top:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;padding:0 40px;background:rgba(8,10,15,.96);backdrop-filter:blur(28px) saturate(200%);border-bottom:1px solid rgba(255,255,255,.05)}
-.nav-logo{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-right:32px}
-.nav-logo img{height:28px;width:28px;object-fit:contain}
-.nav-logo-word{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:#fff;letter-spacing:-.5px}
-.nav-pill-group{display:flex;align-items:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:4px;gap:1px}
-.nav-pill{font-size:13.5px;font-weight:500;color:var(--mu-l);padding:7px 14px;border-radius:9px;transition:color .15s,background .15s}
-.nav-pill:hover{color:#fff;background:rgba(255,255,255,.06)}
-.nav-pill.active{color:var(--acc);background:var(--acc-dim)}
-.nav-sp{flex:1}
-.nav-btn{font-family:'Syne',sans-serif;font-size:13.5px;font-weight:700;color:#101010;background:var(--acc);padding:9px 20px;border-radius:10px;transition:.15s}
-.nav-btn:hover{background:#ffe55c;box-shadow:0 0 20px var(--acc-g)}
-
-/* ── Hero (Clipode-unified) ── */
-.hero{padding:80px 72px 72px;position:relative;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.05)}
-.hero::before{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgba(8,10,15,1) 40%,rgba(8,10,15,.84) 100%);z-index:1}
-.hero-banner{position:absolute;inset:0;z-index:0}
-.hero-banner img{width:100%;height:100%;object-fit:cover;opacity:.12}
-.grid-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;background-image:linear-gradient(rgba(255,249,62,.009) 1px,transparent 1px),linear-gradient(90deg,rgba(255,249,62,.009) 1px,transparent 1px);background-size:64px 64px}
-.hero-glow{position:absolute;top:-120px;right:-80px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,249,62,.04) 0%,transparent 70%);animation:drift 11s ease-in-out infinite alternate;z-index:1;pointer-events:none}
-@keyframes drift{0%{transform:translate(0,0)}100%{transform:translate(-60px,40px)}}
-.hero-inner{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:40px}
-.hero-left{max-width:560px}
-.hero-breadcrumb{font-size:12px;color:var(--mu);margin-bottom:16px}
-.hero-breadcrumb a{color:var(--mu-l);transition:.15s}.hero-breadcrumb a:hover{color:#fff}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);background:rgba(255,249,62,.06);border:1px solid rgba(255,249,62,.16);border-radius:100px;padding:5px 14px;margin-bottom:22px}
-.hero-eyebrow::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--acc)}
-.hero h1{font-family:var(--font-display);font-size:58px;font-weight:400;letter-spacing:-2.5px;line-height:.96;margin-bottom:18px;color:#fff}
-.hero h1 em{font-style:normal;color:var(--acc)}
-.hero-sub{font-size:15px;color:var(--mu-l);line-height:1.65;max-width:520px}
-.hero-stats{display:flex;align-items:center;gap:22px;background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:24px 28px}
-.hero-stat{text-align:center}
-.hero-stat-num{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:#fff;margin-bottom:2px}
-.hero-stat-label{font-size:11px;color:var(--mu-l);letter-spacing:.06em}
-.hero-stat-divider{width:1px;height:32px;background:var(--bd)}
-
-/* ── Blog Content Area ── */
-.blog-wrap{max-width:1100px;margin:0 auto;padding:48px 72px 80px}
-
-/* ── Search ── */
-.blog-search-wrap{position:relative;max-width:480px}
-.blog-search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--mu);pointer-events:none}
-.blog-search-input{width:100%;background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:13px 18px 13px 44px;font-size:14px;color:var(--tx);outline:none;transition:border-color .18s,box-shadow .18s}
-.blog-search-input:focus{border-color:rgba(255,249,62,.3);box-shadow:0 0 0 3px rgba(255,249,62,.06)}
-.blog-search-input::placeholder{color:var(--mu)}
-
-/* ── Pinned Card ── */
-.pinned-card{display:grid;grid-template-columns:1fr 1fr;background:var(--panel);border:1px solid var(--bd);border-radius:18px;overflow:hidden;cursor:pointer;transition:border-color .2s,box-shadow .2s;margin-bottom:32px}
-.pinned-card:hover{border-color:rgba(255,249,62,.14);box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.pinned-card-img{min-height:240px;background:linear-gradient(145deg,rgba(255,249,62,.1) 0%,rgba(255,249,62,.02) 40%,transparent 70%),linear-gradient(to bottom,rgba(8,10,15,.1),rgba(8,10,15,.6)),url('/Fortized banner.png') center/cover}
-.pinned-card-body{padding:28px;display:flex;flex-direction:column;gap:10px}
-.pinned-badge{font-size:11px;font-weight:700;color:var(--acc);background:var(--acc-dim);border:1px solid var(--acc-b);border-radius:6px;padding:3px 10px;width:fit-content}
-.pinned-card-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1.2}
-.pinned-card-excerpt{font-size:13.5px;color:var(--mu-l);line-height:1.6;flex:1}
-
-/* ── Card Shared ── */
-.card-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.card-tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-radius:5px;padding:3px 8px}
-.tag-rd{color:var(--acc);background:var(--acc-dim);border:1px solid var(--acc-b)}
-.tag-announce{color:#60a5fa;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.18)}
-.tag-launch{color:#4ade80;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.18)}
-.tag-safety{color:#f87171;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.18)}
-.card-date{font-size:12px;color:var(--mu)}
-.card-readtime{font-size:11px;color:var(--mu)}
-.author-chip{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mu-l);font-weight:500}
-.author-chip-av{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,rgba(255,249,62,.25),rgba(255,249,62,.06));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--acc)}
-.read-link{font-size:12px;font-weight:600;color:var(--acc);transition:.15s}
-
-/* ── Featured Layout ── */
-.featured-row{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:24px}
-.hero-card{background:var(--panel);border:1px solid var(--bd);border-radius:16px;overflow:hidden;cursor:pointer;transition:border-color .2s,box-shadow .2s}
-.hero-card:hover{border-color:rgba(255,249,62,.14);box-shadow:0 16px 48px rgba(0,0,0,.4)}
-.hero-card-img{height:200px;background:linear-gradient(145deg,rgba(255,249,62,.08) 0%,transparent 55%),linear-gradient(to bottom,rgba(8,10,15,.1),rgba(8,10,15,.7)),url('/Fortized banner.png') center/cover;position:relative;padding:14px}
-.hero-card-body{padding:20px;display:flex;flex-direction:column;gap:8px}
-.hero-card-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;color:#fff;letter-spacing:-.4px;line-height:1.2}
-.hero-card-excerpt{font-size:13px;color:var(--mu-l);line-height:1.6;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.hero-card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
-
-.side-stack{display:flex;flex-direction:column;gap:16px}
-.side-card{background:var(--panel);border:1px solid var(--bd);border-radius:16px;overflow:hidden;cursor:pointer;transition:border-color .2s,box-shadow .2s;flex:1;display:flex;flex-direction:column}
-.side-card:hover{border-color:rgba(255,249,62,.14);box-shadow:0 12px 40px rgba(0,0,0,.3)}
-.side-card-img{height:100px;background:linear-gradient(145deg,rgba(255,249,62,.06) 0%,transparent 55%),linear-gradient(to bottom,rgba(8,10,15,.1),rgba(8,10,15,.75)),url('/Fortized banner.png') center/cover}
-.side-card-body{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
-.side-card-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px}
-.side-card-excerpt{font-size:12px;color:var(--mu-l);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-
-/* ── Section Divider ── */
-.section-divider{display:flex;align-items:center;gap:14px;margin:36px 0 20px}
-.section-divider:first-of-type{margin-top:0}
-.section-divider-label{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);white-space:nowrap}
-.section-divider-line{flex:1;height:1px;background:var(--bd)}
-
-/* ── Regular Cards ── */
-.secondary-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.reg-card{background:var(--panel);border:1px solid var(--bd);border-radius:16px;overflow:hidden;cursor:pointer;transition:border-color .2s,box-shadow .2s;display:flex;flex-direction:column}
-.reg-card:hover{border-color:rgba(255,249,62,.14);box-shadow:0 12px 40px rgba(0,0,0,.3)}
-.reg-card-img{height:110px;background:linear-gradient(145deg,rgba(255,249,62,.06) 0%,transparent 55%),linear-gradient(to bottom,rgba(8,10,15,.1),rgba(8,10,15,.78)),url('/Fortized banner.png') center/cover}
-.reg-card-body{padding:16px;display:flex;flex-direction:column;gap:6px;flex:1}
-.reg-card-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px}
-.reg-card-excerpt{font-size:12px;color:var(--mu-l);line-height:1.5;flex:1;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-
-.post-grid.search-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.blog-no-results{display:none;text-align:center;padding:60px 20px;font-size:15px;color:var(--mu-l)}
-.blog-no-results span{font-size:32px;display:block;margin-bottom:12px}
-
-/* ── Article View ── */
-#article-view{display:none;max-width:780px;margin:0 auto;padding:48px 72px 80px}
-#article-view.open{display:block}
-#blog-list-view.hidden{display:none}
-.article-back{font-size:13px;font-weight:600;color:var(--mu-l);cursor:pointer;margin-bottom:28px;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:1px solid var(--bd);background:rgba(255,255,255,.02);transition:.15s}
-.article-back:hover{color:#fff;border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.05)}
-.article-full-banner{width:100%;min-height:260px;border-radius:18px;overflow:hidden;margin-bottom:28px;background:linear-gradient(145deg,rgba(255,249,62,.12) 0%,transparent 45%),linear-gradient(to bottom,rgba(8,10,15,.08),rgba(8,10,15,.7)),var(--panel) center/cover;display:flex;align-items:flex-end;padding:28px}
-.banner-content{position:relative;z-index:1}
-.article-full-title{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:10px}
-.article-full-meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.article-byline{display:flex;align-items:center;gap:14px;padding:16px 20px;background:rgba(255,255,255,.02);border:1px solid var(--bd);border-radius:14px;margin-bottom:40px}
-.byline-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,rgba(255,249,62,.25),rgba(255,249,62,.06));border:2px solid rgba(255,249,62,.28);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--acc);flex-shrink:0}
-.byline-info .byline-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
-.byline-info .byline-role{font-size:12px;color:var(--mu-l)}
-.byline-org{margin-left:auto;font-size:11.5px;color:var(--mu)}
-
-/* ── Article Prose ── */
-.article-prose{font-family:'Lora',serif}
-.article-prose .lead{font-size:17.5px;color:#c8d0dc;line-height:1.8;margin-bottom:34px;padding-bottom:30px;border-bottom:1px solid var(--bd);font-style:italic}
-.article-prose p{font-size:15.5px;color:var(--mu-l);line-height:1.9;margin-bottom:20px}
-.article-prose h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px;color:#fff;margin:40px 0 14px;display:flex;align-items:center;gap:10px}
-.article-prose h2::before{content:"";width:4px;height:20px;background:var(--acc);border-radius:2px;flex-shrink:0}
-.article-prose ul{list-style:none;margin:14px 0 26px;display:flex;flex-direction:column;gap:9px}
-.article-prose ul li{display:flex;align-items:flex-start;gap:12px;font-size:15px;color:var(--mu-l);line-height:1.65;font-family:'DM Sans',sans-serif;padding:13px 16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:11px;transition:border-color .15s,background .15s}
-.article-prose ul li:hover{border-color:rgba(255,249,62,.12);background:rgba(255,249,62,.03)}
-.article-prose ul li::before{content:"✦";color:var(--acc);font-size:9px;flex-shrink:0;margin-top:5px}
-.article-prose ul li strong{color:#fff;font-weight:600}
-.article-prose .highlight-box{background:rgba(255,249,62,.04);border:1px solid rgba(255,249,62,.12);border-left:3px solid var(--acc);border-radius:13px;padding:18px 22px;margin:26px 0;font-size:14.5px;color:#c8d0dc;line-height:1.72;font-family:'DM Sans',sans-serif}
-.article-prose .highlight-box strong{color:var(--acc)}
-.article-prose .quote-block{position:relative;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-left:3px solid rgba(255,249,62,.35);border-radius:13px;padding:20px 24px 20px 30px;margin:26px 0;font-size:16px;font-style:italic;color:#c8d0dc;line-height:1.72}
-.article-prose .quote-block::before{content:"\201C";position:absolute;top:6px;left:12px;font-size:38px;color:rgba(255,249,62,.2);font-family:'Lora',serif;line-height:1}
-.radiance-badge-inline{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(90deg,rgba(255,200,62,.12),rgba(255,249,62,.1));border:1px solid rgba(255,220,62,.22);border-radius:100px;padding:2px 10px;font-size:13px;font-weight:700;color:#ffd93e;vertical-align:middle;font-family:'DM Sans',sans-serif}
-.article-prose .perks-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:18px 0 26px}
-.perk-card{background:var(--panel);border:1px solid var(--bd);border-radius:13px;padding:16px;display:flex;gap:11px;align-items:flex-start;transition:border-color .15s,background .15s}
-.perk-card:hover{border-color:rgba(255,249,62,.14);background:rgba(255,249,62,.03)}
-.perk-icon{font-size:20px;flex-shrink:0}
-.perk-body .perk-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff;margin-bottom:3px}
-.perk-body .perk-desc{font-size:12px;color:var(--mu-l);line-height:1.5;font-family:'DM Sans',sans-serif}
-.article-prose .sign-off{color:var(--mu);font-size:13.5px;font-style:italic;border-top:1px solid var(--bd);padding-top:22px;margin-top:8px;font-family:'DM Sans',sans-serif}
-
-/* ── Animations ── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.fade-up{animation:fadeUp .5s var(--ease) both}
-.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}.d4{animation-delay:.24s}.d5{animation-delay:.30s}
-
-/* ── Footer (Clipode-unified) ── */
-footer{border-top:1px solid rgba(255,255,255,.05);padding:32px 72px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px}
-.footer-left{display:flex;align-items:center;gap:16px}
-.footer-logo{display:flex;align-items:center;gap:9px}
-.footer-logo img{height:20px;width:20px;object-fit:contain;opacity:.6}
-.footer-logo span{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#fff}
-.footer-socials{display:flex;gap:8px}
-.footer-socials a{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;color:var(--mu);transition:.15s}
-.footer-socials a:hover{color:#fff;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
-.footer-center{text-align:center}
-.copy{font-size:12px;color:#2d3548}
-.footer-links{display:flex;gap:18px;justify-content:flex-end}
-.footer-links a{font-size:12px;color:#374151;transition:.15s}
-.footer-links a:hover{color:var(--mu-l)}
-
-/* ── Responsive ── */
-@media(max-width:1024px){
-  .featured-row{grid-template-columns:1fr}
-  .side-stack{flex-direction:row}
-  .secondary-row{grid-template-columns:1fr 1fr}
-  .post-grid.search-grid{grid-template-columns:1fr 1fr}
-  .pinned-card{grid-template-columns:1fr}
-  .pinned-card-img{min-height:200px}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
-@media(max-width:900px){
-  .nav-pill-group{display:none}
+img { display: block; -webkit-user-drag: none; user-select: none; }
+a { text-decoration: none; color: inherit; }
+
+/* ═══ NAV (shared) ═══ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--nav-h);
+  display: flex; align-items: center;
+  padding: 0 var(--pad);
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
 }
-@media(max-width:768px){
-  .nav{padding:0 20px}
-  .hero{padding:56px 24px 44px}.hero h1{font-size:40px}
-  .hero-stats{display:none}
-  .blog-wrap{padding:40px 24px 80px}
-  .featured-row,.secondary-row,.post-grid.search-grid{grid-template-columns:1fr}
-  .side-stack{flex-direction:column}
-  .pinned-card{grid-template-columns:1fr}
-  footer{padding:24px;grid-template-columns:1fr;text-align:center;gap:14px}
-  .footer-left{justify-content:center;flex-wrap:wrap}
-  .footer-links{justify-content:center;flex-wrap:wrap}
-  #article-view{padding:36px 24px 80px}
+.nav-inner {
+  max-width: var(--max-w); width: 100%; margin: 0 auto;
+  display: flex; align-items: center;
 }
-img.emoji{height:1.15em;width:1.15em;margin:0 .05em;vertical-align:-0.15em}
+.nav-logo { display: flex; align-items: center; margin-right: 36px; }
+.nav-logo img { height: 28px; }
+.nav-links { display: flex; align-items: center; gap: 4px; }
+.nav-link {
+  font-size: 14px; font-weight: 500; color: var(--text-light);
+  padding: 8px 14px; border-radius: 8px;
+  transition: color .15s, background .15s;
+}
+.nav-link:hover { color: var(--text); background: rgba(0,0,0,.03); }
+.nav-link.active { color: var(--text); background: rgba(0,0,0,.05); }
+.nav-link.has-dropdown { cursor: default; }
+.nav-link .caret { display: inline-block; margin-left: 3px; font-size: 10px; opacity: .5; transition: transform .2s; }
+.nav-dropdown-wrap { position: relative; }
+.nav-dropdown-wrap:hover .nav-link .caret { transform: rotate(180deg); }
+.nav-dropdown {
+  position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  min-width: 200px; background: #fff;
+  border: 1px solid var(--border); border-radius: 12px; padding: 6px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.08);
+  opacity: 0; visibility: hidden;
+  transition: opacity .18s, visibility .18s, transform .18s;
+  transform: translateX(-50%) translateY(4px); z-index: 300;
+}
+.nav-dropdown-wrap:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+.nav-dropdown a {
+  display: block; padding: 10px 14px; border-radius: 8px;
+  font-size: 14px; font-weight: 500; color: var(--text-light);
+  transition: background .12s, color .12s;
+}
+.nav-dropdown a:hover { background: rgba(0,0,0,.03); color: var(--text); }
+.nav-dropdown a .dd-desc { display: block; font-size: 12px; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
+.nav-spacer { flex: 1; }
+.nav-cta {
+  font-size: 13px; font-weight: 600; color: var(--brand-deep);
+  background: var(--brand-yellow); padding: 8px 20px; border-radius: 100px;
+  transition: box-shadow .2s, transform .15s;
+}
+.nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); transform: translateY(-1px); }
+.nav-hamburger { display: none; cursor: pointer; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: transparent; }
+.nav-hamburger span { display: block; width: 18px; height: 1.5px; background: var(--text); border-radius: 2px; margin: 4px 0; }
+
+/* ═══ BLOG HERO ═══ */
+.blog-hero {
+  padding: calc(var(--nav-h) + 80px) var(--pad) 80px;
+  max-width: var(--max-w); margin: 0 auto;
+  position: relative;
+}
+.blog-hero-orb {
+  position: absolute; top: 0; right: -10%;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,249,62,.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.blog-eyebrow {
+  font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--brand-orange); margin-bottom: 14px;
+}
+.highlight-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-deep), var(--brand-yellow), var(--brand-orange));
+  border-radius: 2px; margin-bottom: 32px; max-width: 80px;
+}
+.blog-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  font-weight: 400; line-height: 1.1; letter-spacing: -.02em;
+  margin-bottom: 16px;
+}
+.blog-hero p {
+  font-size: 17px; color: var(--text-light); line-height: 1.72; max-width: 520px;
+}
+
+/* ═══ BLOG FILTER TABS ═══ */
+.blog-filters {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--pad) 40px;
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.filter-tab {
+  font-size: 13px; font-weight: 600;
+  padding: 8px 18px; border-radius: 100px;
+  border: 1.5px solid var(--border);
+  color: var(--text-light); background: transparent;
+  cursor: pointer; transition: all .15s;
+}
+.filter-tab:hover { border-color: var(--brand-yellow); color: var(--text); }
+.filter-tab.active {
+  background: var(--brand-deep); color: var(--brand-yellow);
+  border-color: var(--brand-deep);
+}
+
+/* ═══ FEATURED POST ═══ */
+.blog-featured {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--pad) 64px;
+}
+.featured-post {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 0; border: 1px solid var(--border); border-radius: 20px;
+  overflow: hidden; transition: box-shadow .2s;
+}
+.featured-post:hover { box-shadow: 0 20px 60px rgba(0,0,0,.06); }
+.featured-post-image {
+  background: linear-gradient(135deg, var(--brand-deep) 0%, #1a1530 50%, #0d0b1a 100%);
+  min-height: 360px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.featured-post-image .image-glow {
+  position: absolute; width: 300px; height: 300px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,249,62,.15) 0%, rgba(255,156,60,.08) 40%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+.featured-post-image .image-label {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem); color: rgba(255,255,255,.08);
+  letter-spacing: -.02em; position: relative; z-index: 1;
+  text-align: center; padding: 40px;
+}
+.featured-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  position: absolute; top: 24px; left: 24px; z-index: 2;
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  background: var(--brand-yellow); color: var(--brand-deep);
+  padding: 5px 12px; border-radius: 100px;
+}
+.featured-post-body { padding: 48px; display: flex; flex-direction: column; justify-content: center; }
+.post-category {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--brand-orange); margin-bottom: 16px;
+}
+.featured-post-body h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 400; line-height: 1.2; letter-spacing: -.01em;
+  margin-bottom: 16px;
+}
+.featured-post-body p {
+  font-size: 15px; color: var(--text-light); line-height: 1.72; margin-bottom: 32px;
+}
+.post-meta {
+  display: flex; align-items: center; gap: 16px;
+  font-size: 13px; color: var(--text-muted);
+}
+.post-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); }
+.post-author {
+  display: flex; align-items: center; gap: 8px;
+}
+.post-author-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand-deep), var(--brand-yellow), var(--brand-orange));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--brand-deep);
+}
+.read-more {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: var(--brand-orange);
+  margin-top: 24px; transition: gap .15s;
+}
+.featured-post:hover .read-more { gap: 10px; }
+
+/* ═══ POSTS GRID ═══ */
+.blog-grid-section {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--pad) 100px;
+}
+.blog-grid-heading {
+  font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 28px;
+  padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+.posts-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  margin-bottom: 60px;
+}
+.post-card {
+  border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden; transition: box-shadow .2s, border-color .2s;
+  display: flex; flex-direction: column;
+}
+.post-card:hover {
+  box-shadow: 0 12px 40px rgba(0,0,0,.06);
+  border-color: rgba(255,249,62,.3);
+}
+.post-card-image {
+  height: 180px;
+  background: linear-gradient(135deg, var(--brand-deep) 0%, #1a1530 100%);
+  position: relative; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.post-card-image.ai-theme {
+  background: linear-gradient(135deg, #0d0b1a 0%, #241f3c 100%);
+}
+.post-card-image.social-theme {
+  background: linear-gradient(135deg, #1a0a00 0%, #3d1f00 100%);
+}
+.post-card-image.product-theme {
+  background: linear-gradient(135deg, #0a1a0a 0%, #0d3d0d 100%);
+}
+.post-card-image-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 60% 40%, rgba(255,249,62,.12) 0%, transparent 60%);
+}
+.post-card-image-label {
+  font-family: var(--font-display);
+  font-size: 2.2rem; color: rgba(255,255,255,.07);
+  position: relative; z-index: 1;
+}
+.post-card-cat {
+  position: absolute; top: 14px; left: 14px; z-index: 2;
+  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  background: rgba(255,255,255,.12); color: rgba(255,255,255,.7);
+  backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 100px;
+  border: 1px solid rgba(255,255,255,.1);
+}
+.post-card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+.post-card-body h3 {
+  font-size: 15px; font-weight: 600; line-height: 1.4;
+  margin-bottom: 10px; letter-spacing: -.01em;
+}
+.post-card-body p {
+  font-size: 13px; color: var(--text-light); line-height: 1.65; flex: 1; margin-bottom: 20px;
+}
+.post-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 16px; border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--text-muted);
+}
+.post-card-footer .read-link {
+  font-size: 12px; font-weight: 600; color: var(--brand-orange);
+  transition: gap .15s; display: flex; align-items: center; gap: 4px;
+}
+.post-card:hover .read-link { gap: 8px; }
+
+/* ═══ NEWSLETTER ═══ */
+.blog-newsletter {
+  background: var(--bg-dark); color: #fff;
+  padding: 80px var(--pad);
+  position: relative; overflow: hidden;
+}
+.blog-newsletter .inner {
+  max-width: var(--max-w); margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px;
+  align-items: center; position: relative; z-index: 2;
+}
+.newsletter-glow {
+  position: absolute; top: -100px; right: -100px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,249,62,.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.blog-newsletter .section-eyebrow { color: var(--brand-yellow); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+.blog-newsletter h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+  font-weight: 400; line-height: 1.15; color: #fff; margin-bottom: 12px;
+}
+.blog-newsletter p { font-size: 15px; color: rgba(255,255,255,.5); line-height: 1.7; }
+.newsletter-form { display: flex; gap: 10px; }
+.newsletter-input {
+  flex: 1; font-size: 14px; font-family: var(--font-sans);
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+  color: #fff; padding: 14px 20px; border-radius: 100px;
+  outline: none; transition: border-color .15s;
+}
+.newsletter-input::placeholder { color: rgba(255,255,255,.3); }
+.newsletter-input:focus { border-color: rgba(255,249,62,.4); }
+.newsletter-btn {
+  font-size: 14px; font-weight: 600;
+  color: var(--brand-deep); background: var(--brand-yellow);
+  padding: 14px 28px; border-radius: 100px; border: none; cursor: pointer;
+  white-space: nowrap; transition: box-shadow .2s, transform .15s;
+}
+.newsletter-btn:hover { box-shadow: 0 0 24px rgba(255,249,62,.3); transform: translateY(-1px); }
+
+/* ═══ FOOTER ═══ */
+footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
+.footer-inner { max-width: var(--max-w); margin: 0 auto; }
+.footer-top { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 40px; margin-bottom: 40px; }
+.footer-brand p { font-size: 13px; color: var(--text-muted); line-height: 1.65; max-width: 260px; margin-top: 12px; }
+.footer-brand-logo { display: flex; align-items: center; gap: 10px; }
+.footer-brand-logo img { height: 26px; }
+.footer-brand-logo span {
+  font-family: var(--font-display); font-size: 16px; font-weight: 400; letter-spacing: -.01em;
+  background: linear-gradient(135deg, var(--brand-deep), var(--brand-yellow), var(--brand-orange));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.footer-col-title { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
+.footer-col a { display: block; font-size: 13px; color: var(--text-light); padding: 4px 0; transition: color .15s; }
+.footer-col a:hover { color: var(--text); }
+.footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 1px solid var(--border); }
+.footer-copy { font-size: 12px; color: var(--text-muted); }
+.footer-socials { display: flex; gap: 12px; }
+.footer-socials a { color: var(--text-muted); transition: color .15s; display: flex; align-items: center; }
+.footer-socials a:hover { color: var(--text); }
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .nav-hamburger { display: flex; flex-direction: column; }
+  .featured-post { grid-template-columns: 1fr; }
+  .featured-post-image { min-height: 220px; }
+  .posts-grid { grid-template-columns: 1fr 1fr; }
+  .blog-newsletter .inner { grid-template-columns: 1fr; gap: 32px; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .posts-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  .newsletter-form { flex-direction: column; }
+}
 </style>
-<script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
+<!-- ═══ NAV ═══ -->
 <nav class="nav">
-  <a href="/" class="nav-logo">
-    <img src="/Swiftaw logomark black.png" alt="Swiftaw" style="filter:brightness(0) invert(1);"/>
-    <span class="nav-logo-word">Swiftaw</span>
-  </a>
-  <div class="nav-pill-group">
-    <a href="/" class="nav-pill">Home</a>
-    <a href="/blog" class="nav-pill active">Blog</a>
-    <a href="/research" class="nav-pill">Research</a>
-    <a href="https://fortized.com" class="nav-pill">Fortized</a>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img src="Swiftaw logomark black.png" alt="swiftaw">
+    </a>
+    <div class="nav-links">
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="https://fortized.com">Try Fortized<span class="dd-desc">Social gaming community platform</span></a>
+          <a href="https://nexis.swiftaw.com/">Try Nexis<span class="dd-desc">AI-powered digital ecosystem</span></a>
+        </div>
+      </div>
+      <a href="/research" class="nav-link">Research</a>
+      <a href="/blog" class="nav-link active">Blog</a>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/departments/rd">R&amp;D</a>
+          <a href="/departments/safety">Safety</a>
+          <a href="/departments/communication">Communication</a>
+        </div>
+      </div>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Company <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/company/about">About</a>
+          <a href="/company/goals">Goals for the World</a>
+          <a href="/company/commitments">Commitments</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-spacer"></div>
+    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
-  <div class="nav-sp"></div>
-  <a href="https://fortized.com" class="nav-btn">Try Fortized</a>
 </nav>
 
-<!-- ── BLOG LIST ──────────────────────────── -->
-<div id="blog-list-view">
-  <div class="hero">
-    <div class="hero-banner"><img src="/Swiftaw Banner2.png" alt=""/></div>
-    <div class="grid-overlay"></div>
-    <div class="hero-glow"></div>
-    <div class="hero-inner">
-      <div class="hero-left fade-up">
-        <div class="hero-eyebrow">The Swiftaw Blog</div>
-        <h1>News &amp;<br><em>Dispatches.</em></h1>
-        <p class="hero-sub">Official articles, R&amp;D announcements, and community updates from the Swiftaw team.</p>
-      </div>
-      <div class="hero-stats fade-up d2">
-        <div class="hero-stat">
-          <div class="hero-stat-num" id="article-count">17</div>
-          <div class="hero-stat-label">Articles</div>
-        </div>
-        <div class="hero-stat-divider"></div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">5</div>
-          <div class="hero-stat-label">Authors</div>
-        </div>
-        <div class="hero-stat-divider"></div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">Mar</div>
-          <div class="hero-stat-label">Latest</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="blog-wrap">
-    <!-- Search bar -->
-    <div class="blog-search-wrap fade-up d1" style="margin-bottom:32px;">
-      <svg class="blog-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input class="blog-search-input" id="blog-search" placeholder="Search blog posts..." oninput="filterBlogPosts(this.value)">
-    </div>
-
-    <!-- Pinned: What is Fortized? -->
-    <div class="pinned-card fade-up d1" id="pinned-card"></div>
-
-    <!-- Most Recent -->
-    <div class="section-divider fade-up d2"><span class="section-divider-label">Most Recent</span><div class="section-divider-line"></div></div>
-    <div id="most-recent-grid" class="featured-row fade-up d3"></div>
-
-    <!-- All Posts (sorted by date, excluding pinned & most recent) -->
-    <div class="section-divider fade-up d4" id="all-posts-divider"><span class="section-divider-label">All Posts</span><div class="section-divider-line"></div></div>
-    <div class="post-grid" id="post-grid"></div>
-
-    <!-- For Newbies -->
-    <div class="section-divider fade-up" id="newbies-divider"><span class="section-divider-label">New to Fortized?</span><div class="section-divider-line"></div></div>
-    <div class="secondary-row fade-up" id="newbies-grid"></div>
-
-    <!-- Relevant / Popular -->
-    <div class="section-divider fade-up" id="relevant-divider"><span class="section-divider-label">Relevant &amp; Popular</span><div class="section-divider-line"></div></div>
-    <div class="secondary-row fade-up" id="relevant-grid"></div>
-
-    <div class="blog-no-results" id="blog-no-results">
-      <span>🔍</span>
-      No posts found matching your search.
-    </div>
-  </div>
+<!-- ═══ BLOG HERO ═══ -->
+<div class="blog-hero">
+  <div class="blog-hero-orb"></div>
+  <div class="blog-eyebrow">swiftaw Blog</div>
+  <div class="highlight-bar"></div>
+  <h1>Ideas that move<br>the world forward.</h1>
+  <p>Thoughts on social technology, artificial intelligence, and the digital future — from the team building it.</p>
 </div>
 
-<!-- ── ARTICLE VIEW ──────────────────────── -->
-<div id="article-view">
-  <div class="article-back" onclick="closeArticle()">← Back to Blog</div>
-  <div id="article-content"></div>
+<!-- ═══ FILTER TABS ═══ -->
+<div class="blog-filters">
+  <button class="filter-tab active">All</button>
+  <button class="filter-tab">Social & Chat</button>
+  <button class="filter-tab">Artificial Intelligence</button>
+  <button class="filter-tab">Product</button>
+  <button class="filter-tab">Research</button>
+  <button class="filter-tab">Company</button>
 </div>
 
-<footer>
-  <div class="footer-left">
-    <a href="/" class="footer-logo">
-      <img src="/Swiftaw logomark black.png" alt="Swiftaw" style="filter:brightness(0) invert(1);"/>
-      <span>Swiftaw</span>
+<!-- ═══ FEATURED POST ═══ -->
+<div class="blog-featured">
+  <a href="#" class="featured-post">
+    <div class="featured-post-image">
+      <div class="image-glow"></div>
+      <div class="featured-tag">&#9733; Featured</div>
+      <div class="image-label">Nexis</div>
+    </div>
+    <div class="featured-post-body">
+      <div class="post-category">Artificial Intelligence</div>
+      <h2>Why AI and social platforms must converge — and how we're building that future with Nexis</h2>
+      <p>The next decade of digital life won't be defined by standalone apps — it'll be defined by ecosystems where intelligence and community amplify each other. Here's our vision.</p>
+      <div class="post-meta">
+        <div class="post-author">
+          <div class="post-author-avatar">S</div>
+          <span>Staw</span>
+        </div>
+        <div class="post-meta-dot"></div>
+        <span>March 2026</span>
+        <div class="post-meta-dot"></div>
+        <span>8 min read</span>
+      </div>
+      <span class="read-more">Read article &rarr;</span>
+    </div>
+  </a>
+</div>
+
+<!-- ═══ POSTS GRID ═══ */-->
+<div class="blog-grid-section">
+  <div class="blog-grid-heading">Latest Posts</div>
+  <div class="posts-grid">
+
+    <a href="#" class="post-card">
+      <div class="post-card-image social-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">⚡</div>
+        <div class="post-card-cat">Social &amp; Chat</div>
+      </div>
+      <div class="post-card-body">
+        <h3>How Fortized's Bastion system reinvents online community structure</h3>
+        <p>Traditional servers and groups weren't built for the way modern gamers actually organize. Bastions are.</p>
+        <div class="post-card-footer">
+          <span>Feb 2026 · 5 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
     </a>
-    <div class="footer-socials">
-      <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X (Twitter)">
-        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      </a>
-      <a href="https://www.youtube.com/@swiftaw" target="_blank" rel="noopener" title="YouTube">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-      </a>
+
+    <a href="#" class="post-card">
+      <div class="post-card-image ai-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">&#129504;</div>
+        <div class="post-card-cat">Artificial Intelligence</div>
+      </div>
+      <div class="post-card-body">
+        <h3>Building AI that understands context, not just commands</h3>
+        <p>The gap between AI that responds and AI that understands is where Nexis is focused. Here's our approach.</p>
+        <div class="post-card-footer">
+          <span>Feb 2026 · 7 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="post-card">
+      <div class="post-card-image product-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">&#128300;</div>
+        <div class="post-card-cat">Product</div>
+      </div>
+      <div class="post-card-body">
+        <h3>The Onyx economy: why we built an earned-not-bought rewards system</h3>
+        <p>Pay-to-win is broken. We built an entirely different model — one where your participation is your currency.</p>
+        <div class="post-card-footer">
+          <span>Jan 2026 · 4 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="post-card">
+      <div class="post-card-image ai-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">&#127760;</div>
+        <div class="post-card-cat">Research</div>
+      </div>
+      <div class="post-card-body">
+        <h3>Real-time communication at scale: lessons from building Fortized's chat engine</h3>
+        <p>Millions of simultaneous messages. Zero compromises on latency. What it actually takes to build at this scale.</p>
+        <div class="post-card-footer">
+          <span>Jan 2026 · 9 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="post-card">
+      <div class="post-card-image social-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">&#128737;</div>
+        <div class="post-card-cat">Safety</div>
+      </div>
+      <div class="post-card-body">
+        <h3>Safety as a first-class feature: how AutoMod and encryption protect swiftaw communities</h3>
+        <p>Security isn't a feature you bolt on at the end. Here's how our Safety Department builds from day one.</p>
+        <div class="post-card-footer">
+          <span>Dec 2025 · 6 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="#" class="post-card">
+      <div class="post-card-image product-theme">
+        <div class="post-card-image-glow"></div>
+        <div class="post-card-image-label">&#128172;</div>
+        <div class="post-card-cat">Company</div>
+      </div>
+      <div class="post-card-body">
+        <h3>Why swiftaw's two pillars — social and AI — are stronger together</h3>
+        <p>We didn't build Fortized and Nexis as separate bets. We built them as two halves of one vision.</p>
+        <div class="post-card-footer">
+          <span>Nov 2025 · 5 min</span>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- ═══ NEWSLETTER ═══ -->
+<div class="blog-newsletter">
+  <div class="newsletter-glow"></div>
+  <div class="inner">
+    <div>
+      <div class="section-eyebrow">Stay in the loop</div>
+      <h2>Get swiftaw insights<br>in your inbox.</h2>
+      <p>New posts on social tech, AI, and the future of digital ecosystems — no spam, ever.</p>
+    </div>
+    <div>
+      <div class="newsletter-form">
+        <input type="email" class="newsletter-input" placeholder="your@email.com">
+        <button class="newsletter-btn">Subscribe</button>
+      </div>
+      <p style="font-size:12px;color:rgba(255,255,255,.3);margin-top:12px;">We respect your privacy. Unsubscribe any time.</p>
     </div>
   </div>
-  <div class="footer-center">
-    <p class="copy">&copy; 2026 Swiftaw</p>
-  </div>
-  <div class="footer-links">
-    <a href="/blog">Blog</a>
-    <a href="/research">Research</a>
-    <a href="https://fortized.com">Fortized</a>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-brand-logo">
+          <img src="Swiftaw logomark black.png" alt="swiftaw">
+          <span>swiftaw</span>
+        </div>
+        <p>Building digital technologies — social platforms and AI — to reshape how the world connects and thinks.</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Products</div>
+        <a href="https://fortized.com">Fortized</a>
+        <a href="https://nexis.swiftaw.com/">Nexis</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Company</div>
+        <a href="/company/about">About</a>
+        <a href="/company/goals">Goals</a>
+        <a href="/company/commitments">Commitments</a>
+        <a href="/blog">Blog</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Departments</div>
+        <a href="/departments/rd">R&amp;D</a>
+        <a href="/departments/safety">Safety</a>
+        <a href="/departments/communication">Communication</a>
+        <a href="/research">Research</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 swiftaw</p>
+      <div class="footer-socials">
+        <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@swiftaw" target="_blank" rel="noopener" title="YouTube">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </div>
+    </div>
   </div>
 </footer>
 
 <script>
-const ARTICLES = {
-  roadmap2025: {
-    category:'Company', date:'March 19, 2025', readTime:'5 min read',
-    authorInitial:'S', authorPillLabel:'Swiftaw',
-    title:'The Fortized Roadmap — Where We\'re Headed in 2025', bylineName:'Staw',
-    bylineRole:'Chief Executive Officer, Swiftaw',
-    tagClass:'tag-announce', tagLabel:'Company',
-    banner:'/Fortized banner.png',
-    content:`<p class="lead">A letter to the community. As we close out Q1, I want to share where Fortized is going — and what you can expect from us in the months ahead.</p><p>When we launched Fortized, we had a vision: build a platform where communities are sovereign, identity is earned, and nobody has to pay to belong. That vision hasn't changed — it's only grown sharper.</p><h2>What We've Built So Far</h2><p>In just a few months, we've shipped Bastions 2.0, a complete Atelier economy, the Desktop app, Living Bastions with mood and reputation systems, and a full safety infrastructure led by our Security Department. That's a lot of ground covered in a short time.</p><h2>What's Coming Next</h2><ul><li><strong>Mobile App (iOS & Android)</strong> — Native apps are in active development. Expect a beta this summer.</li><li><strong>Voice & Video Overhaul</strong> — We're rebuilding Party Rooms from the ground up with spatial audio and screen sharing.</li><li><strong>Bastion Discovery</strong> — A curated directory to find public Bastions by interest, game, and community type.</li><li><strong>Creator Tools</strong> — Streaming integration, subscriber channels, and monetisation features for content creators.</li><li><strong>API v2</strong> — A complete developer platform with webhooks, bot hosting, and marketplace.</li></ul><div class="highlight-box"><strong>Community-first, always.</strong> Every feature we ship is designed to strengthen communities — not extract value from them.</div><p>We're still small. We're still scrappy. But we're building something that matters. Thank you for being part of this fortress.</p><p class="sign-off">— Staw, Chief Executive Officer · Swiftaw</p>`
-  },
-  encryption_update: {
-    category:'Security', date:'March 17, 2025', readTime:'6 min read',
-    authorInitial:'W', authorPillLabel:'Swiftaw Safety Department',
-    title:'End-to-End Encryption: Our Approach to Private Messaging', bylineName:'Weaverdant',
-    bylineRole:'Chief Security Officer, Swiftaw',
-    tagClass:'tag-safety', tagLabel:'Security',
-    banner:'/Fortized banner4.png',
-    content:`<p class="lead">Privacy isn't a feature — it's a foundation. Today I want to walk through how Fortized handles encryption, what we're building next, and what our commitments are to your data.</p><h2>How DMs Work Today</h2><p>Direct messages on Fortized are encrypted in transit using TLS 1.3. Messages stored on-device use browser localStorage with no server-side persistence in the current architecture. This means your conversations never leave your machine unless you explicitly share them.</p><h2>What We're Building</h2><p>As we transition to server-backed infrastructure, we're implementing full end-to-end encryption for direct messages. This means:</p><ul><li><strong>Only you and the recipient can read messages</strong> — not Fortized, not Swiftaw, not anyone else</li><li><strong>Forward secrecy</strong> — each message session uses ephemeral keys, so compromising one session doesn't expose others</li><li><strong>Verified identities</strong> — users can verify each other's encryption keys to prevent impersonation</li><li><strong>Zero-knowledge architecture</strong> — we cannot decrypt your messages even if compelled to</li></ul><div class="highlight-box"><strong>Your messages are yours.</strong> We designed our system so that we literally cannot read your private conversations. That's not a policy — it's a technical guarantee.</div><h2>Bastion Messages</h2><p>Community channels in Bastions use a different model. Since these are shared spaces, messages are encrypted in transit but readable by authorised moderators and admins. This is necessary for content moderation and community safety — but we're transparent about it.</p><h2>Third-Party Auditing</h2><p>We're in the process of engaging an independent security firm to audit our encryption implementation. Results will be published publicly. We believe transparency in security is just as important as the security itself.</p><p class="sign-off">— Weaverdant, Chief Security Officer · Swiftaw Safety Department</p>`
-  },
-  game_detection: {
-    category:'R&D', date:'March 15, 2025', readTime:'4 min read',
-    authorInitial:'T', authorPillLabel:'Swiftaw R&D Department',
-    title:'How Game Detection Works — Behind the Scenes', bylineName:'Tyrianum',
-    bylineRole:'Chief Research & Development Officer, Swiftaw',
-    tagClass:'tag-rd', tagLabel:'R&D',
-    banner:'/Fortized banner3.png',
-    content:`<p class="lead">One of the most-loved features in Fortized Desktop is automatic game detection. Today I want to pull back the curtain on how it actually works.</p><h2>The Detection Pipeline</h2><p>When you launch the Fortized Desktop app, a lightweight process monitor runs in the background. It scans your running processes every 15 seconds, comparing them against our curated game database and IGDB's catalogue of over 200,000 titles.</p><ul><li><strong>Process Matching</strong> — We match executable names against known game binaries. No file content is ever read.</li><li><strong>IGDB Enrichment</strong> — When a match is found, we pull cover art, genre info, and metadata from IGDB to display on your profile.</li><li><strong>Privacy First</strong> — The process list never leaves your machine. Detection runs entirely client-side.</li></ul><h2>Cover Art Integration</h2><p>We partnered with IGDB to bring high-quality cover art to your game collection. When you add a game — whether manually or through detection — we fetch artwork automatically. This makes your profile's game collection look polished without any extra effort.</p><div class="highlight-box"><strong>Zero telemetry.</strong> Your running processes are never sent to our servers. Game detection is 100% local.</div><h2>What's Next</h2><p>We're working on time-tracking integration, so you can see how many hours you've spent in each game. We're also building a "Currently Playing" status that automatically updates when you launch a game — visible to your friends on the platform.</p><p class="sign-off">— Tyrianum, Chief Research & Development Officer · Swiftaw R&D Department</p>`
-  },
-  community_growth: {
-    category:'Company', date:'March 12, 2025', readTime:'4 min read',
-    authorInitial:'S', authorPillLabel:'Swiftaw',
-    title:'Growing the Fortress — Our Community Philosophy', bylineName:'Staw',
-    bylineRole:'Chief Executive Officer, Swiftaw',
-    tagClass:'tag-announce', tagLabel:'Company',
-    banner:'/Fortized banner2.png',
-    content:`<p class="lead">Communities are the heart of Fortized. Today I want to share how we think about growth — and why we do things differently.</p><h2>Quality Over Quantity</h2><p>We've seen what happens when platforms optimise for user count above all else. Communities get noisy. Moderation breaks down. Identity gets lost in the crowd. At Fortized, we measure success differently.</p><p>Our growth metrics focus on <strong>engagement depth</strong> — how many meaningful conversations happen, how many Bastions are actively moderated, how many members earn reputation through genuine participation.</p><h2>The Onyx Economy</h2><p>Our Onyx system is designed to make growth sustainable. When existing members invite new allies, both parties earn Onyx. This creates a natural incentive for bringing in people who will actually engage — not just inflate numbers.</p><ul><li><strong>Recruitment rewards</strong> — Earn Onyx for every friend who joins and stays active</li><li><strong>Daily engagement</strong> — Consistent participation earns daily Onyx bonuses</li><li><strong>Quest system</strong> — Community challenges that drive meaningful engagement</li></ul><div class="highlight-box"><strong>Growth that matters.</strong> We'd rather have 10,000 engaged members than 100,000 silent accounts.</div><h2>Partnerships</h2><p>We're actively building partnerships with gaming communities, content creators, and esports organisations. If you're interested in bringing your community to Fortized, reach out to us through our Support page.</p><p class="sign-off">— Staw, Chief Executive Officer · Swiftaw</p>`
-  },
-  security_audit: {
-    category:'Security', date:'March 10, 2025', readTime:'5 min read',
-    authorInitial:'W', authorPillLabel:'Swiftaw Safety Department',
-    title:'Q1 Security Report — Protecting the Fortress', bylineName:'Weaverdant',
-    bylineRole:'Chief Security Officer, Swiftaw',
-    tagClass:'tag-safety', tagLabel:'Security',
-    banner:'/Fortized banner4.png',
-    content:`<p class="lead">Transparency is a core value of the Swiftaw Safety Department. Here's our first quarterly security report — what we've done, what we've found, and what we're improving.</p><h2>Infrastructure Hardening</h2><p>Over the past quarter, we've made significant improvements to our security posture:</p><ul><li><strong>Content Security Policy</strong> — Strict CSP headers now prevent XSS attacks across all Fortized web properties</li><li><strong>Rate Limiting</strong> — API endpoints are now protected with intelligent rate limiting that adapts to traffic patterns</li><li><strong>Session Management</strong> — Sessions now expire after 30 days of inactivity and support forced revocation</li><li><strong>Input Sanitisation</strong> — All user inputs are sanitised at both client and server level</li></ul><h2>AutoMod Performance</h2><p>Since deploying AutoMod 2.0, we've seen significant improvements in automated moderation:</p><ul><li>Spam detection accuracy: 97.3%</li><li>Raid prevention: 12 attacks blocked in the first month</li><li>False positive rate: under 0.4%</li></ul><h2>Bug Bounty Programme</h2><p>We're launching a responsible disclosure programme for security researchers. If you find a vulnerability in Fortized, we want to hear about it — and we'll reward you for it.</p><div class="highlight-box"><strong>Security is everyone's job.</strong> We encourage all Bastion admins to enable AutoMod, use strong passwords, and report suspicious activity through the in-app reporting system.</div><h2>What's Next</h2><p>In Q2, we're focusing on two-factor authentication, login notifications, and advanced audit logging for Bastion owners. Your fortress will be even more defensible.</p><p class="sign-off">— Weaverdant, Chief Security Officer · Swiftaw Safety Department</p>`
-  },
-  performance: {
-    category:'R&D', date:'March 7, 2025', readTime:'5 min read',
-    authorInitial:'T', authorPillLabel:'Swiftaw R&D Department',
-    title:'Under the Hood — Performance Improvements in March', bylineName:'Tyrianum',
-    bylineRole:'Chief Research & Development Officer, Swiftaw',
-    tagClass:'tag-rd', tagLabel:'R&D',
-    banner:'/Fortized banner5.png',
-    content:`<p class="lead">Speed matters. This month, we shipped a series of performance optimisations that make Fortized feel significantly faster. Here's a technical overview of what we changed and why.</p><h2>Rendering Pipeline</h2><p>We rebuilt the message rendering pipeline to use virtual scrolling. Previously, all visible messages were rendered as DOM nodes. Now, only messages in the viewport (plus a buffer of 20 above and below) are rendered. The result:</p><ul><li><strong>70% reduction</strong> in DOM node count for channels with 1000+ messages</li><li><strong>Smooth 60fps scrolling</strong> even in the busiest Bastions</li><li><strong>Lower memory usage</strong> — particularly noticeable on devices with limited RAM</li></ul><h2>Asset Loading</h2><p>Profile pictures, cover art, and emoji are now loaded with intersection observers — meaning they only fetch when they're about to become visible. Combined with aggressive caching, this reduces initial load times by approximately 40%.</p><h2>WebSocket Optimisation</h2><p>Our real-time messaging layer now uses binary WebSocket frames instead of JSON text frames. This reduces bandwidth per message by roughly 35% and improves parsing speed on the client.</p><div class="highlight-box"><strong>Engineering philosophy:</strong> We don't add features and worry about performance later. We optimise continuously so the platform stays fast as it grows.</div><h2>The Atelier</h2><p>The Atelier shop now uses lazy rendering for item grids. Shop categories load on demand, and appearance previews are generated using CSS custom properties instead of full re-renders. The shop opens 3x faster than before.</p><p class="sign-off">— Tyrianum, Chief Research & Development Officer · Swiftaw R&D Department</p>`
-  },
-  data_protection: {
-    category:'Security', date:'March 4, 2025', readTime:'4 min read',
-    authorInitial:'W', authorPillLabel:'Swiftaw Safety Department',
-    title:'Your Data, Your Rules — How We Handle Privacy', bylineName:'Weaverdant',
-    bylineRole:'Chief Security Officer, Swiftaw',
-    tagClass:'tag-safety', tagLabel:'Security',
-    banner:'/Fortized banner.png',
-    content:`<p class="lead">Data privacy isn't just a checkbox for us — it's embedded in every decision we make. Here's exactly how Fortized handles your personal information.</p><h2>What We Collect</h2><p>Fortized collects the minimum data necessary to provide the service:</p><ul><li><strong>Account data</strong> — username, email, display name, and password (hashed, never stored in plain text)</li><li><strong>Profile data</strong> — avatar, bio, pronouns, connections, and customisation preferences</li><li><strong>Activity data</strong> — Bastion memberships, friends list, and message metadata</li><li><strong>Technical data</strong> — browser type, session tokens, and error logs</li></ul><h2>What We Don't Collect</h2><ul><li>We don't track your browsing outside of Fortized</li><li>We don't sell or share data with advertisers</li><li>We don't use data for targeted advertising</li><li>We don't read your DMs — ever</li></ul><h2>Local-First Architecture</h2><p>In the current architecture, most user data lives in your browser's localStorage. This gives you direct control — you can inspect, export, or delete your data at any time through your browser's developer tools or through your Fortized account settings.</p><div class="highlight-box"><strong>Compliant everywhere.</strong> Our data practices are designed to comply with privacy regulations in every jurisdiction where Fortized is available, including GDPR, CCPA, and LGPD.</div><h2>Your Rights</h2><p>Regardless of where you live, you have the right to access your data, correct inaccuracies, request deletion, and export a copy. These rights are available through your account settings or by contacting our support team.</p><p class="sign-off">— Weaverdant, Chief Security Officer · Swiftaw Safety Department</p>`
-  },
-  atelier_evolution: {
-    category:'R&D', date:'March 1, 2025', readTime:'4 min read',
-    authorInitial:'T', authorPillLabel:'Swiftaw R&D Department',
-    title:'The Atelier Evolves — New Themes, Decorations & Effects', bylineName:'Tyrianum',
-    bylineRole:'Chief Research & Development Officer, Swiftaw',
-    tagClass:'tag-rd', tagLabel:'R&D',
-    banner:'/Onyx banner.png',
-    content:`<p class="lead">The Atelier is growing. Today we're shipping a wave of new content and features that expand what you can do with your Fortized identity.</p><h2>New Appearance Themes</h2><p>Two new appearance themes join the shop today:</p><ul><li><strong>Sunset</strong> — A warm gradient from deep plum to golden amber. Watch the sun set over your fortress as warm tones blend through every panel and sidebar.</li><li><strong>Kingdom of God</strong> — Our first light theme. White and gold with divine elegance. A radiant experience for those who prefer light mode done right.</li></ul><p>Both themes are available in the Atelier shop for Onyx. They join our existing collection of Onyx Pure, Midnight Citadel, and Dark Realm.</p><h2>Avatar Decorations</h2><p>Profile decorations are now available — animated frames that surround your avatar, visible across all of Fortized. Launch decorations include seasonal frames, achievement badges, and exclusive designs for early supporters.</p><h2>Display Name Styles</h2><p>We've unlocked display name customisation for everyone — not just Radiance members. You can now choose your font, colour, and effect. Available effects include Solid, Gradient, Neon, Toon, and Pop. Your chosen style appears everywhere: in chat, on your profile, and on your nameplate.</p><div class="highlight-box"><strong>Free for everyone.</strong> Display name styles are not locked behind any paywall. We believe self-expression should be accessible to all.</div><h2>Profile Widgets</h2><p>Your profile card now supports widgets — modular sections that showcase your interests. Launch widgets include Games I Like, Favourite Game, Games in Rotation, Primary Bastion, and Spotify integration. More widgets are coming soon.</p><p class="sign-off">— Tyrianum, Chief Research & Development Officer · Swiftaw R&D Department</p>`
-  },
-  milestone_launch: {
-    category:'Company', date:'February 29, 2025', readTime:'3 min read',
-    authorInitial:'S', authorPillLabel:'Swiftaw',
-    title:'From Zero to Fortress — Our Journey So Far', bylineName:'Staw',
-    bylineRole:'Chief Executive Officer, Swiftaw',
-    tagClass:'tag-launch', tagLabel:'Company',
-    banner:'/Fortized banner3.png',
-    content:`<p class="lead">Every fortress starts with a single stone. Here's how Fortized went from an idea to a living platform.</p><h2>The Beginning</h2><p>Fortized started as a conversation between friends frustrated with existing platforms. We wanted something that put communities first — not advertisers, not shareholders, not algorithms. Just people building spaces together.</p><p>The name "Fortized" comes from "fortified" — because we believe communities should be strong, defensible, and owned by the people who build them. That's why we call servers "Bastions." That's why admins have complete sovereignty. That's why our economy is earned, not bought.</p><h2>Key Milestones</h2><ul><li><strong>Concept & Design</strong> — Architecture planning, UI design language, brand identity</li><li><strong>Core Platform</strong> — Bastions, channels, roles, messaging, friend system</li><li><strong>The Atelier</strong> — Onyx economy, Radiance system, cosmetic marketplace</li><li><strong>Safety Infrastructure</strong> — AutoMod, raid protection, reporting system</li><li><strong>Desktop App</strong> — Native desktop client for Windows, macOS, and Linux</li><li><strong>Living Bastions</strong> — Mood, reputation, Joyster, focus mode</li></ul><div class="highlight-box"><strong>Built by the community, for the community.</strong> Every feature request, bug report, and piece of feedback during Beta has directly shaped what Fortized is today.</div><h2>Thank You</h2><p>To everyone who joined early, tested features, reported bugs, and helped shape this platform — thank you. You're not just users. You're builders. And the fortress is stronger because of you.</p><p>We're just getting started.</p><p class="sign-off">— Staw, Chief Executive Officer · Swiftaw</p>`
-  },
-  desktop: {
-    category:'Announcement', date:'March 3, 2026', readTime:'3 min read',
-    authorInitial:'S', authorPillLabel:'Swiftaw',
-    title:'The Fortress Comes to Your Desktop', bylineName:'Staw',
-    bylineRole:'Chief Executive Officer, Swiftaw',
-    tagClass:'tag-announce', tagLabel:'Announcement',
-    banner:'/Fortized banner5.png',
-    content:`<p class="lead">Today we're making Fortized available as a dedicated desktop application — and it's been one of the most requested features since day one. The Fortress now lives on your machine.</p><p>Since the Beta launched, we've heard the same request over and over: "When can I get Fortized as a real app?" The browser works, but a native experience is something else entirely. So we built it.</p><h2>Why Desktop?</h2><p>The web client will always be there. But a desktop app means Fortized starts when your PC starts. It means system-level notifications that actually work. It means less RAM overhead, faster load times, and the kind of responsiveness you expect from software that lives on your taskbar — not in a browser tab.</p><p>This isn't an Electron wrapper around the website. We went deeper. The desktop client is built to take full advantage of your system while keeping the same seamless experience you already know from the web.</p><h2>What You Get</h2><ul><li><strong>System Tray Integration</strong> — Fortized sits in your tray, ready when you are. Minimize to tray, receive notifications, and jump back in instantly.</li><li><strong>Native Notifications</strong> — OS-level push notifications for mentions, DMs, and Bastion alerts. No more missed messages because you forgot a browser tab.</li><li><strong>Auto-Updates</strong> — The app keeps itself current. Every patch, every feature drop — delivered silently in the background.</li><li><strong>Hardware Acceleration</strong> — Smoother scrolling, faster rendering, and lower CPU usage compared to the browser client.</li><li><strong>Startup Launch</strong> — Option to launch Fortized automatically when your system boots. Your Bastion is always one click away.</li></ul><h2>Cross-Platform from Day One</h2><p>We're shipping for <strong>Windows</strong>, <strong>macOS</strong>, and <strong>Linux</strong> simultaneously. No "coming soon" for any platform. Every Fortress defender gets the same experience regardless of their OS.</p><div class="highlight-box"><strong>Same account. Same Bastions. Same everything.</strong> The desktop app syncs with your existing Fortized account. Log in and you're exactly where you left off — channels, roles, Onyx balance, Radiance status, all of it.</div><h2>Built for the Long Run</h2><p>This is version one, but we're already planning what comes next. Voice and Party Room integration in the native client, custom keybinds, a compact mode for smaller screens, and deeper OS integrations are all on the roadmap.</p><p>The desktop app is available now on the <a href="/download" style="color:var(--acc);text-decoration:underline;">Download page</a>. Grab it for your platform and bring the Fortress to your desktop.</p><p>The gates are open. The walls are strong. Now they're on your machine.</p><p class="sign-off">— Staw, Chief Executive Officer · Swiftaw</p>`
-  },
-  betalive: {
-    category:'Launch', date:'February 22, 2026', readTime:'2 min read',
-    authorInitial:'S', authorPillLabel:'Swiftaw',
-    title:'Fortized Beta is LIVE!', bylineName:'Staw',
-    bylineRole:'Chief Executive Officer, Swiftaw',
-    tagClass:'tag-launch', tagLabel:'Launch',
-    banner:'/Fortized banner3.png',
-    content:`<p class="lead">Today is the day. As of February 22, 2026, the Fortized Beta is officially open.</p><p>After months of hard work from the whole team, we're finally moving from internal testing to a live environment. This isn't just another chat app — it's a modern space built for how we actually play and hang out today.</p><h2>What's in the Box?</h2><ul><li><strong>The Atelier:</strong> Our R&D team nailed the integration. You can start earning Onyx through quests right now and trade them for Radiance perks — no credit card required.</li><li><strong>Real Security:</strong> We built walls that actually hold. From AutoMod to Raid Protection, your Bastion is genuinely yours to defend.</li><li><strong>Sovereign Control:</strong> You get full power over your ranks and chambers — no compromises, no fine print.</li></ul><h2>Why Beta?</h2><p>We're open, but we're still refining. This phase is all about stress-testing the tech and listening to your feedback. We want to make sure the foundation is rock solid before the full release.</p><div class="highlight-box"><strong>Your feedback shapes the Fortress.</strong> Every bug report, feature request, and community discussion during Beta directly influences what we build next. This is your platform — help us make it right.</div><p>Big thanks to everyone who helped us get here — the team, the testers, and everyone waiting at the gates. The Fortress is ready to be claimed.</p><p class="sign-off">— Staw, Chief Executive Officer · Swiftaw</p>`
-  },
-  atelier: {
-    category:'R&D', date:'February 21, 2026', readTime:'3 min read',
-    authorInitial:'T', authorPillLabel:'Swiftaw R&D Department',
-    title:'Introducing The Atelier', bylineName:'Tyrianum',
-    bylineRole:'Chief R&D Officer, Swiftaw',
-    tagClass:'tag-rd', tagLabel:'R&D',
-    banner:'/Onyx banner.png',
-    content:`<p class="lead">At Fortized, we believe that building a community shouldn't just be work — it should be rewarding. After an intensive R&D sprint, we are thrilled to officially pull back the curtain on <strong>The Atelier.</strong></p><p>The Atelier is your new hub for progression within the Fortress. It's a space where your loyalty and social reach translate directly into premium status and exclusive aesthetic upgrades.</p><h2>How It Works: The Path of Onyx</h2><ul><li><strong>Complete Quests:</strong> Engage with the community and help us grow.</li><li><strong>Recruit Your Squad:</strong> Invite new allies to Fortized. As you bring more people in, your Onyx reserves grow.</li><li><strong>Daily Rewards:</strong> Consistency pays off. Claim your daily Onyx bonus to keep your balance climbing.</li></ul><h2>Ascend to Radiance</h2><p>What do you do with a mountain of Onyx? You trade it for <span class="radiance-badge-inline">✨ Radiance</span>.</p><p>Radiance is our premium status that sets you apart. Exchange your hard-earned Onyx for Radiance packs ranging from 24-hour boosts to full 30-day memberships. No credit card required.</p><div class="highlight-box"><strong>No credit card. No paywalls.</strong> Radiance is earned entirely through community participation.</div><h2>Radiance Perks</h2><div class="perks-grid"><div class="perk-card"><span class="perk-icon">🎨</span><div class="perk-body"><div class="perk-title">Custom Profile Badge</div><div class="perk-desc">Wear the exclusive Radiance Shield across every Bastion.</div></div></div><div class="perk-card"><span class="perk-icon">🌟</span><div class="perk-body"><div class="perk-title">Animated Border</div><div class="perk-desc">A glowing animated avatar frame that signals your status instantly.</div></div></div><div class="perk-card"><span class="perk-icon">💬</span><div class="perk-body"><div class="perk-title">Extended Messaging</div><div class="perk-desc">Messages up to 4,000 characters.</div></div></div><div class="perk-card"><span class="perk-icon">🖼️</span><div class="perk-body"><div class="perk-title">Custom Banner</div><div class="perk-desc">Personalize your profile with a custom banner.</div></div></div></div><p class="sign-off">— Tyrianum, Chief R&D Officer · Swiftaw R&D Department</p>`
-  },
-  safety: {
-    category:'Safety', date:'February 20, 2026', readTime:'4 min read',
-    authorInitial:'W', authorPillLabel:'Swiftaw Safety Department',
-    title:'How Swiftaw Safety Protects Your Bastion', bylineName:'Weaverdant',
-    bylineRole:'Chief Safety Officer, Swiftaw',
-    tagClass:'tag-safety', tagLabel:'Safety',
-    banner:'/Fortized banner4.png',
-    content:`<p class="lead">As head of the Swiftaw Safety Department, my role is to ensure that every Bastion within Fortized remains under the complete sovereignty of its owner.</p><p>The Fortized Security Department operates as a dedicated force within the broader Swiftaw Safety framework. Our mission is simple: keep the Fortress standing, no matter what.</p><h2>Layered Defense Infrastructure</h2><p>We approach platform security the same way a military engineer approaches a fortification — in layers. Each layer is designed to stop threats before they reach the next.</p><div class="highlight-box"><strong>Bastion Sovereignty.</strong> Your Bastion is yours. Our security architecture is designed to ensure that admins retain full, uncompromised control over their communities at all times.</div><h2>Trust &amp; Transparency</h2><p>We believe that security only works when it's visible. That's why the Safety Department publishes regular updates on our practices, incident responses, and ongoing improvements.</p><p class="sign-off">— Weaverdant, Chief Safety Officer · Swiftaw Safety Department</p>`
-  },
-  gates: {
-    category:'Announcement', date:'February 21, 2026', readTime:'2 min read',
-    authorInitial:'M', authorPillLabel:'Swiftaw',
-    title:'The Gates are Unlocking', bylineName:'Maus',
-    bylineRole:'Chief Community Officer, Swiftaw',
-    tagClass:'tag-announce', tagLabel:'Announcement',
-    banner:'/Fortized banner2.png',
-    content:`<p class="lead">After months of intensive development and rigorous security testing, we are officially on the horizon of a new era. The Fortized Beta is live — and the gates are finally unlocking.</p><p>This is a moment we've been building toward since the very first line of code. Today, we're opening the Fortress to the community.</p><h2>What's Inside</h2><p>The Beta gives you access to the core Fortized experience: Bastions, Chambers, Roles, and the early implementation of our Onyx economy.</p><div class="highlight-box"><strong>Beta means builder.</strong> Your feedback during this phase directly shapes the Fortress.</div><h2>How to Get In</h2><p>Access to the Beta is rolling out progressively. Stay tuned to official channels for your invitation.</p><p class="sign-off">— Maus, Chief Community Officer · Swiftaw</p>`
-  },
-  bastions2: {
-    category:'R&D', date:'March 2, 2026', readTime:'5 min read',
-    authorInitial:'T', authorPillLabel:'Swiftaw R&D Department',
-    title:'Bastions 2.0 — Channels, Roles & Beyond', bylineName:'Tyrianum',
-    bylineRole:'Chief R&D Officer, Swiftaw',
-    tagClass:'tag-rd', tagLabel:'R&D',
-    banner:'/Fortized banner3.png',
-    content:`<p class="lead">Today we ship the biggest update to Bastions since launch. Bastions 2.0 is the result of weeks of intensive engineering from the R&D department, and it fundamentally changes what your community can be.</p><p>This isn't a patch. It's a rebuild of nearly every subsystem that powers a Bastion — from the way channels work to how roles are structured, from the boost economy to the moderation toolchain. Let's walk through it.</p><h2>🏰 Bastion Shell</h2><p>Every Bastion now has a <strong>Shell</strong> — a rich header that communicates identity at a glance. The Shell displays your banner, tagline, visibility badge (public or private), boost level, and member count directly in the sidebar. Think of it as your Bastion's front door — visitors see it before they even open a channel.</p><h2>📢 New Room Types</h2><p>Text and voice were just the beginning. Bastions 2.0 introduces four entirely new channel types:</p><ul><li><strong>Announcement Channels</strong> — Restricted posting for owners only. Perfect for updates that shouldn't get buried.</li><li><strong>Poll Channels</strong> — Built-in voting rooms where members can create and participate in polls.</li><li><strong>Event Channels</strong> — Schedule and manage community events with a dedicated calendar view.</li><li><strong>Automation Channels</strong> — Bot-integrated rooms for automated workflows and log outputs.</li></ul><p>All six templates — Game Hall, Fellowship, Guild, Study Circle, Artisans, and Academy — have been rebuilt from scratch with these new channel types baked in.</p><h2>🛡️ Roles 2.0</h2><p>Roles have been completely overhauled. Permissions are now organized into six categories: <strong>General, Text, Voice/Party, Automation, Moderation, and Boost</strong>. Each role gets a priority value (0–100) that determines override order, and a new "Display as Tag" toggle that renders the role as a visible badge next to usernames.</p><p>We also expanded the permission set significantly — new entries include Timeout Members, Connect to Voice, Manage Events, Manage Polls, Manage Bots, View Audit Log, Manage Emojis, and Use Custom Emojis.</p><h2>😊 Custom Emoji Manager</h2><p>The emoji system now features a proper manager with a usage progress bar, quick-reference panel showing all shortcodes, and seamless integration with the boost tier system. Slot counts scale from 15 (default) up to 50 at Sovereign level.</p><h2><img src="/Fortized Bot.png" style="width:20px;height:20px;vertical-align:middle;"> AutoMod 2.0</h2><p>AutoMod is no longer just "block links and caps." The new modular AutoMod introduces eight independent safety toggles:</p><ul><li>Block Links, Anti-Spam, Anti-Raid, Slow Mode</li><li>Block Invite Links, Image-Only Mode, New Account Filter, Profanity Filter</li></ul><p>Each toggle operates independently — turn on what you need, leave off what you don't. Combined with the existing keyword blocklist and mention limiter, this is the most granular moderation toolkit we've ever shipped.</p><h2>🔗 Invites Rework</h2><p>The invite system now supports configurable expiry (1 hour to 30 days), max-use limits, usage tracking per invite, and creator attribution. Expired and maxed-out invites are visually flagged and easy to clean up.</p><h2>⚡ Bastion Boosts 2.0</h2><p>Boosts have been restructured around an Onyx-based subscription model — 90 Onyx per level per month. The three tiers are:</p><ul><li><strong>Level 1 — Reinforced:</strong> 25 emoji slots, animated icon, custom invite background, 128kbps voice</li><li><strong>Level 2 — Fortified:</strong> 35 emoji slots, HD banner, 256kbps voice, custom role icons</li><li><strong>Level 3 — Sovereign:</strong> 50 emoji slots, vanity URL, 384kbps voice, custom splash, priority badge</li></ul><p>Your Onyx fuels the Fortress. No credit card. No paywall. Just community engagement.</p><h2>⚠️ Danger Zone</h2><p>The Danger Zone now includes ownership transfer alongside leave and delete actions. If you're stepping down, you can hand the keys to a trusted member without nuking the Bastion.</p><div class="highlight-box"><strong>Bastions 2.0 is live now.</strong> Every existing Bastion automatically gains access to the new room types, Roles 2.0, AutoMod 2.0, and the full Boost tier system. New Bastions created from templates will include the updated channel presets out of the box.</div><p>This update represents our vision for what community infrastructure should look like — powerful enough for serious teams, accessible enough for casual hangouts, and earned entirely through participation.</p><p>We're just getting started. The Fortress grows stronger.</p><p class="sign-off">— Tyrianum, Chief R&D Officer · Swiftaw R&D Department</p>`
-  },
-  livingbastions: {
-    category:'R&D', date:'March 2, 2026', readTime:'4 min read',
-    authorInitial:'T', authorPillLabel:'Swiftaw R&D Department',
-    title:'Living Bastions — Mood, Reputation & Focus', bylineName:'Tyrianum',
-    bylineRole:'Chief R&D Officer, Swiftaw',
-    tagClass:'tag-rd', tagLabel:'R&D',
-    banner:'/Fortized banner4.png',
-    content:`<p class="lead">Today, Bastions evolve. We're introducing features that make communities feel alive, structured, and uniquely Fortized.</p><p>This isn't about adding more buttons. It's about giving your Bastion a pulse — an atmosphere that responds to the people inside it. Four new systems ship today, each designed to deepen community identity without adding noise.</p><h2>🏰 Bastion Mood</h2><p>Every Bastion now has a live <strong>Mood State</strong> — a dynamic indicator displayed at the top of your channel list that reflects your community's current energy.</p><p>Moods are calculated from emoji usage patterns, message velocity, Party Room activity, poll engagement, and time of day. The result is one of six states:</p><ul><li><strong>🟢 Strategic</strong> — Focused discussion, planning mode</li><li><strong>🔥 Chaotic</strong> — High energy, rapid messages</li><li><strong>🎉 Celebrating</strong> — Events active, reactions flying</li><li><strong>📚 Focused</strong> — Study circles, deep work</li><li><strong>😌 Chill</strong> — Late night, relaxed vibes</li><li><strong>⚡ Hype</strong> — Big community, lots of activity</li></ul><p>Mood changes are subtle but meaningful — they affect the sidebar banner tint, ambient background particles, and even Joyster's expression in that Bastion.</p><p>Admins can lock a mood manually, disable automatic mood entirely, or set custom moods at Boost Level 2+.</p><div class="highlight-box"><strong>No one else does this.</strong> Bastions aren't just chat rooms — they're atmospheres.</div><h2>🎭 Joyster Interventions</h2><p>Joyster now joins the conversation — optionally. When enabled, Joyster becomes a lightweight, playful system presence that reacts to community moments:</p><ul><li>Chat goes silent for 2 hours? <em>"It's quiet in here… plotting something? 👀"</em></li><li>50+ messages in 5 minutes? <em>"Alright alright, save some energy for the raid."</em></li><li>Someone boosts? <em>"Power increased. Walls reinforced."</em></li><li>New member joins? <em>"A new ally has arrived! Welcome to the Bastion!"</em></li></ul><p>Joyster never interrupts conversation. He only appears as subtle system-style messages — building identity and culture without adding friction.</p><p>Admins can set frequency (Low / Normal / Chaos), restrict to Party Rooms only, or disable entirely.</p><h2>🛡️ Bastion Reputation</h2><p>Communities now recognize contribution. Every member earns <strong>Reputation</strong> inside a Bastion through:</p><ul><li>Message reactions received (+2)</li><li>Poll participation (+5)</li><li>Event attendance (+3)</li><li>Boosting (+25)</li><li>Daily messages (+1, capped at 30/day)</li></ul><p>Reputation is displayed as a small shield icon next to your name in the member list. Hover to see your score and tier — from <em>New</em> to <em>Legendary</em>.</p><p>This is Bastion-specific. Not global clout farming. Your reputation in one community doesn't inflate your status in another.</p><p>Admins can use reputation as a permission gate, reward high-rep members with cosmetic badges, and reset reputation per season.</p><div class="highlight-box"><strong>Community progression without pay-to-win.</strong> Reputation is earned through genuine engagement.</div><h2>🧭 Focus Mode</h2><p>A new optional room setting. When enabled on any channel:</p><ul><li>No reactions</li><li>No GIFs</li><li>No emoji bursts</li><li>Clean, minimal UI</li><li>Typing indicator simplified</li></ul><p>Perfect for Study Circles, Academies, and serious Guild planning. The chat background shifts slightly lighter with reduced UI noise — an intentional environment shift, not just slow mode.</p><p>Admins can toggle Focus Mode per channel from Bastion Settings → Channels.</p><h2>What's Next</h2><p>These four systems represent our vision of what community infrastructure should feel like — alive, responsive, and earned. Bastions aren't static containers anymore. They breathe.</p><p>The Fortress grows stronger.</p><p class="sign-off">— Tyrianum, Chief R&D Officer · Swiftaw R&D Department</p>`
-  },
-  whatisfortized: {
-    category:'R&D', date:'February 22, 2026', readTime:'2 min read',
-    authorInitial:'T', authorPillLabel:'Swiftaw R&D Department',
-    title:'What is Fortized?', bylineName:'Tyrianum',
-    bylineRole:'Chief R&D Officer, Swiftaw',
-    tagClass:'tag-rd', tagLabel:'R&D',
-    banner:'/Fortized banner2.png',
-    content:`<p class="lead">Fortized started with a simple question: why does building a community feel harder than it should?</p><p>Most platforms give you chat rooms. Some give you tools. A few give you customization. But very few give you <strong>identity</strong>.</p><p>Fortized is our answer to that gap. We call servers <strong>Bastions</strong> because they're meant to be defended, built upon, and strengthened over time.</p><h2>Three Pillars</h2><ul><li><strong>Structure</strong> — Your Bastions don't turn into chaos. Roles are ranks. Channels are chambers.</li><li><strong>Identity</strong> — With systems like Onyx and Radiance, engagement actually changes how you appear.</li><li><strong>Progression</strong> — Members earn Onyx through daily rewards and quests, exchangeable for Radiance.</li></ul><h2>Earned, Not Bought</h2><div class="highlight-box"><strong>No payment required.</strong> Radiance is unlocked through participation alone.</div><p class="sign-off">— Tyrianum, Chief R&D Officer · Swiftaw R&D Department</p>`
-  }
-};
-
-function renderArticle(id) {
-  const a = ARTICLES[id]; if (!a) return false;
-  const bannerStyle = a.banner ? `style="background-image:linear-gradient(145deg, rgba(255,249,62,.12) 0%, transparent 45%),linear-gradient(to bottom, rgba(8,10,15,.08), rgba(8,10,15,.7)),url('${a.banner}');background-position:center;background-size:cover;"` : '';
-  document.getElementById('article-content').innerHTML = `
-    <div class="article-full-banner" ${bannerStyle}>
-      <div class="banner-content">
-        <div class="article-full-title">${a.title}</div>
-        <div class="article-full-meta">
-          <span class="card-tag ${a.tagClass}">${a.tagLabel}</span>
-          <span class="card-date">${a.date}</span>
-          <span class="card-readtime">⏱ ${a.readTime}</span>
-        </div>
-      </div>
-    </div>
-    <div class="article-byline">
-      <div class="byline-av">${a.authorInitial}</div>
-      <div class="byline-info">
-        <div class="byline-name">${a.bylineName}</div>
-        <div class="byline-role">${a.bylineRole}</div>
-      </div>
-      <div class="byline-org">${a.authorPillLabel}</div>
-    </div>
-    <div class="article-prose">${a.content}</div>
-  `;
-  document.title = `${a.title} - Swiftaw`;
-  document.getElementById('blog-list-view').classList.add('hidden');
-  document.getElementById('article-view').classList.add('open');
-  if (typeof twemoji !== 'undefined') twemoji.parse(document.getElementById('article-content'), { folder: 'svg', ext: '.svg' });
-  return true;
-}
-
-function openArticle(id) {
-  if (!ARTICLES[id]) return;
-  if (ARTICLES[id].link) { window.location.href = ARTICLES[id].link; return; }
-  const url = new URL(window.location.href);
-  url.searchParams.set('article', id);
-  history.pushState({ articleId: id }, '', url.toString());
-  renderArticle(id);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function closeArticle() {
-  const url = new URL(window.location.href);
-  url.searchParams.delete('article');
-  history.pushState({ articleId: null }, '', url.toString());
-  document.getElementById('blog-list-view').classList.remove('hidden');
-  document.getElementById('article-view').classList.remove('open');
-  document.title = 'Blog - Swiftaw';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-window.addEventListener('popstate', function(e) {
-  const id = e.state && e.state.articleId;
-  if (id && ARTICLES[id]) { renderArticle(id); }
-  else {
-    document.getElementById('blog-list-view').classList.remove('hidden');
-    document.getElementById('article-view').classList.remove('open');
-    document.title = 'Blog - Swiftaw';
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+// Filter tabs interactivity
+document.querySelectorAll('.filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
 });
-
-// ── Dynamic blog grid with sections ──
-const PINNED_ID = 'whatisfortized';
-const NEWBIE_IDS = ['whatisfortized', 'betalive', 'milestone_launch', 'gates'];
-const RELEVANT_IDS = ['bastions2', 'atelier', 'encryption_update', 'safety', 'desktop', 'livingbastions'];
-function getExcerpt(content) {
-  const tmp = document.createElement('div');
-  tmp.innerHTML = content;
-  const lead = tmp.querySelector('.lead');
-  return lead ? lead.textContent.slice(0, 160) + (lead.textContent.length > 160 ? '...' : '') : tmp.textContent.slice(0, 160) + '...';
-}
-function parseDate(str) {
-  return new Date(str.replace(/(\w+)\s(\d+),\s(\d+)/, '$1 $2, $3'));
-}
-function renderPostGrid(filter) {
-  const grid = document.getElementById('post-grid');
-  const recentGrid = document.getElementById('most-recent-grid');
-  const newbiesGrid = document.getElementById('newbies-grid');
-  const relevantGrid = document.getElementById('relevant-grid');
-  const noResults = document.getElementById('blog-no-results');
-  const pinned = document.getElementById('pinned-card');
-  const q = (filter || '').toLowerCase().trim();
-
-  // Show/hide section dividers based on search
-  const sectionEls = ['all-posts-divider','newbies-divider','newbies-grid','relevant-divider','relevant-grid','most-recent-grid'];
-  const recentDivider = document.querySelector('.section-divider.fade-up.d2');
-
-  const sorted = Object.entries(ARTICLES)
-    .filter(([id]) => id !== PINNED_ID)
-    .sort((a, b) => parseDate(b[1].date) - parseDate(a[1].date));
-
-  const filtered = q
-    ? sorted.filter(([id, a]) => a.title.toLowerCase().includes(q) || a.category.toLowerCase().includes(q) || a.bylineName.toLowerCase().includes(q))
-    : sorted;
-
-  const pinnedA = ARTICLES[PINNED_ID];
-  const pinnedMatch = !q || pinnedA.title.toLowerCase().includes(q) || pinnedA.category.toLowerCase().includes(q);
-  if (pinned) pinned.style.display = pinnedMatch ? '' : 'none';
-
-  if (filtered.length === 0 && !pinnedMatch) {
-    grid.innerHTML = ''; recentGrid.innerHTML = ''; newbiesGrid.innerHTML = ''; relevantGrid.innerHTML = '';
-    sectionEls.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-    if (recentDivider) recentDivider.style.display = 'none';
-    noResults.style.display = 'block';
-    return;
-  }
-  noResults.style.display = 'none';
-
-  if (q) {
-    // Search mode: flat grid, hide sections
-    sectionEls.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
-    if (recentDivider) recentDivider.style.display = 'none';
-    document.getElementById('all-posts-divider').style.display = '';
-    grid.classList.add('search-grid');
-    grid.innerHTML = filtered.map(([id, a], i) => buildRegCard(id, a, i)).join('');
-    return;
-  }
-
-  // Full page mode: show all sections
-  sectionEls.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = ''; });
-  if (recentDivider) recentDivider.style.display = '';
-  grid.classList.remove('search-grid');
-
-  // Most Recent: top 3
-  const [hero, side1, side2, ...rest] = filtered;
-  let recentHtml = '';
-  recentHtml += buildHeroCard(hero[0], hero[1]);
-  recentHtml += `<div class="side-stack">`;
-  recentHtml += buildSideCard(side1[0], side1[1], 0);
-  recentHtml += buildSideCard(side2[0], side2[1], 1);
-  recentHtml += `</div>`;
-  recentGrid.innerHTML = recentHtml;
-
-  // All Posts: the rest (excluding newbie/relevant duplicates still shown)
-  const allPostsIds = new Set([hero[0], side1[0], side2[0], PINNED_ID]);
-  const allPosts = rest.filter(([id]) => !allPostsIds.has(id));
-  grid.innerHTML = `<div class="secondary-row">${allPosts.map(([id, a]) => buildRegCard(id, a)).join('')}</div>`;
-
-  // Newbies section
-  const newbiePosts = NEWBIE_IDS.filter(id => ARTICLES[id]).map(id => [id, ARTICLES[id]]);
-  newbiesGrid.innerHTML = newbiePosts.map(([id, a]) => buildRegCard(id, a)).join('');
-
-  // Relevant section
-  const relevantPosts = RELEVANT_IDS.filter(id => ARTICLES[id]).map(id => [id, ARTICLES[id]]);
-  relevantGrid.innerHTML = relevantPosts.map(([id, a]) => buildRegCard(id, a)).join('');
-}
-
-function buildHeroCard(id, a) {
-  const imgStyle = a.banner ? `style="background-image:linear-gradient(145deg, rgba(255,249,62,.1) 0%, rgba(255,249,62,.02) 40%, transparent 70%),linear-gradient(to bottom, rgba(8,10,15,.05), rgba(8,10,15,.75)),url('${a.banner}') ;background-position:center;background-size:cover;"` : '';
-  return `
-    <div class="hero-card" onclick="openArticle('${id}')">
-      <div class="hero-card-img" ${imgStyle}>
-        <span class="card-tag ${a.tagClass}">${a.tagLabel}</span>
-      </div>
-      <div class="hero-card-body">
-        <div class="card-meta">
-          <span class="card-date">${a.date}</span>
-          <span class="card-readtime">${a.readTime}</span>
-        </div>
-        <div class="hero-card-title">${a.title}</div>
-        <div class="hero-card-excerpt">${getExcerpt(a.content)}</div>
-        <div class="hero-card-footer">
-          <div class="author-chip"><div class="author-chip-av">${a.authorInitial}</div>${a.bylineName}</div>
-          <span class="read-link">Read Article →</span>
-        </div>
-      </div>
-    </div>`;
-}
-
-function buildSideCard(id, a, i) {
-  const imgStyle = a.banner ? `style="background-image:linear-gradient(145deg, rgba(255,249,62,.07) 0%, transparent 60%),linear-gradient(to bottom, rgba(8,10,15,.1), rgba(8,10,15,.8)),url('${a.banner}');background-position:center;background-size:cover;"` : '';
-  return `
-    <div class="side-card" onclick="openArticle('${id}')">
-      <div class="side-card-img" ${imgStyle}></div>
-      <div class="side-card-body">
-        <div class="card-meta">
-          <span class="card-tag ${a.tagClass}">${a.tagLabel}</span>
-          <span class="card-date">${a.date}</span>
-        </div>
-        <div class="side-card-title">${a.title}</div>
-        <div class="side-card-excerpt">${getExcerpt(a.content).slice(0, 100)}...</div>
-        <div class="card-meta" style="margin-bottom:0;margin-top:auto;">
-          <div class="author-chip"><div class="author-chip-av">${a.authorInitial}</div>${a.bylineName}</div>
-          <span class="read-link" style="margin-left:auto;">Read →</span>
-        </div>
-      </div>
-    </div>`;
-}
-
-function buildRegCard(id, a, i) {
-  const delay = i !== undefined ? `style="animation-delay:${(i * 0.06) + 0.1}s"` : '';
-  const imgStyle = a.banner ? `style="background-image:linear-gradient(145deg, rgba(255,249,62,.06) 0%, transparent 55%),linear-gradient(to bottom, rgba(8,10,15,.1), rgba(8,10,15,.78)),url('${a.banner}');background-position:center;background-size:cover;"` : '';
-  return `
-    <div class="reg-card fade-up" ${delay} onclick="openArticle('${id}')">
-      <div class="reg-card-img" ${imgStyle}></div>
-      <div class="reg-card-body">
-        <div class="card-meta">
-          <span class="card-tag ${a.tagClass}">${a.tagLabel}</span>
-          <span class="card-date">${a.date}</span>
-          <span class="card-readtime">${a.readTime}</span>
-        </div>
-        <div class="reg-card-title">${a.title}</div>
-        <div class="reg-card-excerpt">${getExcerpt(a.content)}</div>
-        <div class="card-meta" style="margin-bottom:0;margin-top:auto;">
-          <div class="author-chip"><div class="author-chip-av">${a.authorInitial}</div>${a.bylineName}</div>
-          <span class="read-link" style="margin-left:auto;">Read →</span>
-        </div>
-      </div>
-    </div>`;
-}
-function filterBlogPosts(val) { renderPostGrid(val); }
-
-// Render pinned card dynamically
-(function renderPinned() {
-  const a = ARTICLES[PINNED_ID]; if (!a) return;
-  const el = document.getElementById('pinned-card');
-  if (!el) return;
-  el.onclick = function() { openArticle(PINNED_ID); };
-  const imgStyle = a.banner ? `style="background-image:linear-gradient(145deg,rgba(255,249,62,.1) 0%,rgba(255,249,62,.02) 40%,transparent 70%),linear-gradient(to bottom,rgba(8,10,15,.1),rgba(8,10,15,.6)),url('${a.banner}') center/cover;"` : '';
-  el.innerHTML = `
-    <div class="pinned-card-img" ${imgStyle}></div>
-    <div class="pinned-card-body">
-      <div class="pinned-badge">📌 Pinned</div>
-      <div class="card-meta">
-        <span class="card-tag ${a.tagClass}">${a.tagLabel}</span>
-        <span class="card-date">${a.date}</span>
-        <span class="card-readtime">⏱ ${a.readTime}</span>
-      </div>
-      <div class="pinned-card-title">${a.title}</div>
-      <div class="pinned-card-excerpt">${getExcerpt(a.content)}</div>
-      <div class="card-meta" style="margin-bottom:0;">
-        <div class="author-chip"><div class="author-chip-av">${a.authorInitial}</div>${a.bylineName} · ${a.authorPillLabel}</div>
-        <span class="read-link" style="margin-left:auto;">Read Article →</span>
-      </div>
-    </div>`;
-})();
-
-renderPostGrid();
-
-// Update article count
-const countEl = document.getElementById('article-count');
-if (countEl) countEl.textContent = Object.keys(ARTICLES).length;
-
-(function() {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get('article');
-  if (id && ARTICLES[id]) { renderArticle(id); history.replaceState({ articleId: id }, '', window.location.href); }
-})();
 </script>
-<script>if (typeof twemoji !== 'undefined') { twemoji.parse(document.body, { folder: 'svg', ext: '.svg' }); }</script>
+
 </body>
 </html>
