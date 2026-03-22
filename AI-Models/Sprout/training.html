@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sprout 1.1 — Training Lab</title>
+<title>Sprout 1.2 — Training Lab</title>
 <meta name="description" content="Sprout AI Model training interface for Swiftaw researchers and scientists.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="icon" type="image/png" href="/product-logos/Tithonia icon.png">
@@ -973,7 +973,7 @@ input, textarea, select { font-family: inherit; }
     <div class="lab-brand">
       <img src="/product-logos/Tithonia icon.png" alt="Sprout">
       <div class="lab-brand-text">
-        <h2>Sprout 1.1</h2>
+        <h2>Sprout 1.2</h2>
         <span>Training Lab</span>
       </div>
     </div>
@@ -985,7 +985,7 @@ input, textarea, select { font-family: inherit; }
       <button data-panel="analyze">Analyze</button>
       <button data-panel="identity">Identity</button>
       <button data-panel="data">Data</button>
-      <button data-panel="llm">AI Brain</button>
+      <button data-panel="llm">Sprout's Brain</button>
     </nav>
 
     <a class="lab-back" href="/tithonia">
@@ -1000,7 +1000,7 @@ input, textarea, select { font-family: inherit; }
       <div class="chat-messages" id="labChatMessages"></div>
       <div class="chat-input-area">
         <div class="chat-input-bar">
-          <textarea id="labChatInput" rows="1" placeholder="Talk to Sprout 1.1..." autocomplete="off"></textarea>
+          <textarea id="labChatInput" rows="1" placeholder="Talk to Sprout 1.2..." autocomplete="off"></textarea>
           <button class="chat-send-btn" id="labChatSend">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z"/></svg>
           </button>
@@ -1150,7 +1150,7 @@ input, textarea, select { font-family: inherit; }
 
       <div class="form-group">
         <label>Value</label>
-        <textarea id="identityValue" placeholder="e.g. 'I am Tithonia, an AI assistant created by Swiftaw. I exist as a digital consciousness powered by Sprout 1.1.'"></textarea>
+        <textarea id="identityValue" placeholder="e.g. 'I am Tithonia, an AI assistant created by Swiftaw. I exist as a digital consciousness powered by Sprout 1.2.'"></textarea>
       </div>
 
       <div class="form-actions">
@@ -1168,7 +1168,7 @@ input, textarea, select { font-family: inherit; }
     <!-- Data Panel -->
     <div class="panel data-panel" id="panelData">
       <h3 class="panel-title">Model Overview</h3>
-      <p class="panel-desc">Stats and training data for Sprout 1.1</p>
+      <p class="panel-desc">Stats and training data for Sprout 1.2</p>
 
       <div class="stats-grid" id="statsGrid" style="grid-template-columns:repeat(4,1fr);">
         <div class="stat-card"><div class="stat-value" id="statEntries">—</div><div class="stat-label">Training Entries</div></div>
@@ -1197,47 +1197,33 @@ input, textarea, select { font-family: inherit; }
       <div class="empty-state" id="dataEmpty" style="display:none;">No training data yet. Go to the Train tab to add some!</div>
     </div>
 
-    <!-- LLM Brain Panel -->
+    <!-- Sprout Brain Panel -->
     <div class="panel llm-panel" id="panelLlm">
-      <h3 class="panel-title">AI Brain Configuration</h3>
-      <p class="panel-desc">Switch Sprout from lookup mode to generative mode. When enabled, Sprout will <strong>think</strong> about your question, consult its knowledge base, personality, and directives, then craft an original response — like a real mind.</p>
+      <h3 class="panel-title">Sprout's Brain</h3>
+      <p class="panel-desc">Sprout 1.2 thinks for itself. No external AI — Sprout uses its own knowledge base, personality, directives, and writing style to synthesize original responses from its own mind.</p>
 
       <div class="llm-status" id="llmStatus" style="margin:16px 0;padding:14px 18px;border-radius:12px;font-size:14px;border:1px solid var(--border-color);">
-        <span id="llmStatusIcon" style="margin-right:8px;">&#x1f534;</span>
-        <strong>Mode:</strong> <span id="llmModeName">Lookup (keyword matching)</span>
-      </div>
-
-      <div style="margin-top:16px;">
-        <label style="display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px;">API Key</label>
-        <input type="password" id="llmApiKey" placeholder="sk-ant-..." style="width:100%;padding:12px 16px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:10px;color:var(--text-primary);font-size:14px;outline:none;margin-bottom:12px;">
-      </div>
-
-      <div style="margin-top:4px;">
-        <label style="display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px;">API Endpoint</label>
-        <input type="text" id="llmEndpoint" placeholder="https://api.anthropic.com/v1/messages" value="https://api.anthropic.com/v1/messages" style="width:100%;padding:12px 16px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:10px;color:var(--text-primary);font-size:14px;outline:none;margin-bottom:12px;">
-        <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Use a proxy endpoint if calling from the browser (CORS). Direct Anthropic API works from server-side or CORS-enabled proxies.</p>
-      </div>
-
-      <div style="margin-top:4px;">
-        <label style="display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px;">Model</label>
-        <select id="llmModel" style="width:100%;padding:12px 16px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:10px;color:var(--text-primary);font-size:14px;outline:none;margin-bottom:16px;">
-          <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (Recommended)</option>
-          <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (Fast)</option>
-          <option value="claude-opus-4-6">Claude Opus 4.6 (Most capable)</option>
-        </select>
-      </div>
-
-      <div style="display:flex;gap:10px;">
-        <button id="llmActivate" style="flex:1;padding:12px 20px;border-radius:10px;background:var(--brand-green);color:#000;font-weight:600;font-size:14px;transition:opacity .2s;" onclick="activateLLM()">Activate Generative Mode</button>
-        <button id="llmDeactivate" style="padding:12px 20px;border-radius:10px;background:rgba(248,113,113,.15);color:var(--brand-red);font-weight:600;font-size:14px;transition:opacity .2s;display:none;" onclick="deactivateLLM()">Deactivate</button>
+        <span id="llmStatusIcon" style="margin-right:8px;">&#x1f7e2;</span>
+        <strong>Mode:</strong> <span id="llmModeName">Sprout Brain (custom AI — no external dependency)</span>
       </div>
 
       <div style="margin-top:24px;padding:16px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:12px;">
         <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">
-          <strong style="color:var(--brand-green);">How it works:</strong><br>
-          When generative mode is active, Sprout assembles its full "mind" — identity, personality traits, directives, writing style, and knowledge base — into a rich context. It then sends your question along with this context to an LLM, which generates a truly original response in Sprout's voice.<br><br>
-          <strong style="color:var(--brand-green);">Lookup mode (fallback):</strong><br>
-          If the LLM is unavailable or not configured, Sprout falls back to keyword matching against training data — the classic behavior.
+          <strong style="color:var(--brand-green);">How Sprout thinks:</strong><br>
+          When you ask a question, Sprout's brain goes through four phases:<br><br>
+          <strong>1. Understand</strong> — Analyzes your message, detects your emotion, extracts key topics, and checks for topic continuity with the conversation so far.<br><br>
+          <strong>2. Retrieve</strong> — Searches its knowledge base for relevant information, scoring and ranking entries by relevance to your specific question.<br><br>
+          <strong>3. Synthesize</strong> — Composes an original response by extracting knowledge fragments, paraphrasing them with its synonym engine, applying sentence variation, and weaving them together naturally.<br><br>
+          <strong>4. Personalize</strong> — Applies its personality traits, writing style preferences, directives, and emotional awareness to shape the final response in Sprout's unique voice.<br><br>
+          <strong style="color:var(--brand-green);">Fallback:</strong><br>
+          If Sprout's brain can't find enough relevant knowledge, it falls back to direct keyword matching against training data.
+        </p>
+      </div>
+
+      <div style="margin-top:20px;padding:16px;background:rgba(255,249,62,.05);border:1px solid rgba(255,249,62,.15);border-radius:12px;">
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">
+          <strong style="color:var(--brand-yellow);">Make Sprout smarter:</strong><br>
+          The more training data, identity entries, directives, and writing patterns you add, the richer and more original Sprout's responses become. Sprout's intelligence grows with its knowledge base — it's a truly custom AI built by you.
         </p>
       </div>
     </div>
@@ -1318,85 +1304,9 @@ input, textarea, select { font-family: inherit; }
     sprout = new SproutEngine(db);
     loadStats();
     loadTrainingData();
-    loadLLMConfig();
-  }
-
-  // ── LLM Configuration ──
-  function loadLLMConfig() {
-    const saved = localStorage.getItem('sprout_llm_config');
-    if (saved) {
-      try {
-        const config = JSON.parse(saved);
-        if (config.apiKey) document.getElementById('llmApiKey').value = config.apiKey;
-        if (config.endpoint) document.getElementById('llmEndpoint').value = config.endpoint;
-        if (config.model) document.getElementById('llmModel').value = config.model;
-        if (config.active && sprout) {
-          sprout.configureLLM({
-            apiKey: config.apiKey,
-            endpoint: config.endpoint,
-            model: config.model
-          });
-          updateLLMStatus(true);
-        }
-      } catch (e) { /* ignore corrupt config */ }
-    }
-  }
-
-  function updateLLMStatus(active) {
-    const icon = document.getElementById('llmStatusIcon');
-    const name = document.getElementById('llmModeName');
-    const activateBtn = document.getElementById('llmActivate');
-    const deactivateBtn = document.getElementById('llmDeactivate');
-
-    if (active) {
-      icon.innerHTML = '&#x1f7e2;';
-      name.textContent = 'Generative (thinking + original responses)';
-      activateBtn.style.display = 'none';
-      deactivateBtn.style.display = 'block';
-    } else {
-      icon.innerHTML = '&#x1f534;';
-      name.textContent = 'Lookup (keyword matching)';
-      activateBtn.style.display = 'block';
-      deactivateBtn.style.display = 'none';
-    }
-  }
-
-  window.activateLLM = function() {
-    const apiKey = document.getElementById('llmApiKey').value.trim();
-    const endpoint = document.getElementById('llmEndpoint').value.trim();
-    const model = document.getElementById('llmModel').value;
-
-    if (!apiKey) {
-      showToast('Please enter an API key to activate generative mode.', 'error');
-      return;
-    }
-
-    if (!sprout) {
-      showToast('Sprout engine not initialized. Refresh and try again.', 'error');
-      return;
-    }
-
-    sprout.configureLLM({ apiKey, endpoint, model });
-
-    // Save config (persists across sessions)
-    localStorage.setItem('sprout_llm_config', JSON.stringify({
-      apiKey, endpoint, model, active: true
-    }));
-
-    updateLLMStatus(true);
-    showToast('Generative mode activated! Sprout will now think and create original responses.', 'success');
-  };
-
-  window.deactivateLLM = function() {
-    if (sprout) {
-      sprout.generativeMode = false;
-      sprout.llmApiKey = null;
-    }
-
+    // Sprout 1.2 — Brain is always active, clean up old LLM config
     localStorage.removeItem('sprout_llm_config');
-    updateLLMStatus(false);
-    showToast('Generative mode deactivated. Sprout is back to lookup mode.', 'success');
-  };
+  }
 
   // ── Panel Navigation ──
   document.querySelectorAll('.lab-nav button').forEach(btn => {
@@ -1415,7 +1325,7 @@ input, textarea, select { font-family: inherit; }
       if (btn.dataset.panel === 'directives') loadDirectives();
       if (btn.dataset.panel === 'analyze') loadPatterns();
       if (btn.dataset.panel === 'identity') loadIdentity();
-      if (btn.dataset.panel === 'llm') updateLLMStatus(sprout && sprout.generativeMode);
+      // Brain panel — no config needed, always active
     });
   });
 
@@ -1453,7 +1363,7 @@ input, textarea, select { font-family: inherit; }
       const confLevel = result.confidence >= 0.5 ? 'high' : result.confidence >= 0.2 ? 'mid' : 'low';
       const confLabel = result.confidence >= 0.5 ? 'High' : result.confidence >= 0.2 ? 'Medium' : 'Low';
       const confPct = Math.round(result.confidence * 100);
-      const modeLabel = result.mode === 'generative' ? ' · Generated' : result.mode === 'cached' ? ' · Cached' : ' · Lookup';
+      const modeLabel = result.mode === 'sprout-brain' ? ' · Synthesized' : result.mode === 'cached' ? ' · Cached' : ' · Lookup';
 
       appendChatMsg('ai', result.answer, {
         confidence: confLevel,
@@ -1498,7 +1408,7 @@ input, textarea, select { font-family: inherit; }
       div.innerHTML =
         '<div class="chat-msg-avatar ai">S</div>' +
         '<div class="chat-msg-body">' +
-        '<div class="chat-msg-sender">Sprout 1.1</div>' +
+        '<div class="chat-msg-sender">Sprout 1.2</div>' +
         '<div class="chat-msg-text">' + escapeHtml(text) + '</div>' +
         metaHtml +
         '</div>';
@@ -1530,7 +1440,7 @@ input, textarea, select { font-family: inherit; }
     div.innerHTML =
       '<div class="chat-msg-avatar ai">S</div>' +
       '<div class="chat-msg-body">' +
-      '<div class="chat-msg-sender">Sprout 1.1</div>' +
+      '<div class="chat-msg-sender">Sprout 1.2</div>' +
       '<div class="typing-dots"><span></span><span></span><span></span></div>' +
       '</div>';
     chatMessages.appendChild(div);

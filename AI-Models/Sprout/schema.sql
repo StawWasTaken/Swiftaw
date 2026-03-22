@@ -1,5 +1,5 @@
 -- ============================================
--- Sprout 1.1 — Supabase Database Schema
+-- Sprout 1.2 — Supabase Database Schema
 -- Run this in Supabase SQL Editor
 -- Safe to re-run: uses IF NOT EXISTS throughout
 -- ============================================
@@ -7,7 +7,7 @@
 -- 1. Training Data
 create table if not exists sprout_training_data (
   id uuid default gen_random_uuid() primary key,
-  model text not null default 'sprout-1.1',
+  model text not null default 'sprout-1.2',
   question text not null,
   answer text not null,
   category text not null default 'general',
@@ -21,7 +21,7 @@ create table if not exists sprout_training_data (
 -- 2. Conversations
 create table if not exists sprout_conversations (
   id uuid default gen_random_uuid() primary key,
-  model text not null default 'sprout-1.1',
+  model text not null default 'sprout-1.2',
   messages jsonb not null default '[]',
   session_id text,
   created_at timestamptz default now()
@@ -30,7 +30,7 @@ create table if not exists sprout_conversations (
 -- 3. Ratings
 create table if not exists sprout_ratings (
   id uuid default gen_random_uuid() primary key,
-  model text not null default 'sprout-1.1',
+  model text not null default 'sprout-1.2',
   source_id uuid references sprout_training_data(id) on delete set null,
   rating integer not null,
   feedback text,
@@ -41,7 +41,7 @@ create table if not exists sprout_ratings (
 -- 4. Media
 create table if not exists sprout_media (
   id uuid default gen_random_uuid() primary key,
-  model text not null default 'sprout-1.1',
+  model text not null default 'sprout-1.2',
   type text not null,
   description text,
   url text not null,
@@ -122,7 +122,7 @@ end $$;
 
 create table if not exists sprout_directives (
   id uuid default gen_random_uuid() primary key,
-  model text not null default 'sprout-1.1',
+  model text not null default 'sprout-1.2',
   type text not null default 'instruction',
   directive text not null,
   priority integer not null default 0,
@@ -158,7 +158,7 @@ end $$;
 
 create table if not exists sprout_writing_patterns (
   id uuid default gen_random_uuid() primary key,
-  model text not null default 'sprout-1.1',
+  model text not null default 'sprout-1.2',
   source_label text not null,
   sample_text text not null,
   analysis jsonb not null default '{}',
@@ -190,7 +190,7 @@ end $$;
 
 create table if not exists sprout_identity (
   id uuid default gen_random_uuid() primary key,
-  model text not null default 'sprout-1.1',
+  model text not null default 'sprout-1.2',
   key text not null,
   value text not null,
   category text not null default 'personality',
