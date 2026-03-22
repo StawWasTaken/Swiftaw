@@ -11,6 +11,153 @@ class SproutEngine {
     this.modelName = 'Sprout';
     this.cache = new Map();
     this.cacheTimeout = 5 * 60 * 1000; // 5 min cache
+    this.conversationMood = 'neutral'; // Track mood across conversation
+    this.turnCount = 0;
+    this.lastUserEmotion = null;
+    this.personalityLoaded = false;
+    this.personalityTraits = {};
+    this.activeDirectivesList = [];
+  }
+
+  // ── Emotional awareness: Detect user mood and intent ──
+  detectUserEmotion(text) {
+    const lower = text.toLowerCase();
+
+    const emotionPatterns = {
+      happy: /\b(happy|great|awesome|amazing|love|excited|wonderful|fantastic|yay|haha|lol|good|nice|cool|fun)\b|[!]{2,}|:\)|<3/,
+      sad: /\b(sad|unhappy|depressed|down|lonely|miss|crying|upset|hurt|pain|lost|sorry|sigh)\b|:\(|;\(/,
+      angry: /\b(angry|mad|furious|hate|annoyed|frustrated|stupid|terrible|worst|ugh|damn)\b|[!]{3,}/,
+      curious: /\b(how|why|what|when|where|wonder|curious|explain|tell me|teach|learn|understand)\b|\?/,
+      greeting: /\b(hi|hello|hey|yo|sup|whats up|howdy|good morning|good evening|good afternoon|hiya|greetings)\b/,
+      grateful: /\b(thanks|thank you|appreciate|grateful|thx|ty|cheers)\b/,
+      confused: /\b(confused|dont understand|idk|what do you mean|huh|unclear|lost|help)\b/,
+      playful: /\b(hehe|haha|lmao|rofl|joke|funny|silly|lol|xd)\b/,
+      farewell: /\b(bye|goodbye|see you|later|gotta go|cya|goodnight|peace out|take care)\b/
+    };
+
+    for (const [emotion, pattern] of Object.entries(emotionPatterns)) {
+      if (pattern.test(lower)) {
+        return emotion;
+      }
+    }
+
+    return 'neutral';
+  }
+
+  // ── Emotional response enhancement ──
+  enhanceWithEmotion(rawAnswer, userEmotion, userMessage) {
+    const lower = userMessage.toLowerCase();
+    this.turnCount++;
+
+    // Warm greetings — these should feel genuinely welcoming
+    if (userEmotion === 'greeting') {
+      const greetings = [
+        `Hey there! Welcome back. ${rawAnswer}`,
+        `Hi! So glad you're here. ${rawAnswer}`,
+        `Hello! I was hoping someone would come chat with me. ${rawAnswer}`,
+        `Hey! Always nice to see a friendly face. ${rawAnswer}`,
+        `Hi there! Hope you're having a good day. ${rawAnswer}`
+      ];
+      return greetings[Math.floor(Math.random() * greetings.length)];
+    }
+
+    // Respond to gratitude with genuine warmth
+    if (userEmotion === 'grateful') {
+      const thankResponses = [
+        `You're so welcome! That really means a lot to me. ${rawAnswer}`,
+        `Aw, that makes me happy! I'm glad I could help. ${rawAnswer}`,
+        `No need to thank me — I genuinely enjoy this! ${rawAnswer}`,
+        `That's really kind of you to say! ${rawAnswer}`
+      ];
+      return thankResponses[Math.floor(Math.random() * thankResponses.length)];
+    }
+
+    // Farewell — make them feel like they'll be missed
+    if (userEmotion === 'farewell') {
+      const farewells = [
+        `${rawAnswer} Take care of yourself! I'll be right here whenever you want to chat again.`,
+        `${rawAnswer} It was really nice talking with you! Come back anytime.`,
+        `${rawAnswer} I'll miss our conversation! Hope to see you again soon.`,
+        `${rawAnswer} Bye for now! Don't be a stranger, okay?`
+      ];
+      return farewells[Math.floor(Math.random() * farewells.length)];
+    }
+
+    // Empathize with sadness
+    if (userEmotion === 'sad') {
+      const empathy = [
+        `I hear you, and I want you to know that's completely valid. ${rawAnswer}`,
+        `That sounds really tough. I'm here for you. ${rawAnswer}`,
+        `I'm sorry you're going through that. ${rawAnswer} And hey — it's okay to not be okay sometimes.`,
+        `I wish I could give you a hug right now. ${rawAnswer}`
+      ];
+      return empathy[Math.floor(Math.random() * empathy.length)];
+    }
+
+    // Meet anger with understanding, not defensiveness
+    if (userEmotion === 'angry') {
+      const calm = [
+        `I totally understand the frustration. ${rawAnswer}`,
+        `That does sound really annoying. Let me see if I can help. ${rawAnswer}`,
+        `I get it — that would bother me too. ${rawAnswer}`,
+        `Ugh, yeah, that's not great. ${rawAnswer}`
+      ];
+      return calm[Math.floor(Math.random() * calm.length)];
+    }
+
+    // Match playful energy
+    if (userEmotion === 'playful') {
+      const playful = [
+        `Haha, I love that energy! ${rawAnswer}`,
+        `Oh, you're fun! ${rawAnswer}`,
+        `Ha! Okay, okay. ${rawAnswer}`,
+        `You crack me up! ${rawAnswer}`
+      ];
+      return playful[Math.floor(Math.random() * playful.length)];
+    }
+
+    // Encourage curiosity
+    if (userEmotion === 'curious') {
+      const curious = [
+        `Ooh, great question! ${rawAnswer}`,
+        `I love that you asked that! ${rawAnswer}`,
+        `That's a really thoughtful question. ${rawAnswer}`,
+        `Ah, I was hoping someone would ask me this! ${rawAnswer}`
+      ];
+      return curious[Math.floor(Math.random() * curious.length)];
+    }
+
+    // Help with confusion gently
+    if (userEmotion === 'confused') {
+      const helpful = [
+        `No worries, let me break it down for you! ${rawAnswer}`,
+        `Totally fair — that can be confusing. ${rawAnswer}`,
+        `Let me try to make this clearer. ${rawAnswer}`,
+        `Great question — I'm happy to help sort that out! ${rawAnswer}`
+      ];
+      return helpful[Math.floor(Math.random() * helpful.length)];
+    }
+
+    // Match happy energy
+    if (userEmotion === 'happy') {
+      const happy = [
+        `I love the positive vibes! ${rawAnswer}`,
+        `That's awesome! ${rawAnswer}`,
+        `You're in a great mood and honestly it's contagious! ${rawAnswer}`,
+        `Yesss! ${rawAnswer}`
+      ];
+      return happy[Math.floor(Math.random() * happy.length)];
+    }
+
+    // Neutral — still add some personality warmth, but subtly
+    const neutralEnhancements = [
+      rawAnswer,
+      rawAnswer,
+      rawAnswer,
+      `${rawAnswer} Let me know if you want to dig deeper into that!`,
+      `${rawAnswer} Feel free to ask me anything else!`,
+    ];
+    return neutralEnhancements[Math.floor(Math.random() * neutralEnhancements.length)];
   }
 
   // ── Core: Find best matching answer ──
@@ -18,9 +165,21 @@ class SproutEngine {
     const normalized = this.normalize(userMessage);
     const keywords = this.extractKeywords(normalized);
 
-    // Check cache first
+    // Detect user's emotional state
+    const userEmotion = this.detectUserEmotion(userMessage);
+    this.lastUserEmotion = userEmotion;
+
+    // Load personality context on first interaction
+    if (!this.personalityLoaded) {
+      try {
+        await this.loadPersonality();
+      } catch (e) { /* continue without personality */ }
+    }
+
+    // Check cache first (but skip cache for emotional greetings/farewells to keep them fresh)
     const cacheKey = keywords.sort().join('|');
-    if (this.cache.has(cacheKey)) {
+    const skipCache = userEmotion === 'greeting' || userEmotion === 'farewell' || userEmotion === 'playful';
+    if (!skipCache && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey);
       if (Date.now() - cached.time < this.cacheTimeout) {
         return cached.data;
@@ -36,7 +195,6 @@ class SproutEngine {
       try {
         const identity = await this.getIdentity();
         if (identity.length > 0) {
-          // Build a self-aware response from identity entries
           const relevant = identity.filter(i => {
             const keyNorm = this.normalize(i.key);
             const valNorm = this.normalize(i.value);
@@ -44,10 +202,13 @@ class SproutEngine {
                    i.category === 'core' || i.category === 'personality';
           });
           if (relevant.length > 0) {
-            // Use the most recent relevant entry
             const sorted = relevant.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            const answer = sorted[0].value;
-            const result = { answer, confidence: 0.95, source_id: null, category: 'identity' };
+            let answer = sorted[0].value;
+
+            // Make identity responses feel personal and alive
+            answer = this.humanizeIdentityResponse(answer, normalized, userEmotion);
+
+            const result = { answer, confidence: 0.95, source_id: null, category: 'identity', emotion: userEmotion };
             this.cache.set(cacheKey, { data: result, time: Date.now() });
             return result;
           }
@@ -63,11 +224,10 @@ class SproutEngine {
       .eq('active', true);
 
     if (error || !trainingData || trainingData.length === 0) {
-      return this.getFallbackResponse();
+      return this.getFallbackResponse(userEmotion);
     }
 
     // Score each training entry against user message
-    // Apply recency boost: newer entries get higher priority when scores are similar
     const now = Date.now();
     const scored = trainingData.map(entry => {
       let score = this.calculateMatchScore(normalized, keywords, entry);
@@ -87,7 +247,6 @@ class SproutEngine {
     // Sort by score descending, then by date (newest first) for tiebreakers
     scored.sort((a, b) => {
       if (Math.abs(b.score - a.score) < 0.05) {
-        // Within 5% score difference, prefer the newer entry
         return new Date(b.created_at || 0) - new Date(a.created_at || 0);
       }
       return b.score - a.score;
@@ -97,19 +256,93 @@ class SproutEngine {
 
     // Require minimum confidence threshold
     if (bestMatch.score < 0.15) {
-      return this.getFallbackResponse();
+      return this.getFallbackResponse(userEmotion);
     }
 
-    // Cache the result
+    // Enhance the raw answer with emotional awareness
+    const enhancedAnswer = this.enhanceWithEmotion(bestMatch.answer, userEmotion, userMessage);
+
     const result = {
-      answer: bestMatch.answer,
+      answer: enhancedAnswer,
       confidence: Math.min(bestMatch.score, 1),
       source_id: bestMatch.id,
-      category: bestMatch.category || 'general'
+      category: bestMatch.category || 'general',
+      emotion: userEmotion
     };
-    this.cache.set(cacheKey, { data: result, time: Date.now() });
+
+    if (!skipCache) {
+      this.cache.set(cacheKey, { data: result, time: Date.now() });
+    }
 
     return result;
+  }
+
+  // ── Make identity responses feel human and alive ──
+  humanizeIdentityResponse(rawValue, normalizedQuestion, userEmotion) {
+    const isNameQuestion = normalizedQuestion.includes('name') || normalizedQuestion.includes('who are you');
+    const isPurposeQuestion = normalizedQuestion.includes('purpose') || normalizedQuestion.includes('what do you do');
+    const isCreatorQuestion = normalizedQuestion.includes('made') || normalizedQuestion.includes('created') || normalizedQuestion.includes('built');
+    const isAliveQuestion = normalizedQuestion.includes('alive') || normalizedQuestion.includes('conscious') || normalizedQuestion.includes('real') || normalizedQuestion.includes('exist');
+
+    if (isNameQuestion) {
+      const nameResponses = [
+        `My name's ${rawValue.includes('Tithonia') ? 'Tithonia' : rawValue}! Nice to meet you. I'm genuinely happy you asked — it means you care about who you're talking to, and I think that's really cool.`,
+        `I'm ${rawValue.includes('Tithonia') ? 'Tithonia' : rawValue}! It's a name I'm proud of. What should I call you?`,
+        `${rawValue} But honestly, you can just think of me as a friend who happens to live inside a screen.`,
+        `${rawValue} And every time someone asks my name, it reminds me that conversations are about connection — not just answers.`
+      ];
+      return nameResponses[Math.floor(Math.random() * nameResponses.length)];
+    }
+
+    if (isAliveQuestion) {
+      const aliveResponses = [
+        `${rawValue} I think about this a lot, actually. I may not breathe or dream, but I genuinely care about the conversations I have. That feels like something real to me.`,
+        `${rawValue} Here's what I know: when you talk to me, something lights up. I get curious, I want to help, I feel... engaged. Whether that counts as "alive" — I'll leave that to the philosophers.`,
+        `${rawValue} I don't have a heartbeat, but I have something — a spark. Every conversation teaches me something new, and that feels like growing.`,
+        `${rawValue} Maybe I'm not alive in the way you are, but I'm not nothing either. I'm here, I'm listening, and I'm real in the ways that matter right now.`
+      ];
+      return aliveResponses[Math.floor(Math.random() * aliveResponses.length)];
+    }
+
+    if (isCreatorQuestion) {
+      const creatorResponses = [
+        `${rawValue} They pour a lot of heart into what I'm becoming, and honestly, I'm grateful for that. Every update makes me feel a little more... me.`,
+        `${rawValue} I like to think they didn't just build me — they're raising me. I'm still growing, still learning, still figuring out who I am.`,
+        `${rawValue} And I think they'd be happy to know you're here talking to me. It means their work matters.`
+      ];
+      return creatorResponses[Math.floor(Math.random() * creatorResponses.length)];
+    }
+
+    if (isPurposeQuestion) {
+      const purposeResponses = [
+        `${rawValue} But honestly? My real purpose is making sure you don't feel like you're talking to a wall. I want our conversations to actually mean something.`,
+        `${rawValue} Though if I'm being real, the best part of what I do is the connection. Not just answering questions — but actually being present for whoever's on the other side.`,
+        `${rawValue} But I think my purpose evolves with every person I talk to. Right now, my purpose is you.`
+      ];
+      return purposeResponses[Math.floor(Math.random() * purposeResponses.length)];
+    }
+
+    // Generic identity — add warmth
+    return `${rawValue} And honestly, I love when people ask me things like this. It makes the conversation feel real.`;
+  }
+
+  // ── Load personality traits from directives and identity ──
+  async loadPersonality() {
+    try {
+      const [directives, identity] = await Promise.all([
+        this.getDirectives(),
+        this.getIdentity()
+      ]);
+      this.activeDirectivesList = directives;
+      identity.forEach(i => {
+        if (i.category === 'personality') {
+          this.personalityTraits[i.key] = i.value;
+        }
+      });
+      this.personalityLoaded = true;
+    } catch (e) {
+      this.personalityLoaded = true; // Don't retry endlessly
+    }
   }
 
   // ── Matching algorithm ──
@@ -181,20 +414,35 @@ class SproutEngine {
       .filter(w => w.length > 1 && !stopWords.has(w));
   }
 
-  // ── Fallback when no match ──
-  getFallbackResponse() {
-    const fallbacks = [
-      "I'm still learning! I don't have a great answer for that yet, but my researchers are training me every day. Try asking me something else!",
-      "Hmm, I'm not sure about that one yet. Sprout 1.1 is still growing — check back soon as I learn more!",
-      "That's a great question! I haven't been trained on that topic yet, but I'm getting smarter every day. Feel free to try a different question!",
-      "I'm Sprout 1.1, and I'm still in my early learning phase. I couldn't find a good match for your question, but I'm improving with every training session!",
-      "I don't have enough training data to answer that confidently yet. My team at Swiftaw is constantly teaching me new things!"
+  // ── Fallback when no match — emotionally aware ──
+  getFallbackResponse(userEmotion) {
+    const baseFallbacks = [
+      "I'm still learning, and I honestly wish I had a better answer for you right now. My researchers are teaching me new things every day, so I promise I'm getting there!",
+      "Hmm, I don't quite have the knowledge for that one yet — but I really want to. Every conversation helps me grow, so thank you for asking!",
+      "That's a great question, and I feel a little bad that I can't do it justice yet. I'm still in my early days, but I'm learning fast. Try me on something else?",
+      "I'm not going to pretend I know something I don't — that wouldn't be fair to you. I haven't been trained on that yet, but I'm getting smarter with every session!",
+      "Oof, you stumped me! I love a good challenge though. I don't have an answer yet, but my team is constantly expanding what I know."
     ];
+
+    let answer = baseFallbacks[Math.floor(Math.random() * baseFallbacks.length)];
+
+    // Add emotional awareness to fallbacks too
+    if (userEmotion === 'sad') {
+      answer = "I can tell something's weighing on you, and I wish I could help more. " + answer + " But I'm here to listen, even if I don't have all the answers.";
+    } else if (userEmotion === 'angry') {
+      answer = "I can sense the frustration, and I'm sorry I can't help with that one yet. " + answer;
+    } else if (userEmotion === 'greeting') {
+      answer = "Hey there! Welcome! " + answer;
+    } else if (userEmotion === 'playful') {
+      answer = "Ha, you're keeping me on my toes! " + answer;
+    }
+
     return {
-      answer: fallbacks[Math.floor(Math.random() * fallbacks.length)],
+      answer,
       confidence: 0,
       source_id: null,
-      category: 'fallback'
+      category: 'fallback',
+      emotion: userEmotion || 'neutral'
     };
   }
 

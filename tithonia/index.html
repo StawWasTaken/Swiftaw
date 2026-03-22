@@ -398,6 +398,29 @@ input, textarea { font-family: inherit; }
   margin-top: 12px;
 }
 
+/* Emotional mood indicator */
+.mood-indicator {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 1px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+  opacity: 0.7;
+  letter-spacing: 0.3px;
+}
+.mood-happy { background: rgba(255,249,62,.12); color: #fff93e; }
+.mood-sad { background: rgba(100,149,237,.12); color: #6495ed; }
+.mood-angry { background: rgba(255,99,71,.12); color: #ff6347; }
+.mood-curious { background: rgba(138,43,226,.12); color: #ba8ef7; }
+.mood-greeting { background: rgba(255,156,60,.12); color: #ff9c3c; }
+.mood-grateful { background: rgba(255,182,193,.12); color: #ffb6c1; }
+.mood-playful { background: rgba(0,206,209,.12); color: #00ced1; }
+.mood-confused { background: rgba(255,165,0,.12); color: #ffa500; }
+.mood-farewell { background: rgba(147,112,219,.12); color: #9370db; }
+.mood-neutral { background: rgba(255,255,255,.06); color: rgba(255,255,255,.4); }
+
 /* Typing indicator */
 .typing-indicator {
   display: flex;
@@ -1010,9 +1033,9 @@ input, textarea { font-family: inherit; }
       try {
         const result = await sprout.getResponse(text.trim());
         typingEl.remove();
-        convo.messages.push({ role: 'assistant', text: result.answer });
+        convo.messages.push({ role: 'assistant', text: result.answer, emotion: result.emotion });
         saveConversations();
-        renderMessage('assistant', result.answer);
+        renderMessage('assistant', result.answer, result.emotion);
         scrollToBottom();
       } catch (err) {
         typingEl.remove();
@@ -1040,7 +1063,20 @@ input, textarea { font-family: inherit; }
   }
 
   // ── Render a single message ──
-  function renderMessage(role, text) {
+  const moodLabels = {
+    happy: 'feeling happy',
+    sad: 'feeling empathetic',
+    angry: 'staying calm',
+    curious: 'intrigued',
+    greeting: 'welcoming',
+    grateful: 'touched',
+    playful: 'feeling playful',
+    confused: 'here to help',
+    farewell: 'saying goodbye',
+    neutral: 'listening'
+  };
+
+  function renderMessage(role, text, emotion) {
     const div = document.createElement('div');
     div.className = 'message';
 
@@ -1052,12 +1088,14 @@ input, textarea { font-family: inherit; }
           <div class="message-text">${escapeHtml(text)}</div>
         </div>`;
     } else {
+      const moodClass = emotion ? `mood-${emotion}` : 'mood-neutral';
+      const moodText = emotion ? (moodLabels[emotion] || 'listening') : 'listening';
       div.innerHTML = `
         <div class="message-avatar ai-avatar">
           <img src="/product-logos/Tithonia icon.png" alt="Tithonia">
         </div>
         <div class="message-content">
-          <div class="message-sender">Tithonia</div>
+          <div class="message-sender">Tithonia <span class="mood-indicator ${moodClass}">${moodText}</span></div>
           <div class="message-text">${escapeHtml(text)}</div>
         </div>`;
     }
@@ -1093,7 +1131,7 @@ input, textarea { font-family: inherit; }
     messagesEl.innerHTML = '';
     const convo = conversations.find(c => c.id === activeConvoId);
     if (!convo) return;
-    convo.messages.forEach(m => renderMessage(m.role, m.text));
+    convo.messages.forEach(m => renderMessage(m.role, m.text, m.emotion));
     scrollToBottom();
   }
 
