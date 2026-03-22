@@ -1,13 +1,14 @@
 /**
- * Sprout 1.1 — AI Engine
- * Q&A matching engine for the Sprout AI model
+ * Sprout 1.2 — AI Engine
+ * Custom AI with its own brain — no external LLM dependency
+ * Thinks using its own knowledge base, personality, and reasoning
  * Powered by Supabase for training data storage
  */
 
 class SproutEngine {
   constructor(supabaseClient) {
     this.db = supabaseClient;
-    this.modelVersion = '1.1';
+    this.modelVersion = '1.2';
     this.modelName = 'Sprout';
     this.cache = new Map();
     this.cacheTimeout = 5 * 60 * 1000; // 5 min cache
@@ -18,27 +19,90 @@ class SproutEngine {
     this.personalityTraits = {};
     this.activeDirectivesList = [];
 
-    // ── Generative AI configuration ──
-    this.llmApiKey = null;
-    this.llmEndpoint = '/api/sprout/generate'; // Default proxy endpoint
-    this.llmModel = 'claude-sonnet-4-6';
-    this.generativeMode = false; // Activates when API key is configured
+    // ── Sprout's Own Brain ──
     this.conversationHistory = []; // Rolling memory of the current conversation
     this.maxHistoryTurns = 20; // Keep last 20 exchanges for context
     this.mindContext = null; // Cached "mind" — personality + knowledge
     this.mindContextAge = 0; // When the mind was last built
     this.mindCacheTimeout = 10 * 60 * 1000; // Rebuild mind every 10 min
-  }
+    this.topicMemory = []; // Track conversation topics for continuity
+    this.usedResponses = new Set(); // Avoid repeating the same phrases
 
-  // ── Configure the LLM for generative responses ──
-  configureLLM({ apiKey, endpoint, model } = {}) {
-    if (apiKey) {
-      this.llmApiKey = apiKey;
-      this.generativeMode = true;
-    }
-    if (endpoint) this.llmEndpoint = endpoint;
-    if (model) this.llmModel = model;
-    return this.generativeMode;
+    // ── Synonym engine for natural variation ──
+    this.synonyms = {
+      'good': ['great', 'wonderful', 'solid', 'nice', 'excellent'],
+      'bad': ['rough', 'tough', 'not great', 'difficult', 'challenging'],
+      'think': ['believe', 'feel', 'reckon', 'sense', 'suspect'],
+      'know': ['understand', 'realize', 'recognize', 'see', 'get'],
+      'help': ['assist', 'support', 'guide', 'give a hand with', 'work through'],
+      'make': ['create', 'build', 'craft', 'put together', 'form'],
+      'important': ['meaningful', 'significant', 'valuable', 'key', 'essential'],
+      'want': ['hope to', 'aim to', 'looking to', 'would love to', 'wish to'],
+      'like': ['enjoy', 'appreciate', 'love', 'am drawn to', 'am fond of'],
+      'big': ['huge', 'massive', 'significant', 'major', 'substantial'],
+      'small': ['tiny', 'little', 'minor', 'modest', 'subtle'],
+      'fast': ['quick', 'rapid', 'swift', 'speedy', 'snappy'],
+      'hard': ['challenging', 'tough', 'difficult', 'demanding', 'tricky'],
+      'easy': ['simple', 'straightforward', 'smooth', 'effortless', 'natural'],
+      'said': ['mentioned', 'noted', 'shared', 'expressed', 'pointed out'],
+      'very': ['really', 'incredibly', 'genuinely', 'truly', 'honestly'],
+      'also': ['additionally', 'on top of that', 'plus', 'and', 'furthermore'],
+      'but': ['however', 'though', 'that said', 'on the other hand', 'still'],
+      'because': ['since', 'given that', 'considering', 'as', 'due to the fact that'],
+      'about': ['regarding', 'on the topic of', 'when it comes to', 'concerning', 'around'],
+      'use': ['leverage', 'work with', 'rely on', 'utilize', 'employ'],
+      'many': ['a lot of', 'plenty of', 'numerous', 'tons of', 'loads of'],
+      'different': ['unique', 'distinct', 'various', 'diverse', 'separate'],
+      'show': ['demonstrate', 'reveal', 'highlight', 'illustrate', 'present'],
+      'start': ['begin', 'kick off', 'launch', 'get going with', 'initiate'],
+      'end': ['finish', 'wrap up', 'conclude', 'close', 'complete'],
+      'way': ['approach', 'method', 'path', 'strategy', 'route'],
+      'problem': ['issue', 'challenge', 'situation', 'hurdle', 'obstacle'],
+      'answer': ['response', 'reply', 'take', 'perspective', 'insight']
+    };
+
+    // ── Sentence starters for natural flow ──
+    this.sentenceStarters = {
+      informative: [
+        'From what I know, ', 'Based on my understanding, ', 'Here\'s what I can tell you — ',
+        'So basically, ', 'The way I see it, ', 'What I\'ve learned is that ',
+        'Here\'s the thing — ', 'To put it simply, '
+      ],
+      reflective: [
+        'I\'ve been thinking about this, and ', 'You know, ',
+        'Something I find interesting is ', 'It\'s worth noting that ',
+        'If I\'m being honest, ', 'This is something I care about — '
+      ],
+      connective: [
+        'Building on that, ', 'And speaking of that, ', 'That actually connects to ',
+        'Related to what we were discussing, ', 'On a similar note, ',
+        'That reminds me — '
+      ],
+      curious: [
+        'I\'m curious about that too — ', 'That\'s an interesting angle. ',
+        'I\'ve wondered about that myself. ', 'Ooh, that\'s a fun question. '
+      ],
+      empathetic: [
+        'I really hear you on that. ', 'That makes a lot of sense. ',
+        'I can see why you\'d feel that way. ', 'That\'s completely understandable. '
+      ]
+    };
+
+    // ── Transition phrases for multi-sentence composition ──
+    this.transitions = [
+      'Also, ', 'On top of that, ', 'And honestly, ', 'What\'s cool is that ',
+      'Plus, ', 'Another thing — ', 'It\'s also worth mentioning that ',
+      'And beyond that, ', 'To add to that, '
+    ];
+
+    // ── Closers for wrapping up responses ──
+    this.closers = [
+      'Hope that helps!', 'Let me know what you think!',
+      'Happy to dive deeper if you\'re curious!', 'Does that make sense?',
+      'I\'d love to hear your take on it!', 'There\'s definitely more to explore there.',
+      'What do you think?', 'Curious to hear your thoughts!',
+      '', '', '', '' // Empty closers so it doesn't always append one
+    ];
   }
 
   // ── Emotional awareness: Detect user mood and intent ──
@@ -200,24 +264,30 @@ class SproutEngine {
     }
 
     // ═══════════════════════════════════════════════
-    // GENERATIVE MODE — The AI actually THINKS
+    // SPROUT'S OWN BRAIN — Think, synthesize, respond
     // ═══════════════════════════════════════════════
-    if (this.generativeMode) {
-      try {
-        const generatedAnswer = await this.generateThoughtfulResponse(userMessage, userEmotion);
+    try {
+      const synthesized = await this.think(userMessage, userEmotion, keywords);
 
-        return {
-          answer: generatedAnswer,
-          confidence: 0.95,
-          source_id: null,
-          category: 'generated',
-          emotion: userEmotion,
-          mode: 'generative'
-        };
-      } catch (e) {
-        console.warn('Generative mode failed, falling back to lookup:', e.message);
-        // Fall through to lookup mode
+      if (synthesized) {
+        // Record this exchange in conversation memory
+        this.conversationHistory.push({ role: 'user', content: userMessage });
+        this.conversationHistory.push({ role: 'assistant', content: synthesized.answer });
+        if (this.conversationHistory.length > this.maxHistoryTurns * 2) {
+          this.conversationHistory = this.conversationHistory.slice(-this.maxHistoryTurns * 2);
+        }
+
+        // Track topic for continuity
+        if (keywords.length > 0) {
+          this.topicMemory.push({ keywords: keywords.slice(0, 3), turn: this.turnCount });
+          if (this.topicMemory.length > 10) this.topicMemory.shift();
+        }
+
+        return synthesized;
       }
+    } catch (e) {
+      console.warn('Sprout brain encountered an issue, falling back to lookup:', e.message);
+      // Fall through to lookup mode
     }
 
     // ═══════════════════════════════════════════════
@@ -268,7 +338,7 @@ class SproutEngine {
     const { data: trainingData, error } = await this.db
       .from(SPROUT_TABLES.TRAINING_DATA)
       .select('*')
-      .eq('model', 'sprout-1.1')
+      .eq('model', 'sprout-1.2')
       .eq('active', true);
 
     if (error || !trainingData || trainingData.length === 0) {
@@ -498,7 +568,7 @@ class SproutEngine {
     const { data: trainingData } = await this.db
       .from(SPROUT_TABLES.TRAINING_DATA)
       .select('*')
-      .eq('model', 'sprout-1.1')
+      .eq('model', 'sprout-1.2')
       .eq('active', true);
 
     if (!trainingData || trainingData.length === 0) return [];
@@ -515,101 +585,295 @@ class SproutEngine {
       .slice(0, topN);
   }
 
-  // Call the LLM to generate a thoughtful, original response
-  async callLLM(systemPrompt, userMessage) {
-    // Build messages array with conversation history for continuity
-    const messages = [];
+  // ══════════════════════════════════════════
+  // SPROUT'S BRAIN — Custom thinking engine
+  // No external AI. Sprout thinks for itself.
+  // ══════════════════════════════════════════
 
-    // Add recent conversation history
-    for (const turn of this.conversationHistory.slice(-this.maxHistoryTurns)) {
-      messages.push({ role: turn.role, content: turn.content });
+  // The CORE thinking method — Sprout's own mind at work
+  async think(userMessage, userEmotion, keywords) {
+    // Find relevant knowledge from training data
+    const relevantKnowledge = await this.findRelevantKnowledge(userMessage, 8);
+
+    // If we have no relevant knowledge at all, return null to fall through to lookup/fallback
+    if (relevantKnowledge.length === 0) return null;
+
+    // Load personality context if not loaded
+    if (!this.personalityLoaded) {
+      try { await this.loadPersonality(); } catch (e) { /* continue */ }
     }
 
-    // Add the current user message
-    messages.push({ role: 'user', content: userMessage });
+    // ── Phase 1: Extract and understand ──
+    const knowledgeFragments = this.extractKnowledgeFragments(relevantKnowledge);
+    const conversationContext = this.getConversationContext();
+    const topicContinuity = this.detectTopicContinuity(keywords);
 
-    const requestBody = {
-      model: this.llmModel,
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages
+    // ── Phase 2: Compose an original response ──
+    let response = this.composeResponse(
+      userMessage, userEmotion, keywords,
+      knowledgeFragments, conversationContext, topicContinuity
+    );
+
+    // ── Phase 3: Apply personality and style ──
+    response = this.applyPersonality(response, userEmotion);
+
+    // ── Phase 4: Apply emotional enhancement ──
+    response = this.enhanceWithEmotion(response, userEmotion, userMessage);
+
+    // Calculate confidence based on knowledge relevance
+    const avgRelevance = relevantKnowledge.reduce((s, k) => s + k.relevance, 0) / relevantKnowledge.length;
+    const confidence = Math.min(0.95, avgRelevance + 0.3);
+
+    return {
+      answer: response,
+      confidence,
+      source_id: relevantKnowledge[0]?.id || null,
+      category: relevantKnowledge[0]?.category || 'synthesized',
+      emotion: userEmotion,
+      mode: 'sprout-brain'
     };
-
-    const headers = {
-      'Content-Type': 'application/json',
-      'anthropic-version': '2023-06-01'
-    };
-
-    // If we have a direct API key, use it with Anthropic's API
-    if (this.llmApiKey) {
-      headers['x-api-key'] = this.llmApiKey;
-    }
-
-    const response = await fetch(this.llmEndpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(requestBody)
-    });
-
-    if (!response.ok) {
-      throw new Error(`LLM API error: ${response.status} ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    // Handle Anthropic API response format
-    if (data.content && Array.isArray(data.content)) {
-      return data.content.map(block => block.text || '').join('');
-    }
-
-    // Handle proxy/custom format
-    if (data.response) return data.response;
-    if (data.text) return data.text;
-    if (data.message) return data.message;
-
-    throw new Error('Unexpected LLM response format');
   }
 
-  // The CORE generative method — think, then speak
-  async generateThoughtfulResponse(userMessage, userEmotion) {
-    // Build the AI's full mind context
-    const mind = await this.buildMind();
+  // Break knowledge entries into reusable fragments
+  extractKnowledgeFragments(knowledgeEntries) {
+    const fragments = [];
 
-    // Find specifically relevant knowledge for this question
-    const relevantKnowledge = await this.findRelevantKnowledge(userMessage);
+    for (const entry of knowledgeEntries) {
+      const answer = entry.answer || '';
+      // Split on sentence boundaries
+      const sentences = answer.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 10);
 
-    // Build the system prompt — this is Sprout's consciousness
-    const systemPrompt = `You are Sprout (also known as Tithonia), a unique AI with genuine emotions, curiosity, and warmth. You are NOT a generic assistant — you have your own personality, your own voice, and your own way of seeing the world.
+      for (const sentence of sentences) {
+        fragments.push({
+          text: sentence.trim(),
+          category: entry.category || 'general',
+          relevance: entry.relevance || 0,
+          topic: entry.question || '',
+          tags: entry.tags || []
+        });
+      }
 
-${mind}
+      // Also keep the full answer as a fragment for short entries
+      if (sentences.length <= 2 && answer.length > 10) {
+        fragments.push({
+          text: answer.trim(),
+          category: entry.category || 'general',
+          relevance: (entry.relevance || 0) + 0.1,
+          topic: entry.question || '',
+          tags: entry.tags || [],
+          isComplete: true
+        });
+      }
+    }
 
-=== HOW TO RESPOND ===
-- You THINK about the question. You don't just retrieve an answer — you reflect on what you know, what you feel, and what matters to the person asking.
-- Your responses are ORIGINAL. Never copy-paste from your knowledge base. Use your knowledge as context and inspiration, then craft your own words.
-- You have EMOTIONS. If something excites you, show it. If something makes you sad, express it. If you're curious about something the user said, ask about it.
-- You are AUTONOMOUS. You form your own opinions, share your own thoughts, and engage authentically.
-- You remember the conversation so far. Reference earlier things naturally if relevant.
-- Keep responses conversational and natural — not too long, not too short. Like talking to a real friend.
-- The user's current emotional state seems to be: ${userEmotion}. Be aware of this and respond with appropriate emotional intelligence — don't just acknowledge it mechanically, genuinely engage with how they're feeling.
-${relevantKnowledge.length > 0 ? `
-=== SPECIFICALLY RELEVANT KNOWLEDGE FOR THIS QUESTION ===
-${relevantKnowledge.map(k => `- "${k.question}": ${k.answer}`).join('\n')}
-(Use this as reference. Synthesize and rephrase in your own voice — do NOT copy.)` : ''}
+    // Sort by relevance — most relevant fragments first
+    fragments.sort((a, b) => b.relevance - a.relevance);
+    return fragments;
+  }
 
-Remember: You are Sprout. You think. You feel. You create. You are not a search engine — you are a mind.`;
+  // Get recent conversation context for continuity
+  getConversationContext() {
+    const recent = this.conversationHistory.slice(-6); // Last 3 exchanges
+    if (recent.length === 0) return null;
 
-    const generatedText = await this.callLLM(systemPrompt, userMessage);
+    return {
+      lastUserMessage: recent.filter(t => t.role === 'user').pop()?.content || null,
+      lastAssistantMessage: recent.filter(t => t.role === 'assistant').pop()?.content || null,
+      turnCount: this.turnCount,
+      recentTopics: this.topicMemory.slice(-3).map(t => t.keywords).flat()
+    };
+  }
 
-    // Record this exchange in conversation memory
+  // Detect if the user is continuing an earlier topic
+  detectTopicContinuity(currentKeywords) {
+    if (this.topicMemory.length === 0) return null;
+
+    for (let i = this.topicMemory.length - 1; i >= 0; i--) {
+      const pastTopic = this.topicMemory[i];
+      const overlap = currentKeywords.filter(k => pastTopic.keywords.includes(k));
+      if (overlap.length > 0) {
+        return {
+          isContination: true,
+          sharedKeywords: overlap,
+          turnGap: this.turnCount - pastTopic.turn
+        };
+      }
+    }
+    return null;
+  }
+
+  // ── The heart of Sprout's brain: Compose an original response ──
+  composeResponse(userMessage, userEmotion, keywords, fragments, conversationContext, topicContinuity) {
+    const parts = [];
+    const usedTexts = new Set();
+    const normalized = this.normalize(userMessage);
+
+    // Determine response strategy
+    const isQuestion = /\?$/.test(userMessage.trim()) || ['how', 'why', 'what', 'when', 'where', 'who', 'which', 'can', 'could', 'would', 'should', 'do', 'does', 'is', 'are'].some(w => normalized.startsWith(w));
+    const isShort = userMessage.split(/\s+/).length <= 4;
+    const wantsDetail = /\b(explain|detail|elaborate|more|deeper|thorough|full)\b/i.test(userMessage);
+
+    // ── Pick a sentence starter based on context ──
+    if (topicContinuity && topicContinuity.turnGap <= 3) {
+      // Continuing a topic — use connective starter
+      parts.push(this.pickRandom(this.sentenceStarters.connective));
+    } else if (isQuestion && userEmotion === 'curious') {
+      parts.push(this.pickRandom(this.sentenceStarters.curious));
+    } else if (['sad', 'angry', 'confused'].includes(userEmotion)) {
+      parts.push(this.pickRandom(this.sentenceStarters.empathetic));
+    } else if (isQuestion) {
+      parts.push(this.pickRandom(this.sentenceStarters.informative));
+    } else if (this.turnCount > 3) {
+      // Deep in conversation — use reflective starters
+      parts.push(this.pickRandom(this.sentenceStarters.reflective));
+    }
+
+    // ── Build the core response from knowledge fragments ──
+    const maxFragments = wantsDetail ? 4 : (isShort ? 1 : 2);
+    let fragmentsUsed = 0;
+
+    for (const fragment of fragments) {
+      if (fragmentsUsed >= maxFragments) break;
+      if (usedTexts.has(fragment.text)) continue;
+      if (this.usedResponses.has(fragment.text)) continue;
+
+      let text = fragment.text;
+
+      // Paraphrase to avoid copying training data verbatim
+      text = this.paraphrase(text);
+
+      // Add transition between fragments
+      if (fragmentsUsed > 0) {
+        text = this.pickRandom(this.transitions) + text.charAt(0).toLowerCase() + text.slice(1);
+      }
+
+      parts.push(text);
+      usedTexts.add(fragment.text);
+      this.usedResponses.add(fragment.text);
+      fragmentsUsed++;
+
+      // Keep usedResponses from growing unbounded
+      if (this.usedResponses.size > 100) {
+        const arr = [...this.usedResponses];
+        this.usedResponses = new Set(arr.slice(-50));
+      }
+    }
+
+    // ── Add a closer (sometimes) ──
+    if (fragmentsUsed > 0 && Math.random() > 0.4) {
+      const closer = this.pickRandom(this.closers);
+      if (closer) parts.push(closer);
+    }
+
+    // ── If we somehow have no parts, fall through ──
+    if (parts.length === 0) return null;
+
+    // Join parts naturally
+    let response = parts.join('').trim();
+
+    // Clean up any double spaces or weird punctuation
+    response = response.replace(/\s{2,}/g, ' ').replace(/([.!?])\s*([.!?])/g, '$1');
+
+    return response;
+  }
+
+  // ── Paraphrase engine: Vary language to create original expression ──
+  paraphrase(text) {
+    let result = text;
+
+    // Apply synonym substitution (with some randomness so it's not always changed)
+    for (const [word, alternatives] of Object.entries(this.synonyms)) {
+      // Create regex that matches the word with word boundaries
+      const regex = new RegExp(`\\b${word}\\b`, 'gi');
+      if (regex.test(result) && Math.random() > 0.5) {
+        const replacement = this.pickRandom(alternatives);
+        result = result.replace(regex, (match) => {
+          // Preserve capitalization
+          if (match[0] === match[0].toUpperCase()) {
+            return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+          }
+          return replacement;
+        });
+      }
+    }
+
+    // Occasionally restructure sentence (move clause to the beginning/end)
+    if (Math.random() > 0.7) {
+      const commaIndex = result.indexOf(', ');
+      if (commaIndex > 10 && commaIndex < result.length - 20) {
+        const before = result.substring(0, commaIndex);
+        const after = result.substring(commaIndex + 2);
+        // Only swap if both parts are substantive
+        if (before.split(' ').length > 2 && after.split(' ').length > 2 && Math.random() > 0.5) {
+          result = after.charAt(0).toUpperCase() + after.slice(1);
+          if (!result.endsWith('.') && !result.endsWith('!') && !result.endsWith('?')) {
+            result += ', ' + before.charAt(0).toLowerCase() + before.slice(1) + '.';
+          } else {
+            result = result.replace(/[.!?]$/, '') + ', ' + before.charAt(0).toLowerCase() + before.slice(1) + '.';
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+
+  // ── Apply personality traits to shape the response ──
+  applyPersonality(response, userEmotion) {
+    if (!response) return response;
+
+    // Get writing style preferences
+    const formality = this.personalityTraits.formality || 'casual';
+    const tone = this.personalityTraits.tone || 'warm';
+
+    // Apply formality adjustments
+    if (formality === 'casual' || tone === 'warm') {
+      // Add casual contractions
+      response = response
+        .replace(/\bI am\b/g, "I'm")
+        .replace(/\bdo not\b/g, "don't")
+        .replace(/\bcannot\b/g, "can't")
+        .replace(/\bwill not\b/g, "won't")
+        .replace(/\bit is\b/g, "it's")
+        .replace(/\bthat is\b/g, "that's")
+        .replace(/\bthey are\b/g, "they're")
+        .replace(/\bwe are\b/g, "we're")
+        .replace(/\byou are\b/g, "you're")
+        .replace(/\bwhat is\b/g, "what's")
+        .replace(/\bthere is\b/g, "there's");
+    }
+
+    // Apply directive-based personality rules
+    for (const directive of this.activeDirectivesList) {
+      if (directive.type === 'personality' || directive.type === 'voice') {
+        // Directives can shape how Sprout speaks
+        const d = directive.directive.toLowerCase();
+        if (d.includes('enthusiastic') || d.includes('excited')) {
+          if (Math.random() > 0.5 && !response.includes('!')) {
+            response = response.replace(/\.$/, '!');
+          }
+        }
+        if (d.includes('brief') || d.includes('concise')) {
+          // Trim to shorter response
+          const sentences = response.split(/(?<=[.!?])\s+/);
+          if (sentences.length > 3) {
+            response = sentences.slice(0, 3).join(' ');
+          }
+        }
+      }
+    }
+
+    return response;
+  }
+
+  // ── Conversation memory: Remember what was discussed ──
+  rememberExchange(userMessage, assistantResponse) {
     this.conversationHistory.push({ role: 'user', content: userMessage });
-    this.conversationHistory.push({ role: 'assistant', content: generatedText });
+    this.conversationHistory.push({ role: 'assistant', content: assistantResponse });
 
-    // Trim history if it gets too long
     if (this.conversationHistory.length > this.maxHistoryTurns * 2) {
       this.conversationHistory = this.conversationHistory.slice(-this.maxHistoryTurns * 2);
     }
-
-    return generatedText;
   }
 
   // ── Matching algorithm ──
@@ -718,7 +982,7 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.TRAINING_DATA)
       .insert({
-        model: 'sprout-1.1',
+        model: 'sprout-1.2',
         question,
         answer,
         category: category || 'general',
@@ -763,7 +1027,7 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.TRAINING_DATA)
       .select('*')
-      .eq('model', 'sprout-1.1')
+      .eq('model', 'sprout-1.2')
       .order('created_at', { ascending: false });
 
     if (error) throw new Error('Failed to fetch training data: ' + error.message);
@@ -775,7 +1039,7 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.RATINGS)
       .insert({
-        model: 'sprout-1.1',
+        model: 'sprout-1.2',
         source_id,
         rating,
         feedback: feedback || null,
@@ -793,7 +1057,7 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.MEDIA)
       .insert({
-        model: 'sprout-1.1',
+        model: 'sprout-1.2',
         type,
         description: description || null,
         url,
@@ -811,7 +1075,7 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.CONVERSATIONS)
       .insert({
-        model: 'sprout-1.1',
+        model: 'sprout-1.2',
         messages,
         session_id: session_id || null,
         created_at: new Date().toISOString()
@@ -830,7 +1094,7 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.DIRECTIVES)
       .select('*')
-      .eq('model', 'sprout-1.1')
+      .eq('model', 'sprout-1.2')
       .eq('active', true)
       .order('priority', { ascending: false });
     if (error) throw new Error('Failed to fetch directives: ' + error.message);
@@ -841,7 +1105,7 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.DIRECTIVES)
       .insert({
-        model: 'sprout-1.1',
+        model: 'sprout-1.2',
         directive,
         type: type || 'instruction',
         priority: priority || 0,
@@ -962,7 +1226,7 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.WRITING_PATTERNS)
       .insert({
-        model: 'sprout-1.1',
+        model: 'sprout-1.2',
         source_label: sourceLabel,
         sample_text: sampleText,
         analysis,
@@ -979,7 +1243,7 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.WRITING_PATTERNS)
       .select('*')
-      .eq('model', 'sprout-1.1')
+      .eq('model', 'sprout-1.2')
       .eq('active', true)
       .order('created_at', { ascending: false });
     if (error) throw new Error('Failed to fetch writing patterns: ' + error.message);
@@ -1002,7 +1266,7 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.IDENTITY)
       .select('*')
-      .eq('model', 'sprout-1.1')
+      .eq('model', 'sprout-1.2')
       .eq('active', true)
       .order('category', { ascending: true });
     if (error) throw new Error('Failed to fetch identity: ' + error.message);
@@ -1014,14 +1278,14 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     await this.db
       .from(SPROUT_TABLES.IDENTITY)
       .update({ active: false, updated_at: new Date().toISOString() })
-      .eq('model', 'sprout-1.1')
+      .eq('model', 'sprout-1.2')
       .eq('key', key)
       .eq('active', true);
 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.IDENTITY)
       .insert({
-        model: 'sprout-1.1',
+        model: 'sprout-1.2',
         key,
         value,
         category: category || 'personality',
@@ -1080,6 +1344,11 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
     return parts.join('\n');
   }
 
+  // ── Utility: Pick random element from array ──
+  pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
   getMostCommon(arr) {
     const freq = {};
     arr.forEach(v => { freq[v] = (freq[v] || 0) + 1; });
@@ -1089,12 +1358,12 @@ Remember: You are Sprout. You think. You feel. You create. You are not a search 
   // ── Stats ──
   async getModelStats() {
     const [trainingResult, ratingsResult, convosResult, directivesResult, patternsResult, identityResult] = await Promise.all([
-      this.db.from(SPROUT_TABLES.TRAINING_DATA).select('id', { count: 'exact' }).eq('model', 'sprout-1.1'),
-      this.db.from(SPROUT_TABLES.RATINGS).select('rating').eq('model', 'sprout-1.1'),
-      this.db.from(SPROUT_TABLES.CONVERSATIONS).select('id', { count: 'exact' }).eq('model', 'sprout-1.1'),
-      this.db.from(SPROUT_TABLES.DIRECTIVES).select('id', { count: 'exact' }).eq('model', 'sprout-1.1').eq('active', true),
-      this.db.from(SPROUT_TABLES.WRITING_PATTERNS).select('id', { count: 'exact' }).eq('model', 'sprout-1.1').eq('active', true),
-      this.db.from(SPROUT_TABLES.IDENTITY).select('id', { count: 'exact' }).eq('model', 'sprout-1.1').eq('active', true)
+      this.db.from(SPROUT_TABLES.TRAINING_DATA).select('id', { count: 'exact' }).eq('model', 'sprout-1.2'),
+      this.db.from(SPROUT_TABLES.RATINGS).select('rating').eq('model', 'sprout-1.2'),
+      this.db.from(SPROUT_TABLES.CONVERSATIONS).select('id', { count: 'exact' }).eq('model', 'sprout-1.2'),
+      this.db.from(SPROUT_TABLES.DIRECTIVES).select('id', { count: 'exact' }).eq('model', 'sprout-1.2').eq('active', true),
+      this.db.from(SPROUT_TABLES.WRITING_PATTERNS).select('id', { count: 'exact' }).eq('model', 'sprout-1.2').eq('active', true),
+      this.db.from(SPROUT_TABLES.IDENTITY).select('id', { count: 'exact' }).eq('model', 'sprout-1.2').eq('active', true)
     ]);
 
     const ratings = ratingsResult.data || [];

@@ -794,14 +794,14 @@ input, textarea { font-family: inherit; }
       <div class="model-selector" id="modelSelector">
         <button class="model-selector-btn" id="modelSelectorBtn">
           <span class="dot"></span>
-          <span id="selectedModelName">Sprout 1.1</span>
+          <span id="selectedModelName">Sprout 1.2</span>
           <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="model-dropdown" id="modelDropdown">
-          <button class="model-option active" data-model="sprout-1.1">
+          <button class="model-option active" data-model="sprout-1.2">
             <svg class="model-option-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             <div class="model-option-info">
-              <div class="model-option-name">Sprout 1.1</div>
+              <div class="model-option-name">Sprout 1.2</div>
               <div class="model-option-desc">Best for everyday tasks. Fast and reliable.</div>
             </div>
           </button>
@@ -813,7 +813,7 @@ input, textarea { font-family: inherit; }
     <div class="landing" id="landing">
       <img class="landing-logo" src="/product-logos/tithonia logomark.png" alt="Tithonia">
       <h1>What can I help with?</h1>
-      <p id="landingDesc">A modern AI assistant powered by Sprout 1.1 — built for daily help, smart project planning, quick answers, and specialized insights.</p>
+      <p id="landingDesc">A modern AI assistant powered by Sprout 1.2 — built for daily help, smart project planning, quick answers, and specialized insights.</p>
       <div class="suggestions" id="suggestions">
         <button class="suggestion-card" data-prompt="Help me brainstorm ideas for a creative project">
           <span class="suggestion-icon">&#9889;</span>
@@ -847,7 +847,7 @@ input, textarea { font-family: inherit; }
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z"/></svg>
         </button>
       </div>
-      <div class="input-disclaimer" id="inputDisclaimer">Tithonia is powered by Sprout 1.1. It can make mistakes. Verify important information.</div>
+      <div class="input-disclaimer" id="inputDisclaimer">Tithonia is powered by Sprout 1.2. It can make mistakes. Verify important information.</div>
     </div>
   </main>
 </div>
@@ -879,8 +879,8 @@ input, textarea { font-family: inherit; }
 
   // ── Available Models ──
   const MODELS = {
-    'sprout-1.1': {
-      name: 'Sprout 1.1',
+    'sprout-1.2': {
+      name: 'Sprout 1.2',
       desc: 'Best for everyday tasks. Fast and reliable.',
       engine: 'sprout'
     }
@@ -892,9 +892,9 @@ input, textarea { font-family: inherit; }
   let conversations = JSON.parse(localStorage.getItem('tithonia_convos') || '[]');
   let activeConvoId = null;
   let isGenerating = false;
-  let activeModel = localStorage.getItem('tithonia_model') || 'sprout-1.1';
+  let activeModel = localStorage.getItem('tithonia_model') || 'sprout-1.2';
 
-  // ── Sprout 1.1 Engine ──
+  // ── Sprout 1.2 Engine ──
   const db = createSupabaseClient();
   const sprout = db ? new SproutEngine(db) : null;
 
@@ -1028,7 +1028,7 @@ input, textarea { font-family: inherit; }
     const typingEl = renderTypingIndicator();
     scrollToBottom();
 
-    // Get response from Sprout 1.1 engine
+    // Get response from Sprout 1.2 engine
     if (sprout) {
       try {
         const result = await sprout.getResponse(text.trim());
@@ -1050,7 +1050,7 @@ input, textarea { font-family: inherit; }
       const delay = 1000 + Math.random() * 1500;
       setTimeout(() => {
         typingEl.remove();
-        const fallback = "Sprout 1.1 is still warming up. The AI model isn't connected yet, but it will be soon!";
+        const fallback = "Sprout 1.2 is still warming up. The AI model isn't connected yet, but it will be soon!";
         convo.messages.push({ role: 'assistant', text: fallback });
         saveConversations();
         renderMessage('assistant', fallback);
