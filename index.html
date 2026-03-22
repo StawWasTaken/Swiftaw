@@ -18,6 +18,7 @@
 <link rel="icon" type="image/png" href="SwiftawFavicon.png">
 <link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/cobe@0.6.3/dist/cobe.js"></script>
 <style>
 ::selection { background: rgba(255,249,62,.25); }
 
@@ -146,6 +147,21 @@ a { text-decoration: none; color: inherit; }
   padding: calc(var(--nav-h) + 80px) var(--pad) 100px;
   position: relative; overflow: hidden;
 }
+.globe-wrap {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 750px; height: 750px;
+  pointer-events: auto; z-index: 1;
+  opacity: .2;
+  transition: opacity .8s ease;
+}
+.globe-wrap.loaded { opacity: .35; }
+.globe-wrap canvas {
+  width: 100% !important; height: 100% !important;
+  cursor: grab;
+}
+.globe-wrap canvas:active { cursor: grabbing; }
 .hero-orb {
   position: absolute;
   width: 800px; height: 800px; border-radius: 50%;
@@ -431,12 +447,15 @@ footer {
   .features-grid, .dept-grid { grid-template-columns: 1fr; }
   .dark-grid { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr 1fr; }
+  .globe-wrap { width: 500px; height: 500px; }
 }
 @media (max-width: 600px) {
   .hero h1 { font-size: 2.2rem; }
   .hero-actions { flex-direction: column; align-items: center; }
   .footer-top { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  .globe-wrap { width: 350px; height: 350px; opacity: .2; }
+  .globe-wrap.loaded { opacity: .25; }
 }
 </style>
 </head>
@@ -493,6 +512,9 @@ footer {
 <!-- ═══ HERO ═══ -->
 <section class="hero">
   <div class="hero-orb"></div>
+  <div class="globe-wrap" id="globeWrap">
+    <canvas id="globeCanvas"></canvas>
+  </div>
   <div class="hero-content">
     <div class="hero-eyebrow">Swiftaw</div>
     <h1>Move Beyond<br>the <em>Ordinary.</em></h1>
@@ -656,6 +678,91 @@ footer {
     </div>
   </div>
 </footer>
+
+<script>
+(function () {
+  var canvas = document.getElementById('globeCanvas');
+  var wrap = document.getElementById('globeWrap');
+  if (!canvas || typeof COBE === 'undefined') return;
+
+  // France: ~46.6°N, ~2.2°E
+  var franceLat = 46.6;
+  var franceLon = 2.2;
+
+  // Convert to cobe's phi/theta (radians)
+  var focusPhi = (90 - franceLat) * Math.PI / 180;   // ~0.757
+  var focusTheta = franceLon * Math.PI / 180;         // ~0.038
+
+  var pointerInteracting = null;
+  var pointerInteractionMovement = 0;
+  var phiRef = focusTheta; // horizontal start
+  var currentPhi = phiRef;
+  var width = 0;
+
+  var onResize = function () {
+    width = wrap.offsetWidth;
+  };
+  window.addEventListener('resize', onResize);
+  onResize();
+
+  var globe = COBE.default(canvas, {
+    devicePixelRatio: Math.min(window.devicePixelRatio, 2),
+    width: width * 2,
+    height: width * 2,
+    phi: phiRef,
+    theta: focusPhi - Math.PI / 2, // tilt to France latitude
+    dark: 0,
+    diffuse: 1.6,
+    mapSamples: 24000,
+    mapBrightness: 1.2,
+    baseColor: [0.95, 0.95, 0.92],
+    markerColor: [1, 0.976, 0.243], // brand yellow
+    glowColor: [1, 0.612, 0.235],   // brand orange
+    markers: [
+      { location: [46.6, 2.2], size: 0.08 },  // France
+      { location: [48.8566, 2.3522], size: 0.04 }, // Paris
+    ],
+    onRender: function (state) {
+      // Slow auto-rotation when not interacting
+      if (pointerInteracting === null) {
+        phiRef += 0.002;
+      }
+      state.phi = phiRef + pointerInteractionMovement;
+      currentPhi = state.phi;
+      state.width = width * 2;
+      state.height = width * 2;
+    }
+  });
+
+  // Pointer interaction for drag-to-rotate
+  canvas.addEventListener('pointerdown', function (e) {
+    pointerInteracting = e.clientX;
+    canvas.style.cursor = 'grabbing';
+  });
+  canvas.addEventListener('pointerup', function () {
+    pointerInteracting = null;
+    canvas.style.cursor = 'grab';
+  });
+  canvas.addEventListener('pointerout', function () {
+    pointerInteracting = null;
+    canvas.style.cursor = 'grab';
+  });
+  canvas.addEventListener('pointermove', function (e) {
+    if (pointerInteracting !== null) {
+      var delta = e.clientX - pointerInteracting;
+      pointerInteractionMovement += delta / 200;
+      pointerInteracting = e.clientX;
+    }
+  });
+  // Touch support
+  canvas.addEventListener('touchmove', function (e) {
+    if (e.touches.length === 1) e.preventDefault();
+  }, { passive: false });
+
+  // Fade in once loaded
+  setTimeout(function () { wrap.classList.add('loaded'); }, 300);
+})();
+</script>
 
 </body>
 </html>
