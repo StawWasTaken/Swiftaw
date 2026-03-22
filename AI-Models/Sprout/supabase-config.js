@@ -19,5 +19,8 @@ const SPROUT_TABLES = {
   TRAINING_DATA: 'sprout_training_data',
   CONVERSATIONS: 'sprout_conversations',
   RATINGS: 'sprout_ratings',
-  MEDIA: 'sprout_media'
+  MEDIA: 'sprout_media',
+  DIRECTIVES: 'sprout_directives',
+  WRITING_PATTERNS: 'sprout_writing_patterns',
+  IDENTITY: 'sprout_identity'
 };

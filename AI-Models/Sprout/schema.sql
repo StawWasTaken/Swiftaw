@@ -114,3 +114,90 @@ create policy "Public can read media"
 create policy "Public can insert media"
   on sprout_media for insert
   with check (true);
+
+-- ============================================
+-- 5. Directives (Orders/Instructions)
+-- Persistent instructions that shape how the AI behaves
+-- ============================================
+
+create table sprout_directives (
+  id uuid default gen_random_uuid() primary key,
+  model text not null default 'sprout-1.1',
+  type text not null default 'instruction',
+  directive text not null,
+  priority integer not null default 0,
+  active boolean default true,
+  created_by text default 'researcher',
+  created_at timestamptz default now(),
+  updated_at timestamptz
+);
+
+create index idx_directives_model on sprout_directives(model, active);
+
+alter table sprout_directives enable row level security;
+
+create policy "Public can read directives"
+  on sprout_directives for select using (true);
+create policy "Public can insert directives"
+  on sprout_directives for insert with check (true);
+create policy "Public can update directives"
+  on sprout_directives for update using (true);
+create policy "Public can delete directives"
+  on sprout_directives for delete using (true);
+
+-- ============================================
+-- 6. Writing Patterns
+-- Stores analyzed writing style patterns from text samples
+-- ============================================
+
+create table sprout_writing_patterns (
+  id uuid default gen_random_uuid() primary key,
+  model text not null default 'sprout-1.1',
+  source_label text not null,
+  sample_text text not null,
+  analysis jsonb not null default '{}',
+  active boolean default true,
+  created_by text default 'researcher',
+  created_at timestamptz default now()
+);
+
+create index idx_writing_model on sprout_writing_patterns(model, active);
+
+alter table sprout_writing_patterns enable row level security;
+
+create policy "Public can read writing patterns"
+  on sprout_writing_patterns for select using (true);
+create policy "Public can insert writing patterns"
+  on sprout_writing_patterns for insert with check (true);
+create policy "Public can delete writing patterns"
+  on sprout_writing_patterns for delete using (true);
+
+-- ============================================
+-- 7. Identity (Self-awareness / Consciousness)
+-- Core beliefs, self-knowledge, and personality traits
+-- ============================================
+
+create table sprout_identity (
+  id uuid default gen_random_uuid() primary key,
+  model text not null default 'sprout-1.1',
+  key text not null,
+  value text not null,
+  category text not null default 'personality',
+  active boolean default true,
+  created_at timestamptz default now(),
+  updated_at timestamptz
+);
+
+create index idx_identity_model on sprout_identity(model, active);
+create unique index idx_identity_key on sprout_identity(model, key) where active = true;
+
+alter table sprout_identity enable row level security;
+
+create policy "Public can read identity"
+  on sprout_identity for select using (true);
+create policy "Public can insert identity"
+  on sprout_identity for insert with check (true);
+create policy "Public can update identity"
+  on sprout_identity for update using (true);
+create policy "Public can delete identity"
+  on sprout_identity for delete using (true);
