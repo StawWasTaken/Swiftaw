@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gardener — AI Data Feeder for Tithonia</title>
-<meta name="description" content="Uses Google Gemini to continuously generate and feed real knowledge into Tithonia's database.">
+<meta name="description" content="Uses OpenAI GPT to continuously generate and feed real knowledge into Tithonia's database.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="icon" type="image/png" href="/product-logos/Tithonia icon.png">
 <link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
@@ -526,7 +526,7 @@ input, textarea, select { font-family: inherit; }
 <!-- ── Password Gate ── -->
 <div id="passwordGate" class="password-gate">
   <h1>Gardener — AI Data Feeder</h1>
-  <p>Uses Google Gemini to continuously generate real knowledge from the internet and feed it into Tithonia's shared database. All AI models read from the same data.</p>
+  <p>Uses OpenAI GPT to continuously generate real knowledge from the internet and feed it into Tithonia's shared database. All AI models read from the same data.</p>
   <div class="password-form">
     <input type="password" id="passInput" placeholder="Enter researcher password" onkeydown="if(event.key==='Enter')checkPassword()">
     <button onclick="checkPassword()">Enter</button>
@@ -543,7 +543,7 @@ input, textarea, select { font-family: inherit; }
       <img src="/product-logos/Tithonia icon.png" alt="Tithonia" onerror="this.style.display='none'">
       <div class="dash-brand-text">
         <h2>Gardener — AI Data Feeder</h2>
-        <span>Powered by Google Gemini</span>
+        <span>Powered by OpenAI GPT</span>
       </div>
     </div>
     <div class="dash-links">
@@ -566,13 +566,13 @@ input, textarea, select { font-family: inherit; }
         </div>
         <div class="how-step">
           <div class="num">2</div>
-          <div class="title">Ask Gemini</div>
-          <div class="desc">Sends the topic to Google Gemini, which generates real Q&A pairs or writing samples using internet knowledge.</div>
+          <div class="title">Ask GPT</div>
+          <div class="desc">Sends the topic to OpenAI GPT, which generates real Q&A pairs or writing samples using internet knowledge.</div>
         </div>
         <div class="how-step">
           <div class="num">3</div>
           <div class="title">Parse & Deduplicate</div>
-          <div class="desc">Parses Gemini's JSON response and checks against existing database entries to avoid duplicates.</div>
+          <div class="desc">Parses GPT's JSON response and checks against existing database entries to avoid duplicates.</div>
         </div>
         <div class="how-step">
           <div class="num">4</div>
@@ -584,16 +584,17 @@ input, textarea, select { font-family: inherit; }
 
     <!-- API Key Setup -->
     <div class="api-setup">
-      <h3>Google Gemini API Key</h3>
-      <div class="sub">Get a free API key at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a></div>
+      <h3>OpenAI GPT API Key</h3>
+      <div class="sub">Get an API key at <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a></div>
       <div class="api-row">
-        <input type="password" id="apiKeyInput" placeholder="Paste your Gemini API key here...">
+        <input type="password" id="apiKeyInput" placeholder="Paste your GPT API key here...">
         <select id="modelSelect">
-          <option value="gemini-2.0-flash">Gemini 2.0 Flash (fast)</option>
-          <option value="gemini-2.5-flash-preview-05-20">Gemini 2.5 Flash (smart)</option>
-          <option value="gemini-1.5-pro">Gemini 1.5 Pro (powerful)</option>
+          <option value="gpt-4o-mini">GPT-4o Mini (fast & cheap)</option>
+          <option value="gpt-4o">GPT-4o (smart)</option>
+          <option value="gpt-4.1-mini">GPT-4.1 Mini (latest fast)</option>
+          <option value="gpt-4.1">GPT-4.1 (latest powerful)</option>
         </select>
-        <button class="ctrl-btn start" onclick="connectGemini()">Connect</button>
+        <button class="ctrl-btn start" onclick="connectGPT()">Connect</button>
       </div>
       <div class="api-status" id="apiStatus">Not connected</div>
     </div>
@@ -601,7 +602,7 @@ input, textarea, select { font-family: inherit; }
     <!-- Controls -->
     <div class="control-bar">
       <div class="status-dot" id="statusDot"></div>
-      <span class="status-text" id="statusText">Stopped — connect Gemini API to start</span>
+      <span class="status-text" id="statusText">Stopped — connect GPT API to start</span>
       <div class="interval-control">
         <label>Interval:</label>
         <select id="intervalSelect" onchange="changeInterval()">
@@ -622,12 +623,12 @@ input, textarea, select { font-family: inherit; }
       <div class="stat-card green">
         <div class="label">Training Data Generated</div>
         <div class="value" id="statTraining">0</div>
-        <div class="sub">Q&A pairs from Gemini</div>
+        <div class="sub">Q&A pairs from GPT</div>
       </div>
       <div class="stat-card purple">
         <div class="label">Writing Patterns Generated</div>
         <div class="value" id="statWriting">0</div>
-        <div class="sub">Style samples from Gemini</div>
+        <div class="sub">Style samples from GPT</div>
       </div>
       <div class="stat-card orange">
         <div class="label">Feed Cycles</div>
@@ -646,7 +647,7 @@ input, textarea, select { font-family: inherit; }
       <!-- Custom Prompt -->
       <div class="section">
         <h3>Generate from Custom Prompt</h3>
-        <div class="sub">Ask Gemini to generate training data about anything you want.</div>
+        <div class="sub">Ask GPT to generate training data about anything you want.</div>
         <div class="form-group">
           <label>What should Tithonia learn about?</label>
           <textarea id="customPrompt" placeholder="e.g. Explain renewable energy types — solar, wind, hydro, geothermal. Include pros and cons."></textarea>
@@ -662,7 +663,7 @@ input, textarea, select { font-family: inherit; }
       <!-- URL Feed -->
       <div class="section">
         <h3>Generate from URL</h3>
-        <div class="sub">Point Gemini at any webpage and it will extract knowledge into training data.</div>
+        <div class="sub">Point GPT at any webpage and it will extract knowledge into training data.</div>
         <div class="form-group">
           <label>URL</label>
           <input type="url" id="urlInput" placeholder="https://en.wikipedia.org/wiki/Sunflower">
@@ -679,9 +680,9 @@ input, textarea, select { font-family: inherit; }
     <!-- Live Log -->
     <div class="section">
       <h3>Live Feed Log</h3>
-      <div class="sub">Real-time log of Gemini requests, parsed responses, and database insertions.</div>
+      <div class="sub">Real-time log of GPT requests, parsed responses, and database insertions.</div>
       <div class="log-feed" id="logFeed">
-        <div class="log-entry idle"><span class="time">--:--:--</span> Gardener idle. Connect your Gemini API key and press Start.</div>
+        <div class="log-entry idle"><span class="time">--:--:--</span> Gardener idle. Connect your GPT API key and press Start.</div>
       </div>
     </div>
 
@@ -692,7 +693,7 @@ input, textarea, select { font-family: inherit; }
 // ── Globals ──
 let feeder = null;
 let engine = null;
-let geminiConnected = false;
+let aiConnected = false;
 
 const RESEARCHER_PASS = '1478';
 
@@ -725,12 +726,12 @@ function initDashboard() {
   if (savedKey) {
     document.getElementById('apiKeyInput').value = savedKey;
     if (savedModel) document.getElementById('modelSelect').value = savedModel;
-    connectGemini();
+    connectGPT();
   }
 }
 
-// ── Gemini Connection ──
-async function connectGemini() {
+// ── GPT Connection ──
+async function connectGPT() {
   const key = document.getElementById('apiKeyInput').value.trim();
   const model = document.getElementById('modelSelect').value;
   const status = document.getElementById('apiStatus');
@@ -746,17 +747,18 @@ async function connectGemini() {
 
   // Test the key with a simple request
   try {
-    const resp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: 'Say "ok" in one word.' }] }],
-          generationConfig: { maxOutputTokens: 10 }
-        })
-      }
-    );
+    const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${key}`
+      },
+      body: JSON.stringify({
+        model: model,
+        messages: [{ role: 'user', content: 'Say "ok".' }],
+        max_tokens: 5
+      })
+    });
 
     if (!resp.ok) {
       const err = await resp.text();
@@ -764,14 +766,14 @@ async function connectGemini() {
     }
 
     const data = await resp.json();
-    if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+    if (!data.choices?.[0]?.message?.content) {
       throw new Error('Empty response');
     }
 
     // Success
     feeder.setApiKey(key);
     feeder.setModel(model);
-    geminiConnected = true;
+    aiConnected = true;
 
     // Save to session
     sessionStorage.setItem('gardener_api_key', key);
@@ -789,13 +791,13 @@ async function connectGemini() {
   } catch (err) {
     status.textContent = `Connection failed: ${err.message}`;
     status.className = 'api-status error';
-    geminiConnected = false;
+    aiConnected = false;
   }
 }
 
 // ── Controls ──
 async function startFeeder() {
-  if (!feeder || !geminiConnected) return;
+  if (!feeder || !aiConnected) return;
   await feeder.start();
   updateControlState('running');
 }
@@ -833,7 +835,7 @@ function updateControlState(state) {
 
   if (state === 'running') {
     dot.classList.add('running');
-    text.textContent = 'Running — Gemini is generating data for Tithonia';
+    text.textContent = 'Running — GPT is generating data for Tithonia';
     document.getElementById('btnStart').disabled = true;
     document.getElementById('btnPause').textContent = 'Pause';
   } else if (state === 'paused') {
@@ -842,7 +844,7 @@ function updateControlState(state) {
     document.getElementById('btnStart').disabled = true;
     document.getElementById('btnPause').textContent = 'Resume';
   } else {
-    text.textContent = geminiConnected ? 'Stopped — press Start to resume' : 'Stopped — connect Gemini API to start';
+    text.textContent = aiConnected ? 'Stopped — press Start to resume' : 'Stopped — connect GPT API to start';
     document.getElementById('btnPause').disabled = true;
     document.getElementById('btnStop').disabled = true;
   }
@@ -854,7 +856,7 @@ function updateStats(stats) {
   document.getElementById('statWriting').textContent = stats.totalFed.writing;
   document.getElementById('statCycle').textContent = stats.currentCycle;
   document.getElementById('statTotal').textContent = stats.totalItems;
-  document.getElementById('statModel').textContent = stats.geminiModel;
+  document.getElementById('statModel').textContent = stats.openaiModel;
 
   const topicIdx = stats.topicIndex;
   document.getElementById('statTopic').textContent = `Topic ${topicIdx + 1} of ${stats.topicsCount}`;
@@ -879,7 +881,7 @@ function escapeHtml(str) {
 
 // ── Custom Generation ──
 async function generateCustom() {
-  if (!feeder || !geminiConnected) return;
+  if (!feeder || !aiConnected) return;
   const prompt = document.getElementById('customPrompt').value.trim();
   const category = document.getElementById('customCategory').value.trim() || 'custom';
   if (!prompt) return;
@@ -901,7 +903,7 @@ async function generateCustom() {
 }
 
 async function generateFromUrl() {
-  if (!feeder || !geminiConnected) return;
+  if (!feeder || !aiConnected) return;
   const url = document.getElementById('urlInput').value.trim();
   const category = document.getElementById('urlCategory').value.trim() || 'web-sourced';
   if (!url) return;
