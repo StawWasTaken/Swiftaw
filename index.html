@@ -153,9 +153,10 @@ a { text-decoration: none; color: inherit; }
   opacity: 0;
   transition: opacity 1.2s ease;
 }
-.globe-wrap.loaded { opacity: 1; }
+.globe-wrap.loaded { opacity: .85; }
 .globe-wrap canvas {
-  width: 100% !important; height: 100% !important;
+  display: block;
+  width: 680px !important; height: 680px !important;
   cursor: grab;
 }
 .globe-wrap canvas:active { cursor: grabbing; }
@@ -529,6 +530,7 @@ footer {
   .dark-grid { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr 1fr; }
   .globe-wrap { width: 480px; height: 480px; }
+  .globe-wrap canvas { width: 480px !important; height: 480px !important; }
   .stats-inner { grid-template-columns: repeat(2, 1fr); }
   .stat-item:nth-child(2) { border-right: none; }
   .stat-item:nth-child(1), .stat-item:nth-child(2) { border-bottom: 1px solid var(--border); }
@@ -539,7 +541,8 @@ footer {
   .footer-top { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
   .globe-wrap { width: 320px; height: 320px; }
-  .globe-wrap.loaded { opacity: .7; }
+  .globe-wrap canvas { width: 320px !important; height: 320px !important; }
+  .globe-wrap.loaded { opacity: .6; }
   .stats-inner { grid-template-columns: 1fr 1fr; }
   .stat-item { padding: 28px 20px; }
 }
@@ -551,7 +554,7 @@ footer {
 <nav class="nav">
   <div class="nav-inner">
     <a href="/" class="nav-logo">
-      <img src="SwiftawLogo.png" alt="Swiftaw">
+      <img src="/Swiftaw logomark black.png" alt="Swiftaw">
     </a>
     <div class="nav-links">
       <div class="nav-dropdown-wrap">
@@ -561,7 +564,7 @@ footer {
             Try Fortized
             <span class="dd-desc">Gaming community platform</span>
           </a>
-          <a href="https://tithonia.swiftaw.com">
+          <a href="/tithonia">
             Try Tithonia
             <span class="dd-desc">Intelligent digital ecosystem</span>
           </a>
@@ -611,7 +614,7 @@ footer {
     <p class="hero-sub">Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence to reshape how the world communicates, thinks, and solves problems.</p>
     <div class="hero-actions">
       <a href="https://fortized.com" class="btn-yellow">Try Fortized</a>
-      <a href="https://tithonia.swiftaw.com" class="btn-dark">Explore Tithonia</a>
+      <a href="/tithonia" class="btn-dark">Explore Tithonia</a>
       <a href="#research" class="btn-outline">Learn More</a>
     </div>
   </div>
@@ -745,7 +748,7 @@ footer {
   <p>Join the ecosystem. Build with Fortized. Explore with Tithonia. Shape the future with Swiftaw.</p>
   <div class="hero-actions">
     <a href="https://fortized.com/signup" class="btn-yellow">Try Fortized</a>
-    <a href="https://tithonia.swiftaw.com" class="btn-dark">Explore Tithonia</a>
+    <a href="/tithonia" class="btn-dark">Explore Tithonia</a>
     <a href="/blog" class="btn-outline">Read our blog</a>
   </div>
 </div>
@@ -756,14 +759,14 @@ footer {
     <div class="footer-top">
       <div class="footer-brand">
         <a href="/" class="nav-logo" style="margin-right:0;">
-          <img src="SwiftawLogo.png" alt="Swiftaw">
+          <img src="/SwiftawLogo.png" alt="Swiftaw">
         </a>
         <p>Building the ultimate digital ecosystem. Mastering human connection and machine intelligence.</p>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Products</div>
         <a href="https://fortized.com">Fortized</a>
-        <a href="https://tithonia.swiftaw.com">Tithonia</a>
+        <a href="/tithonia">Tithonia</a>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Company</div>
@@ -798,86 +801,89 @@ footer {
 (function () {
   var canvas = document.getElementById('globeCanvas');
   var wrap = document.getElementById('globeWrap');
-  if (!canvas || typeof COBE === 'undefined') return;
+  if (!canvas || !wrap) return;
 
-  // France: ~46.6°N, ~2.2°E
-  var franceLat = 46.6;
-  var franceLon = 2.2;
+  function initGlobe() {
+    if (typeof COBE === 'undefined') return;
 
-  // Convert to cobe's phi/theta (radians)
-  var focusPhi = (90 - franceLat) * Math.PI / 180;   // ~0.757
-  var focusTheta = franceLon * Math.PI / 180;         // ~0.038
+    var size = wrap.offsetWidth || 680;
+    var pointerInteracting = null;
+    var pointerInteractionMovement = 0;
+    var phi = 0.4;
 
-  var pointerInteracting = null;
-  var pointerInteractionMovement = 0;
-  var phiRef = focusTheta; // horizontal start
-  var currentPhi = phiRef;
-  var width = 0;
+    // Set canvas resolution
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
 
-  var onResize = function () {
-    width = wrap.offsetWidth;
-  };
-  window.addEventListener('resize', onResize);
-  onResize();
-
-  var globe = COBE.default(canvas, {
-    devicePixelRatio: Math.min(window.devicePixelRatio, 2),
-    width: width * 2,
-    height: width * 2,
-    phi: phiRef,
-    theta: focusPhi - Math.PI / 2, // tilt to France latitude
-    dark: 1,
-    diffuse: 3,
-    mapSamples: 32000,
-    mapBrightness: 6,
-    baseColor: [0.14, 0.12, 0.24],
-    markerColor: [1, 0.976, 0.243], // brand yellow
-    glowColor: [0.14, 0.12, 0.24],
-    markers: [
-      { location: [46.6, 2.2], size: 0.1 },  // France
-      { location: [48.8566, 2.3522], size: 0.06 }, // Paris
-      { location: [43.2965, 5.3698], size: 0.03 }, // Marseille
-      { location: [45.764, 4.8357], size: 0.03 }, // Lyon
-    ],
-    onRender: function (state) {
-      // Slow auto-rotation when not interacting
-      if (pointerInteracting === null) {
-        phiRef += 0.002;
+    var globe = COBE.default(canvas, {
+      devicePixelRatio: dpr,
+      width: size * dpr,
+      height: size * dpr,
+      phi: 0.4,
+      theta: -0.15,
+      dark: 1,
+      diffuse: 2,
+      mapSamples: 24000,
+      mapBrightness: 8,
+      baseColor: [0.14, 0.12, 0.24],
+      markerColor: [1, 0.976, 0.243],
+      glowColor: [0.08, 0.06, 0.16],
+      markers: [
+        { location: [46.6, 2.2], size: 0.1 },
+        { location: [48.8566, 2.3522], size: 0.06 },
+        { location: [43.2965, 5.3698], size: 0.03 },
+        { location: [45.764, 4.8357], size: 0.03 },
+      ],
+      onRender: function (state) {
+        if (pointerInteracting === null) {
+          phi += 0.003;
+        }
+        state.phi = phi + pointerInteractionMovement;
+        state.width = size * dpr;
+        state.height = size * dpr;
       }
-      state.phi = phiRef + pointerInteractionMovement;
-      currentPhi = state.phi;
-      state.width = width * 2;
-      state.height = width * 2;
-    }
-  });
+    });
 
-  // Pointer interaction for drag-to-rotate
-  canvas.addEventListener('pointerdown', function (e) {
-    pointerInteracting = e.clientX;
-    canvas.style.cursor = 'grabbing';
-  });
-  canvas.addEventListener('pointerup', function () {
-    pointerInteracting = null;
-    canvas.style.cursor = 'grab';
-  });
-  canvas.addEventListener('pointerout', function () {
-    pointerInteracting = null;
-    canvas.style.cursor = 'grab';
-  });
-  canvas.addEventListener('pointermove', function (e) {
-    if (pointerInteracting !== null) {
-      var delta = e.clientX - pointerInteracting;
-      pointerInteractionMovement += delta / 200;
+    // Drag-to-rotate
+    canvas.addEventListener('pointerdown', function (e) {
       pointerInteracting = e.clientX;
-    }
-  });
-  // Touch support
-  canvas.addEventListener('touchmove', function (e) {
-    if (e.touches.length === 1) e.preventDefault();
-  }, { passive: false });
+      canvas.style.cursor = 'grabbing';
+    });
+    canvas.addEventListener('pointerup', function () {
+      pointerInteracting = null;
+      canvas.style.cursor = 'grab';
+    });
+    canvas.addEventListener('pointerout', function () {
+      pointerInteracting = null;
+      canvas.style.cursor = 'grab';
+    });
+    canvas.addEventListener('pointermove', function (e) {
+      if (pointerInteracting !== null) {
+        var delta = e.clientX - pointerInteracting;
+        pointerInteractionMovement += delta / 200;
+        pointerInteracting = e.clientX;
+      }
+    });
+    canvas.addEventListener('touchmove', function (e) {
+      if (e.touches.length === 1) e.preventDefault();
+    }, { passive: false });
 
-  // Fade in once loaded
-  setTimeout(function () { wrap.classList.add('loaded'); }, 300);
+    // Fade in
+    requestAnimationFrame(function () {
+      wrap.classList.add('loaded');
+    });
+  }
+
+  // Wait for COBE to load, then init
+  if (typeof COBE !== 'undefined') {
+    initGlobe();
+  } else {
+    var script = document.querySelector('script[src*="cobe"]');
+    if (script) {
+      script.addEventListener('load', initGlobe);
+    }
+  }
 })();
 </script>
 
