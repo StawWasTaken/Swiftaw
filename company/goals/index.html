@@ -61,10 +61,15 @@ a { color: inherit; text-decoration: none; }
 .highlight-bar { width: 80px; height: 3px; background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); border-radius: 3px; }
 
 /* HERO */
-.hero { padding: 160px 32px 100px; text-align: center; max-width: 860px; margin: 0 auto; }
-.eyebrow { font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px; }
-.hero h1 { font-family: var(--font-display); font-size: clamp(2.6rem, 6vw, 4.2rem); font-weight: 700; line-height: 1.1; margin-bottom: 24px; color: var(--text); }
-.hero p { font-size: 1.15rem; color: var(--text-light); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+.hero { background: #faf8f3; padding: 160px 32px 100px; }
+.hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.hero h1 { font-family: var(--font-display); font-size: clamp(2.6rem, 5vw, 3.8rem); font-weight: 700; line-height: 1.1; color: var(--text); }
+.hero-right p { font-family: var(--font-serif); font-size: 1.1rem; color: var(--text-light); line-height: 1.75; margin-bottom: 32px; }
+.hero-focus { font-size: .95rem; font-weight: 500; color: var(--text); }
+.hero-focus span { margin-right: 6px; }
+.hero-focus a { text-decoration: underline; text-underline-offset: 3px; color: var(--text); transition: color .2s; }
+.hero-focus a:hover { color: var(--brand-deep); }
+.hero-focus-sep { margin: 0 4px; color: var(--text-muted); }
 
 /* SECTIONS */
 .section { padding: 100px 32px; max-width: 1100px; margin: 0 auto; }
@@ -116,6 +121,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
   .goal-block, .goal-block.reverse { grid-template-columns: 1fr; gap: 40px; direction: ltr; }
   .footer-top { grid-template-columns: 1fr 1fr; }
   .hero { padding: 140px 24px 80px; }
+  .hero-inner { grid-template-columns: 1fr; gap: 32px; }
   .section { padding: 72px 24px; }
 }
 </style>
@@ -130,7 +136,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
         <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
         <div class="nav-dropdown">
           <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
-          <a href="/tithonia">Try Tithonia<span class="dd-desc">Intelligent digital ecosystem</span></a>
+          <a href="/tithonia">Try Tithonia<span class="dd-desc">Modern AI platform</span></a>
         </div>
       </div>
       <a href="/research" class="nav-link">Research</a>
@@ -158,16 +164,25 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
 </nav>
 
 <section class="hero">
-  <p class="eyebrow">Our Goals</p>
-  <h1>Transforming how the world connects.</h1>
-  <p>We are setting ambitious goals to reshape digital connectivity and collaboration for communities everywhere. These are not just aspirations. They are commitments to action.</p>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <h1>Goals for the World</h1>
+    </div>
+    <div class="hero-right">
+      <p>We are setting ambitious goals to reshape digital connectivity and collaboration for communities everywhere. These are not just aspirations. They are commitments to action.</p>
+      <div class="hero-focus">
+        <span>Our focus:</span>
+        <a href="#global-connectivity">Global Connectivity</a><span class="hero-focus-sep"> - </span><a href="#digital-collaboration">Digital Collaboration</a><span class="hero-focus-sep"> - </span><a href="#community-empowerment">Community Empowerment</a>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="section">
   <div class="goal-block">
     <div>
       <div class="highlight-bar" style="margin-bottom:24px;"></div>
-      <h2>Global Connectivity</h2>
+      <h2 id="global-connectivity">Global Connectivity</h2>
       <p>The internet promised to bring the world together, but too many communities remain fragmented across platforms that were never designed with them in mind.</p>
       <p>Swiftaw is building infrastructure that makes meaningful digital connection accessible to everyone, regardless of where they are or what language they speak. We are creating platforms that break down barriers and foster genuine cross-cultural dialogue.</p>
     </div>
@@ -179,7 +194,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
   <div class="goal-block reverse">
     <div>
       <div class="highlight-bar" style="margin-bottom:24px;"></div>
-      <h2>Digital Collaboration</h2>
+      <h2 id="digital-collaboration">Digital Collaboration</h2>
       <p>The future of work and creativity depends on tools that make collaboration feel effortless. Current solutions force people to adapt to rigid systems rather than adapting to how people naturally think and create.</p>
       <p>We are developing intelligent collaboration tools that understand context, anticipate needs, and get out of the way so teams can focus on what matters: doing great work together.</p>
     </div>
@@ -191,7 +206,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
   <div class="goal-block">
     <div>
       <div class="highlight-bar" style="margin-bottom:24px;"></div>
-      <h2>Community Empowerment</h2>
+      <h2 id="community-empowerment">Community Empowerment</h2>
       <p>Communities are the foundation of everything we build. When communities thrive, people thrive. But too often, platforms extract value from communities without giving anything back.</p>
       <p>Our goal is to empower communities with ownership, tools, and autonomy. We want every community on our platforms to feel like they have a home they control, with the resources to grow on their own terms.</p>
     </div>

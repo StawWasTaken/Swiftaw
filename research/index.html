@@ -275,42 +275,68 @@
 
     /* ---- HERO ---- */
     .hero {
-      padding: 160px 32px 100px;
-      text-align: center;
-      max-width: 860px;
+      background: #faf8f3;
+      padding: 140px 32px 80px;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
       margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 64px;
+      align-items: start;
     }
 
-    .hero-eyebrow {
-      font-family: var(--font-sans);
-      font-size: .82rem;
-      font-weight: 600;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-
-    .hero h1 {
+    .hero-left h1 {
       font-family: var(--font-display);
-      font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+      font-size: clamp(2.6rem, 5vw, 3.6rem);
       font-weight: 700;
-      line-height: 1.1;
+      line-height: 1.08;
       color: var(--text);
-      margin-bottom: 28px;
+      margin: 0;
     }
 
-    .hero p {
+    .hero-right {
+      padding-top: 8px;
+    }
+
+    .hero-right p {
       font-family: var(--font-serif);
-      font-size: 1.2rem;
+      font-size: 1.1rem;
+      font-weight: 400;
       color: var(--text-light);
-      max-width: 580px;
-      margin: 0 auto 40px;
       line-height: 1.7;
+      margin: 0 0 28px;
     }
 
-    .hero .highlight-bar {
-      margin: 0 auto;
+    .hero-teams {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .hero-teams-label {
+      font-family: var(--font-sans);
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--text-light);
+      margin-right: 4px;
+    }
+
+    .hero-teams a {
+      font-family: var(--font-sans);
+      font-size: .88rem;
+      font-weight: 400;
+      color: #5c4a3a;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color .15s;
+    }
+
+    .hero-teams a:hover {
+      color: var(--text);
     }
 
     /* ---- SECTIONS ---- */
@@ -575,7 +601,12 @@
       }
 
       .hero {
-        padding: 130px 20px 70px;
+        padding: 120px 20px 60px;
+      }
+
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 24px;
       }
 
       .section {
@@ -624,7 +655,7 @@
           <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
           <div class="nav-dropdown">
             <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
-            <a href="/tithonia">Try Tithonia<span class="dd-desc">Intelligent digital ecosystem</span></a>
+            <a href="/tithonia">Try Tithonia<span class="dd-desc">Modern AI platform</span></a>
           </div>
         </div>
         <a href="/research" class="nav-link">Research</a>
@@ -653,10 +684,21 @@
 
   <!-- HERO -->
   <section class="hero">
-    <p class="hero-eyebrow">Research &amp; Innovation</p>
-    <h1>Pioneering the future of digital connection.</h1>
-    <p>At Swiftaw, our research drives every product we build. We explore the boundaries of chat technology, data intelligence, and digital ecosystems to create experiences that genuinely matter.</p>
-    <div class="highlight-bar"></div>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <h1>Research</h1>
+      </div>
+      <div class="hero-right">
+        <p>Our research teams investigate the safety, inner workings, and societal impacts of AI models - so that artificial intelligence has a positive impact as it becomes increasingly capable.</p>
+        <div class="hero-teams">
+          <span class="hero-teams-label">Research teams:</span>
+          <a href="#">Alignment</a>
+          <a href="#">Economic Research</a>
+          <a href="#">Interpretability</a>
+          <a href="#">Societal Impacts</a>
+        </div>
+      </div>
+    </div>
   </section>
 
   <hr class="divider">

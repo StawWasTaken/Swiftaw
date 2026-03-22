@@ -18,7 +18,6 @@
 <link rel="icon" type="image/png" href="SwiftawFavicon.png">
 <link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/cobe@0.6.3/dist/cobe.js"></script>
 <style>
 ::selection { background: rgba(255,249,62,.25); }
 
@@ -149,17 +148,56 @@ a { text-decoration: none; color: inherit; }
   top: 50%; left: 50%;
   transform: translate(-50%, -48%);
   width: 680px; height: 680px;
-  pointer-events: auto; z-index: 1;
-  opacity: 0;
-  transition: opacity 1.2s ease;
+  pointer-events: none; z-index: 1;
+  perspective: 1200px;
 }
-.globe-wrap.loaded { opacity: .85; }
-.globe-wrap canvas {
-  display: block;
-  width: 680px !important; height: 680px !important;
-  cursor: grab;
+.globe {
+  width: 100%; height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: globeSpin 30s linear infinite;
 }
-.globe-wrap canvas:active { cursor: grabbing; }
+@keyframes globeSpin {
+  from { transform: rotateY(0deg) rotateX(-15deg); }
+  to { transform: rotateY(360deg) rotateX(-15deg); }
+}
+.globe-sphere {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(36,31,60,.6) 0%, rgba(36,31,60,.3) 40%, rgba(10,10,10,.8) 100%);
+  box-shadow: inset -40px -40px 80px rgba(0,0,0,.4), inset 20px 20px 60px rgba(255,249,62,.03), 0 0 80px rgba(36,31,60,.2);
+}
+.globe-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  border: 1px solid rgba(255,249,62,.08);
+  border-radius: 50%;
+  transform-style: preserve-3d;
+}
+.globe-ring:nth-child(2) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg); }
+.globe-ring:nth-child(3) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg) rotateY(30deg); }
+.globe-ring:nth-child(4) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg) rotateY(60deg); }
+.globe-ring:nth-child(5) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg) rotateY(90deg); }
+.globe-ring:nth-child(6) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg) rotateY(120deg); }
+.globe-ring:nth-child(7) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg) rotateY(150deg); }
+.globe-ring:nth-child(8) { width: 80%; height: 80%; transform: translate(-50%, -50%) rotateY(90deg); border-color: rgba(255,249,62,.06); }
+.globe-ring:nth-child(9) { width: 60%; height: 60%; transform: translate(-50%, -50%) rotateY(90deg); border-color: rgba(255,249,62,.05); }
+.globe-ring:nth-child(10) { width: 40%; height: 40%; transform: translate(-50%, -50%) rotateY(90deg); border-color: rgba(255,249,62,.04); }
+.globe-ring:nth-child(11) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(0deg); border-color: rgba(255,156,60,.06); }
+.globe-ring:nth-child(12) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(30deg); border-color: rgba(255,156,60,.05); }
+.globe-ring:nth-child(13) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(60deg); border-color: rgba(255,156,60,.05); }
+.globe-dot {
+  position: absolute;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--brand-yellow);
+  box-shadow: 0 0 8px rgba(255,249,62,.4);
+}
+.globe-dot:nth-child(14) { top: 32%; left: 52%; }
+.globe-dot:nth-child(15) { top: 38%; left: 46%; }
+.globe-dot:nth-child(16) { top: 28%; left: 58%; width: 3px; height: 3px; background: var(--brand-orange); }
+.globe-dot:nth-child(17) { top: 45%; left: 40%; width: 4px; height: 4px; }
+.globe-dot:nth-child(18) { top: 55%; left: 55%; width: 3px; height: 3px; background: var(--brand-orange); }
+.globe-dot:nth-child(19) { top: 35%; left: 62%; width: 3px; height: 3px; }
 .hero-orb {
   position: absolute;
   width: 800px; height: 800px; border-radius: 50%;
@@ -530,7 +568,6 @@ footer {
   .dark-grid { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr 1fr; }
   .globe-wrap { width: 480px; height: 480px; }
-  .globe-wrap canvas { width: 480px !important; height: 480px !important; }
   .stats-inner { grid-template-columns: repeat(2, 1fr); }
   .stat-item:nth-child(2) { border-right: none; }
   .stat-item:nth-child(1), .stat-item:nth-child(2) { border-bottom: 1px solid var(--border); }
@@ -540,9 +577,7 @@ footer {
   .hero-actions { flex-direction: column; align-items: center; }
   .footer-top { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
-  .globe-wrap { width: 320px; height: 320px; }
-  .globe-wrap canvas { width: 320px !important; height: 320px !important; }
-  .globe-wrap.loaded { opacity: .6; }
+  .globe-wrap { width: 320px; height: 320px; opacity: .6; }
   .stats-inner { grid-template-columns: 1fr 1fr; }
   .stat-item { padding: 28px 20px; }
 }
@@ -566,7 +601,7 @@ footer {
           </a>
           <a href="/tithonia">
             Try Tithonia
-            <span class="dd-desc">Intelligent digital ecosystem</span>
+            <span class="dd-desc">Modern AI platform</span>
           </a>
         </div>
       </div>
@@ -605,8 +640,28 @@ footer {
     <div class="particle"></div><div class="particle"></div><div class="particle"></div>
     <div class="particle"></div><div class="particle"></div>
   </div>
-  <div class="globe-wrap" id="globeWrap">
-    <canvas id="globeCanvas"></canvas>
+  <div class="globe-wrap">
+    <div class="globe">
+      <div class="globe-sphere"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-ring"></div>
+      <div class="globe-dot"></div>
+      <div class="globe-dot"></div>
+      <div class="globe-dot"></div>
+      <div class="globe-dot"></div>
+      <div class="globe-dot"></div>
+      <div class="globe-dot"></div>
+    </div>
   </div>
   <div class="hero-content">
     <div class="hero-eyebrow">Swiftaw</div>
@@ -658,7 +713,7 @@ footer {
   <div class="section-eyebrow reveal">Research &amp; Innovation</div>
   <div class="highlight-bar reveal reveal-delay-1"></div>
   <div class="section-heading reveal reveal-delay-1">Breakthroughs in chat,<br>intelligence, and connection.</div>
-  <div class="section-desc reveal reveal-delay-2">We're pioneering the technologies that power human-machine interaction — from real-time chat engines to data intelligence systems that learn and adapt.</div>
+  <div class="section-desc reveal reveal-delay-2">We're pioneering the technologies that power human-machine interaction -from real-time chat engines to data intelligence systems that learn and adapt.</div>
   <div class="features-grid">
     <div class="feature-card">
       <div class="feature-icon">&#9889;</div>
@@ -678,30 +733,22 @@ footer {
   </div>
 </div>
 
-<!-- ═══ DARK SECTION — PRODUCTS ═══ -->
+<!-- ═══ DARK SECTION -PRODUCTS ═══ -->
 <div class="dark-section">
   <div class="dark-glow"></div>
   <div class="section-inner">
     <div class="section-eyebrow reveal">Our Products</div>
     <div class="highlight-bar reveal reveal-delay-1"></div>
     <div class="section-heading reveal reveal-delay-1">Platforms that amplify<br>human connection.</div>
-    <div class="section-desc reveal reveal-delay-2">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence — moving beyond the limitations of today's technology.</div>
+    <div class="section-desc reveal reveal-delay-2">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence -moving beyond the limitations of today's technology.</div>
     <div class="dark-grid">
       <div class="dark-card">
         <h3>Fortized</h3>
-        <p>A modern community platform built for gamers. Organize your ranks with Bastions, rally your allies, and conquer together. Free to join, no credit card needed.</p>
+        <p>The modern community platform built for gamers and all kinds of people. Organize your ranks, rally your allies, and conquer together.</p>
       </div>
       <div class="dark-card">
         <h3>Tithonia</h3>
-        <p>The intelligent digital ecosystem. Tithonia connects people, data, and experiences into a unified platform that learns and evolves with you.</p>
-      </div>
-      <div class="dark-card">
-        <h3>Earned, Not Bought</h3>
-        <p>Our Onyx economy lets members earn premium perks through genuine participation. Your engagement is your currency — no paywalls, no tricks.</p>
-      </div>
-      <div class="dark-card">
-        <h3>Iron Security</h3>
-        <p>Every product ships with safety as a first-class feature. AutoMod, raid protection, end-to-end encryption, and the Swiftaw Safety Department.</p>
+        <p>A modern AI platform built for people who need daily assistance, smart minds who need someone to realize their projects, and anyone who wants a better searching experience - quick answers, long answers, specialized thoughts.</p>
       </div>
     </div>
   </div>
@@ -712,7 +759,7 @@ footer {
   <div class="section-eyebrow reveal">Swiftaw Departments</div>
   <div class="highlight-bar reveal reveal-delay-1"></div>
   <div class="section-heading reveal reveal-delay-1">The teams building<br>the future.</div>
-  <div class="section-desc reveal reveal-delay-2">Each department drives a critical piece of the Swiftaw ecosystem — from research to safety to how we communicate with the world.</div>
+  <div class="section-desc reveal reveal-delay-2">Each department drives a critical piece of the Swiftaw ecosystem -from research to safety to how we communicate with the world.</div>
   <div class="dept-grid">
     <a href="/departments/rd" class="dept-card">
       <div class="dept-card-icon">&#128300;</div>
@@ -738,7 +785,7 @@ footer {
 <!-- ═══ QUOTE ═══ -->
 <div class="quote-section">
   <blockquote>
-    &ldquo;Swiftaw powers a digital ecosystem that <em>amplifies human connection</em> and intelligence — moving beyond the limitations of today's technology.&rdquo;
+    &ldquo;Swiftaw powers a digital ecosystem that <em>amplifies human connection</em> and intelligence -moving beyond the limitations of today's technology.&rdquo;
   </blockquote>
 </div>
 
@@ -796,96 +843,6 @@ footer {
     </div>
   </div>
 </footer>
-
-<script>
-(function () {
-  var canvas = document.getElementById('globeCanvas');
-  var wrap = document.getElementById('globeWrap');
-  if (!canvas || !wrap) return;
-
-  function initGlobe() {
-    if (typeof COBE === 'undefined') return;
-
-    var size = wrap.offsetWidth || 680;
-    var pointerInteracting = null;
-    var pointerInteractionMovement = 0;
-    var phi = 0.4;
-
-    // Set canvas resolution
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = size * dpr;
-    canvas.height = size * dpr;
-
-    var globe = COBE.default(canvas, {
-      devicePixelRatio: dpr,
-      width: size * dpr,
-      height: size * dpr,
-      phi: 0.4,
-      theta: -0.15,
-      dark: 1,
-      diffuse: 2,
-      mapSamples: 24000,
-      mapBrightness: 8,
-      baseColor: [0.14, 0.12, 0.24],
-      markerColor: [1, 0.976, 0.243],
-      glowColor: [0.08, 0.06, 0.16],
-      markers: [
-        { location: [46.6, 2.2], size: 0.1 },
-        { location: [48.8566, 2.3522], size: 0.06 },
-        { location: [43.2965, 5.3698], size: 0.03 },
-        { location: [45.764, 4.8357], size: 0.03 },
-      ],
-      onRender: function (state) {
-        if (pointerInteracting === null) {
-          phi += 0.003;
-        }
-        state.phi = phi + pointerInteractionMovement;
-        state.width = size * dpr;
-        state.height = size * dpr;
-      }
-    });
-
-    // Drag-to-rotate
-    canvas.addEventListener('pointerdown', function (e) {
-      pointerInteracting = e.clientX;
-      canvas.style.cursor = 'grabbing';
-    });
-    canvas.addEventListener('pointerup', function () {
-      pointerInteracting = null;
-      canvas.style.cursor = 'grab';
-    });
-    canvas.addEventListener('pointerout', function () {
-      pointerInteracting = null;
-      canvas.style.cursor = 'grab';
-    });
-    canvas.addEventListener('pointermove', function (e) {
-      if (pointerInteracting !== null) {
-        var delta = e.clientX - pointerInteracting;
-        pointerInteractionMovement += delta / 200;
-        pointerInteracting = e.clientX;
-      }
-    });
-    canvas.addEventListener('touchmove', function (e) {
-      if (e.touches.length === 1) e.preventDefault();
-    }, { passive: false });
-
-    // Fade in
-    requestAnimationFrame(function () {
-      wrap.classList.add('loaded');
-    });
-  }
-
-  // Wait for COBE to load, then init
-  if (typeof COBE !== 'undefined') {
-    initGlobe();
-  } else {
-    var script = document.querySelector('script[src*="cobe"]');
-    if (script) {
-      script.addEventListener('load', initGlobe);
-    }
-  }
-})();
-</script>
 
 <script>
 // ═══ Scroll Reveal ═══
