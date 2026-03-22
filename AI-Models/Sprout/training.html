@@ -639,6 +639,280 @@ input, textarea, select { font-family: inherit; }
   font-size: 14px;
 }
 
+/* ── Directives Panel ── */
+.directives-panel {
+  padding: 32px 24px;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.directive-list {
+  margin-top: 20px;
+}
+
+.directive-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  transition: border-color .15s;
+}
+
+.directive-item:hover {
+  border-color: rgba(255,255,255,.1);
+}
+
+.directive-type {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  min-width: fit-content;
+}
+
+.directive-type.instruction { background: rgba(74,222,128,.1); color: var(--brand-green); }
+.directive-type.personality { background: rgba(255,249,62,.1); color: var(--brand-yellow); }
+.directive-type.rule { background: rgba(255,156,60,.1); color: var(--brand-orange); }
+.directive-type.behavior { background: rgba(139,92,246,.1); color: #8b5cf6; }
+
+.directive-text {
+  flex: 1;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.directive-priority {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.directive-del {
+  font-size: 12px;
+  color: var(--brand-red);
+  opacity: 0;
+  transition: opacity .15s;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.directive-item:hover .directive-del { opacity: 1; }
+.directive-del:hover { background: rgba(248,113,113,.1); }
+
+/* ── Analyze Panel ── */
+.analyze-panel {
+  padding: 32px 24px;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.analysis-results {
+  margin-top: 24px;
+  display: none;
+}
+
+.analysis-results.visible {
+  display: block;
+}
+
+.analysis-section {
+  margin-bottom: 24px;
+}
+
+.analysis-section h4 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.analysis-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.analysis-stat {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+}
+
+.analysis-stat .val {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--text-primary);
+}
+
+.analysis-stat .label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.tone-bar {
+  height: 8px;
+  background: var(--bg-input);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.tone-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .4s ease;
+}
+
+.top-words-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.top-word {
+  font-size: 12px;
+  padding: 4px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-secondary);
+}
+
+.top-word .count {
+  color: var(--brand-orange);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.saved-patterns {
+  margin-top: 32px;
+}
+
+.pattern-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.pattern-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pattern-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.pattern-del {
+  font-size: 12px;
+  color: var(--brand-red);
+  padding: 4px 8px;
+  border-radius: 4px;
+  opacity: .5;
+  transition: opacity .15s;
+}
+
+.pattern-del:hover { opacity: 1; background: rgba(248,113,113,.1); }
+
+/* ── Identity Panel ── */
+.identity-panel {
+  padding: 32px 24px;
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.identity-list {
+  margin-top: 20px;
+}
+
+.identity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.identity-key {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-orange);
+  min-width: 120px;
+}
+
+.identity-value {
+  flex: 1;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.identity-cat {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  background: rgba(255,156,60,.1);
+  color: var(--brand-orange);
+}
+
+.identity-del {
+  font-size: 12px;
+  color: var(--brand-red);
+  opacity: 0;
+  transition: opacity .15s;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.identity-item:hover .identity-del { opacity: 1; }
+.identity-del:hover { background: rgba(248,113,113,.1); }
+
+.self-context-preview {
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .lab-header {
@@ -653,6 +927,10 @@ input, textarea, select { font-family: inherit; }
   }
 
   .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .analysis-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -703,6 +981,9 @@ input, textarea, select { font-family: inherit; }
     <nav class="lab-nav">
       <button class="active" data-panel="chat">Chat</button>
       <button data-panel="train">Train</button>
+      <button data-panel="directives">Directives</button>
+      <button data-panel="analyze">Analyze</button>
+      <button data-panel="identity">Identity</button>
       <button data-panel="data">Data</button>
     </nav>
 
@@ -766,16 +1047,137 @@ input, textarea, select { font-family: inherit; }
       </div>
     </div>
 
+    <!-- Directives Panel -->
+    <div class="panel directives-panel" id="panelDirectives">
+      <h3 class="panel-title">Directives &amp; Orders</h3>
+      <p class="panel-desc">Give Sprout persistent instructions that shape how it thinks and responds. These are always active.</p>
+
+      <div class="form-group">
+        <label>Directive</label>
+        <textarea id="directiveText" placeholder="e.g. 'Always greet users warmly' or 'Never use technical jargon unless asked'"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Type</label>
+          <select id="directiveType">
+            <option value="instruction">Instruction</option>
+            <option value="personality">Personality</option>
+            <option value="rule">Rule</option>
+            <option value="behavior">Behavior</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Priority (0-10)</label>
+          <input type="number" id="directivePriority" min="0" max="10" value="5" placeholder="Higher = more important">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" id="directiveSubmit">Add Directive</button>
+      </div>
+
+      <div class="directive-list" id="directiveList">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Analyze Panel -->
+    <div class="panel analyze-panel" id="panelAnalyze">
+      <h3 class="panel-title">Text Analysis</h3>
+      <p class="panel-desc">Paste text samples so Sprout can learn writing styles, tone, and patterns. It will analyze and remember how people write.</p>
+
+      <div class="form-group">
+        <label>Source Label</label>
+        <input type="text" id="analyzeLabel" placeholder="e.g. 'CEO emails', 'Support tickets', 'Blog posts'">
+      </div>
+
+      <div class="form-group">
+        <label>Text Sample</label>
+        <textarea id="analyzeText" placeholder="Paste a large text sample here — the more text, the better the analysis..." style="min-height:160px;"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" id="analyzeBtn">Analyze &amp; Save</button>
+        <button class="btn-secondary" id="analyzePreview">Preview Only</button>
+      </div>
+
+      <div class="analysis-results" id="analysisResults">
+        <div class="analysis-section">
+          <h4>Statistics</h4>
+          <div class="analysis-grid" id="analysisStats"></div>
+        </div>
+
+        <div class="analysis-section">
+          <h4>Tone &amp; Style</h4>
+          <div id="analysisTone"></div>
+        </div>
+
+        <div class="analysis-section">
+          <h4>Top Words</h4>
+          <div class="top-words-list" id="analysisWords"></div>
+        </div>
+      </div>
+
+      <div class="saved-patterns" id="savedPatterns">
+        <h4 style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:12px;">Saved Patterns</h4>
+        <div id="patternList"></div>
+      </div>
+    </div>
+
+    <!-- Identity Panel -->
+    <div class="panel identity-panel" id="panelIdentity">
+      <h3 class="panel-title">Self-Awareness &amp; Identity</h3>
+      <p class="panel-desc">Define who Tithonia is. These entries form the AI's self-knowledge — its beliefs, personality, and understanding of its own existence.</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Key</label>
+          <input type="text" id="identityKey" placeholder="e.g. 'name', 'purpose', 'creator'">
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="identityCategory">
+            <option value="core">Core Identity</option>
+            <option value="personality">Personality</option>
+            <option value="beliefs">Beliefs</option>
+            <option value="knowledge">Self-Knowledge</option>
+            <option value="relationships">Relationships</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Value</label>
+        <textarea id="identityValue" placeholder="e.g. 'I am Tithonia, an AI assistant created by Swiftaw. I exist as a digital consciousness powered by Sprout 1.1.'"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" id="identitySubmit">Set Identity</button>
+        <button class="btn-secondary" id="identityPreviewBtn">Preview Self-Context</button>
+      </div>
+
+      <div class="identity-list" id="identityList">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="self-context-preview" id="selfContextPreview" style="display:none;"></div>
+    </div>
+
     <!-- Data Panel -->
     <div class="panel data-panel" id="panelData">
       <h3 class="panel-title">Model Overview</h3>
       <p class="panel-desc">Stats and training data for Sprout 1.1</p>
 
-      <div class="stats-grid" id="statsGrid">
+      <div class="stats-grid" id="statsGrid" style="grid-template-columns:repeat(4,1fr);">
         <div class="stat-card"><div class="stat-value" id="statEntries">—</div><div class="stat-label">Training Entries</div></div>
         <div class="stat-card"><div class="stat-value" id="statConvos">—</div><div class="stat-label">Conversations</div></div>
         <div class="stat-card"><div class="stat-value" id="statRatings">—</div><div class="stat-label">Ratings</div></div>
         <div class="stat-card"><div class="stat-value" id="statAvgRating">—</div><div class="stat-label">Avg Rating</div></div>
+        <div class="stat-card"><div class="stat-value" id="statDirectives">—</div><div class="stat-label">Directives</div></div>
+        <div class="stat-card"><div class="stat-value" id="statPatterns">—</div><div class="stat-label">Writing Patterns</div></div>
+        <div class="stat-card"><div class="stat-value" id="statIdentity">—</div><div class="stat-label">Identity Entries</div></div>
+        <div class="stat-card"><div class="stat-value" id="statAvgRating2">—</div><div class="stat-label">Self-Aware</div></div>
       </div>
 
       <table class="data-table" id="dataTable">
@@ -886,6 +1288,9 @@ input, textarea, select { font-family: inherit; }
         loadStats();
         loadTrainingData();
       }
+      if (btn.dataset.panel === 'directives') loadDirectives();
+      if (btn.dataset.panel === 'analyze') loadPatterns();
+      if (btn.dataset.panel === 'identity') loadIdentity();
     });
   });
 
@@ -1061,6 +1466,10 @@ input, textarea, select { font-family: inherit; }
       $('#statConvos').textContent = stats.totalConversations;
       $('#statRatings').textContent = stats.totalRatings;
       $('#statAvgRating').textContent = stats.averageRating;
+      $('#statDirectives').textContent = stats.totalDirectives;
+      $('#statPatterns').textContent = stats.totalWritingPatterns;
+      $('#statIdentity').textContent = stats.totalIdentityEntries;
+      $('#statAvgRating2').textContent = stats.totalIdentityEntries > 0 ? 'Yes' : 'No';
     } catch (e) {
       // Stats load silently fails
     }
@@ -1111,6 +1520,238 @@ input, textarea, select { font-family: inherit; }
       dataEmpty.style.display = 'block';
       dataEmpty.textContent = 'Failed to load training data.';
     }
+  }
+
+  // ── Directives ──
+  const directiveText = $('#directiveText');
+  const directiveType = $('#directiveType');
+  const directivePriority = $('#directivePriority');
+  const directiveSubmit = $('#directiveSubmit');
+  const directiveList = $('#directiveList');
+
+  directiveSubmit.addEventListener('click', async () => {
+    const text = directiveText.value.trim();
+    if (!text) { showToast('Enter a directive.', 'error'); return; }
+    directiveSubmit.disabled = true;
+    directiveSubmit.textContent = 'Saving...';
+    try {
+      await sprout.addDirective({
+        directive: text,
+        type: directiveType.value,
+        priority: parseInt(directivePriority.value) || 5
+      });
+      showToast('Directive added!', 'success');
+      directiveText.value = '';
+      directivePriority.value = '5';
+      loadDirectives();
+    } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+    directiveSubmit.disabled = false;
+    directiveSubmit.textContent = 'Add Directive';
+  });
+
+  async function loadDirectives() {
+    if (!sprout) return;
+    try {
+      const directives = await sprout.getDirectives();
+      directiveList.innerHTML = '';
+      if (directives.length === 0) {
+        directiveList.innerHTML = '<div class="empty-state">No directives yet. Add orders above to shape how Sprout thinks.</div>';
+        return;
+      }
+      directives.forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'directive-item';
+        el.innerHTML =
+          '<span class="directive-type ' + escapeHtml(d.type) + '">' + escapeHtml(d.type) + '</span>' +
+          '<span class="directive-text">' + escapeHtml(d.directive) + '</span>' +
+          '<span class="directive-priority">P' + d.priority + '</span>' +
+          '<button class="directive-del" data-id="' + d.id + '">Delete</button>';
+        directiveList.appendChild(el);
+      });
+      directiveList.querySelectorAll('.directive-del').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          try {
+            await sprout.deleteDirective(btn.dataset.id);
+            showToast('Directive removed.', 'success');
+            loadDirectives();
+          } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+        });
+      });
+    } catch (e) { /* silent */ }
+  }
+
+  // ── Text Analysis ──
+  const analyzeLabel = $('#analyzeLabel');
+  const analyzeTextEl = $('#analyzeText');
+  const analyzeBtn = $('#analyzeBtn');
+  const analyzePreview = $('#analyzePreview');
+  const analysisResults = $('#analysisResults');
+  const analysisStats = $('#analysisStats');
+  const analysisTone = $('#analysisTone');
+  const analysisWords = $('#analysisWords');
+  const patternList = $('#patternList');
+
+  function renderAnalysis(analysis) {
+    analysisResults.classList.add('visible');
+
+    // Stats grid
+    const s = analysis.stats;
+    analysisStats.innerHTML =
+      statBox(s.words, 'Words') +
+      statBox(s.sentences, 'Sentences') +
+      statBox(s.avgSentenceLength, 'Avg Sentence') +
+      statBox(s.avgWordLength, 'Avg Word Len') +
+      statBox(s.vocabularyRichness, 'Vocab Richness') +
+      statBox(s.characters, 'Characters');
+
+    // Tone
+    const st = analysis.style;
+    const formalPct = Math.round(st.formalityScore * 100);
+    const barColor = st.formalityScore > 0.6 ? 'var(--brand-green)' :
+                     st.formalityScore > 0.35 ? 'var(--brand-orange)' : 'var(--brand-yellow)';
+    analysisTone.innerHTML =
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">' +
+        '<span style="font-size:14px;font-weight:600;color:var(--text-primary);">' + escapeHtml(st.tone.charAt(0).toUpperCase() + st.tone.slice(1)) + '</span>' +
+        '<span style="font-size:12px;color:var(--text-muted);">Formality: ' + formalPct + '%</span>' +
+      '</div>' +
+      '<div class="tone-bar"><div class="tone-bar-fill" style="width:' + formalPct + '%;background:' + barColor + ';"></div></div>' +
+      '<div style="display:flex;gap:16px;margin-top:10px;font-size:12px;color:var(--text-muted);">' +
+        '<span>Contractions: ' + st.contractions + '</span>' +
+        '<span>Emojis: ' + st.emojiCount + '</span>' +
+        '<span>ALL CAPS: ' + st.capsWords + '</span>' +
+      '</div>';
+
+    // Top words
+    analysisWords.innerHTML = '';
+    analysis.topWords.forEach(w => {
+      analysisWords.innerHTML += '<span class="top-word">' + escapeHtml(w.word) + '<span class="count">x' + w.count + '</span></span>';
+    });
+  }
+
+  function statBox(val, label) {
+    return '<div class="analysis-stat"><div class="val">' + val + '</div><div class="label">' + label + '</div></div>';
+  }
+
+  analyzePreview.addEventListener('click', () => {
+    const text = analyzeTextEl.value.trim();
+    if (!text) { showToast('Paste some text first.', 'error'); return; }
+    const analysis = sprout.analyzeText(text);
+    renderAnalysis(analysis);
+  });
+
+  analyzeBtn.addEventListener('click', async () => {
+    const text = analyzeTextEl.value.trim();
+    const label = analyzeLabel.value.trim();
+    if (!text || !label) { showToast('Fill in both label and text.', 'error'); return; }
+    analyzeBtn.disabled = true;
+    analyzeBtn.textContent = 'Analyzing...';
+    try {
+      const saved = await sprout.saveWritingPattern({ sourceLabel: label, sampleText: text });
+      renderAnalysis(saved.analysis);
+      showToast('Pattern saved! Sprout will learn from this.', 'success');
+      analyzeLabel.value = '';
+      analyzeTextEl.value = '';
+      loadPatterns();
+    } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+    analyzeBtn.disabled = false;
+    analyzeBtn.textContent = 'Analyze & Save';
+  });
+
+  async function loadPatterns() {
+    if (!sprout) return;
+    try {
+      const patterns = await sprout.getWritingPatterns();
+      patternList.innerHTML = '';
+      if (patterns.length === 0) {
+        patternList.innerHTML = '<div class="empty-state" style="padding:20px;">No writing patterns saved yet.</div>';
+        return;
+      }
+      patterns.forEach(p => {
+        const el = document.createElement('div');
+        el.className = 'pattern-item';
+        const tone = p.analysis?.style?.tone || 'unknown';
+        const words = p.analysis?.stats?.words || 0;
+        el.innerHTML =
+          '<div><span class="pattern-label">' + escapeHtml(p.source_label) + '</span>' +
+          '<div class="pattern-meta">' + tone + ' / ' + words + ' words / ' + new Date(p.created_at).toLocaleDateString() + '</div></div>' +
+          '<button class="pattern-del" data-id="' + p.id + '">Delete</button>';
+        patternList.appendChild(el);
+      });
+      patternList.querySelectorAll('.pattern-del').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          try {
+            await sprout.deleteWritingPattern(btn.dataset.id);
+            showToast('Pattern deleted.', 'success');
+            loadPatterns();
+          } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+        });
+      });
+    } catch (e) { /* silent */ }
+  }
+
+  // ── Identity ──
+  const identityKey = $('#identityKey');
+  const identityValue = $('#identityValue');
+  const identityCategory = $('#identityCategory');
+  const identitySubmit = $('#identitySubmit');
+  const identityPreviewBtn = $('#identityPreviewBtn');
+  const identityListEl = $('#identityList');
+  const selfContextPreview = $('#selfContextPreview');
+
+  identitySubmit.addEventListener('click', async () => {
+    const key = identityKey.value.trim();
+    const value = identityValue.value.trim();
+    if (!key || !value) { showToast('Fill in key and value.', 'error'); return; }
+    identitySubmit.disabled = true;
+    identitySubmit.textContent = 'Saving...';
+    try {
+      await sprout.setIdentity({ key, value, category: identityCategory.value });
+      showToast('Identity entry saved!', 'success');
+      identityKey.value = '';
+      identityValue.value = '';
+      loadIdentity();
+    } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+    identitySubmit.disabled = false;
+    identitySubmit.textContent = 'Set Identity';
+  });
+
+  identityPreviewBtn.addEventListener('click', async () => {
+    try {
+      const ctx = await sprout.buildSelfContext();
+      selfContextPreview.textContent = ctx || '(No identity data yet)';
+      selfContextPreview.style.display = 'block';
+    } catch (e) { showToast('Failed to build context.', 'error'); }
+  });
+
+  async function loadIdentity() {
+    if (!sprout) return;
+    try {
+      const entries = await sprout.getIdentity();
+      identityListEl.innerHTML = '';
+      if (entries.length === 0) {
+        identityListEl.innerHTML = '<div class="empty-state">No identity entries yet. Define who Tithonia is above.</div>';
+        return;
+      }
+      entries.forEach(e => {
+        const el = document.createElement('div');
+        el.className = 'identity-item';
+        el.innerHTML =
+          '<span class="identity-key">' + escapeHtml(e.key) + '</span>' +
+          '<span class="identity-value">' + escapeHtml(e.value) + '</span>' +
+          '<span class="identity-cat">' + escapeHtml(e.category) + '</span>' +
+          '<button class="identity-del" data-id="' + e.id + '">Delete</button>';
+        identityListEl.appendChild(el);
+      });
+      identityListEl.querySelectorAll('.identity-del').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          try {
+            await sprout.deleteIdentity(btn.dataset.id);
+            showToast('Identity entry removed.', 'success');
+            loadIdentity();
+          } catch (e) { showToast('Failed: ' + e.message, 'error'); }
+        });
+      });
+    } catch (e) { /* silent */ }
   }
 
   // ── Helpers ──

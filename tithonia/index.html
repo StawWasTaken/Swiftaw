@@ -506,26 +506,128 @@ input, textarea { font-family: inherit; }
   pointer-events: all;
 }
 
-/* ── Model Badge ── */
-.model-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(74,222,128,.8);
-  background: rgba(74,222,128,.08);
-  padding: 3px 10px;
-  border-radius: 6px;
-  letter-spacing: .03em;
+/* ── Model Selector ── */
+.model-selector {
+  position: relative;
   margin-left: 8px;
 }
 
-.model-badge .dot {
-  width: 5px;
-  height: 5px;
+.model-selector-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: transparent;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .15s;
+  user-select: none;
+}
+
+.model-selector-btn:hover {
+  background: var(--bg-hover);
+}
+
+.model-selector-btn .dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #4ade80;
+}
+
+.model-selector-btn .chevron {
+  width: 14px;
+  height: 14px;
+  opacity: .4;
+  transition: transform .2s;
+}
+
+.model-selector.open .model-selector-btn .chevron {
+  transform: rotate(180deg);
+}
+
+.model-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 280px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  padding: 6px;
+  z-index: 500;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(-4px);
+  transition: opacity .15s, visibility .15s, transform .15s;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+
+.model-selector.open .model-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.model-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .12s;
+  text-align: left;
+}
+
+.model-option:hover {
+  background: rgba(255,255,255,.06);
+}
+
+.model-option.active {
+  background: rgba(255,255,255,.08);
+}
+
+.model-option-check {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  margin-top: 1px;
+  opacity: 0;
+  color: var(--brand-orange);
+}
+
+.model-option.active .model-option-check {
+  opacity: 1;
+}
+
+.model-option-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.model-option-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.model-option-desc {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.model-dropdown-divider {
+  height: 1px;
+  background: rgba(255,255,255,.06);
+  margin: 4px 0;
 }
 
 /* ── Train Button ── */
@@ -666,14 +768,29 @@ input, textarea { font-family: inherit; }
   <main class="main">
     <div class="topbar">
       <div class="topbar-title" id="topbarTitle">New chat</div>
-      <span class="model-badge"><span class="dot"></span>Sprout 1.1</span>
+      <div class="model-selector" id="modelSelector">
+        <button class="model-selector-btn" id="modelSelectorBtn">
+          <span class="dot"></span>
+          <span id="selectedModelName">Sprout 1.1</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="model-dropdown" id="modelDropdown">
+          <button class="model-option active" data-model="sprout-1.1">
+            <svg class="model-option-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <div class="model-option-info">
+              <div class="model-option-name">Sprout 1.1</div>
+              <div class="model-option-desc">Best for everyday tasks. Fast and reliable.</div>
+            </div>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Landing state -->
     <div class="landing" id="landing">
       <img class="landing-logo" src="/product-logos/tithonia logomark.png" alt="Tithonia">
       <h1>What can I help with?</h1>
-      <p>A modern AI assistant powered by Sprout 1.1 — built for daily help, smart project planning, quick answers, and specialized insights.</p>
+      <p id="landingDesc">A modern AI assistant powered by Sprout 1.1 — built for daily help, smart project planning, quick answers, and specialized insights.</p>
       <div class="suggestions" id="suggestions">
         <button class="suggestion-card" data-prompt="Help me brainstorm ideas for a creative project">
           <span class="suggestion-icon">&#9889;</span>
@@ -707,7 +824,7 @@ input, textarea { font-family: inherit; }
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z"/></svg>
         </button>
       </div>
-      <div class="input-disclaimer">Tithonia is powered by Sprout 1.1. It can make mistakes. Verify important information.</div>
+      <div class="input-disclaimer" id="inputDisclaimer">Tithonia is powered by Sprout 1.1. It can make mistakes. Verify important information.</div>
     </div>
   </main>
 </div>
@@ -730,15 +847,96 @@ input, textarea { font-family: inherit; }
   const sidebarToggle = $('#sidebarToggle');
   const sidebarOverlay = $('#sidebarOverlay');
   const suggestionsEl = $('#suggestions');
+  const modelSelector = $('#modelSelector');
+  const modelSelectorBtn = $('#modelSelectorBtn');
+  const modelDropdown = $('#modelDropdown');
+  const selectedModelName = $('#selectedModelName');
+  const inputDisclaimer = $('#inputDisclaimer');
+  const landingDesc = $('#landingDesc');
+
+  // ── Available Models ──
+  const MODELS = {
+    'sprout-1.1': {
+      name: 'Sprout 1.1',
+      desc: 'Best for everyday tasks. Fast and reliable.',
+      engine: 'sprout'
+    }
+    // Future models go here:
+    // 'sprout-2.0': { name: 'Sprout 2.0', desc: 'Advanced reasoning and deeper understanding.', engine: 'sprout' },
+  };
 
   // ── State ──
   let conversations = JSON.parse(localStorage.getItem('tithonia_convos') || '[]');
   let activeConvoId = null;
   let isGenerating = false;
+  let activeModel = localStorage.getItem('tithonia_model') || 'sprout-1.1';
 
   // ── Sprout 1.1 Engine ──
   const db = createSupabaseClient();
   const sprout = db ? new SproutEngine(db) : null;
+
+  // ── Model Selector ──
+  function renderModelDropdown() {
+    modelDropdown.innerHTML = '';
+    const modelKeys = Object.keys(MODELS);
+    modelKeys.forEach((key, i) => {
+      const m = MODELS[key];
+      const btn = document.createElement('button');
+      btn.className = 'model-option' + (key === activeModel ? ' active' : '');
+      btn.dataset.model = key;
+      btn.innerHTML = `
+        <svg class="model-option-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <div class="model-option-info">
+          <div class="model-option-name">${m.name}</div>
+          <div class="model-option-desc">${m.desc}</div>
+        </div>`;
+      btn.addEventListener('click', () => selectModel(key));
+      modelDropdown.appendChild(btn);
+
+      if (i < modelKeys.length - 1) {
+        const divider = document.createElement('div');
+        divider.className = 'model-dropdown-divider';
+        modelDropdown.appendChild(divider);
+      }
+    });
+  }
+
+  function selectModel(modelKey) {
+    if (!MODELS[modelKey]) return;
+    activeModel = modelKey;
+    localStorage.setItem('tithonia_model', modelKey);
+    selectedModelName.textContent = MODELS[modelKey].name;
+    inputDisclaimer.textContent = `Tithonia is powered by ${MODELS[modelKey].name}. It can make mistakes. Verify important information.`;
+    landingDesc.textContent = `A modern AI assistant powered by ${MODELS[modelKey].name} — built for daily help, smart project planning, quick answers, and specialized insights.`;
+    renderModelDropdown();
+    closeModelSelector();
+  }
+
+  function toggleModelSelector() {
+    modelSelector.classList.toggle('open');
+  }
+
+  function closeModelSelector() {
+    modelSelector.classList.remove('open');
+  }
+
+  modelSelectorBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleModelSelector();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!modelSelector.contains(e.target)) {
+      closeModelSelector();
+    }
+  });
+
+  // Init model display
+  if (MODELS[activeModel]) {
+    selectedModelName.textContent = MODELS[activeModel].name;
+    inputDisclaimer.textContent = `Tithonia is powered by ${MODELS[activeModel].name}. It can make mistakes. Verify important information.`;
+  }
+  renderModelDropdown();
 
   // ── Helpers ──
   function genId() {
