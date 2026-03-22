@@ -276,7 +276,8 @@
     /* ---- HERO ---- */
     .hero {
       background: #faf8f3;
-      padding: 140px 32px 80px;
+      padding: 180px 32px 80px;
+      border-bottom: 1px solid var(--border);
     }
 
     .hero-inner {
@@ -284,59 +285,69 @@
       margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1.2fr;
-      gap: 64px;
+      gap: 80px;
       align-items: start;
     }
 
     .hero-left h1 {
       font-family: var(--font-display);
-      font-size: clamp(2.6rem, 5vw, 3.6rem);
+      font-size: clamp(3rem, 6vw, 4.4rem);
       font-weight: 700;
-      line-height: 1.08;
+      line-height: 1.05;
       color: var(--text);
-      margin: 0;
+      margin: 0 0 20px;
+    }
+
+    .hero-left .highlight-bar {
+      width: 64px;
+      height: 3px;
     }
 
     .hero-right {
-      padding-top: 8px;
+      padding-top: 12px;
     }
 
     .hero-right p {
       font-family: var(--font-serif);
-      font-size: 1.1rem;
+      font-size: 1.18rem;
       font-weight: 400;
       color: var(--text-light);
-      line-height: 1.7;
-      margin: 0 0 28px;
+      line-height: 1.75;
+      margin: 0 0 32px;
     }
 
     .hero-teams {
       display: flex;
       flex-wrap: wrap;
-      align-items: baseline;
-      gap: 6px;
+      align-items: center;
+      gap: 8px;
     }
 
     .hero-teams-label {
       font-family: var(--font-sans);
-      font-size: .88rem;
-      font-weight: 500;
-      color: var(--text-light);
+      font-size: .82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-muted);
       margin-right: 4px;
     }
 
     .hero-teams a {
       font-family: var(--font-sans);
-      font-size: .88rem;
-      font-weight: 400;
-      color: #5c4a3a;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      transition: color .15s;
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--brand-deep);
+      background: rgba(36,31,60,.06);
+      padding: 5px 14px;
+      border-radius: 100px;
+      transition: background .2s, color .2s;
+      text-decoration: none;
     }
 
     .hero-teams a:hover {
-      color: var(--text);
+      background: var(--brand-yellow);
+      color: var(--brand-deep);
     }
 
     /* ---- SECTIONS ---- */
@@ -606,7 +617,7 @@
 
       .hero-inner {
         grid-template-columns: 1fr;
-        gap: 24px;
+        gap: 28px;
       }
 
       .section {
@@ -687,6 +698,7 @@
     <div class="hero-inner">
       <div class="hero-left">
         <h1>Research</h1>
+        <div class="highlight-bar"></div>
       </div>
       <div class="hero-right">
         <p>Our research teams investigate the safety, inner workings, and societal impacts of AI models - so that artificial intelligence has a positive impact as it becomes increasingly capable.</p>
