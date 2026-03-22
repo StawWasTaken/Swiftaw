@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog — swiftaw</title>
+<title>Blog - swiftaw</title>
 <meta name="description" content="Thoughts on social technology, AI, and the digital future from the swiftaw team.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="icon" type="image/png" href="/SwiftawFavicon.png">
@@ -100,33 +100,35 @@ a { text-decoration: none; color: inherit; }
 /* ═══ BLOG HERO ═══ */
 .blog-hero {
   padding: calc(var(--nav-h) + 80px) var(--pad) 80px;
+  background: #faf8f3;
+}
+.blog-hero-inner {
   max-width: var(--max-w); margin: 0 auto;
-  position: relative;
-}
-.blog-hero-orb {
-  position: absolute; top: 0; right: -10%;
-  width: 500px; height: 500px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,249,62,.08) 0%, transparent 70%);
-  pointer-events: none;
-}
-.blog-eyebrow {
-  font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--brand-orange); margin-bottom: 14px;
-}
-.highlight-bar {
-  height: 3px;
-  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
-  border-radius: 2px; margin-bottom: 32px; max-width: 80px;
+  display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px;
+  align-items: start;
 }
 .blog-hero h1 {
   font-family: var(--font-display);
   font-size: clamp(2.4rem, 4vw, 3.6rem);
-  font-weight: 400; line-height: 1.1; letter-spacing: -.02em;
-  margin-bottom: 16px;
+  font-weight: 700; line-height: 1.1; letter-spacing: -.02em;
 }
-.blog-hero p {
-  font-size: 17px; color: var(--text-light); line-height: 1.72; max-width: 520px;
+.blog-hero-right p {
+  font-family: var(--font-serif);
+  font-size: 1.1rem; color: var(--text-light); line-height: 1.72;
+  margin-bottom: 24px;
 }
+.blog-hero-links {
+  font-size: .9rem; color: var(--text-muted);
+}
+.blog-hero-links strong {
+  font-weight: 600;
+}
+.blog-hero-links a {
+  color: #6b4c3b; text-decoration: underline;
+  text-underline-offset: 3px; margin-left: 12px;
+  transition: color .15s;
+}
+.blog-hero-links a:hover { color: var(--text); }
 
 /* ═══ BLOG FILTER TABS ═══ */
 .blog-filters {
@@ -355,6 +357,7 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
 @media (max-width: 900px) {
   .nav-links { display: none; }
   .nav-hamburger { display: flex; flex-direction: column; }
+  .blog-hero-inner { grid-template-columns: 1fr; gap: 32px; }
   .featured-post { grid-template-columns: 1fr; }
   .featured-post-image { min-height: 220px; }
   .posts-grid { grid-template-columns: 1fr 1fr; }
@@ -380,7 +383,7 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
         <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
         <div class="nav-dropdown">
           <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
-          <a href="/tithonia">Try Tithonia<span class="dd-desc">Intelligent digital ecosystem</span></a>
+          <a href="/tithonia">Try Tithonia<span class="dd-desc">Modern AI platform</span></a>
         </div>
       </div>
       <a href="/research" class="nav-link">Research</a>
@@ -409,11 +412,21 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
 
 <!-- ═══ BLOG HERO ═══ -->
 <div class="blog-hero">
-  <div class="blog-hero-orb"></div>
-  <div class="blog-eyebrow">swiftaw Blog</div>
-  <div class="highlight-bar"></div>
-  <h1>Ideas that move<br>the world forward.</h1>
-  <p>Thoughts on social technology, artificial intelligence, and the digital future — from the team building it.</p>
+  <div class="blog-hero-inner">
+    <div>
+      <h1>Blog</h1>
+    </div>
+    <div class="blog-hero-right">
+      <p>Thoughts on social technology, artificial intelligence, and the digital future - from the team building it.</p>
+      <div class="blog-hero-links">
+        <strong>Topics:</strong>
+        <a href="#" onclick="document.querySelectorAll('.filter-tab')[1].click();return false;">Social & Chat</a>
+        <a href="#" onclick="document.querySelectorAll('.filter-tab')[2].click();return false;">AI</a>
+        <a href="#" onclick="document.querySelectorAll('.filter-tab')[3].click();return false;">Product</a>
+        <a href="#" onclick="document.querySelectorAll('.filter-tab')[4].click();return false;">Research</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ═══ FILTER TABS ═══ -->
@@ -428,7 +441,7 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
 
 <!-- ═══ FEATURED POST ═══ -->
 <div class="blog-featured">
-  <a href="#" class="featured-post">
+  <a href="#" class="featured-post" data-category="artificial intelligence">
     <div class="featured-post-image">
       <div class="image-glow"></div>
       <div class="featured-tag">&#9733; Featured</div>
@@ -436,8 +449,8 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
     </div>
     <div class="featured-post-body">
       <div class="post-category">Artificial Intelligence</div>
-      <h2>Why AI and social platforms must converge — and how we're building that future with Tithonia</h2>
-      <p>The next decade of digital life won't be defined by standalone apps — it'll be defined by ecosystems where intelligence and community amplify each other. Here's our vision.</p>
+      <h2>Why AI and social platforms must converge - and how we're building that future with Tithonia</h2>
+      <p>The next decade of digital life won't be defined by standalone apps - it'll be defined by ecosystems where intelligence and community amplify each other. Here's our vision.</p>
       <div class="post-meta">
         <div class="post-author">
           <div class="post-author-avatar">S</div>
@@ -458,7 +471,7 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
   <div class="blog-grid-heading">Latest Posts</div>
   <div class="posts-grid">
 
-    <a href="#" class="post-card">
+    <a href="#" class="post-card" data-category="social & chat">
       <div class="post-card-image social-theme">
         <div class="post-card-image-glow"></div>
         <div class="post-card-image-label">⚡</div>
@@ -474,7 +487,7 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
       </div>
     </a>
 
-    <a href="#" class="post-card">
+    <a href="#" class="post-card" data-category="artificial intelligence">
       <div class="post-card-image ai-theme">
         <div class="post-card-image-glow"></div>
         <div class="post-card-image-label">&#129504;</div>
@@ -490,7 +503,7 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
       </div>
     </a>
 
-    <a href="#" class="post-card">
+    <a href="#" class="post-card" data-category="product">
       <div class="post-card-image product-theme">
         <div class="post-card-image-glow"></div>
         <div class="post-card-image-label">&#128300;</div>
@@ -498,7 +511,7 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
       </div>
       <div class="post-card-body">
         <h3>The Onyx economy: why we built an earned-not-bought rewards system</h3>
-        <p>Pay-to-win is broken. We built an entirely different model — one where your participation is your currency.</p>
+        <p>Pay-to-win is broken. We built an entirely different model - one where your participation is your currency.</p>
         <div class="post-card-footer">
           <span>Jan 2026 · 4 min</span>
           <span class="read-link">Read &rarr;</span>
@@ -506,7 +519,7 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
       </div>
     </a>
 
-    <a href="#" class="post-card">
+    <a href="#" class="post-card" data-category="research">
       <div class="post-card-image ai-theme">
         <div class="post-card-image-glow"></div>
         <div class="post-card-image-label">&#127760;</div>
@@ -522,7 +535,7 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
       </div>
     </a>
 
-    <a href="#" class="post-card">
+    <a href="#" class="post-card" data-category="company">
       <div class="post-card-image social-theme">
         <div class="post-card-image-glow"></div>
         <div class="post-card-image-label">&#128737;</div>
@@ -538,14 +551,14 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
       </div>
     </a>
 
-    <a href="#" class="post-card">
+    <a href="#" class="post-card" data-category="company">
       <div class="post-card-image product-theme">
         <div class="post-card-image-glow"></div>
         <div class="post-card-image-label">&#128172;</div>
         <div class="post-card-cat">Company</div>
       </div>
       <div class="post-card-body">
-        <h3>Why swiftaw's two pillars — social and AI — are stronger together</h3>
+        <h3>Why swiftaw's two pillars - social and AI - are stronger together</h3>
         <p>We didn't build Fortized and Tithonia as separate bets. We built them as two halves of one vision.</p>
         <div class="post-card-footer">
           <span>Nov 2025 · 5 min</span>
@@ -564,7 +577,7 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
     <div>
       <div class="section-eyebrow">Stay in the loop</div>
       <h2>Get swiftaw insights<br>in your inbox.</h2>
-      <p>New posts on social tech, AI, and the future of digital ecosystems — no spam, ever.</p>
+      <p>New posts on social tech, AI, and the future of digital ecosystems - no spam, ever.</p>
     </div>
     <div>
       <div class="newsletter-form">
@@ -584,7 +597,7 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
         <div class="footer-brand-logo">
           <img src="/SwiftawLogo.png" alt="swiftaw">
         </div>
-        <p>Building digital technologies — social platforms and AI — to reshape how the world connects and thinks.</p>
+        <p>Building digital technologies - social platforms and AI - to reshape how the world connects and thinks.</p>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Products</div>
@@ -621,13 +634,40 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; }
 </footer>
 
 <script>
-// Filter tabs interactivity
-document.querySelectorAll('.filter-tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
+(function() {
+  var tabs = document.querySelectorAll('.filter-tab');
+  var featured = document.querySelector('.blog-featured');
+  var featuredPost = featured ? featured.querySelector('.featured-post') : null;
+  var cards = document.querySelectorAll('.post-card');
+
+  tabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      var filter = tab.textContent.trim().toLowerCase();
+
+      // Featured post
+      if (featuredPost) {
+        var featuredCat = featuredPost.getAttribute('data-category') || '';
+        if (filter === 'all' || featuredCat === filter) {
+          featured.style.display = '';
+        } else {
+          featured.style.display = 'none';
+        }
+      }
+
+      // Grid cards
+      cards.forEach(function(card) {
+        var cat = card.getAttribute('data-category') || '';
+        if (filter === 'all' || cat === filter) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
   });
-});
+})();
 </script>
 
 </body>

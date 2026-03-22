@@ -61,10 +61,14 @@ a { color: inherit; text-decoration: none; }
 .highlight-bar { width: 80px; height: 3px; background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); border-radius: 3px; }
 
 /* HERO */
-.hero { padding: 160px 32px 100px; text-align: center; max-width: 860px; margin: 0 auto; }
-.eyebrow { font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px; }
-.hero h1 { font-family: var(--font-display); font-size: clamp(2.6rem, 6vw, 4.2rem); font-weight: 700; line-height: 1.1; margin-bottom: 24px; color: var(--text); }
-.hero p { font-size: 1.15rem; color: var(--text-light); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+.hero { background: #faf8f3; padding: 160px 32px 100px; }
+.hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+.hero h1 { font-family: var(--font-display); font-size: clamp(2.6rem, 5vw, 3.8rem); font-weight: 700; line-height: 1.1; color: var(--text); }
+.hero-right p { font-family: var(--font-serif); font-size: 1.1rem; color: var(--text-light); line-height: 1.75; margin: 0; }
+.hero-links { margin-top: 28px; font-family: var(--font-sans); font-size: .95rem; color: var(--text-light); }
+.hero-links span { font-weight: 600; color: var(--text); margin-right: 8px; }
+.hero-links a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; margin-right: 14px; transition: color .2s; }
+.hero-links a:hover { color: var(--text-light); }
 
 /* SECTIONS */
 .section { padding: 100px 32px; max-width: 1100px; margin: 0 auto; }
@@ -115,6 +119,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
   .split { grid-template-columns: 1fr; gap: 40px; }
   .footer-top { grid-template-columns: 1fr 1fr; }
   .hero { padding: 140px 24px 80px; }
+  .hero-inner { grid-template-columns: 1fr; gap: 32px; }
   .section { padding: 72px 24px; }
 }
 </style>
@@ -129,7 +134,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
         <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
         <div class="nav-dropdown">
           <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
-          <a href="/tithonia">Try Tithonia<span class="dd-desc">Intelligent digital ecosystem</span></a>
+          <a href="/tithonia">Try Tithonia<span class="dd-desc">Modern AI platform</span></a>
         </div>
       </div>
       <a href="/research" class="nav-link">Research</a>
@@ -157,22 +162,34 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
 </nav>
 
 <section class="hero">
-  <p class="eyebrow">About Swiftaw</p>
-  <h1>Building what matters.</h1>
-  <p>We are a technology company driven by the belief that the digital world should bring people closer together, not push them apart. Every product we create starts with a simple question: does this make life better?</p>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <h1>About</h1>
+    </div>
+    <div class="hero-right">
+      <p>We are a technology company driven by the belief that the digital world should bring people closer together, not push them apart. Every product we create starts with a simple question: does this make life better?</p>
+      <div class="hero-links">
+        <span>Learn more:</span>
+        <a href="#mission">Mission</a>
+        <a href="#team">Team</a>
+        <a href="#values">Values</a>
+        <a href="#story">Story</a>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section class="section">
   <div class="split">
     <div>
       <div class="highlight-bar" style="margin-bottom:24px;"></div>
-      <h2>Our Mission</h2>
-      <p>Swiftaw exists to build the ultimate digital ecosystem&mdash;one that masters the balance between human connection and machine intelligence. We believe technology should amplify what makes us human, not replace it.</p>
+      <h2 id="mission">Our Mission</h2>
+      <p>Swiftaw exists to build the ultimate digital ecosystem -one that masters the balance between human connection and machine intelligence. We believe technology should amplify what makes us human, not replace it.</p>
       <p>From gaming communities to intelligent platforms, every product in our ecosystem is designed with intentionality, crafted to serve people first and metrics second.</p>
     </div>
     <div>
       <div class="highlight-bar" style="margin-bottom:24px;"></div>
-      <h2>Team Philosophy</h2>
+      <h2 id="team">Team Philosophy</h2>
       <p>We hire builders, not bystanders. Our team is small by design, because the best work happens when every person at the table has a voice and a stake in the outcome.</p>
       <p>We value clarity over complexity, shipping over perfecting, and empathy over ego. Everyone here is expected to think like a founder and care like a user.</p>
     </div>
@@ -193,7 +210,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
 <section class="section">
   <div style="max-width:720px;">
     <div class="highlight-bar" style="margin-bottom:24px;"></div>
-    <h2>The Founding Story</h2>
+    <h2 id="story">The Founding Story</h2>
     <p>Swiftaw was born from a simple frustration: the digital platforms we used every day felt hollow. They optimized for attention instead of meaning. They measured engagement but forgot about connection.</p>
     <p>We set out to build something different. A company that would put craft and care back into technology. A company where every pixel, every interaction, and every line of code reflects a deeper purpose.</p>
     <p>Our vision has always been the same: to create a digital ecosystem that people genuinely love using, one that respects their time, protects their privacy, and empowers their creativity.</p>
@@ -203,7 +220,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
 <section class="section">
   <div style="text-align:center; margin-bottom:16px;">
     <div class="highlight-bar" style="margin:0 auto 24px;"></div>
-    <h2>Our Values</h2>
+    <h2 id="values">Our Values</h2>
   </div>
   <div class="values-grid">
     <div class="value-card">
