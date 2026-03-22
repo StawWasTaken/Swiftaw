@@ -149,8 +149,6 @@ a { text-decoration: none; color: inherit; }
   transform: translate(-50%, -48%);
   width: 680px; height: 680px;
   z-index: 1;
-  border-radius: 50%;
-  overflow: hidden;
 }
 .globe-wrap canvas {
   display: block;
@@ -881,22 +879,14 @@ footer {
   var container = document.getElementById('globeContainer');
   var ctx = canvas.getContext('2d');
 
-  var C_OCEAN = '#0f0d1f';
-  var C_LAND = '#241f3c';
-  var C_HOVER = '#ff9c3c';
-  var C_BORDER = 'rgba(255,249,62,0.35)';
-  var C_GRAT = 'rgba(255,249,62,0.04)';
-  var C_RING = 'rgba(255,156,60,0.25)';
+  var C_OCEAN = '#f5f5f0';
+  var C_LAND = '#e8e6e0';
+  var C_HOVER = '#d4d0c8';
+  var C_BORDER = 'rgba(0,0,0,0.18)';
+  var C_GRAT = 'rgba(0,0,0,0.06)';
+  var C_RING = 'rgba(0,0,0,0.15)';
   var C_YELLOW = '#fff93e';
   var C_ORANGE = '#ff9c3c';
-
-  var MARKERS = [
-    { name: 'Paris', coords: [2.35, 48.86] },
-    { name: 'New York', coords: [-74.0, 40.71] },
-    { name: 'Tokyo', coords: [139.69, 35.69] },
-    { name: 'Singapore', coords: [103.82, 1.35] },
-    { name: 'São Paulo', coords: [-46.63, -23.55] }
-  ];
 
   var width, height;
   function resize(){
@@ -919,7 +909,7 @@ footer {
     .rotate([-2.2, -46.6, 0]);
 
   var pathGen = d3.geoPath(proj, ctx);
-  var world = null, countries = null, borders = null;
+  var world = null, countries = null;
   var hoveredId = null;
   var rotating = true, dragging = false, lastPos = null;
   var velX = 0, velY = 0, scale = 1, animId;
@@ -929,7 +919,6 @@ footer {
     .then(function(data){
       world = data;
       countries = topojson.feature(data, data.objects.countries);
-      borders = topojson.mesh(data, data.objects.countries, function(a,b){ return a !== b; });
       draw();
       startAnim();
     });
@@ -945,6 +934,8 @@ footer {
     return Math.cos(dLat * Math.PI/180) * Math.cos(dLon * Math.PI/180) > 0;
   }
 
+  var PARIS = [2.35, 48.86];
+
   function draw(){
     ctx.clearRect(0, 0, width, height);
     proj.scale(getRadius()).translate([width / 2, height / 2]);
@@ -957,50 +948,49 @@ footer {
 
     if(!world) return;
 
-    // Countries
+    // Countries — light fill with outline
     countries.features.forEach(function(f){
       ctx.beginPath(); pathGen(f);
       ctx.fillStyle = (+f.id === hoveredId) ? C_HOVER : C_LAND;
       ctx.fill();
+      ctx.strokeStyle = C_BORDER;
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
     });
 
     // Graticule
-    ctx.beginPath(); pathGen(d3.geoGraticule()());
-    ctx.strokeStyle = C_GRAT; ctx.lineWidth = 0.5; ctx.stroke();
-
-    // Borders
-    ctx.beginPath(); pathGen(borders);
-    ctx.strokeStyle = C_BORDER; ctx.lineWidth = 0.4; ctx.stroke();
+    ctx.beginPath(); pathGen(d3.geoGraticule10());
+    ctx.strokeStyle = C_GRAT; ctx.lineWidth = 0.3; ctx.stroke();
 
     // Globe outline
     ctx.beginPath(); pathGen(sphere);
-    ctx.strokeStyle = C_RING; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.strokeStyle = C_RING; ctx.lineWidth = 1; ctx.stroke();
 
-    // Markers
-    MARKERS.forEach(function(m){
-      if(!isVisible(m.coords)) return;
-      var p = proj(m.coords);
-      if(!p) return;
-      var px = p[0], py = p[1];
+    // Paris marker
+    if(isVisible(PARIS)){
+      var p = proj(PARIS);
+      if(p){
+        var px = p[0], py = p[1];
 
-      // Outer ring
-      ctx.beginPath(); ctx.arc(px, py, 8, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255,156,60,0.3)'; ctx.lineWidth = 1.2; ctx.stroke();
+        // Pulse ring
+        ctx.beginPath(); ctx.arc(px, py, 10, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,156,60,0.25)'; ctx.lineWidth = 1.5; ctx.stroke();
 
-      // Filled circle
-      ctx.beginPath(); ctx.arc(px, py, 4.5, 0, Math.PI * 2);
-      ctx.fillStyle = C_ORANGE; ctx.fill();
-      ctx.strokeStyle = C_YELLOW; ctx.lineWidth = 1.5; ctx.stroke();
+        // Outer circle
+        ctx.beginPath(); ctx.arc(px, py, 5.5, 0, Math.PI * 2);
+        ctx.fillStyle = C_ORANGE; ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
 
-      // Inner dot
-      ctx.beginPath(); ctx.arc(px, py, 1.8, 0, Math.PI * 2);
-      ctx.fillStyle = C_YELLOW; ctx.fill();
+        // Inner dot
+        ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff'; ctx.fill();
 
-      // Label
-      ctx.font = 'bold 11px Inter, sans-serif';
-      ctx.fillStyle = C_YELLOW;
-      ctx.fillText(m.name, px + 10, py - 4);
-    });
+        // Label
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.fillStyle = 'rgba(0,0,0,0.6)';
+        ctx.fillText('Paris', px + 14, py - 6);
+      }
+    }
   }
 
   function startAnim(){
