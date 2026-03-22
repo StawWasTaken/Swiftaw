@@ -69,11 +69,8 @@ a { text-decoration: none; color: inherit; }
   max-width: var(--max-w); width: 100%; margin: 0 auto;
   display: flex; align-items: center;
 }
-.nav-logo { display: flex; align-items: center; gap: 10px; margin-right: 36px; }
-.nav-logo img { height: 26px; }
-.nav-logo span {
-  font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -.3px;
-}
+.nav-logo { display: flex; align-items: center; margin-right: 36px; }
+.nav-logo img { height: 28px; }
 .nav-links { display: flex; align-items: center; gap: 4px; }
 .nav-link {
   font-size: 14px; font-weight: 500; color: var(--text-light);
@@ -150,13 +147,13 @@ a { text-decoration: none; color: inherit; }
 .globe-wrap {
   position: absolute;
   top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 750px; height: 750px;
+  transform: translate(-50%, -48%);
+  width: 680px; height: 680px;
   pointer-events: auto; z-index: 1;
-  opacity: .2;
-  transition: opacity .8s ease;
+  opacity: 0;
+  transition: opacity 1.2s ease;
 }
-.globe-wrap.loaded { opacity: .35; }
+.globe-wrap.loaded { opacity: 1; }
 .globe-wrap canvas {
   width: 100% !important; height: 100% !important;
   cursor: grab;
@@ -224,7 +221,7 @@ a { text-decoration: none; color: inherit; }
 /* ═══════════════════════════════════════════
    BANNER
 ═══════════════════════════════════════════ */
-.banner-section { padding: 0 var(--pad) 120px; }
+.banner-section { padding: 0 var(--pad) 80px; }
 .banner-img {
   max-width: var(--max-w); margin: 0 auto;
   border-radius: 20px; overflow: hidden;
@@ -232,6 +229,90 @@ a { text-decoration: none; color: inherit; }
   box-shadow: 0 24px 64px rgba(0,0,0,.06);
 }
 .banner-img img { width: 100%; height: auto; }
+
+/* ═══════════════════════════════════════════
+   STATS BAR
+═══════════════════════════════════════════ */
+.stats-bar {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 var(--pad) 100px;
+}
+.stats-inner {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--border); border-radius: 20px;
+  overflow: hidden; background: #fff;
+}
+.stat-item {
+  padding: 40px 32px; text-align: center;
+  border-right: 1px solid var(--border);
+  position: relative; overflow: hidden;
+  transition: background .2s;
+}
+.stat-item:last-child { border-right: none; }
+.stat-item:hover { background: #fafafa; }
+.stat-item::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px; background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
+  transform: scaleX(0); transition: transform .4s ease;
+}
+.stat-item:hover::after { transform: scaleX(1); }
+.stat-number {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  font-weight: 400; line-height: 1;
+  background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 8px;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.stat-item.visible .stat-number { opacity: 1; transform: translateY(0); }
+.stat-label {
+  font-size: 13px; font-weight: 600; color: var(--text-light); letter-spacing: .02em;
+}
+.stat-sub {
+  font-size: 11px; color: var(--text-muted); margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════ */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+
+/* ═══════════════════════════════════════════
+   INTERACTIVE PARTICLES (hero)
+═══════════════════════════════════════════ */
+.hero-particles {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  overflow: hidden;
+}
+.particle {
+  position: absolute; width: 4px; height: 4px; border-radius: 50%;
+  background: var(--brand-yellow); opacity: 0;
+  animation: particleFloat 8s ease-in-out infinite;
+}
+.particle:nth-child(1) { left: 15%; top: 30%; animation-delay: 0s; animation-duration: 7s; }
+.particle:nth-child(2) { left: 85%; top: 20%; animation-delay: 1.5s; animation-duration: 9s; width: 3px; height: 3px; }
+.particle:nth-child(3) { left: 25%; top: 70%; animation-delay: 3s; animation-duration: 6s; background: var(--brand-orange); }
+.particle:nth-child(4) { left: 75%; top: 60%; animation-delay: 2s; animation-duration: 10s; width: 5px; height: 5px; }
+.particle:nth-child(5) { left: 50%; top: 15%; animation-delay: 4s; animation-duration: 8s; width: 3px; height: 3px; background: var(--brand-orange); }
+.particle:nth-child(6) { left: 10%; top: 55%; animation-delay: 5s; animation-duration: 7.5s; }
+.particle:nth-child(7) { left: 90%; top: 45%; animation-delay: 1s; animation-duration: 8.5s; width: 3px; height: 3px; }
+.particle:nth-child(8) { left: 40%; top: 80%; animation-delay: 3.5s; animation-duration: 9.5s; background: var(--brand-orange); width: 3px; height: 3px; }
+@keyframes particleFloat {
+  0% { opacity: 0; transform: translateY(0) scale(0); }
+  15% { opacity: .4; transform: translateY(-20px) scale(1); }
+  85% { opacity: .4; transform: translateY(-80px) scale(1); }
+  100% { opacity: 0; transform: translateY(-100px) scale(0); }
+}
 
 /* ═══════════════════════════════════════════
    SECTION COMMONS
@@ -447,15 +528,20 @@ footer {
   .features-grid, .dept-grid { grid-template-columns: 1fr; }
   .dark-grid { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr 1fr; }
-  .globe-wrap { width: 500px; height: 500px; }
+  .globe-wrap { width: 480px; height: 480px; }
+  .stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .stat-item:nth-child(2) { border-right: none; }
+  .stat-item:nth-child(1), .stat-item:nth-child(2) { border-bottom: 1px solid var(--border); }
 }
 @media (max-width: 600px) {
   .hero h1 { font-size: 2.2rem; }
   .hero-actions { flex-direction: column; align-items: center; }
   .footer-top { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
-  .globe-wrap { width: 350px; height: 350px; opacity: .2; }
-  .globe-wrap.loaded { opacity: .25; }
+  .globe-wrap { width: 320px; height: 320px; }
+  .globe-wrap.loaded { opacity: .7; }
+  .stats-inner { grid-template-columns: 1fr 1fr; }
+  .stat-item { padding: 28px 20px; }
 }
 </style>
 </head>
@@ -465,8 +551,7 @@ footer {
 <nav class="nav">
   <div class="nav-inner">
     <a href="/" class="nav-logo">
-      <img src="Swiftaw logomark black.png" alt="Swiftaw">
-      <span>Swiftaw</span>
+      <img src="SwiftawLogo.png" alt="Swiftaw">
     </a>
     <div class="nav-links">
       <div class="nav-dropdown-wrap">
@@ -476,8 +561,8 @@ footer {
             Try Fortized
             <span class="dd-desc">Gaming community platform</span>
           </a>
-          <a href="https://nexis.swiftaw.com">
-            Try Nexis
+          <a href="https://tithonia.swiftaw.com">
+            Try Tithonia
             <span class="dd-desc">Intelligent digital ecosystem</span>
           </a>
         </div>
@@ -512,6 +597,11 @@ footer {
 <!-- ═══ HERO ═══ -->
 <section class="hero">
   <div class="hero-orb"></div>
+  <div class="hero-particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+  </div>
   <div class="globe-wrap" id="globeWrap">
     <canvas id="globeCanvas"></canvas>
   </div>
@@ -521,7 +611,7 @@ footer {
     <p class="hero-sub">Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence to reshape how the world communicates, thinks, and solves problems.</p>
     <div class="hero-actions">
       <a href="https://fortized.com" class="btn-yellow">Try Fortized</a>
-      <a href="https://nexis.swiftaw.com" class="btn-dark">Explore Nexis</a>
+      <a href="https://tithonia.swiftaw.com" class="btn-dark">Explore Tithonia</a>
       <a href="#research" class="btn-outline">Learn More</a>
     </div>
   </div>
@@ -534,12 +624,38 @@ footer {
   </div>
 </div>
 
+<!-- ═══ STATS BAR ═══ -->
+<div class="stats-bar">
+  <div class="stats-inner" id="statsBar">
+    <div class="stat-item">
+      <div class="stat-number" data-target="2">0</div>
+      <div class="stat-label">Live Products</div>
+      <div class="stat-sub">Fortized & Tithonia</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="3">0</div>
+      <div class="stat-label">Departments</div>
+      <div class="stat-sub">R&D, Safety, Communication</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="50" data-suffix="ms">0</div>
+      <div class="stat-label">Message Latency</div>
+      <div class="stat-sub">Sub-50ms delivery</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="100" data-suffix="%">0</div>
+      <div class="stat-label">Encrypted</div>
+      <div class="stat-sub">End-to-end by default</div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ RESEARCH & INNOVATION ═══ -->
 <div class="section" id="research">
-  <div class="section-eyebrow">Research &amp; Innovation</div>
-  <div class="highlight-bar"></div>
-  <div class="section-heading">Breakthroughs in chat,<br>intelligence, and connection.</div>
-  <div class="section-desc">We're pioneering the technologies that power human-machine interaction — from real-time chat engines to data intelligence systems that learn and adapt.</div>
+  <div class="section-eyebrow reveal">Research &amp; Innovation</div>
+  <div class="highlight-bar reveal reveal-delay-1"></div>
+  <div class="section-heading reveal reveal-delay-1">Breakthroughs in chat,<br>intelligence, and connection.</div>
+  <div class="section-desc reveal reveal-delay-2">We're pioneering the technologies that power human-machine interaction — from real-time chat engines to data intelligence systems that learn and adapt.</div>
   <div class="features-grid">
     <div class="feature-card">
       <div class="feature-icon">&#9889;</div>
@@ -563,18 +679,18 @@ footer {
 <div class="dark-section">
   <div class="dark-glow"></div>
   <div class="section-inner">
-    <div class="section-eyebrow">Our Products</div>
-    <div class="highlight-bar"></div>
-    <div class="section-heading">Platforms that amplify<br>human connection.</div>
-    <div class="section-desc">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence — moving beyond the limitations of today's technology.</div>
+    <div class="section-eyebrow reveal">Our Products</div>
+    <div class="highlight-bar reveal reveal-delay-1"></div>
+    <div class="section-heading reveal reveal-delay-1">Platforms that amplify<br>human connection.</div>
+    <div class="section-desc reveal reveal-delay-2">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence — moving beyond the limitations of today's technology.</div>
     <div class="dark-grid">
       <div class="dark-card">
         <h3>Fortized</h3>
         <p>A modern community platform built for gamers. Organize your ranks with Bastions, rally your allies, and conquer together. Free to join, no credit card needed.</p>
       </div>
       <div class="dark-card">
-        <h3>Nexis</h3>
-        <p>The intelligent digital ecosystem. Nexis connects people, data, and experiences into a unified platform that learns and evolves with you.</p>
+        <h3>Tithonia</h3>
+        <p>The intelligent digital ecosystem. Tithonia connects people, data, and experiences into a unified platform that learns and evolves with you.</p>
       </div>
       <div class="dark-card">
         <h3>Earned, Not Bought</h3>
@@ -590,10 +706,10 @@ footer {
 
 <!-- ═══ DEPARTMENTS ═══ -->
 <div class="section" id="departments">
-  <div class="section-eyebrow">Swiftaw Departments</div>
-  <div class="highlight-bar"></div>
-  <div class="section-heading">The teams building<br>the future.</div>
-  <div class="section-desc">Each department drives a critical piece of the Swiftaw ecosystem — from research to safety to how we communicate with the world.</div>
+  <div class="section-eyebrow reveal">Swiftaw Departments</div>
+  <div class="highlight-bar reveal reveal-delay-1"></div>
+  <div class="section-heading reveal reveal-delay-1">The teams building<br>the future.</div>
+  <div class="section-desc reveal reveal-delay-2">Each department drives a critical piece of the Swiftaw ecosystem — from research to safety to how we communicate with the world.</div>
   <div class="dept-grid">
     <a href="/departments/rd" class="dept-card">
       <div class="dept-card-icon">&#128300;</div>
@@ -626,10 +742,10 @@ footer {
 <!-- ═══ CTA ═══ -->
 <div class="cta-section">
   <h2>The future of community<br>starts <em>here.</em></h2>
-  <p>Join the ecosystem. Build with Fortized. Explore with Nexis. Shape the future with Swiftaw.</p>
+  <p>Join the ecosystem. Build with Fortized. Explore with Tithonia. Shape the future with Swiftaw.</p>
   <div class="hero-actions">
     <a href="https://fortized.com/signup" class="btn-yellow">Try Fortized</a>
-    <a href="https://nexis.swiftaw.com" class="btn-dark">Explore Nexis</a>
+    <a href="https://tithonia.swiftaw.com" class="btn-dark">Explore Tithonia</a>
     <a href="/blog" class="btn-outline">Read our blog</a>
   </div>
 </div>
@@ -640,15 +756,14 @@ footer {
     <div class="footer-top">
       <div class="footer-brand">
         <a href="/" class="nav-logo" style="margin-right:0;">
-          <img src="Swiftaw logomark black.png" alt="Swiftaw">
-          <span>Swiftaw</span>
+          <img src="SwiftawLogo.png" alt="Swiftaw">
         </a>
         <p>Building the ultimate digital ecosystem. Mastering human connection and machine intelligence.</p>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Products</div>
         <a href="https://fortized.com">Fortized</a>
-        <a href="https://nexis.swiftaw.com">Nexis</a>
+        <a href="https://tithonia.swiftaw.com">Tithonia</a>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Company</div>
@@ -711,16 +826,18 @@ footer {
     height: width * 2,
     phi: phiRef,
     theta: focusPhi - Math.PI / 2, // tilt to France latitude
-    dark: 0,
-    diffuse: 1.6,
-    mapSamples: 24000,
-    mapBrightness: 1.2,
-    baseColor: [0.95, 0.95, 0.92],
+    dark: 1,
+    diffuse: 3,
+    mapSamples: 32000,
+    mapBrightness: 6,
+    baseColor: [0.14, 0.12, 0.24],
     markerColor: [1, 0.976, 0.243], // brand yellow
-    glowColor: [1, 0.612, 0.235],   // brand orange
+    glowColor: [0.14, 0.12, 0.24],
     markers: [
-      { location: [46.6, 2.2], size: 0.08 },  // France
-      { location: [48.8566, 2.3522], size: 0.04 }, // Paris
+      { location: [46.6, 2.2], size: 0.1 },  // France
+      { location: [48.8566, 2.3522], size: 0.06 }, // Paris
+      { location: [43.2965, 5.3698], size: 0.03 }, // Marseille
+      { location: [45.764, 4.8357], size: 0.03 }, // Lyon
     ],
     onRender: function (state) {
       // Slow auto-rotation when not interacting
@@ -761,6 +878,78 @@ footer {
 
   // Fade in once loaded
   setTimeout(function () { wrap.classList.add('loaded'); }, 300);
+})();
+</script>
+
+<script>
+// ═══ Scroll Reveal ═══
+(function () {
+  var reveals = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(function (el) { observer.observe(el); });
+})();
+
+// ═══ Stats Counter Animation ═══
+(function () {
+  var statsBar = document.getElementById('statsBar');
+  if (!statsBar) return;
+  var animated = false;
+
+  function animateCounters() {
+    if (animated) return;
+    animated = true;
+    var items = statsBar.querySelectorAll('.stat-item');
+    items.forEach(function (item, i) {
+      setTimeout(function () {
+        item.classList.add('visible');
+      }, i * 150);
+    });
+    var numbers = statsBar.querySelectorAll('.stat-number');
+    numbers.forEach(function (num) {
+      var target = parseInt(num.getAttribute('data-target'));
+      var suffix = num.getAttribute('data-suffix') || '';
+      var duration = 1500;
+      var start = performance.now();
+      function tick(now) {
+        var elapsed = now - start;
+        var progress = Math.min(elapsed / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+        var current = Math.round(eased * target);
+        num.textContent = current + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      setTimeout(function () { requestAnimationFrame(tick); }, 300);
+    });
+  }
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) animateCounters();
+    });
+  }, { threshold: 0.3 });
+  observer.observe(statsBar);
+})();
+
+// ═══ Feature card tilt effect ═══
+(function () {
+  var cards = document.querySelectorAll('.feature-card, .dark-card, .dept-card');
+  cards.forEach(function (card) {
+    card.addEventListener('mousemove', function (e) {
+      var rect = card.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = 'perspective(600px) rotateY(' + (x * 5) + 'deg) rotateX(' + (-y * 5) + 'deg) translateY(-2px)';
+    });
+    card.addEventListener('mouseleave', function () {
+      card.style.transform = '';
+    });
+  });
 })();
 </script>
 
