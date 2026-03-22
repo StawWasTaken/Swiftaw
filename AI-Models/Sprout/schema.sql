@@ -1,10 +1,11 @@
 -- ============================================
 -- Sprout 1.1 — Supabase Database Schema
 -- Run this in Supabase SQL Editor
+-- Safe to re-run: uses IF NOT EXISTS throughout
 -- ============================================
 
 -- 1. Training Data
-create table sprout_training_data (
+create table if not exists sprout_training_data (
   id uuid default gen_random_uuid() primary key,
   model text not null default 'sprout-1.1',
   question text not null,
@@ -18,7 +19,7 @@ create table sprout_training_data (
 );
 
 -- 2. Conversations
-create table sprout_conversations (
+create table if not exists sprout_conversations (
   id uuid default gen_random_uuid() primary key,
   model text not null default 'sprout-1.1',
   messages jsonb not null default '[]',
@@ -27,7 +28,7 @@ create table sprout_conversations (
 );
 
 -- 3. Ratings
-create table sprout_ratings (
+create table if not exists sprout_ratings (
   id uuid default gen_random_uuid() primary key,
   model text not null default 'sprout-1.1',
   source_id uuid references sprout_training_data(id) on delete set null,
@@ -38,7 +39,7 @@ create table sprout_ratings (
 );
 
 -- 4. Media
-create table sprout_media (
+create table if not exists sprout_media (
   id uuid default gen_random_uuid() primary key,
   model text not null default 'sprout-1.1',
   type text not null,
@@ -52,12 +53,12 @@ create table sprout_media (
 -- Indexes for performance
 -- ============================================
 
-create index idx_training_model_active on sprout_training_data(model, active);
-create index idx_training_category on sprout_training_data(category);
-create index idx_conversations_model on sprout_conversations(model);
-create index idx_ratings_model on sprout_ratings(model);
-create index idx_ratings_source on sprout_ratings(source_id);
-create index idx_media_training on sprout_media(training_data_id);
+create index if not exists idx_training_model_active on sprout_training_data(model, active);
+create index if not exists idx_training_category on sprout_training_data(category);
+create index if not exists idx_conversations_model on sprout_conversations(model);
+create index if not exists idx_ratings_model on sprout_ratings(model);
+create index if not exists idx_ratings_source on sprout_ratings(source_id);
+create index if not exists idx_media_training on sprout_media(training_data_id);
 
 -- ============================================
 -- Row Level Security (RLS)
@@ -68,59 +69,58 @@ alter table sprout_conversations enable row level security;
 alter table sprout_ratings enable row level security;
 alter table sprout_media enable row level security;
 
--- Allow public read for training data (needed for Q&A matching)
-create policy "Public can read active training data"
-  on sprout_training_data for select
-  using (active = true);
+-- Training data policies
+do $$ begin
+  if not exists (select 1 from pg_policies where tablename = 'sprout_training_data' and policyname = 'Public can read active training data') then
+    create policy "Public can read active training data" on sprout_training_data for select using (active = true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_training_data' and policyname = 'Public can insert training data') then
+    create policy "Public can insert training data" on sprout_training_data for insert with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_training_data' and policyname = 'Public can update training data') then
+    create policy "Public can update training data" on sprout_training_data for update using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_training_data' and policyname = 'Public can delete training data') then
+    create policy "Public can delete training data" on sprout_training_data for delete using (true);
+  end if;
+end $$;
 
--- Allow public insert for training data (researchers add via anon key)
-create policy "Public can insert training data"
-  on sprout_training_data for insert
-  with check (true);
+-- Conversations policies
+do $$ begin
+  if not exists (select 1 from pg_policies where tablename = 'sprout_conversations' and policyname = 'Public can read conversations') then
+    create policy "Public can read conversations" on sprout_conversations for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_conversations' and policyname = 'Public can insert conversations') then
+    create policy "Public can insert conversations" on sprout_conversations for insert with check (true);
+  end if;
+end $$;
 
--- Allow public update for training data
-create policy "Public can update training data"
-  on sprout_training_data for update
-  using (true);
+-- Ratings policies
+do $$ begin
+  if not exists (select 1 from pg_policies where tablename = 'sprout_ratings' and policyname = 'Public can read ratings') then
+    create policy "Public can read ratings" on sprout_ratings for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_ratings' and policyname = 'Public can insert ratings') then
+    create policy "Public can insert ratings" on sprout_ratings for insert with check (true);
+  end if;
+end $$;
 
--- Allow public delete for training data
-create policy "Public can delete training data"
-  on sprout_training_data for delete
-  using (true);
-
--- Conversations: public read/write
-create policy "Public can read conversations"
-  on sprout_conversations for select
-  using (true);
-
-create policy "Public can insert conversations"
-  on sprout_conversations for insert
-  with check (true);
-
--- Ratings: public read/write
-create policy "Public can read ratings"
-  on sprout_ratings for select
-  using (true);
-
-create policy "Public can insert ratings"
-  on sprout_ratings for insert
-  with check (true);
-
--- Media: public read/write
-create policy "Public can read media"
-  on sprout_media for select
-  using (true);
-
-create policy "Public can insert media"
-  on sprout_media for insert
-  with check (true);
+-- Media policies
+do $$ begin
+  if not exists (select 1 from pg_policies where tablename = 'sprout_media' and policyname = 'Public can read media') then
+    create policy "Public can read media" on sprout_media for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_media' and policyname = 'Public can insert media') then
+    create policy "Public can insert media" on sprout_media for insert with check (true);
+  end if;
+end $$;
 
 -- ============================================
 -- 5. Directives (Orders/Instructions)
 -- Persistent instructions that shape how the AI behaves
 -- ============================================
 
-create table sprout_directives (
+create table if not exists sprout_directives (
   id uuid default gen_random_uuid() primary key,
   model text not null default 'sprout-1.1',
   type text not null default 'instruction',
@@ -132,25 +132,31 @@ create table sprout_directives (
   updated_at timestamptz
 );
 
-create index idx_directives_model on sprout_directives(model, active);
+create index if not exists idx_directives_model on sprout_directives(model, active);
 
 alter table sprout_directives enable row level security;
 
-create policy "Public can read directives"
-  on sprout_directives for select using (true);
-create policy "Public can insert directives"
-  on sprout_directives for insert with check (true);
-create policy "Public can update directives"
-  on sprout_directives for update using (true);
-create policy "Public can delete directives"
-  on sprout_directives for delete using (true);
+do $$ begin
+  if not exists (select 1 from pg_policies where tablename = 'sprout_directives' and policyname = 'Public can read directives') then
+    create policy "Public can read directives" on sprout_directives for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_directives' and policyname = 'Public can insert directives') then
+    create policy "Public can insert directives" on sprout_directives for insert with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_directives' and policyname = 'Public can update directives') then
+    create policy "Public can update directives" on sprout_directives for update using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_directives' and policyname = 'Public can delete directives') then
+    create policy "Public can delete directives" on sprout_directives for delete using (true);
+  end if;
+end $$;
 
 -- ============================================
 -- 6. Writing Patterns
 -- Stores analyzed writing style patterns from text samples
 -- ============================================
 
-create table sprout_writing_patterns (
+create table if not exists sprout_writing_patterns (
   id uuid default gen_random_uuid() primary key,
   model text not null default 'sprout-1.1',
   source_label text not null,
@@ -161,23 +167,28 @@ create table sprout_writing_patterns (
   created_at timestamptz default now()
 );
 
-create index idx_writing_model on sprout_writing_patterns(model, active);
+create index if not exists idx_writing_model on sprout_writing_patterns(model, active);
 
 alter table sprout_writing_patterns enable row level security;
 
-create policy "Public can read writing patterns"
-  on sprout_writing_patterns for select using (true);
-create policy "Public can insert writing patterns"
-  on sprout_writing_patterns for insert with check (true);
-create policy "Public can delete writing patterns"
-  on sprout_writing_patterns for delete using (true);
+do $$ begin
+  if not exists (select 1 from pg_policies where tablename = 'sprout_writing_patterns' and policyname = 'Public can read writing patterns') then
+    create policy "Public can read writing patterns" on sprout_writing_patterns for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_writing_patterns' and policyname = 'Public can insert writing patterns') then
+    create policy "Public can insert writing patterns" on sprout_writing_patterns for insert with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_writing_patterns' and policyname = 'Public can delete writing patterns') then
+    create policy "Public can delete writing patterns" on sprout_writing_patterns for delete using (true);
+  end if;
+end $$;
 
 -- ============================================
 -- 7. Identity (Self-awareness / Consciousness)
 -- Core beliefs, self-knowledge, and personality traits
 -- ============================================
 
-create table sprout_identity (
+create table if not exists sprout_identity (
   id uuid default gen_random_uuid() primary key,
   model text not null default 'sprout-1.1',
   key text not null,
@@ -188,16 +199,31 @@ create table sprout_identity (
   updated_at timestamptz
 );
 
-create index idx_identity_model on sprout_identity(model, active);
-create unique index idx_identity_key on sprout_identity(model, key) where active = true;
+create index if not exists idx_identity_model on sprout_identity(model, active);
+
+-- Use a DO block for unique index since CREATE UNIQUE INDEX IF NOT EXISTS is supported
+create unique index if not exists idx_identity_key on sprout_identity(model, key) where active = true;
 
 alter table sprout_identity enable row level security;
 
-create policy "Public can read identity"
-  on sprout_identity for select using (true);
-create policy "Public can insert identity"
-  on sprout_identity for insert with check (true);
-create policy "Public can update identity"
-  on sprout_identity for update using (true);
-create policy "Public can delete identity"
-  on sprout_identity for delete using (true);
+do $$ begin
+  if not exists (select 1 from pg_policies where tablename = 'sprout_identity' and policyname = 'Public can read identity') then
+    create policy "Public can read identity" on sprout_identity for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_identity' and policyname = 'Public can insert identity') then
+    create policy "Public can insert identity" on sprout_identity for insert with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_identity' and policyname = 'Public can update identity') then
+    create policy "Public can update identity" on sprout_identity for update using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_identity' and policyname = 'Public can delete identity') then
+    create policy "Public can delete identity" on sprout_identity for delete using (true);
+  end if;
+end $$;
+
+-- ============================================
+-- Notify PostgREST to reload schema cache
+-- Run this after creating new tables so the API
+-- recognizes them immediately
+-- ============================================
+notify pgrst, 'reload schema';
