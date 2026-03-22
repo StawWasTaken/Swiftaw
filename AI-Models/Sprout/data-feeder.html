@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gardener — AI Data Feeder for Tithonia</title>
-<meta name="description" content="Autonomous AI data feeder that continuously populates Tithonia's knowledge base.">
+<meta name="description" content="Uses Google Gemini to continuously generate and feed real knowledge into Tithonia's database.">
 <meta name="theme-color" content="#0a0a0a">
 <link rel="icon" type="image/png" href="/product-logos/Tithonia icon.png">
 <link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
@@ -21,6 +21,7 @@
   --brand-green: #4ade80;
   --brand-red: #f87171;
   --brand-purple: #a78bfa;
+  --brand-blue: #60a5fa;
   --bg-dark: #0a0a0a;
   --bg-card: #111111;
   --bg-input: #1a1a1a;
@@ -71,7 +72,8 @@ input, textarea, select { font-family: inherit; }
   color: var(--text-secondary);
   font-size: 14px;
   margin-bottom: 32px;
-  max-width: 400px;
+  max-width: 440px;
+  line-height: 1.6;
 }
 
 .password-form {
@@ -114,7 +116,7 @@ input, textarea, select { font-family: inherit; }
   display: none;
 }
 
-/* ── Dashboard Layout ── */
+/* ── Dashboard ── */
 .dashboard {
   display: none;
   height: 100vh;
@@ -153,32 +155,97 @@ input, textarea, select { font-family: inherit; }
   letter-spacing: .06em;
 }
 
-.dash-actions {
+.dash-links {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   align-items: center;
 }
 
-.dash-back {
+.dash-link {
   font-size: 13px;
   color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
   transition: color .15s;
 }
 
-.dash-back:hover { color: var(--text-secondary); }
+.dash-link:hover { color: var(--text-secondary); }
 
 /* ── Body ── */
 .dash-body {
   flex: 1;
   overflow-y: auto;
   padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .dash-body::-webkit-scrollbar { width: 6px; }
 .dash-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 6px; }
+
+/* ── API Key Setup ── */
+.api-setup {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.api-setup h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.api-setup .sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.api-setup .sub a {
+  color: var(--brand-blue);
+  text-decoration: underline;
+}
+
+.api-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.api-row input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: 'SF Mono', 'Consolas', monospace;
+  outline: none;
+}
+
+.api-row input:focus { border-color: rgba(74,222,128,.3); }
+
+.api-row select {
+  padding: 10px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  outline: none;
+}
+
+.api-status {
+  font-size: 12px;
+  margin-top: 8px;
+  color: var(--text-muted);
+}
+
+.api-status.connected { color: var(--brand-green); }
+.api-status.error { color: var(--brand-red); }
 
 /* ── Control Bar ── */
 .control-bar {
@@ -193,7 +260,7 @@ input, textarea, select { font-family: inherit; }
   flex-wrap: wrap;
 }
 
-.control-bar .status-dot {
+.status-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -201,22 +268,20 @@ input, textarea, select { font-family: inherit; }
   flex-shrink: 0;
 }
 
-.control-bar .status-dot.running {
+.status-dot.running {
   background: var(--brand-green);
   box-shadow: 0 0 8px rgba(74,222,128,.4);
   animation: pulse 2s infinite;
 }
 
-.control-bar .status-dot.paused {
-  background: var(--brand-orange);
-}
+.status-dot.paused { background: var(--brand-orange); }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: .5; }
 }
 
-.control-bar .status-text {
+.status-text {
   font-size: 14px;
   font-weight: 500;
   flex: 1;
@@ -234,7 +299,6 @@ input, textarea, select { font-family: inherit; }
 .ctrl-btn.start { background: var(--brand-green); color: var(--bg-dark); }
 .ctrl-btn.pause { background: var(--brand-orange); color: var(--bg-dark); }
 .ctrl-btn.stop { background: var(--brand-red); color: #fff; }
-.ctrl-btn.feed-all { background: var(--brand-purple); color: #fff; }
 .ctrl-btn:disabled { opacity: .3; cursor: not-allowed; }
 
 .interval-control {
@@ -258,7 +322,7 @@ input, textarea, select { font-family: inherit; }
 /* ── Stats Grid ── */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
   margin-bottom: 20px;
 }
@@ -279,7 +343,7 @@ input, textarea, select { font-family: inherit; }
 }
 
 .stat-card .value {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   font-family: var(--font-display);
 }
@@ -291,11 +355,32 @@ input, textarea, select { font-family: inherit; }
 }
 
 .stat-card.green .value { color: var(--brand-green); }
-.stat-card.orange .value { color: var(--brand-orange); }
 .stat-card.purple .value { color: var(--brand-purple); }
-.stat-card.yellow .value { color: var(--brand-yellow); }
+.stat-card.orange .value { color: var(--brand-orange); }
+.stat-card.blue .value { color: var(--brand-blue); }
 
-/* ── Two-column layout ── */
+/* ── Sections ── */
+.section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.section h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.section .sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+/* ── Columns ── */
 .columns {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -303,140 +388,9 @@ input, textarea, select { font-family: inherit; }
   margin-bottom: 20px;
 }
 
-@media (max-width: 900px) {
-  .columns { grid-template-columns: 1fr; }
-}
+@media (max-width: 800px) { .columns { grid-template-columns: 1fr; } }
 
-/* ── Queue Cards ── */
-.queue-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 20px;
-}
-
-.queue-card h3 {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.queue-card .queue-count {
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin-bottom: 12px;
-}
-
-.queue-items {
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.queue-items::-webkit-scrollbar { width: 4px; }
-.queue-items::-webkit-scrollbar-thumb { background: rgba(255,255,255,.06); border-radius: 4px; }
-
-.queue-item {
-  font-size: 13px;
-  padding: 8px 10px;
-  background: var(--bg-input);
-  border-radius: 6px;
-  margin-bottom: 4px;
-  color: var(--text-secondary);
-  line-height: 1.4;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* ── Log Feed ── */
-.log-section {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.log-section h3 {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-.log-feed {
-  max-height: 400px;
-  overflow-y: auto;
-  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.log-feed::-webkit-scrollbar { width: 4px; }
-.log-feed::-webkit-scrollbar-thumb { background: rgba(255,255,255,.06); border-radius: 4px; }
-
-.log-entry {
-  padding: 4px 8px;
-  border-radius: 4px;
-  animation: fadeIn .3s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.log-entry .time {
-  color: var(--text-muted);
-  margin-right: 8px;
-}
-
-.log-entry.success { color: var(--brand-green); }
-.log-entry.error { color: var(--brand-red); }
-.log-entry.warn { color: var(--brand-orange); }
-.log-entry.info { color: var(--brand-purple); }
-.log-entry.idle { color: var(--text-muted); }
-
-/* ── Add Data Section ── */
-.add-section {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.add-section h3 {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-.tab-bar {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 16px;
-}
-
-.tab-btn {
-  padding: 8px 14px;
-  font-size: 13px;
-  font-weight: 500;
-  border-radius: 8px;
-  color: var(--text-secondary);
-  transition: background .15s, color .15s;
-}
-
-.tab-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
-.tab-btn.active { background: rgba(74,222,128,.1); color: var(--brand-green); }
-
-.add-form {
-  display: none;
-}
-
-.add-form.active {
-  display: block;
-}
-
+/* ── Custom Prompt Section ── */
 .form-group {
   margin-bottom: 12px;
 }
@@ -466,15 +420,9 @@ input, textarea, select { font-family: inherit; }
 }
 
 .form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-  border-color: rgba(74,222,128,.3);
-}
+.form-group textarea:focus { border-color: rgba(74,222,128,.3); }
 
-.form-group textarea {
-  min-height: 80px;
-  resize: vertical;
-}
+.form-group textarea { min-height: 70px; resize: vertical; }
 
 .form-row {
   display: grid;
@@ -490,12 +438,15 @@ input, textarea, select { font-family: inherit; }
   font-size: 13px;
   border-radius: 8px;
   transition: opacity .15s;
-  margin-top: 4px;
 }
 
 .form-submit:hover { opacity: .85; }
+.form-submit:disabled { opacity: .3; cursor: not-allowed; }
 
-.form-toast {
+.form-submit.purple { background: var(--brand-purple); color: #fff; }
+.form-submit.blue { background: var(--brand-blue); color: #fff; }
+
+.toast {
   display: none;
   padding: 8px 12px;
   background: rgba(74,222,128,.1);
@@ -504,6 +455,70 @@ input, textarea, select { font-family: inherit; }
   font-size: 13px;
   margin-top: 8px;
 }
+
+/* ── Log Feed ── */
+.log-feed {
+  max-height: 400px;
+  overflow-y: auto;
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.log-feed::-webkit-scrollbar { width: 4px; }
+.log-feed::-webkit-scrollbar-thumb { background: rgba(255,255,255,.06); border-radius: 4px; }
+
+.log-entry {
+  padding: 4px 8px;
+  border-radius: 4px;
+  animation: fadeIn .3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.log-entry .time { color: var(--text-muted); margin-right: 8px; }
+.log-entry.success { color: var(--brand-green); }
+.log-entry.error { color: var(--brand-red); }
+.log-entry.warn { color: var(--brand-orange); }
+.log-entry.info { color: var(--brand-purple); }
+.log-entry.idle { color: var(--text-muted); }
+
+/* ── How it works ── */
+.how-it-works {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.how-step {
+  background: var(--bg-input);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.how-step .num {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--brand-green);
+  margin-bottom: 4px;
+}
+
+.how-step .title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.how-step .desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
 </style>
 </head>
 <body>
@@ -511,7 +526,7 @@ input, textarea, select { font-family: inherit; }
 <!-- ── Password Gate ── -->
 <div id="passwordGate" class="password-gate">
   <h1>Gardener — AI Data Feeder</h1>
-  <p>Autonomous AI that feeds Tithonia's database with training data, directives, text analysis, and identity.</p>
+  <p>Uses Google Gemini to continuously generate real knowledge from the internet and feed it into Tithonia's shared database. All AI models read from the same data.</p>
   <div class="password-form">
     <input type="password" id="passInput" placeholder="Enter researcher password" onkeydown="if(event.key==='Enter')checkPassword()">
     <button onclick="checkPassword()">Enter</button>
@@ -528,196 +543,145 @@ input, textarea, select { font-family: inherit; }
       <img src="/product-logos/Tithonia icon.png" alt="Tithonia" onerror="this.style.display='none'">
       <div class="dash-brand-text">
         <h2>Gardener — AI Data Feeder</h2>
-        <span>Tithonia / Sprout 1.2</span>
+        <span>Powered by Google Gemini</span>
       </div>
     </div>
-    <div class="dash-actions">
-      <a href="./training.html" class="dash-back">← Training Lab</a>
-      <a href="/tithonia/" class="dash-back">← Chat</a>
+    <div class="dash-links">
+      <a href="./training.html" class="dash-link">Training Lab</a>
+      <a href="/tithonia/" class="dash-link">Chat</a>
     </div>
   </div>
 
   <!-- Body -->
   <div class="dash-body">
 
-    <!-- Control Bar -->
+    <!-- How It Works -->
+    <div class="section">
+      <h3>How Gardener Works</h3>
+      <div class="how-it-works">
+        <div class="how-step">
+          <div class="num">1</div>
+          <div class="title">Pick a Topic</div>
+          <div class="desc">Each cycle, Gardener picks a topic (science, history, philosophy, etc.) from its rotation list.</div>
+        </div>
+        <div class="how-step">
+          <div class="num">2</div>
+          <div class="title">Ask Gemini</div>
+          <div class="desc">Sends the topic to Google Gemini, which generates real Q&A pairs or writing samples using internet knowledge.</div>
+        </div>
+        <div class="how-step">
+          <div class="num">3</div>
+          <div class="title">Parse & Deduplicate</div>
+          <div class="desc">Parses Gemini's JSON response and checks against existing database entries to avoid duplicates.</div>
+        </div>
+        <div class="how-step">
+          <div class="num">4</div>
+          <div class="title">Feed Database</div>
+          <div class="desc">Inserts new data into Supabase. All Tithonia AI models (Sprout, etc.) read from this shared database.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API Key Setup -->
+    <div class="api-setup">
+      <h3>Google Gemini API Key</h3>
+      <div class="sub">Get a free API key at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a></div>
+      <div class="api-row">
+        <input type="password" id="apiKeyInput" placeholder="Paste your Gemini API key here...">
+        <select id="modelSelect">
+          <option value="gemini-2.0-flash">Gemini 2.0 Flash (fast)</option>
+          <option value="gemini-2.5-flash-preview-05-20">Gemini 2.5 Flash (smart)</option>
+          <option value="gemini-1.5-pro">Gemini 1.5 Pro (powerful)</option>
+        </select>
+        <button class="ctrl-btn start" onclick="connectGemini()">Connect</button>
+      </div>
+      <div class="api-status" id="apiStatus">Not connected</div>
+    </div>
+
+    <!-- Controls -->
     <div class="control-bar">
       <div class="status-dot" id="statusDot"></div>
-      <span class="status-text" id="statusText">Stopped</span>
+      <span class="status-text" id="statusText">Stopped — connect Gemini API to start</span>
       <div class="interval-control">
         <label>Interval:</label>
         <select id="intervalSelect" onchange="changeInterval()">
-          <option value="10000">10s</option>
-          <option value="30000" selected>30s</option>
-          <option value="60000">1m</option>
+          <option value="30000">30s</option>
+          <option value="60000" selected>1m</option>
           <option value="120000">2m</option>
           <option value="300000">5m</option>
+          <option value="600000">10m</option>
         </select>
       </div>
-      <button class="ctrl-btn start" id="btnStart" onclick="startFeeder()">Start</button>
+      <button class="ctrl-btn start" id="btnStart" onclick="startFeeder()" disabled>Start</button>
       <button class="ctrl-btn pause" id="btnPause" onclick="pauseFeeder()" disabled>Pause</button>
       <button class="ctrl-btn stop" id="btnStop" onclick="stopFeeder()" disabled>Stop</button>
-      <button class="ctrl-btn feed-all" id="btnFeedAll" onclick="feedAllNow()">Feed All Now</button>
     </div>
 
-    <!-- Stats Grid -->
+    <!-- Stats -->
     <div class="stats-grid">
       <div class="stat-card green">
-        <div class="label">Directives Fed</div>
-        <div class="value" id="statDirectives">0</div>
-        <div class="sub" id="statDirectivesQ">0 queued</div>
+        <div class="label">Training Data Generated</div>
+        <div class="value" id="statTraining">0</div>
+        <div class="sub">Q&A pairs from Gemini</div>
       </div>
       <div class="stat-card purple">
-        <div class="label">Training Data Fed</div>
-        <div class="value" id="statTraining">0</div>
-        <div class="sub" id="statTrainingQ">0 queued</div>
+        <div class="label">Writing Patterns Generated</div>
+        <div class="value" id="statWriting">0</div>
+        <div class="sub">Style samples from Gemini</div>
       </div>
       <div class="stat-card orange">
-        <div class="label">Writing Patterns Fed</div>
-        <div class="value" id="statWriting">0</div>
-        <div class="sub" id="statWritingQ">0 queued</div>
-      </div>
-      <div class="stat-card yellow">
-        <div class="label">Identity Entries Fed</div>
-        <div class="value" id="statIdentity">0</div>
-        <div class="sub" id="statIdentityQ">0 queued</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">Feed Cycle</div>
+        <div class="label">Feed Cycles</div>
         <div class="value" id="statCycle">0</div>
-        <div class="sub" id="statRemaining">0 remaining</div>
+        <div class="sub" id="statTopic">—</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="label">Total Items Fed</div>
+        <div class="value" id="statTotal">0</div>
+        <div class="sub" id="statModel">—</div>
       </div>
     </div>
 
-    <!-- Queues -->
+    <!-- Manual Generation -->
     <div class="columns">
-      <div class="queue-card">
-        <h3>Directive Queue</h3>
-        <div class="queue-count" id="dqCount">0 items</div>
-        <div class="queue-items" id="dqItems"></div>
-      </div>
-      <div class="queue-card">
-        <h3>Training Data Queue</h3>
-        <div class="queue-count" id="tqCount">0 items</div>
-        <div class="queue-items" id="tqItems"></div>
-      </div>
-      <div class="queue-card">
-        <h3>Writing Patterns Queue</h3>
-        <div class="queue-count" id="wqCount">0 items</div>
-        <div class="queue-items" id="wqItems"></div>
-      </div>
-      <div class="queue-card">
-        <h3>Identity Queue</h3>
-        <div class="queue-count" id="iqCount">0 items</div>
-        <div class="queue-items" id="iqItems"></div>
-      </div>
-    </div>
-
-    <!-- Add Data Manually -->
-    <div class="add-section">
-      <h3>Add Data to Queue (Manual)</h3>
-      <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchAddTab('directive', this)">Directive</button>
-        <button class="tab-btn" onclick="switchAddTab('training', this)">Training Data</button>
-        <button class="tab-btn" onclick="switchAddTab('writing', this)">Writing Pattern</button>
-        <button class="tab-btn" onclick="switchAddTab('identity', this)">Identity</button>
+      <!-- Custom Prompt -->
+      <div class="section">
+        <h3>Generate from Custom Prompt</h3>
+        <div class="sub">Ask Gemini to generate training data about anything you want.</div>
+        <div class="form-group">
+          <label>What should Tithonia learn about?</label>
+          <textarea id="customPrompt" placeholder="e.g. Explain renewable energy types — solar, wind, hydro, geothermal. Include pros and cons."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <input type="text" id="customCategory" placeholder="e.g. energy" value="custom">
+        </div>
+        <button class="form-submit purple" id="btnCustom" onclick="generateCustom()" disabled>Generate & Feed</button>
+        <div class="toast" id="toastCustom"></div>
       </div>
 
-      <!-- Directive Form -->
-      <div class="add-form active" id="form-directive">
+      <!-- URL Feed -->
+      <div class="section">
+        <h3>Generate from URL</h3>
+        <div class="sub">Point Gemini at any webpage and it will extract knowledge into training data.</div>
         <div class="form-group">
-          <label>Directive Text</label>
-          <textarea id="addDirectiveText" placeholder="e.g. Always greet users warmly..."></textarea>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Type</label>
-            <select id="addDirectiveType">
-              <option value="instruction">Instruction</option>
-              <option value="personality">Personality</option>
-              <option value="behaviour">Behaviour</option>
-              <option value="rule">Rule</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Priority (0-10)</label>
-            <input type="number" id="addDirectivePriority" min="0" max="10" value="5">
-          </div>
-        </div>
-        <button class="form-submit" onclick="addDirectiveToQueue()">Add to Queue</button>
-        <div class="form-toast" id="toast-directive">Added to directive queue!</div>
-      </div>
-
-      <!-- Training Data Form -->
-      <div class="add-form" id="form-training">
-        <div class="form-group">
-          <label>Question</label>
-          <input type="text" id="addTrainingQ" placeholder="e.g. What is photosynthesis?">
+          <label>URL</label>
+          <input type="url" id="urlInput" placeholder="https://en.wikipedia.org/wiki/Sunflower">
         </div>
         <div class="form-group">
-          <label>Answer</label>
-          <textarea id="addTrainingA" placeholder="The detailed answer..."></textarea>
+          <label>Category</label>
+          <input type="text" id="urlCategory" placeholder="e.g. nature" value="web-sourced">
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Category</label>
-            <input type="text" id="addTrainingCat" placeholder="e.g. education" value="general">
-          </div>
-          <div class="form-group">
-            <label>Tags (comma-separated)</label>
-            <input type="text" id="addTrainingTags" placeholder="e.g. science, biology">
-          </div>
-        </div>
-        <button class="form-submit" onclick="addTrainingToQueue()">Add to Queue</button>
-        <div class="form-toast" id="toast-training">Added to training queue!</div>
-      </div>
-
-      <!-- Writing Pattern Form -->
-      <div class="add-form" id="form-writing">
-        <div class="form-group">
-          <label>Source Label</label>
-          <input type="text" id="addWritingLabel" placeholder="e.g. Blog Post, Chat, Poetry">
-        </div>
-        <div class="form-group">
-          <label>Sample Text</label>
-          <textarea id="addWritingText" placeholder="Paste a writing sample here..." style="min-height:120px"></textarea>
-        </div>
-        <button class="form-submit" onclick="addWritingToQueue()">Add to Queue</button>
-        <div class="form-toast" id="toast-writing">Added to writing queue!</div>
-      </div>
-
-      <!-- Identity Form -->
-      <div class="add-form" id="form-identity">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Key</label>
-            <input type="text" id="addIdentityKey" placeholder="e.g. Humor Style">
-          </div>
-          <div class="form-group">
-            <label>Category</label>
-            <select id="addIdentityCat">
-              <option value="Core Identity">Core Identity</option>
-              <option value="Personality">Personality</option>
-              <option value="Beliefs">Beliefs</option>
-              <option value="Self-Knowledge">Self-Knowledge</option>
-              <option value="Relationships">Relationships</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Value</label>
-          <textarea id="addIdentityValue" placeholder="The identity value..."></textarea>
-        </div>
-        <button class="form-submit" onclick="addIdentityToQueue()">Add to Queue</button>
-        <div class="form-toast" id="toast-identity">Added to identity queue!</div>
+        <button class="form-submit blue" id="btnUrl" onclick="generateFromUrl()" disabled>Extract & Feed</button>
+        <div class="toast" id="toastUrl"></div>
       </div>
     </div>
 
     <!-- Live Log -->
-    <div class="log-section">
+    <div class="section">
       <h3>Live Feed Log</h3>
+      <div class="sub">Real-time log of Gemini requests, parsed responses, and database insertions.</div>
       <div class="log-feed" id="logFeed">
-        <div class="log-entry idle"><span class="time">--:--:--</span> Gardener idle. Press Start to begin feeding.</div>
+        <div class="log-entry idle"><span class="time">--:--:--</span> Gardener idle. Connect your Gemini API key and press Start.</div>
       </div>
     </div>
 
@@ -728,13 +692,13 @@ input, textarea, select { font-family: inherit; }
 // ── Globals ──
 let feeder = null;
 let engine = null;
+let geminiConnected = false;
 
-// ── Password ──
 const RESEARCHER_PASS = '1478';
 
+// ── Password ──
 function checkPassword() {
-  const input = document.getElementById('passInput').value;
-  if (input === RESEARCHER_PASS) {
+  if (document.getElementById('passInput').value === RESEARCHER_PASS) {
     document.getElementById('passwordGate').style.display = 'none';
     document.getElementById('dashboard').style.display = 'flex';
     initDashboard();
@@ -745,29 +709,95 @@ function checkPassword() {
   }
 }
 
-// ── Initialize ──
-async function initDashboard() {
+// ── Init ──
+function initDashboard() {
   const db = createSupabaseClient();
-  if (!db) {
-    alert('Failed to connect to Supabase');
-    return;
-  }
+  if (!db) { alert('Failed to connect to Supabase'); return; }
   engine = new SproutEngine(db);
   feeder = new DataFeeder(engine);
 
-  // Wire up callbacks
   feeder.onLog = (entry) => addLogEntry(entry);
   feeder.onStats = (stats) => updateStats(stats);
 
-  updateQueueDisplay();
+  // Restore saved API key from sessionStorage
+  const savedKey = sessionStorage.getItem('gardener_api_key');
+  const savedModel = sessionStorage.getItem('gardener_model');
+  if (savedKey) {
+    document.getElementById('apiKeyInput').value = savedKey;
+    if (savedModel) document.getElementById('modelSelect').value = savedModel;
+    connectGemini();
+  }
+}
+
+// ── Gemini Connection ──
+async function connectGemini() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  const model = document.getElementById('modelSelect').value;
+  const status = document.getElementById('apiStatus');
+
+  if (!key) {
+    status.textContent = 'Please enter an API key';
+    status.className = 'api-status error';
+    return;
+  }
+
+  status.textContent = 'Testing connection...';
+  status.className = 'api-status';
+
+  // Test the key with a simple request
+  try {
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: 'Say "ok" in one word.' }] }],
+          generationConfig: { maxOutputTokens: 10 }
+        })
+      }
+    );
+
+    if (!resp.ok) {
+      const err = await resp.text();
+      throw new Error(`API returned ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+      throw new Error('Empty response');
+    }
+
+    // Success
+    feeder.setApiKey(key);
+    feeder.setModel(model);
+    geminiConnected = true;
+
+    // Save to session
+    sessionStorage.setItem('gardener_api_key', key);
+    sessionStorage.setItem('gardener_model', model);
+
+    status.textContent = `Connected to ${model}`;
+    status.className = 'api-status connected';
+
+    // Enable controls
+    document.getElementById('btnStart').disabled = false;
+    document.getElementById('btnCustom').disabled = false;
+    document.getElementById('btnUrl').disabled = false;
+    document.getElementById('statusText').textContent = 'Ready — press Start to begin feeding';
+
+  } catch (err) {
+    status.textContent = `Connection failed: ${err.message}`;
+    status.className = 'api-status error';
+    geminiConnected = false;
+  }
 }
 
 // ── Controls ──
 async function startFeeder() {
-  if (!feeder) return;
+  if (!feeder || !geminiConnected) return;
   await feeder.start();
   updateControlState('running');
-  updateQueueDisplay();
 }
 
 function pauseFeeder() {
@@ -787,92 +817,50 @@ function stopFeeder() {
   updateControlState('stopped');
 }
 
-async function feedAllNow() {
-  if (!feeder) return;
-  document.getElementById('btnFeedAll').disabled = true;
-  document.getElementById('btnFeedAll').textContent = 'Feeding...';
-  await feeder.feedAll();
-  document.getElementById('btnFeedAll').disabled = false;
-  document.getElementById('btnFeedAll').textContent = 'Feed All Now';
-  updateQueueDisplay();
-}
-
 function changeInterval() {
   if (!feeder) return;
-  const ms = parseInt(document.getElementById('intervalSelect').value);
-  feeder.setFeedInterval(ms);
+  feeder.setFeedInterval(parseInt(document.getElementById('intervalSelect').value));
 }
 
 function updateControlState(state) {
   const dot = document.getElementById('statusDot');
   const text = document.getElementById('statusText');
-  const btnStart = document.getElementById('btnStart');
-  const btnPause = document.getElementById('btnPause');
-  const btnStop = document.getElementById('btnStop');
 
   dot.className = 'status-dot';
-  btnStart.disabled = false;
-  btnPause.disabled = false;
-  btnStop.disabled = false;
+  document.getElementById('btnStart').disabled = false;
+  document.getElementById('btnPause').disabled = false;
+  document.getElementById('btnStop').disabled = false;
 
   if (state === 'running') {
     dot.classList.add('running');
-    text.textContent = 'Running — feeding continuously';
-    btnStart.disabled = true;
-    btnPause.textContent = 'Pause';
+    text.textContent = 'Running — Gemini is generating data for Tithonia';
+    document.getElementById('btnStart').disabled = true;
+    document.getElementById('btnPause').textContent = 'Pause';
   } else if (state === 'paused') {
     dot.classList.add('paused');
     text.textContent = 'Paused';
-    btnStart.disabled = true;
-    btnPause.textContent = 'Resume';
+    document.getElementById('btnStart').disabled = true;
+    document.getElementById('btnPause').textContent = 'Resume';
   } else {
-    text.textContent = 'Stopped';
-    btnPause.disabled = true;
-    btnStop.disabled = true;
+    text.textContent = geminiConnected ? 'Stopped — press Start to resume' : 'Stopped — connect Gemini API to start';
+    document.getElementById('btnPause').disabled = true;
+    document.getElementById('btnStop').disabled = true;
   }
 }
 
-// ── Stats Update ──
+// ── Stats ──
 function updateStats(stats) {
-  document.getElementById('statDirectives').textContent = stats.totalFed.directives;
-  document.getElementById('statDirectivesQ').textContent = stats.queuesRemaining.directives + ' queued';
   document.getElementById('statTraining').textContent = stats.totalFed.training;
-  document.getElementById('statTrainingQ').textContent = stats.queuesRemaining.training + ' queued';
   document.getElementById('statWriting').textContent = stats.totalFed.writing;
-  document.getElementById('statWritingQ').textContent = stats.queuesRemaining.writing + ' queued';
-  document.getElementById('statIdentity').textContent = stats.totalFed.identity;
-  document.getElementById('statIdentityQ').textContent = stats.queuesRemaining.identity + ' queued';
   document.getElementById('statCycle').textContent = stats.currentCycle;
-  document.getElementById('statRemaining').textContent = stats.totalRemaining + ' remaining';
+  document.getElementById('statTotal').textContent = stats.totalItems;
+  document.getElementById('statModel').textContent = stats.geminiModel;
 
-  updateQueueDisplay();
+  const topicIdx = stats.topicIndex;
+  document.getElementById('statTopic').textContent = `Topic ${topicIdx + 1} of ${stats.topicsCount}`;
 }
 
-// ── Queue Display ──
-function updateQueueDisplay() {
-  if (!feeder) return;
-
-  const render = (items, containerId, countId, formatter) => {
-    const container = document.getElementById(containerId);
-    const countEl = document.getElementById(countId);
-    countEl.textContent = items.length + ' items';
-    container.innerHTML = items.slice(0, 20).map(formatter).join('');
-  };
-
-  render(feeder.directiveQueue, 'dqItems', 'dqCount',
-    d => `<div class="queue-item">[${d.type}] P${d.priority}: ${d.directive}</div>`);
-
-  render(feeder.trainingQueue, 'tqItems', 'tqCount',
-    t => `<div class="queue-item">Q: ${t.question}</div>`);
-
-  render(feeder.writingQueue, 'wqItems', 'wqCount',
-    w => `<div class="queue-item">${w.sourceLabel} (${w.sampleText.length} chars)</div>`);
-
-  render(feeder.identityQueue, 'iqItems', 'iqCount',
-    i => `<div class="queue-item">[${i.category}] ${i.key}: ${i.value}</div>`);
-}
-
-// ── Log Feed ──
+// ── Log ──
 function addLogEntry(entry) {
   const feed = document.getElementById('logFeed');
   const time = new Date(entry.time).toLocaleTimeString();
@@ -880,94 +868,58 @@ function addLogEntry(entry) {
   div.className = 'log-entry ' + entry.level;
   div.innerHTML = `<span class="time">${time}</span> ${escapeHtml(entry.message)}`;
   feed.insertBefore(div, feed.firstChild);
-
-  // Cap visible logs
-  while (feed.children.length > 100) {
-    feed.removeChild(feed.lastChild);
-  }
+  while (feed.children.length > 100) feed.removeChild(feed.lastChild);
 }
 
 function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
 }
 
-// ── Add Data Tab Switching ──
-function switchAddTab(tab, btn) {
-  document.querySelectorAll('.add-form').forEach(f => f.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('form-' + tab).classList.add('active');
-  btn.classList.add('active');
-}
+// ── Custom Generation ──
+async function generateCustom() {
+  if (!feeder || !geminiConnected) return;
+  const prompt = document.getElementById('customPrompt').value.trim();
+  const category = document.getElementById('customCategory').value.trim() || 'custom';
+  if (!prompt) return;
 
-// ── Manual Add Functions ──
-function showToast(id) {
-  const toast = document.getElementById(id);
+  const btn = document.getElementById('btnCustom');
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+
+  const count = await feeder.generateCustomTraining(prompt, category);
+
+  btn.disabled = false;
+  btn.textContent = 'Generate & Feed';
+
+  const toast = document.getElementById('toastCustom');
+  toast.textContent = count > 0 ? `Generated and fed ${count} training entries!` : 'No new data generated (may be duplicates)';
   toast.style.display = 'block';
-  setTimeout(() => toast.style.display = 'none', 2000);
+  toast.style.color = count > 0 ? 'var(--brand-green)' : 'var(--brand-orange)';
+  setTimeout(() => toast.style.display = 'none', 4000);
 }
 
-function addDirectiveToQueue() {
-  if (!feeder) return;
-  const text = document.getElementById('addDirectiveText').value.trim();
-  if (!text) return;
-  feeder.addToDirectiveQueue({
-    directive: text,
-    type: document.getElementById('addDirectiveType').value,
-    priority: parseInt(document.getElementById('addDirectivePriority').value) || 5
-  });
-  document.getElementById('addDirectiveText').value = '';
-  updateQueueDisplay();
-  showToast('toast-directive');
-}
+async function generateFromUrl() {
+  if (!feeder || !geminiConnected) return;
+  const url = document.getElementById('urlInput').value.trim();
+  const category = document.getElementById('urlCategory').value.trim() || 'web-sourced';
+  if (!url) return;
 
-function addTrainingToQueue() {
-  if (!feeder) return;
-  const q = document.getElementById('addTrainingQ').value.trim();
-  const a = document.getElementById('addTrainingA').value.trim();
-  if (!q || !a) return;
-  feeder.addToTrainingQueue({
-    question: q,
-    answer: a,
-    category: document.getElementById('addTrainingCat').value.trim() || 'general',
-    tags: document.getElementById('addTrainingTags').value.split(',').map(t => t.trim()).filter(Boolean)
-  });
-  document.getElementById('addTrainingQ').value = '';
-  document.getElementById('addTrainingA').value = '';
-  updateQueueDisplay();
-  showToast('toast-training');
-}
+  const btn = document.getElementById('btnUrl');
+  btn.disabled = true;
+  btn.textContent = 'Extracting...';
 
-function addWritingToQueue() {
-  if (!feeder) return;
-  const label = document.getElementById('addWritingLabel').value.trim();
-  const text = document.getElementById('addWritingText').value.trim();
-  if (!label || !text) return;
-  feeder.addToWritingQueue({
-    sourceLabel: label,
-    sampleText: text
-  });
-  document.getElementById('addWritingLabel').value = '';
-  document.getElementById('addWritingText').value = '';
-  updateQueueDisplay();
-  showToast('toast-writing');
-}
+  const count = await feeder.generateFromURL(url, category);
 
-function addIdentityToQueue() {
-  if (!feeder) return;
-  const key = document.getElementById('addIdentityKey').value.trim();
-  const value = document.getElementById('addIdentityValue').value.trim();
-  if (!key || !value) return;
-  feeder.addToIdentityQueue({
-    key: key,
-    value: value,
-    category: document.getElementById('addIdentityCat').value
-  });
-  document.getElementById('addIdentityKey').value = '';
-  document.getElementById('addIdentityValue').value = '';
-  updateQueueDisplay();
-  showToast('toast-identity');
+  btn.disabled = false;
+  btn.textContent = 'Extract & Feed';
+
+  const toast = document.getElementById('toastUrl');
+  toast.textContent = count > 0 ? `Extracted and fed ${count} entries from URL!` : 'No data extracted (check URL or try another)';
+  toast.style.display = 'block';
+  toast.style.color = count > 0 ? 'var(--brand-green)' : 'var(--brand-orange)';
+  setTimeout(() => toast.style.display = 'none', 4000);
 }
 </script>
 </body>
