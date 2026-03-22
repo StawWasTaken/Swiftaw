@@ -148,56 +148,31 @@ a { text-decoration: none; color: inherit; }
   top: 50%; left: 50%;
   transform: translate(-50%, -48%);
   width: 680px; height: 680px;
-  pointer-events: none; z-index: 1;
-  perspective: 1200px;
+  z-index: 1;
+  border-radius: 50%;
+  overflow: hidden;
 }
-.globe {
+.globe-wrap canvas {
+  display: block;
   width: 100%; height: 100%;
-  position: relative;
-  transform-style: preserve-3d;
-  animation: globeSpin 30s linear infinite;
+  cursor: grab;
 }
-@keyframes globeSpin {
-  from { transform: rotateY(0deg) rotateX(-15deg); }
-  to { transform: rotateY(360deg) rotateX(-15deg); }
-}
-.globe-sphere {
-  position: absolute; inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, rgba(36,31,60,.6) 0%, rgba(36,31,60,.3) 40%, rgba(10,10,10,.8) 100%);
-  box-shadow: inset -40px -40px 80px rgba(0,0,0,.4), inset 20px 20px 60px rgba(255,249,62,.03), 0 0 80px rgba(36,31,60,.2);
-}
-.globe-ring {
+.globe-wrap canvas:active { cursor: grabbing; }
+.globe-tooltip {
   position: absolute;
-  top: 50%; left: 50%;
-  border: 1px solid rgba(255,249,62,.08);
-  border-radius: 50%;
-  transform-style: preserve-3d;
+  pointer-events: none;
+  background: var(--brand-deep);
+  color: var(--brand-yellow);
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity .2s;
+  border: 1px solid var(--brand-orange);
+  white-space: nowrap;
+  z-index: 10;
 }
-.globe-ring:nth-child(2) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg); }
-.globe-ring:nth-child(3) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg) rotateY(30deg); }
-.globe-ring:nth-child(4) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg) rotateY(60deg); }
-.globe-ring:nth-child(5) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg) rotateY(90deg); }
-.globe-ring:nth-child(6) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg) rotateY(120deg); }
-.globe-ring:nth-child(7) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(80deg) rotateY(150deg); }
-.globe-ring:nth-child(8) { width: 80%; height: 80%; transform: translate(-50%, -50%) rotateY(90deg); border-color: rgba(255,249,62,.06); }
-.globe-ring:nth-child(9) { width: 60%; height: 60%; transform: translate(-50%, -50%) rotateY(90deg); border-color: rgba(255,249,62,.05); }
-.globe-ring:nth-child(10) { width: 40%; height: 40%; transform: translate(-50%, -50%) rotateY(90deg); border-color: rgba(255,249,62,.04); }
-.globe-ring:nth-child(11) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(0deg); border-color: rgba(255,156,60,.06); }
-.globe-ring:nth-child(12) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(30deg); border-color: rgba(255,156,60,.05); }
-.globe-ring:nth-child(13) { width: 100%; height: 100%; transform: translate(-50%, -50%) rotateX(60deg); border-color: rgba(255,156,60,.05); }
-.globe-dot {
-  position: absolute;
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--brand-yellow);
-  box-shadow: 0 0 8px rgba(255,249,62,.4);
-}
-.globe-dot:nth-child(14) { top: 32%; left: 52%; }
-.globe-dot:nth-child(15) { top: 38%; left: 46%; }
-.globe-dot:nth-child(16) { top: 28%; left: 58%; width: 3px; height: 3px; background: var(--brand-orange); }
-.globe-dot:nth-child(17) { top: 45%; left: 40%; width: 4px; height: 4px; }
-.globe-dot:nth-child(18) { top: 55%; left: 55%; width: 3px; height: 3px; background: var(--brand-orange); }
-.globe-dot:nth-child(19) { top: 35%; left: 62%; width: 3px; height: 3px; }
 .hero-orb {
   position: absolute;
   width: 800px; height: 800px; border-radius: 50%;
@@ -567,7 +542,7 @@ footer {
   .features-grid, .dept-grid { grid-template-columns: 1fr; }
   .dark-grid { grid-template-columns: 1fr; }
   .footer-top { grid-template-columns: 1fr 1fr; }
-  .globe-wrap { width: 480px; height: 480px; }
+  .globe-wrap { width: 480px; height: 480px; pointer-events: none; }
   .stats-inner { grid-template-columns: repeat(2, 1fr); }
   .stat-item:nth-child(2) { border-right: none; }
   .stat-item:nth-child(1), .stat-item:nth-child(2) { border-bottom: 1px solid var(--border); }
@@ -577,7 +552,7 @@ footer {
   .hero-actions { flex-direction: column; align-items: center; }
   .footer-top { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
-  .globe-wrap { width: 320px; height: 320px; opacity: .6; }
+  .globe-wrap { width: 320px; height: 320px; opacity: .6; pointer-events: none; }
   .stats-inner { grid-template-columns: 1fr 1fr; }
   .stat-item { padding: 28px 20px; }
 }
@@ -640,28 +615,9 @@ footer {
     <div class="particle"></div><div class="particle"></div><div class="particle"></div>
     <div class="particle"></div><div class="particle"></div>
   </div>
-  <div class="globe-wrap">
-    <div class="globe">
-      <div class="globe-sphere"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-ring"></div>
-      <div class="globe-dot"></div>
-      <div class="globe-dot"></div>
-      <div class="globe-dot"></div>
-      <div class="globe-dot"></div>
-      <div class="globe-dot"></div>
-      <div class="globe-dot"></div>
-    </div>
+  <div class="globe-wrap" id="globeContainer">
+    <canvas id="globeCanvas"></canvas>
+    <div class="globe-tooltip" id="globeTooltip"></div>
   </div>
   <div class="hero-content">
     <div class="hero-eyebrow">Swiftaw</div>
@@ -912,6 +868,237 @@ footer {
     card.addEventListener('mouseleave', function () {
       card.style.transform = '';
     });
+  });
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+(function(){
+  var canvas = document.getElementById('globeCanvas');
+  var tooltip = document.getElementById('globeTooltip');
+  var container = document.getElementById('globeContainer');
+  var ctx = canvas.getContext('2d');
+
+  var C_OCEAN = '#0f0d1f';
+  var C_LAND = '#241f3c';
+  var C_HOVER = '#ff9c3c';
+  var C_BORDER = 'rgba(255,249,62,0.35)';
+  var C_GRAT = 'rgba(255,249,62,0.04)';
+  var C_RING = 'rgba(255,156,60,0.25)';
+  var C_YELLOW = '#fff93e';
+  var C_ORANGE = '#ff9c3c';
+
+  var MARKERS = [
+    { name: 'Paris', coords: [2.35, 48.86] },
+    { name: 'New York', coords: [-74.0, 40.71] },
+    { name: 'Tokyo', coords: [139.69, 35.69] },
+    { name: 'Singapore', coords: [103.82, 1.35] },
+    { name: 'São Paulo', coords: [-46.63, -23.55] }
+  ];
+
+  var width, height;
+  function resize(){
+    var rect = container.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    canvas.width = width * devicePixelRatio;
+    canvas.height = height * devicePixelRatio;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(devicePixelRatio, devicePixelRatio);
+  }
+  resize();
+
+  var proj = d3.geoOrthographic()
+    .scale(Math.min(width, height) * 0.48)
+    .translate([width / 2, height / 2])
+    .clipAngle(90)
+    .rotate([-2.2, -46.6, 0]);
+
+  var pathGen = d3.geoPath(proj, ctx);
+  var world = null, countries = null, borders = null;
+  var hoveredId = null;
+  var rotating = true, dragging = false, lastPos = null;
+  var velX = 0, velY = 0, scale = 1, animId;
+
+  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      world = data;
+      countries = topojson.feature(data, data.objects.countries);
+      borders = topojson.mesh(data, data.objects.countries, function(a,b){ return a !== b; });
+      draw();
+      startAnim();
+    });
+
+  function getRadius(){
+    return Math.min(width, height) * 0.48 * scale;
+  }
+
+  function isVisible(coords){
+    var r = proj.rotate();
+    var dLon = coords[0] - (-r[0]);
+    var dLat = coords[1] - (-r[1]);
+    return Math.cos(dLat * Math.PI/180) * Math.cos(dLon * Math.PI/180) > 0;
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, width, height);
+    proj.scale(getRadius()).translate([width / 2, height / 2]);
+
+    var sphere = {type: 'Sphere'};
+
+    // Ocean fill
+    ctx.beginPath(); pathGen(sphere);
+    ctx.fillStyle = C_OCEAN; ctx.fill();
+
+    if(!world) return;
+
+    // Countries
+    countries.features.forEach(function(f){
+      ctx.beginPath(); pathGen(f);
+      ctx.fillStyle = (+f.id === hoveredId) ? C_HOVER : C_LAND;
+      ctx.fill();
+    });
+
+    // Graticule
+    ctx.beginPath(); pathGen(d3.geoGraticule()());
+    ctx.strokeStyle = C_GRAT; ctx.lineWidth = 0.5; ctx.stroke();
+
+    // Borders
+    ctx.beginPath(); pathGen(borders);
+    ctx.strokeStyle = C_BORDER; ctx.lineWidth = 0.4; ctx.stroke();
+
+    // Globe outline
+    ctx.beginPath(); pathGen(sphere);
+    ctx.strokeStyle = C_RING; ctx.lineWidth = 1.5; ctx.stroke();
+
+    // Markers
+    MARKERS.forEach(function(m){
+      if(!isVisible(m.coords)) return;
+      var p = proj(m.coords);
+      if(!p) return;
+      var px = p[0], py = p[1];
+
+      // Outer ring
+      ctx.beginPath(); ctx.arc(px, py, 8, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255,156,60,0.3)'; ctx.lineWidth = 1.2; ctx.stroke();
+
+      // Filled circle
+      ctx.beginPath(); ctx.arc(px, py, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = C_ORANGE; ctx.fill();
+      ctx.strokeStyle = C_YELLOW; ctx.lineWidth = 1.5; ctx.stroke();
+
+      // Inner dot
+      ctx.beginPath(); ctx.arc(px, py, 1.8, 0, Math.PI * 2);
+      ctx.fillStyle = C_YELLOW; ctx.fill();
+
+      // Label
+      ctx.font = 'bold 11px Inter, sans-serif';
+      ctx.fillStyle = C_YELLOW;
+      ctx.fillText(m.name, px + 10, py - 4);
+    });
+  }
+
+  function startAnim(){
+    cancelAnimationFrame(animId);
+    function tick(){
+      if(rotating && !dragging){
+        var r = proj.rotate();
+        proj.rotate([r[0] + 0.06, r[1], r[2]]);
+        draw();
+      } else if(!dragging && (Math.abs(velX) > 0.005 || Math.abs(velY) > 0.005)){
+        var r = proj.rotate();
+        proj.rotate([r[0] + velX, r[1] - velY, r[2]]);
+        velX *= 0.94; velY *= 0.94;
+        draw();
+      }
+      animId = requestAnimationFrame(tick);
+    }
+    animId = requestAnimationFrame(tick);
+  }
+
+  function getXY(e){
+    if(e.touches) return [e.touches[0].clientX, e.touches[0].clientY];
+    return [e.clientX, e.clientY];
+  }
+
+  function pointerDown(e){
+    rotating = false; dragging = true;
+    velX = 0; velY = 0;
+    var rect = canvas.getBoundingClientRect();
+    var xy = getXY(e);
+    lastPos = [xy[0] - rect.left, xy[1] - rect.top];
+    canvas.style.cursor = 'grabbing';
+    e.preventDefault();
+  }
+
+  function pointerMove(e){
+    var rect = canvas.getBoundingClientRect();
+    var xy = getXY(e);
+    var mx = xy[0] - rect.left, my = xy[1] - rect.top;
+
+    if(dragging && lastPos){
+      var dx = mx - lastPos[0], dy = my - lastPos[1];
+      var s = 0.25;
+      var r = proj.rotate();
+      proj.rotate([r[0] + dx * s, r[1] - dy * s, r[2]]);
+      velX = dx * s; velY = dy * s;
+      lastPos = [mx, my];
+      draw();
+    } else if(world) {
+      var pt = proj.invert ? proj.invert([mx, my]) : null;
+      if(pt){
+        var hit = countries.features.find(function(f){
+          try { return d3.geoContains(f, pt); } catch(err){ return false; }
+        });
+        if(hit){
+          hoveredId = +hit.id;
+          var name = (hit.properties && hit.properties.name) ? hit.properties.name : ('Country #' + hit.id);
+          tooltip.style.opacity = '1';
+          tooltip.style.left = (mx + 14) + 'px';
+          tooltip.style.top = (my - 10) + 'px';
+          tooltip.textContent = name;
+          draw();
+        } else {
+          if(hoveredId !== null){ hoveredId = null; draw(); }
+          tooltip.style.opacity = '0';
+        }
+      }
+    }
+    if(e.preventDefault) e.preventDefault();
+  }
+
+  function pointerUp(){
+    dragging = false; lastPos = null;
+    canvas.style.cursor = 'grab';
+    setTimeout(function(){ rotating = true; }, 2500);
+  }
+
+  canvas.addEventListener('mousedown', pointerDown);
+  canvas.addEventListener('mousemove', pointerMove);
+  canvas.addEventListener('mouseup', pointerUp);
+  canvas.addEventListener('mouseleave', function(){
+    pointerUp();
+    if(hoveredId !== null){ hoveredId = null; draw(); }
+    tooltip.style.opacity = '0';
+  });
+  canvas.addEventListener('touchstart', pointerDown, {passive: false});
+  canvas.addEventListener('touchmove', pointerMove, {passive: false});
+  canvas.addEventListener('touchend', pointerUp);
+
+  canvas.addEventListener('wheel', function(e){
+    scale = Math.max(0.5, Math.min(3, scale - e.deltaY * 0.001));
+    draw();
+    e.preventDefault();
+  }, {passive: false});
+
+  window.addEventListener('resize', function(){
+    resize();
+    if(world) draw();
   });
 })();
 </script>
