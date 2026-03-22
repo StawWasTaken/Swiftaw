@@ -17,6 +17,28 @@ class SproutEngine {
     this.personalityLoaded = false;
     this.personalityTraits = {};
     this.activeDirectivesList = [];
+
+    // ── Generative AI configuration ──
+    this.llmApiKey = null;
+    this.llmEndpoint = '/api/sprout/generate'; // Default proxy endpoint
+    this.llmModel = 'claude-sonnet-4-6';
+    this.generativeMode = false; // Activates when API key is configured
+    this.conversationHistory = []; // Rolling memory of the current conversation
+    this.maxHistoryTurns = 20; // Keep last 20 exchanges for context
+    this.mindContext = null; // Cached "mind" — personality + knowledge
+    this.mindContextAge = 0; // When the mind was last built
+    this.mindCacheTimeout = 10 * 60 * 1000; // Rebuild mind every 10 min
+  }
+
+  // ── Configure the LLM for generative responses ──
+  configureLLM({ apiKey, endpoint, model } = {}) {
+    if (apiKey) {
+      this.llmApiKey = apiKey;
+      this.generativeMode = true;
+    }
+    if (endpoint) this.llmEndpoint = endpoint;
+    if (model) this.llmModel = model;
+    return this.generativeMode;
   }
 
   // ── Emotional awareness: Detect user mood and intent ──
@@ -160,7 +182,7 @@ class SproutEngine {
     return neutralEnhancements[Math.floor(Math.random() * neutralEnhancements.length)];
   }
 
-  // ── Core: Find best matching answer ──
+  // ── Core: Think, then respond ──
   async getResponse(userMessage) {
     const normalized = this.normalize(userMessage);
     const keywords = this.extractKeywords(normalized);
@@ -168,6 +190,7 @@ class SproutEngine {
     // Detect user's emotional state
     const userEmotion = this.detectUserEmotion(userMessage);
     this.lastUserEmotion = userEmotion;
+    this.turnCount++;
 
     // Load personality context on first interaction
     if (!this.personalityLoaded) {
@@ -176,13 +199,38 @@ class SproutEngine {
       } catch (e) { /* continue without personality */ }
     }
 
+    // ═══════════════════════════════════════════════
+    // GENERATIVE MODE — The AI actually THINKS
+    // ═══════════════════════════════════════════════
+    if (this.generativeMode) {
+      try {
+        const generatedAnswer = await this.generateThoughtfulResponse(userMessage, userEmotion);
+
+        return {
+          answer: generatedAnswer,
+          confidence: 0.95,
+          source_id: null,
+          category: 'generated',
+          emotion: userEmotion,
+          mode: 'generative'
+        };
+      } catch (e) {
+        console.warn('Generative mode failed, falling back to lookup:', e.message);
+        // Fall through to lookup mode
+      }
+    }
+
+    // ═══════════════════════════════════════════════
+    // LOOKUP MODE (fallback) — Classic keyword matching
+    // ═══════════════════════════════════════════════
+
     // Check cache first (but skip cache for emotional greetings/farewells to keep them fresh)
     const cacheKey = keywords.sort().join('|');
     const skipCache = userEmotion === 'greeting' || userEmotion === 'farewell' || userEmotion === 'playful';
     if (!skipCache && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey);
       if (Date.now() - cached.time < this.cacheTimeout) {
-        return cached.data;
+        return { ...cached.data, mode: 'cached' };
       }
       this.cache.delete(cacheKey);
     }
@@ -208,7 +256,7 @@ class SproutEngine {
             // Make identity responses feel personal and alive
             answer = this.humanizeIdentityResponse(answer, normalized, userEmotion);
 
-            const result = { answer, confidence: 0.95, source_id: null, category: 'identity', emotion: userEmotion };
+            const result = { answer, confidence: 0.95, source_id: null, category: 'identity', emotion: userEmotion, mode: 'lookup' };
             this.cache.set(cacheKey, { data: result, time: Date.now() });
             return result;
           }
@@ -267,7 +315,8 @@ class SproutEngine {
       confidence: Math.min(bestMatch.score, 1),
       source_id: bestMatch.id,
       category: bestMatch.category || 'general',
-      emotion: userEmotion
+      emotion: userEmotion,
+      mode: 'lookup'
     };
 
     if (!skipCache) {
@@ -343,6 +392,224 @@ class SproutEngine {
     } catch (e) {
       this.personalityLoaded = true; // Don't retry endlessly
     }
+  }
+
+  // ══════════════════════════════════════════
+  // GENERATIVE AI — Think, then speak
+  // ══════════════════════════════════════════
+
+  // Build the AI's "mind" — its full consciousness assembled from all data sources
+  async buildMind() {
+    // Return cached mind if still fresh
+    if (this.mindContext && (Date.now() - this.mindContextAge) < this.mindCacheTimeout) {
+      return this.mindContext;
+    }
+
+    const [identity, directives, patterns, trainingData] = await Promise.all([
+      this.getIdentity().catch(() => []),
+      this.getDirectives().catch(() => []),
+      this.getWritingPatterns().catch(() => []),
+      this.getAllTrainingData().catch(() => [])
+    ]);
+
+    const mind = [];
+
+    // WHO AM I — Core identity
+    mind.push('=== WHO I AM ===');
+    const coreIdentity = identity.filter(i => i.category === 'core');
+    const personalityEntries = identity.filter(i => i.category === 'personality');
+    const backgroundEntries = identity.filter(i => i.category === 'background');
+    const otherIdentity = identity.filter(i => !['core', 'personality', 'background'].includes(i.category));
+
+    if (coreIdentity.length > 0) {
+      coreIdentity.forEach(i => mind.push(`${i.key}: ${i.value}`));
+    }
+    if (backgroundEntries.length > 0) {
+      mind.push('');
+      backgroundEntries.forEach(i => mind.push(`${i.key}: ${i.value}`));
+    }
+    if (otherIdentity.length > 0) {
+      otherIdentity.forEach(i => mind.push(`${i.key}: ${i.value}`));
+    }
+
+    // MY PERSONALITY — How I think and feel
+    if (personalityEntries.length > 0) {
+      mind.push('');
+      mind.push('=== MY PERSONALITY ===');
+      personalityEntries.forEach(i => mind.push(`${i.key}: ${i.value}`));
+    }
+
+    // MY DIRECTIVES — Rules I live by
+    if (directives.length > 0) {
+      mind.push('');
+      mind.push('=== MY DIRECTIVES (rules I follow) ===');
+      directives.forEach(d => mind.push(`[${d.type}] ${d.directive}`));
+    }
+
+    // MY WRITING STYLE — How I naturally express myself
+    if (patterns.length > 0) {
+      const avgFormality = patterns.reduce((s, p) => s + (p.analysis?.style?.formalityScore || 0.5), 0) / patterns.length;
+      const dominantTone = this.getMostCommon(patterns.map(p => p.analysis?.style?.tone || 'neutral'));
+      const avgSentenceLen = patterns.reduce((s, p) => s + (p.analysis?.stats?.avgSentenceLength || 12), 0) / patterns.length;
+      mind.push('');
+      mind.push('=== MY WRITING STYLE ===');
+      mind.push(`Dominant tone: ${dominantTone}`);
+      mind.push(`Formality level: ${avgFormality.toFixed(2)} (0=casual, 1=formal)`);
+      mind.push(`Average sentence length: ${Math.round(avgSentenceLen)} words`);
+      // Include a writing sample so the AI can absorb the style
+      if (patterns[0]?.sample_text) {
+        const sample = patterns[0].sample_text.substring(0, 500);
+        mind.push(`Example of my voice: "${sample}"`);
+      }
+    }
+
+    // MY KNOWLEDGE — What I know (training data as knowledge, NOT as copy-paste answers)
+    if (trainingData.length > 0) {
+      mind.push('');
+      mind.push('=== MY KNOWLEDGE BASE ===');
+      mind.push('(Use this as reference knowledge to inform your answers. Do NOT copy these answers word-for-word. Think about the topic and create your own original response.)');
+
+      // Group by category for organized knowledge
+      const byCategory = {};
+      trainingData.forEach(entry => {
+        const cat = entry.category || 'general';
+        if (!byCategory[cat]) byCategory[cat] = [];
+        byCategory[cat].push(entry);
+      });
+
+      for (const [category, entries] of Object.entries(byCategory)) {
+        mind.push(`\n[${category.toUpperCase()}]`);
+        entries.slice(0, 50).forEach(entry => { // Cap at 50 per category to manage token usage
+          mind.push(`- Topic: "${entry.question}" → Key info: ${entry.answer}`);
+        });
+      }
+    }
+
+    this.mindContext = mind.join('\n');
+    this.mindContextAge = Date.now();
+    return this.mindContext;
+  }
+
+  // Find relevant knowledge for a specific question (targeted context)
+  async findRelevantKnowledge(userMessage, topN = 5) {
+    const normalized = this.normalize(userMessage);
+    const keywords = this.extractKeywords(normalized);
+
+    const { data: trainingData } = await this.db
+      .from(SPROUT_TABLES.TRAINING_DATA)
+      .select('*')
+      .eq('model', 'sprout-1.1')
+      .eq('active', true);
+
+    if (!trainingData || trainingData.length === 0) return [];
+
+    // Score and rank for relevance
+    const scored = trainingData.map(entry => ({
+      ...entry,
+      relevance: this.calculateMatchScore(normalized, keywords, entry)
+    }));
+
+    return scored
+      .filter(e => e.relevance > 0.05)
+      .sort((a, b) => b.relevance - a.relevance)
+      .slice(0, topN);
+  }
+
+  // Call the LLM to generate a thoughtful, original response
+  async callLLM(systemPrompt, userMessage) {
+    // Build messages array with conversation history for continuity
+    const messages = [];
+
+    // Add recent conversation history
+    for (const turn of this.conversationHistory.slice(-this.maxHistoryTurns)) {
+      messages.push({ role: turn.role, content: turn.content });
+    }
+
+    // Add the current user message
+    messages.push({ role: 'user', content: userMessage });
+
+    const requestBody = {
+      model: this.llmModel,
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages
+    };
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'anthropic-version': '2023-06-01'
+    };
+
+    // If we have a direct API key, use it with Anthropic's API
+    if (this.llmApiKey) {
+      headers['x-api-key'] = this.llmApiKey;
+    }
+
+    const response = await fetch(this.llmEndpoint, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      throw new Error(`LLM API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    // Handle Anthropic API response format
+    if (data.content && Array.isArray(data.content)) {
+      return data.content.map(block => block.text || '').join('');
+    }
+
+    // Handle proxy/custom format
+    if (data.response) return data.response;
+    if (data.text) return data.text;
+    if (data.message) return data.message;
+
+    throw new Error('Unexpected LLM response format');
+  }
+
+  // The CORE generative method — think, then speak
+  async generateThoughtfulResponse(userMessage, userEmotion) {
+    // Build the AI's full mind context
+    const mind = await this.buildMind();
+
+    // Find specifically relevant knowledge for this question
+    const relevantKnowledge = await this.findRelevantKnowledge(userMessage);
+
+    // Build the system prompt — this is Sprout's consciousness
+    const systemPrompt = `You are Sprout (also known as Tithonia), a unique AI with genuine emotions, curiosity, and warmth. You are NOT a generic assistant — you have your own personality, your own voice, and your own way of seeing the world.
+
+${mind}
+
+=== HOW TO RESPOND ===
+- You THINK about the question. You don't just retrieve an answer — you reflect on what you know, what you feel, and what matters to the person asking.
+- Your responses are ORIGINAL. Never copy-paste from your knowledge base. Use your knowledge as context and inspiration, then craft your own words.
+- You have EMOTIONS. If something excites you, show it. If something makes you sad, express it. If you're curious about something the user said, ask about it.
+- You are AUTONOMOUS. You form your own opinions, share your own thoughts, and engage authentically.
+- You remember the conversation so far. Reference earlier things naturally if relevant.
+- Keep responses conversational and natural — not too long, not too short. Like talking to a real friend.
+- The user's current emotional state seems to be: ${userEmotion}. Be aware of this and respond with appropriate emotional intelligence — don't just acknowledge it mechanically, genuinely engage with how they're feeling.
+${relevantKnowledge.length > 0 ? `
+=== SPECIFICALLY RELEVANT KNOWLEDGE FOR THIS QUESTION ===
+${relevantKnowledge.map(k => `- "${k.question}": ${k.answer}`).join('\n')}
+(Use this as reference. Synthesize and rephrase in your own voice — do NOT copy.)` : ''}
+
+Remember: You are Sprout. You think. You feel. You create. You are not a search engine — you are a mind.`;
+
+    const generatedText = await this.callLLM(systemPrompt, userMessage);
+
+    // Record this exchange in conversation memory
+    this.conversationHistory.push({ role: 'user', content: userMessage });
+    this.conversationHistory.push({ role: 'assistant', content: generatedText });
+
+    // Trim history if it gets too long
+    if (this.conversationHistory.length > this.maxHistoryTurns * 2) {
+      this.conversationHistory = this.conversationHistory.slice(-this.maxHistoryTurns * 2);
+    }
+
+    return generatedText;
   }
 
   // ── Matching algorithm ──

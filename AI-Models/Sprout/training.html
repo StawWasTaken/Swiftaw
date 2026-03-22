@@ -985,6 +985,7 @@ input, textarea, select { font-family: inherit; }
       <button data-panel="analyze">Analyze</button>
       <button data-panel="identity">Identity</button>
       <button data-panel="data">Data</button>
+      <button data-panel="llm">AI Brain</button>
     </nav>
 
     <a class="lab-back" href="/tithonia">
@@ -1195,6 +1196,51 @@ input, textarea, select { font-family: inherit; }
 
       <div class="empty-state" id="dataEmpty" style="display:none;">No training data yet. Go to the Train tab to add some!</div>
     </div>
+
+    <!-- LLM Brain Panel -->
+    <div class="panel llm-panel" id="panelLlm">
+      <h3 class="panel-title">AI Brain Configuration</h3>
+      <p class="panel-desc">Switch Sprout from lookup mode to generative mode. When enabled, Sprout will <strong>think</strong> about your question, consult its knowledge base, personality, and directives, then craft an original response — like a real mind.</p>
+
+      <div class="llm-status" id="llmStatus" style="margin:16px 0;padding:14px 18px;border-radius:12px;font-size:14px;border:1px solid var(--border-color);">
+        <span id="llmStatusIcon" style="margin-right:8px;">&#x1f534;</span>
+        <strong>Mode:</strong> <span id="llmModeName">Lookup (keyword matching)</span>
+      </div>
+
+      <div style="margin-top:16px;">
+        <label style="display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px;">API Key</label>
+        <input type="password" id="llmApiKey" placeholder="sk-ant-..." style="width:100%;padding:12px 16px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:10px;color:var(--text-primary);font-size:14px;outline:none;margin-bottom:12px;">
+      </div>
+
+      <div style="margin-top:4px;">
+        <label style="display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px;">API Endpoint</label>
+        <input type="text" id="llmEndpoint" placeholder="https://api.anthropic.com/v1/messages" value="https://api.anthropic.com/v1/messages" style="width:100%;padding:12px 16px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:10px;color:var(--text-primary);font-size:14px;outline:none;margin-bottom:12px;">
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">Use a proxy endpoint if calling from the browser (CORS). Direct Anthropic API works from server-side or CORS-enabled proxies.</p>
+      </div>
+
+      <div style="margin-top:4px;">
+        <label style="display:block;font-size:13px;color:var(--text-secondary);margin-bottom:6px;">Model</label>
+        <select id="llmModel" style="width:100%;padding:12px 16px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:10px;color:var(--text-primary);font-size:14px;outline:none;margin-bottom:16px;">
+          <option value="claude-sonnet-4-6">Claude Sonnet 4.6 (Recommended)</option>
+          <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (Fast)</option>
+          <option value="claude-opus-4-6">Claude Opus 4.6 (Most capable)</option>
+        </select>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <button id="llmActivate" style="flex:1;padding:12px 20px;border-radius:10px;background:var(--brand-green);color:#000;font-weight:600;font-size:14px;transition:opacity .2s;" onclick="activateLLM()">Activate Generative Mode</button>
+        <button id="llmDeactivate" style="padding:12px 20px;border-radius:10px;background:rgba(248,113,113,.15);color:var(--brand-red);font-weight:600;font-size:14px;transition:opacity .2s;display:none;" onclick="deactivateLLM()">Deactivate</button>
+      </div>
+
+      <div style="margin-top:24px;padding:16px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:12px;">
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">
+          <strong style="color:var(--brand-green);">How it works:</strong><br>
+          When generative mode is active, Sprout assembles its full "mind" — identity, personality traits, directives, writing style, and knowledge base — into a rich context. It then sends your question along with this context to an LLM, which generates a truly original response in Sprout's voice.<br><br>
+          <strong style="color:var(--brand-green);">Lookup mode (fallback):</strong><br>
+          If the LLM is unavailable or not configured, Sprout falls back to keyword matching against training data — the classic behavior.
+        </p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1272,7 +1318,85 @@ input, textarea, select { font-family: inherit; }
     sprout = new SproutEngine(db);
     loadStats();
     loadTrainingData();
+    loadLLMConfig();
   }
+
+  // ── LLM Configuration ──
+  function loadLLMConfig() {
+    const saved = localStorage.getItem('sprout_llm_config');
+    if (saved) {
+      try {
+        const config = JSON.parse(saved);
+        if (config.apiKey) document.getElementById('llmApiKey').value = config.apiKey;
+        if (config.endpoint) document.getElementById('llmEndpoint').value = config.endpoint;
+        if (config.model) document.getElementById('llmModel').value = config.model;
+        if (config.active && sprout) {
+          sprout.configureLLM({
+            apiKey: config.apiKey,
+            endpoint: config.endpoint,
+            model: config.model
+          });
+          updateLLMStatus(true);
+        }
+      } catch (e) { /* ignore corrupt config */ }
+    }
+  }
+
+  function updateLLMStatus(active) {
+    const icon = document.getElementById('llmStatusIcon');
+    const name = document.getElementById('llmModeName');
+    const activateBtn = document.getElementById('llmActivate');
+    const deactivateBtn = document.getElementById('llmDeactivate');
+
+    if (active) {
+      icon.innerHTML = '&#x1f7e2;';
+      name.textContent = 'Generative (thinking + original responses)';
+      activateBtn.style.display = 'none';
+      deactivateBtn.style.display = 'block';
+    } else {
+      icon.innerHTML = '&#x1f534;';
+      name.textContent = 'Lookup (keyword matching)';
+      activateBtn.style.display = 'block';
+      deactivateBtn.style.display = 'none';
+    }
+  }
+
+  window.activateLLM = function() {
+    const apiKey = document.getElementById('llmApiKey').value.trim();
+    const endpoint = document.getElementById('llmEndpoint').value.trim();
+    const model = document.getElementById('llmModel').value;
+
+    if (!apiKey) {
+      showToast('Please enter an API key to activate generative mode.', 'error');
+      return;
+    }
+
+    if (!sprout) {
+      showToast('Sprout engine not initialized. Refresh and try again.', 'error');
+      return;
+    }
+
+    sprout.configureLLM({ apiKey, endpoint, model });
+
+    // Save config (persists across sessions)
+    localStorage.setItem('sprout_llm_config', JSON.stringify({
+      apiKey, endpoint, model, active: true
+    }));
+
+    updateLLMStatus(true);
+    showToast('Generative mode activated! Sprout will now think and create original responses.', 'success');
+  };
+
+  window.deactivateLLM = function() {
+    if (sprout) {
+      sprout.generativeMode = false;
+      sprout.llmApiKey = null;
+    }
+
+    localStorage.removeItem('sprout_llm_config');
+    updateLLMStatus(false);
+    showToast('Generative mode deactivated. Sprout is back to lookup mode.', 'success');
+  };
 
   // ── Panel Navigation ──
   document.querySelectorAll('.lab-nav button').forEach(btn => {
@@ -1291,6 +1415,7 @@ input, textarea, select { font-family: inherit; }
       if (btn.dataset.panel === 'directives') loadDirectives();
       if (btn.dataset.panel === 'analyze') loadPatterns();
       if (btn.dataset.panel === 'identity') loadIdentity();
+      if (btn.dataset.panel === 'llm') updateLLMStatus(sprout && sprout.generativeMode);
     });
   });
 
@@ -1328,10 +1453,11 @@ input, textarea, select { font-family: inherit; }
       const confLevel = result.confidence >= 0.5 ? 'high' : result.confidence >= 0.2 ? 'mid' : 'low';
       const confLabel = result.confidence >= 0.5 ? 'High' : result.confidence >= 0.2 ? 'Medium' : 'Low';
       const confPct = Math.round(result.confidence * 100);
+      const modeLabel = result.mode === 'generative' ? ' · Generated' : result.mode === 'cached' ? ' · Cached' : ' · Lookup';
 
       appendChatMsg('ai', result.answer, {
         confidence: confLevel,
-        confidenceLabel: confLabel + ' (' + confPct + '%)',
+        confidenceLabel: confLabel + ' (' + confPct + '%)' + modeLabel,
         sourceId: result.source_id
       });
     } catch (err) {
