@@ -1,12 +1,12 @@
 /**
  * Tithonia AI Data Feeder — "Gardener"
- * Uses Google Gemini to generate real training data from the internet
+ * Uses OpenAI (GPT) to generate real training data from the internet
  * and continuously feeds it into Tithonia's shared database.
  *
  * How it works:
  * 1. Each cycle, Gardener picks a topic/category
- * 2. Asks Gemini to generate training data (Q&A, writing samples, etc.)
- * 3. Parses Gemini's structured JSON response
+ * 2. Asks GPT to generate training data (Q&A, writing samples, etc.)
+ * 3. Parses the structured JSON response
  * 4. Inserts the data into Supabase via SproutEngine
  * 5. Repeats forever — the database grows automatically
  *
@@ -22,7 +22,7 @@ class DataFeeder {
     this.isRunning = false;
     this.isPaused = false;
     this.feedInterval = null;
-    this.feedCycleMs = 60 * 1000; // Feed every 60 seconds (Gemini needs time)
+    this.feedCycleMs = 60 * 1000; // Feed every 60 seconds
     this.currentCycle = 0;
     this.totalFed = { training: 0, writing: 0 };
     this.logs = [];
@@ -30,13 +30,13 @@ class DataFeeder {
     this.onLog = null;
     this.onStats = null;
 
-    // ── Gemini Config ──
-    this.geminiApiKey = null;
-    this.geminiModel = 'gemini-2.0-flash';
-    this.geminiEndpoint = 'https://generativelanguage.googleapis.com/v1beta/models';
+    // ── OpenAI Config ──
+    this.openaiApiKey = null;
+    this.openaiModel = 'gpt-4o-mini';
+    this.openaiEndpoint = 'https://api.openai.com/v1/chat/completions';
 
     // ── Topic rotation ──
-    // Gardener cycles through these topics, asking Gemini to generate data
+    // Gardener cycles through these topics, asking GPT to generate data
     this.topicIndex = 0;
     this.topics = [
       // Knowledge categories for Q&A training data
@@ -97,51 +97,51 @@ class DataFeeder {
   }
 
   // ══════════════════════════════════════════
-  // GEMINI — Talk to the real AI
+  // OPENAI — Talk to the real AI
   // ══════════════════════════════════════════
 
   setApiKey(key) {
-    this.geminiApiKey = key;
-    this._log('info', 'Gemini API key set');
+    this.openaiApiKey = key;
+    this._log('info', 'OpenAI API key set');
   }
 
   setModel(model) {
-    this.geminiModel = model;
-    this._log('info', `Gemini model set to ${model}`);
+    this.openaiModel = model;
+    this._log('info', `OpenAI model set to ${model}`);
   }
 
-  async _askGemini(prompt) {
-    if (!this.geminiApiKey) throw new Error('Gemini API key not set');
+  async _askAI(prompt) {
+    if (!this.openaiApiKey) throw new Error('OpenAI API key not set');
 
-    const url = `${this.geminiEndpoint}/${this.geminiModel}:generateContent?key=${this.geminiApiKey}`;
-
-    const response = await fetch(url, {
+    const response = await fetch(this.openaiEndpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.openaiApiKey}`
+      },
       body: JSON.stringify({
-        contents: [{
-          parts: [{ text: prompt }]
-        }],
-        generationConfig: {
-          temperature: 0.9,
-          topP: 0.95,
-          maxOutputTokens: 2048
-        }
+        model: this.openaiModel,
+        messages: [
+          { role: 'system', content: 'You are a knowledge generator. Always respond with valid JSON only, no markdown code blocks.' },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.9,
+        max_tokens: 2048
       })
     });
 
     if (!response.ok) {
       const err = await response.text();
-      throw new Error(`Gemini API error (${response.status}): ${err}`);
+      throw new Error(`OpenAI API error (${response.status}): ${err}`);
     }
 
     const data = await response.json();
 
-    if (!data.candidates || !data.candidates[0]?.content?.parts?.[0]?.text) {
-      throw new Error('Gemini returned empty response');
+    if (!data.choices || !data.choices[0]?.message?.content) {
+      throw new Error('OpenAI returned empty response');
     }
 
-    return data.candidates[0].content.parts[0].text;
+    return data.choices[0].message.content;
   }
 
   // ══════════════════════════════════════════
@@ -150,14 +150,14 @@ class DataFeeder {
 
   async start() {
     if (this.isRunning) return;
-    if (!this.geminiApiKey) {
-      this._log('error', 'Cannot start — set your Gemini API key first');
+    if (!this.openaiApiKey) {
+      this._log('error', 'Cannot start — set your OpenAI API key first');
       return;
     }
     this.isRunning = true;
     this.isPaused = false;
 
-    this._log('info', `Gardener v${this.version} started — using ${this.geminiModel} to feed Tithonia`);
+    this._log('info', `Gardener v${this.version} started — using ${this.openaiModel} to feed Tithonia`);
 
     // Bootstrap: feed seed directives & identity if not already in DB
     await this._bootstrapSeedData();
@@ -244,7 +244,7 @@ class DataFeeder {
   }
 
   // ══════════════════════════════════════════
-  // FEED CYCLE — Ask Gemini, parse, insert
+  // FEED CYCLE — Ask GPT, parse, insert
   // ══════════════════════════════════════════
 
   async _runFeedCycle() {
@@ -252,7 +252,7 @@ class DataFeeder {
     const topic = this.topics[this.topicIndex % this.topics.length];
     this.topicIndex++;
 
-    this._log('info', `Cycle ${this.currentCycle}: asking Gemini for ${topic.type} data${topic.category ? ` [${topic.category}]` : ''}...`);
+    this._log('info', `Cycle ${this.currentCycle}: asking GPT for ${topic.type} data${topic.category ? ` [${topic.category}]` : ''}...`);
 
     try {
       if (topic.type === 'training') {
@@ -267,7 +267,7 @@ class DataFeeder {
     if (this.onStats) this.onStats(this.getStats());
   }
 
-  // ── Ask Gemini for training Q&A pairs ──
+  // ── Ask GPT for training Q&A pairs ──
   async _generateTrainingData(topic) {
     const systemPrompt = `You are a knowledge generator for an AI called Tithonia. Your job is to create training data (question-answer pairs) that will teach Tithonia about the world.
 
@@ -284,11 +284,11 @@ You MUST respond with ONLY valid JSON in this exact format, no markdown, no code
   }
 ]`;
 
-    const raw = await this._askGemini(systemPrompt);
+    const raw = await this._askAI(systemPrompt);
     const pairs = this._parseJSON(raw);
 
     if (!Array.isArray(pairs) || pairs.length === 0) {
-      this._log('warn', 'Gemini returned no usable training data');
+      this._log('warn', 'GPT returned no usable training data');
       return;
     }
 
@@ -307,7 +307,7 @@ You MUST respond with ONLY valid JSON in this exact format, no markdown, no code
           answer: pair.answer,
           category: topic.category || 'general',
           tags: pair.tags || [],
-          created_by: 'gardener-gemini'
+          created_by: 'gardener-openai'
         });
         fed++;
         existingQs.add(pair.question.toLowerCase().trim());
@@ -321,7 +321,7 @@ You MUST respond with ONLY valid JSON in this exact format, no markdown, no code
     if (fed > 0) this._log('info', `Fed ${fed} new training entries for [${topic.category}]`);
   }
 
-  // ── Ask Gemini for a writing sample ──
+  // ── Ask GPT for a writing sample ──
   async _generateWritingPattern(topic) {
     const systemPrompt = `You are a writing style generator. Your output will be analyzed for tone, formality, sentence structure, and vocabulary — then used to teach an AI called Tithonia how to write in different styles.
 
@@ -333,11 +333,11 @@ You MUST respond with ONLY valid JSON in this exact format, no markdown, no code
   "sampleText": "the actual writing sample text"
 }`;
 
-    const raw = await this._askGemini(systemPrompt);
+    const raw = await this._askAI(systemPrompt);
     const sample = this._parseJSON(raw);
 
     if (!sample || !sample.sourceLabel || !sample.sampleText) {
-      this._log('warn', 'Gemini returned no usable writing pattern');
+      this._log('warn', 'GPT returned no usable writing pattern');
       return;
     }
 
@@ -353,7 +353,7 @@ You MUST respond with ONLY valid JSON in this exact format, no markdown, no code
     }
   }
 
-  // ── Parse JSON from Gemini (handles markdown code blocks) ──
+  // ── Parse JSON from GPT (handles markdown code blocks) ──
   _parseJSON(raw) {
     // Strip markdown code blocks if present
     let cleaned = raw.trim();
@@ -365,7 +365,7 @@ You MUST respond with ONLY valid JSON in this exact format, no markdown, no code
     try {
       return JSON.parse(cleaned);
     } catch (e) {
-      this._log('warn', `Failed to parse Gemini JSON: ${e.message}`);
+      this._log('warn', `Failed to parse GPT JSON: ${e.message}`);
       return null;
     }
   }
@@ -390,7 +390,7 @@ You MUST respond with ONLY valid JSON in this exact format, no markdown, no code
   }
 ]`;
 
-    const raw = await this._askGemini(systemPrompt);
+    const raw = await this._askAI(systemPrompt);
     const pairs = this._parseJSON(raw);
 
     if (!Array.isArray(pairs)) {
@@ -407,7 +407,7 @@ You MUST respond with ONLY valid JSON in this exact format, no markdown, no code
           answer: pair.answer,
           category: category || 'custom',
           tags: pair.tags || [],
-          created_by: 'gardener-gemini'
+          created_by: 'gardener-openai'
         });
         fed++;
         this._log('success', `[Custom] "${pair.question.substring(0, 60)}..."`);
@@ -439,7 +439,7 @@ You MUST respond with ONLY valid JSON in this exact format, no markdown, no code
   }
 ]`;
 
-    const raw = await this._askGemini(systemPrompt);
+    const raw = await this._askAI(systemPrompt);
     const pairs = this._parseJSON(raw);
 
     if (!Array.isArray(pairs)) {
@@ -456,7 +456,7 @@ You MUST respond with ONLY valid JSON in this exact format, no markdown, no code
           answer: pair.answer,
           category: category || 'web-sourced',
           tags: [...(pair.tags || []), 'url-sourced'],
-          created_by: 'gardener-gemini'
+          created_by: 'gardener-openai'
         });
         fed++;
         this._log('success', `[URL] "${pair.question.substring(0, 60)}..."`);
@@ -480,7 +480,7 @@ You MUST respond with ONLY valid JSON in this exact format, no markdown, no code
       isPaused: this.isPaused,
       currentCycle: this.currentCycle,
       feedIntervalMs: this.feedCycleMs,
-      geminiModel: this.geminiModel,
+      openaiModel: this.openaiModel,
       totalFed: { ...this.totalFed },
       totalItems: this.totalFed.training + this.totalFed.writing,
       topicsCount: this.topics.length,
