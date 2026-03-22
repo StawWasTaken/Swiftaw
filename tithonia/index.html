@@ -9,6 +9,9 @@
 <link rel="icon" type="image/png" href="/product-logos/Tithonia icon.png">
 <link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/AI-Models/Sprout/supabase-config.js"></script>
+<script src="/AI-Models/Sprout/sprout-engine.js"></script>
 <style>
 /* ── Variables ── */
 :root {
@@ -503,6 +506,55 @@ input, textarea { font-family: inherit; }
   pointer-events: all;
 }
 
+/* ── Model Badge ── */
+.model-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(74,222,128,.8);
+  background: rgba(74,222,128,.08);
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: .03em;
+  margin-left: 8px;
+}
+
+.model-badge .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4ade80;
+}
+
+/* ── Train Button ── */
+.btn-train {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: background .15s, color .15s, border-color .15s;
+  margin: 8px 12px;
+}
+
+.btn-train:hover {
+  background: rgba(74,222,128,.06);
+  border-color: rgba(74,222,128,.15);
+  color: rgba(74,222,128,.8);
+}
+
+.btn-train svg {
+  width: 14px;
+  height: 14px;
+  opacity: .6;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .sidebar {
@@ -595,6 +647,13 @@ input, textarea { font-family: inherit; }
       <!-- Populated by JS -->
     </div>
 
+    <a class="btn-train" href="/AI-Models/Sprout/training.html" title="Researcher access required">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+      </svg>
+      Train Sprout
+    </a>
+
     <div class="sidebar-footer">
       <a href="/">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -607,13 +666,14 @@ input, textarea { font-family: inherit; }
   <main class="main">
     <div class="topbar">
       <div class="topbar-title" id="topbarTitle">New chat</div>
+      <span class="model-badge"><span class="dot"></span>Sprout 1.1</span>
     </div>
 
     <!-- Landing state -->
     <div class="landing" id="landing">
       <img class="landing-logo" src="/product-logos/tithonia logomark.png" alt="Tithonia">
       <h1>What can I help with?</h1>
-      <p>A modern AI assistant built for daily help, smart project planning, quick answers, and specialized insights.</p>
+      <p>A modern AI assistant powered by Sprout 1.1 — built for daily help, smart project planning, quick answers, and specialized insights.</p>
       <div class="suggestions" id="suggestions">
         <button class="suggestion-card" data-prompt="Help me brainstorm ideas for a creative project">
           <span class="suggestion-icon">&#9889;</span>
@@ -647,7 +707,7 @@ input, textarea { font-family: inherit; }
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z"/></svg>
         </button>
       </div>
-      <div class="input-disclaimer">Tithonia can make mistakes. Verify important information.</div>
+      <div class="input-disclaimer">Tithonia is powered by Sprout 1.1. It can make mistakes. Verify important information.</div>
     </div>
   </main>
 </div>
@@ -676,14 +736,9 @@ input, textarea { font-family: inherit; }
   let activeConvoId = null;
   let isGenerating = false;
 
-  // ── Demo responses ──
-  const demoResponses = [
-    "Tithonia is still learning. This is a demo response. In the full version, I'd provide a detailed, thoughtful answer to your question. Thanks for trying out the preview!",
-    "Great question! While I'm still in demo mode, the full Tithonia experience will deliver in-depth, nuanced answers tailored to your needs. Stay tuned for the complete release.",
-    "I appreciate your curiosity! This is a preview of Tithonia. The full version will provide comprehensive, well-researched responses. For now, imagine a thorough and insightful answer here.",
-    "Thanks for chatting with me! Tithonia is currently in demo mode. When fully launched, I'll be able to assist with everything from brainstorming to research, writing, and much more.",
-    "This is a demo response from Tithonia. The complete platform will offer intelligent, context-aware answers built to help you think deeper, work smarter, and get things done faster."
-  ];
+  // ── Sprout 1.1 Engine ──
+  const db = createSupabaseClient();
+  const sprout = db ? new SproutEngine(db) : null;
 
   // ── Helpers ──
   function genId() {
@@ -712,7 +767,7 @@ input, textarea { font-family: inherit; }
   });
 
   // ── Send message ──
-  function sendMessage(text) {
+  async function sendMessage(text) {
     if (!text.trim() || isGenerating) return;
 
     // Create new conversation if none active
@@ -752,17 +807,38 @@ input, textarea { font-family: inherit; }
     const typingEl = renderTypingIndicator();
     scrollToBottom();
 
-    // Simulate AI response after delay
-    const delay = 1000 + Math.random() * 1500;
-    setTimeout(() => {
-      typingEl.remove();
-      const response = demoResponses[Math.floor(Math.random() * demoResponses.length)];
-      convo.messages.push({ role: 'assistant', text: response });
-      saveConversations();
-      renderMessage('assistant', response);
-      scrollToBottom();
-      isGenerating = false;
-    }, delay);
+    // Get response from Sprout 1.1 engine
+    if (sprout) {
+      try {
+        const result = await sprout.getResponse(text.trim());
+        typingEl.remove();
+        convo.messages.push({ role: 'assistant', text: result.answer });
+        saveConversations();
+        renderMessage('assistant', result.answer);
+        scrollToBottom();
+      } catch (err) {
+        typingEl.remove();
+        const fallback = "I'm having trouble connecting right now. Please try again in a moment.";
+        convo.messages.push({ role: 'assistant', text: fallback });
+        saveConversations();
+        renderMessage('assistant', fallback);
+        scrollToBottom();
+      }
+    } else {
+      // Fallback if Supabase not connected
+      const delay = 1000 + Math.random() * 1500;
+      setTimeout(() => {
+        typingEl.remove();
+        const fallback = "Sprout 1.1 is still warming up. The AI model isn't connected yet, but it will be soon!";
+        convo.messages.push({ role: 'assistant', text: fallback });
+        saveConversations();
+        renderMessage('assistant', fallback);
+        scrollToBottom();
+        isGenerating = false;
+      }, delay);
+    }
+
+    isGenerating = false;
   }
 
   // ── Render a single message ──
