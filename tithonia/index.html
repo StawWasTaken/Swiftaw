@@ -419,6 +419,20 @@ input, textarea { font-family: inherit; }
 .mood-playful { background: rgba(0,206,209,.12); color: #00ced1; }
 .mood-confused { background: rgba(255,165,0,.12); color: #ffa500; }
 .mood-farewell { background: rgba(147,112,219,.12); color: #9370db; }
+.mode-indicator {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 400;
+  padding: 1px 6px;
+  border-radius: 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+  opacity: 0.5;
+  letter-spacing: 0.2px;
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.4);
+  font-style: italic;
+}
 .mood-neutral { background: rgba(255,255,255,.06); color: rgba(255,255,255,.4); }
 
 /* Typing indicator */
@@ -1033,10 +1047,18 @@ input, textarea { font-family: inherit; }
       try {
         const result = await sprout.getResponse(text.trim());
         typingEl.remove();
-        convo.messages.push({ role: 'assistant', text: result.answer, emotion: result.emotion });
+        convo.messages.push({ role: 'assistant', text: result.answer, emotion: result.emotion, mode: result.mode });
         saveConversations();
-        renderMessage('assistant', result.answer, result.emotion);
+        renderMessage('assistant', result.answer, result.emotion, result.mode);
         scrollToBottom();
+
+        // Save conversation to Supabase for Cortex to learn from
+        try {
+          await sprout.saveConversation({
+            messages: convo.messages,
+            session_id: convo.id
+          });
+        } catch (e) { /* silently skip DB save failures */ }
       } catch (err) {
         typingEl.remove();
         const fallback = "I'm having trouble connecting right now. Please try again in a moment.";
@@ -1076,7 +1098,16 @@ input, textarea { font-family: inherit; }
     neutral: 'listening'
   };
 
-  function renderMessage(role, text, emotion) {
+  const modeLabels = {
+    'logic-engine': 'solved with logic',
+    'sprout-brain': 'thought about it',
+    'feedback-loop': 'learning from feedback',
+    'feedback-retry': 'trying again',
+    'lookup': 'from knowledge base',
+    'cached': 'remembered'
+  };
+
+  function renderMessage(role, text, emotion, mode) {
     const div = document.createElement('div');
     div.className = 'message';
 
@@ -1090,12 +1121,14 @@ input, textarea { font-family: inherit; }
     } else {
       const moodClass = emotion ? `mood-${emotion}` : 'mood-neutral';
       const moodText = emotion ? (moodLabels[emotion] || 'listening') : 'listening';
+      const modeText = mode ? (modeLabels[mode] || '') : '';
+      const modeHtml = modeText ? ` <span class="mode-indicator">${modeText}</span>` : '';
       div.innerHTML = `
         <div class="message-avatar ai-avatar">
           <img src="/product-logos/Tithonia icon.png" alt="Tithonia">
         </div>
         <div class="message-content">
-          <div class="message-sender">Tithonia <span class="mood-indicator ${moodClass}">${moodText}</span></div>
+          <div class="message-sender">Tithonia <span class="mood-indicator ${moodClass}">${moodText}</span>${modeHtml}</div>
           <div class="message-text">${escapeHtml(text)}</div>
         </div>`;
     }
@@ -1131,7 +1164,7 @@ input, textarea { font-family: inherit; }
     messagesEl.innerHTML = '';
     const convo = conversations.find(c => c.id === activeConvoId);
     if (!convo) return;
-    convo.messages.forEach(m => renderMessage(m.role, m.text, m.emotion));
+    convo.messages.forEach(m => renderMessage(m.role, m.text, m.emotion, m.mode));
     scrollToBottom();
   }
 

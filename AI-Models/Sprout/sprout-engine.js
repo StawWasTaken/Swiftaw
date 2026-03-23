@@ -1,9 +1,372 @@
 /**
- * Sprout 1.2 — AI Engine
+ * Sprout 1.2 — AI Engine (Enhanced Brain)
  * Custom AI with its own brain — no external LLM dependency
  * Thinks using its own knowledge base, personality, and reasoning
+ * Now with: Logic Engine, Math, Context Awareness, Feedback Learning,
+ *           Chat-based Self-Learning, Task Goal System, Auto-Upgrades
  * Powered by Supabase for training data storage
  */
+
+// ══════════════════════════════════════════════════════════════
+// LOGIC ENGINE — Math, Reasoning, Sentence Generation
+// Gives Tithonia actual logic and thinking capabilities
+// ══════════════════════════════════════════════════════════════
+
+class SproutLogicEngine {
+  constructor() {
+    this.mathOperators = {
+      '+': (a, b) => a + b,
+      '-': (a, b) => a - b,
+      '*': (a, b) => a * b,
+      'x': (a, b) => a * b,
+      '×': (a, b) => a * b,
+      '/': (a, b) => b !== 0 ? a / b : NaN,
+      '÷': (a, b) => b !== 0 ? a / b : NaN,
+      '%': (a, b) => a % b,
+      '^': (a, b) => Math.pow(a, b),
+      '**': (a, b) => Math.pow(a, b)
+    };
+
+    // Word-to-number mapping
+    this.wordNumbers = {
+      'zero': 0, 'one': 1, 'two': 2, 'three': 3, 'four': 4,
+      'five': 5, 'six': 6, 'seven': 7, 'eight': 8, 'nine': 9,
+      'ten': 10, 'eleven': 11, 'twelve': 12, 'thirteen': 13,
+      'fourteen': 14, 'fifteen': 15, 'sixteen': 16, 'seventeen': 17,
+      'eighteen': 18, 'nineteen': 19, 'twenty': 20, 'thirty': 30,
+      'forty': 40, 'fifty': 50, 'sixty': 60, 'seventy': 70,
+      'eighty': 80, 'ninety': 90, 'hundred': 100, 'thousand': 1000,
+      'million': 1000000, 'billion': 1000000000
+    };
+
+    // Word operators
+    this.wordOperators = {
+      'plus': '+', 'add': '+', 'added': '+', 'sum': '+',
+      'minus': '-', 'subtract': '-', 'subtracted': '-', 'take away': '-',
+      'times': '*', 'multiply': '*', 'multiplied': '*',
+      'divided': '/', 'divide': '/', 'over': '/',
+      'modulo': '%', 'mod': '%', 'remainder': '%',
+      'power': '^', 'raised': '^', 'squared': '^2', 'cubed': '^3',
+      'percent': '%_of', 'percentage': '%_of'
+    };
+  }
+
+  // ── Detect if a message is a logic/math/reasoning task ──
+  detectTaskType(message) {
+    const lower = message.toLowerCase().trim();
+
+    // Math detection
+    if (this.isMathQuestion(lower)) return 'math';
+
+    // Writing task detection
+    if (/\b(write|compose|create|make|generate)\b.*\b(sentence|paragraph|story|poem|essay|letter|message|text|haiku)\b/i.test(lower)) return 'write';
+    if (/\b(can you|could you|please)\b.*\b(write|say|tell)\b/i.test(lower)) return 'write';
+    if (/\bwrite\s+(me\s+)?a\b/i.test(lower)) return 'write';
+
+    // Factual question detection
+    if (/^(what|who|where|when|which|how many|how much|how old|how far|how long)\b/i.test(lower)) return 'factual';
+
+    // Yes/No question detection
+    if (/^(is|are|was|were|do|does|did|can|could|will|would|should|has|have)\b/i.test(lower) && lower.endsWith('?')) return 'yesno';
+
+    // Reasoning detection
+    if (/\b(why|explain|reason|because|logic|if.*then|therefore|conclude)\b/i.test(lower)) return 'reason';
+
+    // Comparison
+    if (/\b(compare|difference|between|versus|vs|better|worse|bigger|smaller)\b/i.test(lower)) return 'compare';
+
+    // Definition
+    if (/\b(what is|what are|what does|define|definition|meaning of)\b/i.test(lower)) return 'define';
+
+    // List
+    if (/\b(list|name|give me|tell me)\b.*\b(\d+|some|few|several|all)\b/i.test(lower)) return 'list';
+
+    return 'general';
+  }
+
+  // ── Math Detection ──
+  isMathQuestion(text) {
+    // Direct math expressions: "1 + 1", "what's 5 * 3"
+    if (/\d+\s*[+\-*/×÷^%x]\s*\d+/.test(text)) return true;
+    // Word math: "one plus one", "add 5 and 3"
+    if (/\b(plus|minus|times|divided|multiply|add|subtract|sum|difference|product|quotient)\b/i.test(text) && /\d+|\b(one|two|three|four|five|six|seven|eight|nine|ten|twenty|thirty|forty|fifty|hundred|thousand|million)\b/i.test(text)) return true;
+    // "What is X + Y", "Calculate X"
+    if (/\b(calculate|compute|solve|evaluate|what is|what's|whats|how much is)\b/i.test(text) && /\d/.test(text)) return true;
+    // Square root, percentage
+    if (/\b(square root|sqrt|factorial|percent of|percentage)\b/i.test(text)) return true;
+    return false;
+  }
+
+  // ── Solve Math ──
+  solveMath(text) {
+    let expr = text.toLowerCase().trim();
+
+    // Remove question framing
+    expr = expr.replace(/^(what is|what's|whats|how much is|calculate|compute|solve|evaluate|tell me)\s*/i, '');
+    expr = expr.replace(/[?!.]+$/, '').trim();
+
+    // Handle "square root of X"
+    const sqrtMatch = expr.match(/square\s*root\s*(?:of\s*)?(\d+(?:\.\d+)?)/);
+    if (sqrtMatch) {
+      const val = parseFloat(sqrtMatch[1]);
+      const result = Math.sqrt(val);
+      return { result, expression: `√${val}`, explanation: `The square root of ${val} is ${this.formatNumber(result)}` };
+    }
+
+    // Handle "X factorial"
+    const factMatch = expr.match(/(\d+)\s*(?:factorial|!)/);
+    if (factMatch) {
+      const n = parseInt(factMatch[1]);
+      if (n > 170) return { result: Infinity, expression: `${n}!`, explanation: `${n}! is too large to calculate` };
+      let result = 1;
+      for (let i = 2; i <= n; i++) result *= i;
+      return { result, expression: `${n}!`, explanation: `${n}! (factorial) = ${this.formatNumber(result)}` };
+    }
+
+    // Handle "X percent of Y"
+    const pctMatch = expr.match(/(\d+(?:\.\d+)?)\s*(?:percent|%)\s*(?:of)\s*(\d+(?:\.\d+)?)/);
+    if (pctMatch) {
+      const pct = parseFloat(pctMatch[1]);
+      const base = parseFloat(pctMatch[2]);
+      const result = (pct / 100) * base;
+      return { result, expression: `${pct}% of ${base}`, explanation: `${pct}% of ${base} is ${this.formatNumber(result)}` };
+    }
+
+    // Convert word numbers to digits
+    for (const [word, num] of Object.entries(this.wordNumbers)) {
+      expr = expr.replace(new RegExp(`\\b${word}\\b`, 'gi'), String(num));
+    }
+
+    // Convert word operators to symbols
+    for (const [word, op] of Object.entries(this.wordOperators)) {
+      expr = expr.replace(new RegExp(`\\b${word}\\b`, 'gi'), ` ${op} `);
+    }
+
+    // Clean up: remove "and", "by", "to the power of"
+    expr = expr.replace(/\band\b/g, '').replace(/\bby\b/g, '').replace(/\bto\s*the\s*power\s*(?:of)?\b/g, '^');
+    expr = expr.replace(/\s+/g, ' ').trim();
+
+    // Try to evaluate simple expressions
+    // Extract: number operator number (possibly chained)
+    const tokens = expr.match(/[\d.]+|[+\-*/×÷^%x]/g);
+    if (!tokens || tokens.length < 3) {
+      // Maybe just a single number
+      const num = parseFloat(expr);
+      if (!isNaN(num)) return { result: num, expression: expr, explanation: `That's just the number ${this.formatNumber(num)}` };
+      return null;
+    }
+
+    // Evaluate with operator precedence (simple left-to-right with PEMDAS for * and /)
+    try {
+      const result = this.evaluateTokens(tokens);
+      if (result !== null && !isNaN(result)) {
+        const origExpr = tokens.join(' ');
+        return {
+          result,
+          expression: origExpr,
+          explanation: `${origExpr} = ${this.formatNumber(result)}`
+        };
+      }
+    } catch (e) { /* fall through */ }
+
+    return null;
+  }
+
+  // Simple token evaluator with PEMDAS
+  evaluateTokens(tokens) {
+    // Parse into numbers and operators
+    const nums = [];
+    const ops = [];
+
+    for (let i = 0; i < tokens.length; i++) {
+      const t = tokens[i].trim();
+      if (!t) continue;
+      const num = parseFloat(t);
+      if (!isNaN(num)) {
+        nums.push(num);
+      } else if (this.mathOperators[t]) {
+        ops.push(t);
+      }
+    }
+
+    if (nums.length === 0) return null;
+    if (nums.length === 1) return nums[0];
+    if (ops.length !== nums.length - 1) return null;
+
+    // First pass: handle ^, *, /, % (higher precedence)
+    let i = 0;
+    while (i < ops.length) {
+      if (['^', '**', '*', 'x', '×', '/', '÷', '%'].includes(ops[i])) {
+        const result = this.mathOperators[ops[i]](nums[i], nums[i + 1]);
+        nums.splice(i, 2, result);
+        ops.splice(i, 1);
+      } else {
+        i++;
+      }
+    }
+
+    // Second pass: handle +, -
+    let result = nums[0];
+    for (let j = 0; j < ops.length; j++) {
+      result = this.mathOperators[ops[j]](result, nums[j + 1]);
+    }
+
+    return result;
+  }
+
+  formatNumber(n) {
+    if (Number.isInteger(n)) return n.toLocaleString();
+    // Round to reasonable precision
+    const rounded = Math.round(n * 1000000) / 1000000;
+    return rounded.toLocaleString(undefined, { maximumFractionDigits: 6 });
+  }
+
+  // ── Sentence Generation ──
+  generateSentence(topic, style = 'neutral') {
+    // Templates for generating original sentences
+    const templates = {
+      neutral: [
+        `${topic} is something that many people find interesting and worth exploring.`,
+        `When it comes to ${topic}, there are many perspectives to consider.`,
+        `${topic} plays an important role in how we understand the world around us.`,
+        `The concept of ${topic} continues to evolve as we learn more about it.`,
+        `Understanding ${topic} can open new ways of thinking about related subjects.`
+      ],
+      simple: [
+        `${topic} is a fascinating subject.`,
+        `Many people are curious about ${topic}.`,
+        `${topic} matters because it affects our daily lives.`,
+        `Learning about ${topic} helps us grow.`,
+        `${topic} is worth knowing about.`
+      ],
+      detailed: [
+        `${topic} encompasses a wide range of ideas and applications that span multiple fields of study.`,
+        `The study of ${topic} reveals connections between seemingly unrelated concepts and helps build deeper understanding.`,
+        `Exploring ${topic} in depth shows how complex and interconnected our world truly is.`
+      ]
+    };
+
+    const pool = templates[style] || templates.neutral;
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  // ── Writing Task Handler ──
+  handleWriteTask(message) {
+    const lower = message.toLowerCase();
+
+    // "Write a short sentence"
+    if (/short\s+sentence/i.test(lower)) {
+      const sentences = [
+        "The sun rises every morning.",
+        "Birds sing in the trees.",
+        "Water flows downhill naturally.",
+        "Stars light up the night sky.",
+        "Time moves forward always.",
+        "Flowers bloom in spring.",
+        "Rain nourishes the earth.",
+        "Music soothes the soul.",
+        "Knowledge is power.",
+        "The wind whispers through the leaves."
+      ];
+      return sentences[Math.floor(Math.random() * sentences.length)];
+    }
+
+    // "Write a sentence about X"
+    const aboutMatch = lower.match(/(?:write|compose|create|make|generate)\s+(?:me\s+)?(?:a\s+)?(?:short\s+)?sentence\s+(?:about|on|regarding)\s+(.+?)(?:\.|$)/i);
+    if (aboutMatch) {
+      const topic = aboutMatch[1].trim();
+      return this.generateSentence(topic, 'simple');
+    }
+
+    // "Write a paragraph about X"
+    const paraMatch = lower.match(/(?:write|compose|create|make|generate)\s+(?:me\s+)?(?:a\s+)?(?:short\s+)?paragraph\s+(?:about|on|regarding)\s+(.+?)(?:\.|$)/i);
+    if (paraMatch) {
+      const topic = paraMatch[1].trim();
+      const s1 = this.generateSentence(topic, 'neutral');
+      const s2 = this.generateSentence(topic, 'detailed');
+      const s3 = this.generateSentence(topic, 'simple');
+      return `${s1} ${s2} ${s3}`;
+    }
+
+    // Generic write task — extract what they want
+    const genericMatch = lower.match(/(?:write|compose|create|make|generate)\s+(?:me\s+)?(?:a\s+)?(.+?)(?:\.|$)/i);
+    if (genericMatch) {
+      const what = genericMatch[1].trim();
+      return this.generateSentence(what, 'simple');
+    }
+
+    return null;
+  }
+
+  // ── Yes/No Logic ──
+  solveYesNo(message, knowledgeBase) {
+    const lower = message.toLowerCase().trim().replace(/[?]+$/, '');
+
+    // Basic true/false facts the AI should know
+    const truths = {
+      'is the sky blue': true,
+      'is water wet': true,
+      'is the earth round': true,
+      'is the earth flat': false,
+      'is the sun a star': true,
+      'is fire hot': true,
+      'is ice cold': true,
+      'do fish swim': true,
+      'do birds fly': true,
+      'can humans breathe underwater': false,
+      'is 1 greater than 0': true,
+      'is 0 greater than 1': false,
+      'does the sun rise in the east': true,
+      'does the sun rise in the west': false,
+      'is gravity real': true,
+      'are plants alive': true
+    };
+
+    for (const [q, answer] of Object.entries(truths)) {
+      if (lower.includes(q)) {
+        return answer ? 'Yes, that\'s correct!' : 'No, that\'s not the case.';
+      }
+    }
+
+    // Math-based yes/no: "Is 5 greater than 3?"
+    const compMatch = lower.match(/is\s+(\d+)\s+(greater|bigger|larger|more|less|smaller|fewer)\s+than\s+(\d+)/);
+    if (compMatch) {
+      const a = parseFloat(compMatch[1]);
+      const op = compMatch[2];
+      const b = parseFloat(compMatch[3]);
+      if (['greater', 'bigger', 'larger', 'more'].includes(op)) {
+        return a > b ? `Yes! ${a} is greater than ${b}.` : `No, ${a} is not greater than ${b}. ${b} is greater.`;
+      }
+      if (['less', 'smaller', 'fewer'].includes(op)) {
+        return a < b ? `Yes! ${a} is less than ${b}.` : `No, ${a} is not less than ${b}. ${b} is less.`;
+      }
+    }
+
+    // "Is X equal to Y?"
+    const eqMatch = lower.match(/is\s+(\d+)\s+(?:equal to|the same as|equals?)\s+(\d+)/);
+    if (eqMatch) {
+      const a = parseFloat(eqMatch[1]);
+      const b = parseFloat(eqMatch[2]);
+      return a === b ? `Yes, ${a} equals ${b}.` : `No, ${a} does not equal ${b}.`;
+    }
+
+    return null; // Can't determine — will fall through to knowledge lookup
+  }
+
+  // ── Comparison Logic ──
+  handleComparison(message) {
+    const lower = message.toLowerCase();
+    const numComp = lower.match(/(?:compare|which is (?:bigger|larger|smaller|greater|less))\s*[,:]?\s*(\d+)\s*(?:and|or|vs|versus|,)\s*(\d+)/);
+    if (numComp) {
+      const a = parseFloat(numComp[1]);
+      const b = parseFloat(numComp[2]);
+      if (a > b) return `${a} is greater than ${b} (by ${a - b}).`;
+      if (b > a) return `${b} is greater than ${a} (by ${b - a}).`;
+      return `${a} and ${b} are equal.`;
+    }
+    return null;
+  }
+}
 
 class SproutEngine {
   constructor(supabaseClient) {
@@ -27,6 +390,33 @@ class SproutEngine {
     this.mindCacheTimeout = 10 * 60 * 1000; // Rebuild mind every 10 min
     this.topicMemory = []; // Track conversation topics for continuity
     this.usedResponses = new Set(); // Avoid repeating the same phrases
+
+    // ── Logic Engine — Math, reasoning, sentence generation ──
+    this.logicEngine = new SproutLogicEngine();
+
+    // ── Feedback Loop Learning ──
+    this.feedbackState = {
+      awaitingCorrection: false,     // True when researcher said "wrong"
+      lastQuestion: null,            // The question being corrected
+      lastWrongAnswer: null,         // The answer that was wrong
+      attempts: 0,                   // How many retries
+      maxAttempts: 10,               // Max retries before giving up
+      correctionHistory: []          // Track all corrections this session
+    };
+
+    // ── Task Goal System ──
+    this.taskGoal = {
+      currentTask: null,             // What we're trying to do
+      taskType: null,                // 'math', 'write', 'answer', 'reason'
+      isComplete: false,
+      successCount: 0,               // Lifetime successes
+      failCount: 0                   // Lifetime fails
+    };
+
+    // ── Chat-based learning buffer ──
+    this.chatLearningBuffer = [];    // Successful exchanges to learn from
+    this.chatLearnInterval = null;
+    this.chatLearnCooldown = 60 * 1000; // Process learning buffer every 60s
 
     // ── Synonym engine for natural variation ──
     this.synonyms = {
@@ -246,7 +636,7 @@ class SproutEngine {
     return neutralEnhancements[Math.floor(Math.random() * neutralEnhancements.length)];
   }
 
-  // ── Core: Think, then respond ──
+  // ── Core: Think, then respond (ENHANCED BRAIN) ──
   async getResponse(userMessage) {
     const normalized = this.normalize(userMessage);
     const keywords = this.extractKeywords(normalized);
@@ -263,43 +653,61 @@ class SproutEngine {
       } catch (e) { /* continue without personality */ }
     }
 
+    // Start chat learning processor if not running
+    this.startChatLearning();
+
     // ═══════════════════════════════════════════════
-    // SPROUT'S OWN BRAIN — Think, synthesize, respond
+    // STEP 0: FEEDBACK LOOP — Check if researcher is correcting us
+    // ═══════════════════════════════════════════════
+    const feedbackResult = await this.handleFeedbackLoop(userMessage, normalized, userEmotion);
+    if (feedbackResult) return feedbackResult;
+
+    // ═══════════════════════════════════════════════
+    // STEP 1: LOGIC ENGINE — Try to solve with pure logic first
+    // Math, yes/no, comparisons, writing tasks
+    // ═══════════════════════════════════════════════
+    const taskType = this.logicEngine.detectTaskType(userMessage);
+    this.taskGoal.currentTask = userMessage;
+    this.taskGoal.taskType = taskType;
+    this.taskGoal.isComplete = false;
+
+    const logicResult = this.tryLogicEngine(userMessage, taskType, userEmotion);
+    if (logicResult) {
+      this.taskGoal.isComplete = true;
+      this.taskGoal.successCount++;
+      this.recordConversation(userMessage, logicResult.answer);
+      // Save successful logic answers to learning buffer for DB storage
+      this.bufferForLearning(userMessage, logicResult.answer, taskType);
+      return logicResult;
+    }
+
+    // ═══════════════════════════════════════════════
+    // STEP 2: SPROUT'S OWN BRAIN — Think, synthesize, respond
+    // Now with full context awareness
     // ═══════════════════════════════════════════════
     try {
       const synthesized = await this.think(userMessage, userEmotion, keywords);
 
       if (synthesized) {
-        // Record this exchange in conversation memory
-        this.conversationHistory.push({ role: 'user', content: userMessage });
-        this.conversationHistory.push({ role: 'assistant', content: synthesized.answer });
-        if (this.conversationHistory.length > this.maxHistoryTurns * 2) {
-          this.conversationHistory = this.conversationHistory.slice(-this.maxHistoryTurns * 2);
-        }
-
-        // Track topic for continuity
-        if (keywords.length > 0) {
-          this.topicMemory.push({ keywords: keywords.slice(0, 3), turn: this.turnCount });
-          if (this.topicMemory.length > 10) this.topicMemory.shift();
-        }
-
+        this.taskGoal.isComplete = true;
+        this.taskGoal.successCount++;
+        this.recordConversation(userMessage, synthesized.answer);
+        this.bufferForLearning(userMessage, synthesized.answer, synthesized.category);
         return synthesized;
       }
     } catch (e) {
       console.warn('Sprout brain encountered an issue, falling back to lookup:', e.message);
-      // Fall through to lookup mode
     }
 
     // ═══════════════════════════════════════════════
-    // LOOKUP MODE (fallback) — Classic keyword matching
+    // STEP 3: LOOKUP MODE (fallback) — Classic keyword matching
     // ═══════════════════════════════════════════════
-
-    // Check cache first (but skip cache for emotional greetings/farewells to keep them fresh)
     const cacheKey = keywords.sort().join('|');
     const skipCache = userEmotion === 'greeting' || userEmotion === 'farewell' || userEmotion === 'playful';
     if (!skipCache && this.cache.has(cacheKey)) {
       const cached = this.cache.get(cacheKey);
       if (Date.now() - cached.time < this.cacheTimeout) {
+        this.recordConversation(userMessage, cached.data.answer);
         return { ...cached.data, mode: 'cached' };
       }
       this.cache.delete(cacheKey);
@@ -322,16 +730,14 @@ class SproutEngine {
           if (relevant.length > 0) {
             const sorted = relevant.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             let answer = sorted[0].value;
-
-            // Make identity responses feel personal and alive
             answer = this.humanizeIdentityResponse(answer, normalized, userEmotion);
-
             const result = { answer, confidence: 0.95, source_id: null, category: 'identity', emotion: userEmotion, mode: 'lookup' };
             this.cache.set(cacheKey, { data: result, time: Date.now() });
+            this.recordConversation(userMessage, answer);
             return result;
           }
         }
-      } catch (e) { /* fall through to normal matching */ }
+      } catch (e) { /* fall through */ }
     }
 
     // Query training data from Supabase
@@ -342,6 +748,7 @@ class SproutEngine {
       .eq('active', true);
 
     if (error || !trainingData || trainingData.length === 0) {
+      this.taskGoal.failCount++;
       return this.getFallbackResponse(userEmotion);
     }
 
@@ -349,8 +756,6 @@ class SproutEngine {
     const now = Date.now();
     const scored = trainingData.map(entry => {
       let score = this.calculateMatchScore(normalized, keywords, entry);
-
-      // Recency boost: entries from the last 7 days get up to +0.1 bonus
       if (entry.created_at) {
         const age = now - new Date(entry.created_at).getTime();
         const daysSinceCreation = age / (1000 * 60 * 60 * 24);
@@ -358,11 +763,13 @@ class SproutEngine {
           score += 0.1 * (1 - daysSinceCreation / 7);
         }
       }
-
+      // Boost entries that came from feedback learning (proven correct)
+      if (entry.created_by === 'feedback-learning' || entry.created_by === 'chat-learning') {
+        score += 0.2;
+      }
       return { ...entry, score };
     });
 
-    // Sort by score descending, then by date (newest first) for tiebreakers
     scored.sort((a, b) => {
       if (Math.abs(b.score - a.score) < 0.05) {
         return new Date(b.created_at || 0) - new Date(a.created_at || 0);
@@ -371,15 +778,12 @@ class SproutEngine {
     });
 
     const bestMatch = scored[0];
-
-    // Require minimum confidence threshold
     if (bestMatch.score < 0.15) {
+      this.taskGoal.failCount++;
       return this.getFallbackResponse(userEmotion);
     }
 
-    // Enhance the raw answer with emotional awareness
     const enhancedAnswer = this.enhanceWithEmotion(bestMatch.answer, userEmotion, userMessage);
-
     const result = {
       answer: enhancedAnswer,
       confidence: Math.min(bestMatch.score, 1),
@@ -393,7 +797,382 @@ class SproutEngine {
       this.cache.set(cacheKey, { data: result, time: Date.now() });
     }
 
+    this.taskGoal.isComplete = true;
+    this.taskGoal.successCount++;
+    this.recordConversation(userMessage, enhancedAnswer);
     return result;
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // LOGIC ENGINE INTEGRATION — Try pure logic before knowledge lookup
+  // ══════════════════════════════════════════════════════════════
+
+  tryLogicEngine(userMessage, taskType, userEmotion) {
+    let answer = null;
+
+    switch (taskType) {
+      case 'math': {
+        const mathResult = this.logicEngine.solveMath(userMessage);
+        if (mathResult) {
+          answer = mathResult.explanation;
+        }
+        break;
+      }
+      case 'write': {
+        const written = this.logicEngine.handleWriteTask(userMessage);
+        if (written) {
+          answer = written;
+        }
+        break;
+      }
+      case 'yesno': {
+        const yesno = this.logicEngine.solveYesNo(userMessage);
+        if (yesno) {
+          answer = yesno;
+        }
+        break;
+      }
+      case 'compare': {
+        const comp = this.logicEngine.handleComparison(userMessage);
+        if (comp) {
+          answer = comp;
+        }
+        break;
+      }
+    }
+
+    if (answer) {
+      // Apply emotional enhancement
+      answer = this.enhanceWithEmotion(answer, userEmotion, userMessage);
+
+      return {
+        answer,
+        confidence: 0.95,
+        source_id: null,
+        category: taskType,
+        emotion: userEmotion,
+        mode: 'logic-engine'
+      };
+    }
+
+    return null;
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // FEEDBACK LOOP LEARNING — "Wrong" → retry → "Right" → save to DB
+  // Researchers can correct Tithonia until it gets the right answer
+  // ══════════════════════════════════════════════════════════════
+
+  async handleFeedbackLoop(userMessage, normalized, userEmotion) {
+    const lower = userMessage.toLowerCase().trim();
+
+    // Detect "wrong" / "incorrect" / "no that's wrong" / "try again"
+    const isWrong = /\b(wrong|incorrect|no|nope|that'?s?\s*(?:not\s*)?(?:right|correct)|try\s*again|bad|fail|error|mistake|not\s*(?:right|correct|quite))\b/i.test(lower)
+      && lower.length < 100; // Only short corrections, not long questions containing "not"
+
+    // Detect "right" / "correct" / "yes" / "good" / "perfect"
+    const isRight = /\b(right|correct|yes|yeah|yep|good|great|perfect|exactly|bingo|that'?s?\s*(?:it|right|correct)|well\s*done|nice)\b/i.test(lower)
+      && lower.length < 60;
+
+    // ── Researcher says "WRONG" ──
+    if (isWrong && this.conversationHistory.length >= 2) {
+      // Get the last exchange
+      const lastAssistant = [...this.conversationHistory].reverse().find(t => t.role === 'assistant');
+      const lastUser = [...this.conversationHistory].reverse().find(t => t.role === 'user' && t.content !== userMessage);
+
+      if (lastUser && lastAssistant) {
+        this.feedbackState.awaitingCorrection = true;
+        this.feedbackState.lastQuestion = lastUser.content;
+        this.feedbackState.lastWrongAnswer = lastAssistant.content;
+        this.feedbackState.attempts++;
+
+        // Track this wrong answer so we don't repeat it
+        this.feedbackState.correctionHistory.push({
+          question: lastUser.content,
+          wrongAnswer: lastAssistant.content,
+          timestamp: Date.now()
+        });
+
+        // Try to generate a DIFFERENT answer
+        const retryAnswer = await this.retryWithDifferentAnswer(
+          this.feedbackState.lastQuestion, userEmotion
+        );
+
+        if (retryAnswer) {
+          this.recordConversation(userMessage, retryAnswer.answer);
+          return retryAnswer;
+        }
+
+        // If we can't find a different answer, ask for help
+        const helpMsg = this.feedbackState.attempts >= this.feedbackState.maxAttempts
+          ? `I've tried ${this.feedbackState.attempts} times and I'm stuck. Could you tell me the correct answer? I'll remember it for next time!`
+          : `I got it wrong — I'm sorry! Let me try again. If I keep getting it wrong, you can tell me the correct answer and I'll learn it.`;
+
+        this.recordConversation(userMessage, helpMsg);
+        return {
+          answer: helpMsg,
+          confidence: 0.1,
+          source_id: null,
+          category: 'feedback-retry',
+          emotion: userEmotion,
+          mode: 'feedback-loop'
+        };
+      }
+    }
+
+    // ── Researcher says "RIGHT" / "CORRECT" ──
+    if (isRight && this.feedbackState.awaitingCorrection) {
+      this.feedbackState.awaitingCorrection = false;
+
+      // The last answer was correct! Save it to the database
+      const lastAssistant = [...this.conversationHistory].reverse().find(t => t.role === 'assistant');
+      if (lastAssistant && this.feedbackState.lastQuestion) {
+        await this.saveLearnedAnswer(
+          this.feedbackState.lastQuestion,
+          lastAssistant.content,
+          'feedback-learning'
+        );
+
+        const successMsg = `I got it! I've saved that to my knowledge base so I'll remember it from now on. My goal is always to get it right!`;
+        this.feedbackState.attempts = 0;
+        this.feedbackState.lastQuestion = null;
+        this.feedbackState.lastWrongAnswer = null;
+        this.taskGoal.successCount++;
+
+        this.recordConversation(userMessage, successMsg);
+        return {
+          answer: successMsg,
+          confidence: 1.0,
+          source_id: null,
+          category: 'feedback-success',
+          emotion: 'happy',
+          mode: 'feedback-loop'
+        };
+      }
+    }
+
+    // ── Researcher provides the correct answer directly ──
+    if (this.feedbackState.awaitingCorrection && this.feedbackState.lastQuestion) {
+      // If the message looks like a correction/answer (not a new question)
+      const isNewQuestion = /[?]$/.test(userMessage.trim()) || /^(what|who|where|when|which|how|why|can|could|is|are|do|does)\b/i.test(userMessage.trim());
+      if (!isNewQuestion && !isWrong && userMessage.trim().length > 2) {
+        // Treat as the correct answer
+        await this.saveLearnedAnswer(
+          this.feedbackState.lastQuestion,
+          userMessage.trim(),
+          'feedback-learning'
+        );
+
+        this.feedbackState.awaitingCorrection = false;
+        this.feedbackState.attempts = 0;
+        const savedMsg = `Got it! I've learned that the answer to "${this.feedbackState.lastQuestion}" is "${userMessage.trim()}". I'll remember this from now on!`;
+        this.feedbackState.lastQuestion = null;
+        this.feedbackState.lastWrongAnswer = null;
+
+        this.recordConversation(userMessage, savedMsg);
+        return {
+          answer: savedMsg,
+          confidence: 1.0,
+          source_id: null,
+          category: 'feedback-learned',
+          emotion: 'happy',
+          mode: 'feedback-loop'
+        };
+      }
+    }
+
+    return null; // Not a feedback interaction
+  }
+
+  // ── Retry with a DIFFERENT answer (avoid repeating wrong ones) ──
+  async retryWithDifferentAnswer(originalQuestion, userEmotion) {
+    const wrongAnswers = this.feedbackState.correctionHistory
+      .filter(c => c.question === originalQuestion)
+      .map(c => c.wrongAnswer.toLowerCase());
+
+    // Try logic engine first with the original question
+    const taskType = this.logicEngine.detectTaskType(originalQuestion);
+    const logicResult = this.tryLogicEngine(originalQuestion, taskType, userEmotion);
+    if (logicResult && !wrongAnswers.includes(logicResult.answer.toLowerCase())) {
+      return logicResult;
+    }
+
+    // Try knowledge base with different scoring
+    const relevantKnowledge = await this.findRelevantKnowledge(originalQuestion, 10);
+    for (const entry of relevantKnowledge) {
+      const candidateAnswer = this.paraphrase(entry.answer);
+      if (!wrongAnswers.some(wrong => this.isSimilarAnswer(wrong, candidateAnswer.toLowerCase()))) {
+        const enhanced = this.enhanceWithEmotion(candidateAnswer, userEmotion, originalQuestion);
+        return {
+          answer: enhanced,
+          confidence: entry.relevance,
+          source_id: entry.id,
+          category: entry.category || 'retry',
+          emotion: userEmotion,
+          mode: 'feedback-retry'
+        };
+      }
+    }
+
+    return null; // Couldn't find a different answer
+  }
+
+  // Check if two answers are essentially the same
+  isSimilarAnswer(a, b) {
+    const normA = this.normalize(a);
+    const normB = this.normalize(b);
+    if (normA === normB) return true;
+    // Check if one contains the other
+    if (normA.includes(normB) || normB.includes(normA)) return true;
+    // Check keyword overlap
+    const kwA = this.extractKeywords(normA);
+    const kwB = this.extractKeywords(normB);
+    if (kwA.length === 0 || kwB.length === 0) return false;
+    const overlap = kwA.filter(k => kwB.includes(k)).length;
+    return overlap / Math.max(kwA.length, kwB.length) > 0.8;
+  }
+
+  // ── Save a learned answer to the database ──
+  async saveLearnedAnswer(question, answer, source = 'feedback-learning') {
+    try {
+      // Check for duplicates first
+      const existing = await this.getAllTrainingData();
+      const isDuplicate = existing.some(e =>
+        this.normalize(e.question) === this.normalize(question) &&
+        this.normalize(e.answer) === this.normalize(answer)
+      );
+      if (isDuplicate) return;
+
+      // Determine category from the question
+      const taskType = this.logicEngine.detectTaskType(question);
+
+      await this.addTrainingData({
+        question: question,
+        answer: answer,
+        category: taskType || 'learned',
+        tags: ['auto-learned', source, 'verified-correct'],
+        created_by: source
+      });
+
+      // Clear mind cache so the new knowledge is picked up immediately
+      this.mindContext = null;
+      this.mindContextAge = 0;
+      this.cache.clear();
+
+      console.log(`[Sprout Brain] Learned new answer: "${question}" → "${answer.substring(0, 50)}..."`);
+    } catch (e) {
+      console.warn('[Sprout Brain] Failed to save learned answer:', e.message);
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // CHAT-BASED SELF-LEARNING — Learn from real conversations
+  // Successful exchanges get saved to the database automatically
+  // ══════════════════════════════════════════════════════════════
+
+  // Record conversation for context and learning
+  recordConversation(userMessage, assistantResponse) {
+    this.conversationHistory.push({ role: 'user', content: userMessage });
+    this.conversationHistory.push({ role: 'assistant', content: assistantResponse });
+    if (this.conversationHistory.length > this.maxHistoryTurns * 2) {
+      this.conversationHistory = this.conversationHistory.slice(-this.maxHistoryTurns * 2);
+    }
+
+    // Track topics
+    const keywords = this.extractKeywords(this.normalize(userMessage));
+    if (keywords.length > 0) {
+      this.topicMemory.push({ keywords: keywords.slice(0, 3), turn: this.turnCount });
+      if (this.topicMemory.length > 10) this.topicMemory.shift();
+    }
+  }
+
+  // Buffer successful exchanges for later DB storage
+  bufferForLearning(question, answer, category) {
+    // Only buffer substantive exchanges (not greetings, not too short)
+    if (question.trim().length < 5 || answer.trim().length < 10) return;
+    if (/^(hi|hello|hey|bye|thanks|ok|yes|no)\b/i.test(question.trim())) return;
+
+    this.chatLearningBuffer.push({
+      question: question.trim(),
+      answer: answer.trim(),
+      category: category || 'general',
+      timestamp: Date.now()
+    });
+
+    // Keep buffer reasonable
+    if (this.chatLearningBuffer.length > 50) {
+      this.chatLearningBuffer = this.chatLearningBuffer.slice(-30);
+    }
+  }
+
+  // Start the chat learning processor
+  startChatLearning() {
+    if (this.chatLearnInterval) return;
+    this.chatLearnInterval = setInterval(() => {
+      this.processChatLearningBuffer();
+    }, this.chatLearnCooldown);
+  }
+
+  // Process buffered chats and save good ones to DB
+  async processChatLearningBuffer() {
+    if (this.chatLearningBuffer.length === 0) return;
+
+    const toProcess = this.chatLearningBuffer.splice(0, 5); // Process 5 at a time
+    let saved = 0;
+
+    for (const exchange of toProcess) {
+      try {
+        // Only save if it's a meaningful exchange
+        if (exchange.question.length >= 10 && exchange.answer.length >= 15) {
+          // Check it's not already in the DB
+          const existing = await this.getAllTrainingData();
+          const isDuplicate = existing.some(e =>
+            this.normalize(e.question) === this.normalize(exchange.question)
+          );
+
+          if (!isDuplicate) {
+            await this.addTrainingData({
+              question: exchange.question,
+              answer: exchange.answer,
+              category: exchange.category,
+              tags: ['auto-learned', 'chat-learning', 'from-conversation'],
+              created_by: 'chat-learning'
+            });
+            saved++;
+          }
+        }
+      } catch (e) {
+        // Silently skip failures
+      }
+    }
+
+    if (saved > 0) {
+      console.log(`[Sprout Brain] Learned ${saved} new facts from conversations`);
+      this.mindContext = null; // Invalidate mind cache
+      this.mindContextAge = 0;
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // TASK GOAL SYSTEM — Track success, stay goal-oriented
+  // ══════════════════════════════════════════════════════════════
+
+  getTaskGoalStatus() {
+    return {
+      currentTask: this.taskGoal.currentTask,
+      taskType: this.taskGoal.taskType,
+      isComplete: this.taskGoal.isComplete,
+      lifetimeSuccesses: this.taskGoal.successCount,
+      lifetimeFailures: this.taskGoal.failCount,
+      successRate: this.taskGoal.successCount + this.taskGoal.failCount > 0
+        ? (this.taskGoal.successCount / (this.taskGoal.successCount + this.taskGoal.failCount) * 100).toFixed(1) + '%'
+        : 'N/A',
+      feedbackState: {
+        awaitingCorrection: this.feedbackState.awaitingCorrection,
+        attempts: this.feedbackState.attempts,
+        totalCorrections: this.feedbackState.correctionHistory.length
+      }
+    };
   }
 
   // ── Make identity responses feel human and alive ──
