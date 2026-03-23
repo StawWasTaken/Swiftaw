@@ -369,6 +369,345 @@ class SproutLogicEngine {
   }
 }
 
+// ══════════════════════════════════════════════════════════════
+// SPROUT LEXICON — The AI's vocabulary and word understanding
+// Words are mapped to meanings, senses, categories, and relations.
+// This is how Sprout KNOWS what words mean — not just pattern-match.
+// ══════════════════════════════════════════════════════════════
+
+class SproutLexicon {
+  constructor() {
+    // The core vocabulary store: word → entry
+    this.words = new Map();
+
+    // Reverse index: category → [words]
+    this.categoryIndex = new Map();
+
+    // Reverse index: synonym → [words]
+    this.synonymIndex = new Map();
+
+    // Load the starter dataset
+    this.loadStarterDataset();
+  }
+
+  // ── Load the v1 Core Language starter dataset ──
+  loadStarterDataset() {
+    const starterWords = [
+      {
+        word: 'dog', type: 'noun',
+        senses: [
+          { definition: 'A domesticated animal often kept as a pet.', examples: ['The dog barked loudly.', 'She plays with her dog in the park.'] },
+          { definition: 'A male canine animal.', examples: ['That dog is very strong.'] }
+        ],
+        relations: { category: ['animal', 'living being'], synonyms: ['canine'], antonyms: [] }
+      },
+      {
+        word: 'run', type: 'verb',
+        senses: [
+          { definition: 'To move quickly on foot.', examples: ['He can run very fast.', 'The child runs to school.'] },
+          { definition: 'To operate or function.', examples: ['The machine runs all day.'] }
+        ],
+        relations: { category: ['action', 'movement'], synonyms: ['sprint'], antonyms: ['walk', 'stop'] }
+      },
+      {
+        word: 'big', type: 'adjective',
+        senses: [
+          { definition: 'Of large size.', examples: ['They live in a big house.', 'The dog is very big.'] }
+        ],
+        relations: { category: ['description', 'size'], synonyms: ['large'], antonyms: ['small'] }
+      },
+      {
+        word: 'eat', type: 'verb',
+        senses: [
+          { definition: 'To put food into the mouth and swallow it.', examples: ['I eat an apple.', 'They eat dinner together.'] }
+        ],
+        relations: { category: ['action', 'body'], synonyms: ['consume'], antonyms: [] }
+      },
+      {
+        word: 'water', type: 'noun',
+        senses: [
+          { definition: 'A clear liquid that people and animals drink.', examples: ['Drink some water.', 'The water is cold.'] }
+        ],
+        relations: { category: ['substance', 'nature'], synonyms: [], antonyms: [] }
+      },
+      {
+        word: 'happy', type: 'adjective',
+        senses: [
+          { definition: 'Feeling good or joyful.', examples: ['She feels happy today.', 'The child is happy.'] }
+        ],
+        relations: { category: ['emotion'], synonyms: ['joyful'], antonyms: ['sad'] }
+      },
+      {
+        word: 'house', type: 'noun',
+        senses: [
+          { definition: 'A building where people live.', examples: ['They live in a house.', 'The house is blue.'] }
+        ],
+        relations: { category: ['place', 'object'], synonyms: ['home'], antonyms: [] }
+      },
+      {
+        word: 'see', type: 'verb',
+        senses: [
+          { definition: 'To use the eyes to look at something.', examples: ['I see a bird.', 'Can you see the car?'] }
+        ],
+        relations: { category: ['action', 'perception'], synonyms: ['observe'], antonyms: [] }
+      },
+      {
+        word: 'fast', type: 'adjective',
+        senses: [
+          { definition: 'Moving quickly.', examples: ['The car is fast.', 'He runs very fast.'] }
+        ],
+        relations: { category: ['description', 'speed'], synonyms: ['quick'], antonyms: ['slow'] }
+      },
+      {
+        word: 'friend', type: 'noun',
+        senses: [
+          { definition: 'A person you like and trust.', examples: ['She is my friend.', 'Friends help each other.'] }
+        ],
+        relations: { category: ['person', 'social'], synonyms: ['companion'], antonyms: ['enemy'] }
+      }
+    ];
+
+    for (const entry of starterWords) {
+      this.addWord(entry);
+    }
+  }
+
+  // ── Add a word to the lexicon ──
+  addWord(entry) {
+    const word = entry.word.toLowerCase();
+    this.words.set(word, {
+      word: word,
+      type: entry.type,
+      senses: entry.senses || [],
+      relations: entry.relations || { category: [], synonyms: [], antonyms: [] },
+      learnedFrom: entry.learnedFrom || 'starter',
+      addedAt: entry.addedAt || Date.now()
+    });
+
+    // Build category index
+    const categories = entry.relations?.category || [];
+    for (const cat of categories) {
+      if (!this.categoryIndex.has(cat)) this.categoryIndex.set(cat, new Set());
+      this.categoryIndex.get(cat).add(word);
+    }
+
+    // Build synonym index
+    const synonyms = entry.relations?.synonyms || [];
+    for (const syn of synonyms) {
+      const synLower = syn.toLowerCase();
+      if (!this.synonymIndex.has(synLower)) this.synonymIndex.set(synLower, new Set());
+      this.synonymIndex.get(synLower).add(word);
+    }
+
+    // Also index the word itself under its synonyms
+    for (const syn of synonyms) {
+      if (!this.synonymIndex.has(word)) this.synonymIndex.set(word, new Set());
+      this.synonymIndex.get(word).add(syn.toLowerCase());
+    }
+  }
+
+  // ── Look up a word → get its full entry ──
+  lookup(word) {
+    return this.words.get(word.toLowerCase()) || null;
+  }
+
+  // ── Get the definition of a word (first/primary sense) ──
+  getDefinition(word) {
+    const entry = this.lookup(word);
+    if (!entry || entry.senses.length === 0) return null;
+    return entry.senses[0].definition;
+  }
+
+  // ── Get ALL senses/definitions of a word ──
+  getAllSenses(word) {
+    const entry = this.lookup(word);
+    if (!entry) return [];
+    return entry.senses;
+  }
+
+  // ── Get word type (noun, verb, adjective, etc.) ──
+  getWordType(word) {
+    const entry = this.lookup(word);
+    return entry ? entry.type : null;
+  }
+
+  // ── Get synonyms for a word ──
+  getSynonyms(word) {
+    const entry = this.lookup(word);
+    if (entry && entry.relations.synonyms.length > 0) {
+      return entry.relations.synonyms;
+    }
+    // Also check reverse synonym index
+    const reversed = this.synonymIndex.get(word.toLowerCase());
+    return reversed ? [...reversed] : [];
+  }
+
+  // ── Get antonyms for a word ──
+  getAntonyms(word) {
+    const entry = this.lookup(word);
+    return entry ? entry.relations.antonyms : [];
+  }
+
+  // ── Get categories a word belongs to ──
+  getCategories(word) {
+    const entry = this.lookup(word);
+    return entry ? entry.relations.category : [];
+  }
+
+  // ── Find all words in a category ──
+  getWordsByCategory(category) {
+    const words = this.categoryIndex.get(category.toLowerCase());
+    return words ? [...words] : [];
+  }
+
+  // ── Check if a word is known ──
+  knows(word) {
+    return this.words.has(word.toLowerCase());
+  }
+
+  // ── Analyze a message: identify known words, their types, and meanings ──
+  analyzeMessage(message) {
+    const tokens = message.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
+    const analysis = {
+      knownWords: [],      // Words we understand
+      unknownWords: [],    // Words we don't know yet
+      nouns: [],           // Identified nouns
+      verbs: [],           // Identified verbs
+      adjectives: [],      // Identified adjectives
+      categories: new Set(), // All categories touched
+      senseMap: {}         // word → best sense for this context
+    };
+
+    for (const token of tokens) {
+      if (token.length <= 1) continue; // Skip single chars
+
+      const entry = this.lookup(token);
+      if (entry) {
+        analysis.knownWords.push(entry);
+        if (entry.type === 'noun') analysis.nouns.push(entry);
+        if (entry.type === 'verb') analysis.verbs.push(entry);
+        if (entry.type === 'adjective') analysis.adjectives.push(entry);
+        for (const cat of entry.relations.category) {
+          analysis.categories.add(cat);
+        }
+        // Pick the best sense (for now: first sense; later: context-based)
+        analysis.senseMap[token] = entry.senses[0] || null;
+      } else {
+        // Skip common stop words from "unknown"
+        const stopWords = new Set(['a', 'an', 'the', 'is', 'are', 'was', 'were', 'be',
+          'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could',
+          'should', 'can', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by',
+          'from', 'as', 'into', 'about', 'and', 'but', 'or', 'not', 'no', 'so',
+          'if', 'it', 'its', 'that', 'this', 'i', 'me', 'my', 'we', 'you', 'your',
+          'he', 'she', 'they', 'them', 'very', 'just', 'than', 'too', 'there',
+          'here', 'what', 'which', 'who', 'how', 'when', 'where', 'why']);
+        if (!stopWords.has(token)) {
+          analysis.unknownWords.push(token);
+        }
+      }
+    }
+
+    analysis.categories = [...analysis.categories];
+    return analysis;
+  }
+
+  // ── Disambiguate word sense using surrounding context ──
+  disambiguateSense(word, contextWords) {
+    const entry = this.lookup(word);
+    if (!entry || entry.senses.length <= 1) {
+      return entry?.senses[0] || null;
+    }
+
+    // Score each sense by how many context words appear in its examples
+    let bestSense = entry.senses[0];
+    let bestScore = 0;
+
+    for (const sense of entry.senses) {
+      let score = 0;
+      const exampleText = sense.examples.join(' ').toLowerCase();
+      for (const cw of contextWords) {
+        if (exampleText.includes(cw.toLowerCase())) {
+          score++;
+        }
+      }
+      if (score > bestScore) {
+        bestScore = score;
+        bestSense = sense;
+      }
+    }
+
+    return bestSense;
+  }
+
+  // ── Check if two words are semantically related ──
+  areRelated(word1, word2) {
+    const entry1 = this.lookup(word1);
+    const entry2 = this.lookup(word2);
+    if (!entry1 || !entry2) return false;
+
+    // Same category?
+    const cats1 = new Set(entry1.relations.category);
+    for (const cat of entry2.relations.category) {
+      if (cats1.has(cat)) return true;
+    }
+
+    // Synonym relationship?
+    if (entry1.relations.synonyms.includes(word2.toLowerCase())) return true;
+    if (entry2.relations.synonyms.includes(word1.toLowerCase())) return true;
+
+    // Antonym relationship? (still related, just opposite)
+    if (entry1.relations.antonyms.includes(word2.toLowerCase())) return true;
+    if (entry2.relations.antonyms.includes(word1.toLowerCase())) return true;
+
+    return false;
+  }
+
+  // ── Learn a new word from context ──
+  learnWord(word, type, definition, examples = [], categories = [], source = 'conversation') {
+    const lower = word.toLowerCase();
+    if (this.words.has(lower)) {
+      // Word already exists — add a new sense if the definition is different
+      const existing = this.words.get(lower);
+      const alreadyKnown = existing.senses.some(s =>
+        s.definition.toLowerCase() === definition.toLowerCase()
+      );
+      if (!alreadyKnown) {
+        existing.senses.push({ definition, examples });
+        // Merge categories
+        for (const cat of categories) {
+          if (!existing.relations.category.includes(cat)) {
+            existing.relations.category.push(cat);
+            if (!this.categoryIndex.has(cat)) this.categoryIndex.set(cat, new Set());
+            this.categoryIndex.get(cat).add(lower);
+          }
+        }
+      }
+      return;
+    }
+
+    this.addWord({
+      word: lower,
+      type: type || 'unknown',
+      senses: [{ definition, examples }],
+      relations: { category: categories, synonyms: [], antonyms: [] },
+      learnedFrom: source,
+      addedAt: Date.now()
+    });
+  }
+
+  // ── Get lexicon stats ──
+  getStats() {
+    return {
+      totalWords: this.words.size,
+      nouns: [...this.words.values()].filter(w => w.type === 'noun').length,
+      verbs: [...this.words.values()].filter(w => w.type === 'verb').length,
+      adjectives: [...this.words.values()].filter(w => w.type === 'adjective').length,
+      categories: this.categoryIndex.size,
+      learnedWords: [...this.words.values()].filter(w => w.learnedFrom !== 'starter').length
+    };
+  }
+}
+
 class SproutEngine {
   constructor(supabaseClient) {
     this.db = supabaseClient;
@@ -394,6 +733,9 @@ class SproutEngine {
 
     // ── Logic Engine — Math, reasoning, sentence generation ──
     this.logicEngine = new SproutLogicEngine();
+
+    // ── Lexicon — Word meanings, senses, categories, relations ──
+    this.lexicon = new SproutLexicon();
 
     // ── Feedback Loop Learning ──
     this.feedbackState = {
@@ -915,6 +1257,116 @@ class SproutEngine {
     return response;
   }
 
+  // ══════════════════════════════════════════════════════════════
+  // LEXICON INTEGRATION — Use word knowledge for understanding
+  // ══════════════════════════════════════════════════════════════
+
+  /**
+   * If user asks "what is X?" or "what does X mean?" and X is in the lexicon,
+   * answer directly from word knowledge.
+   */
+  tryLexiconDefinition(userMessage, lexiconAnalysis, userEmotion) {
+    const lower = userMessage.toLowerCase().trim();
+
+    // Match: "what is a dog?", "what does run mean?", "define happy", "meaning of water"
+    const defPatterns = [
+      /^what\s+(?:is|are)\s+(?:a\s+|an\s+|the\s+)?(\w+)\s*\??$/i,
+      /^what\s+does?\s+(\w+)\s+mean\s*\??$/i,
+      /^define\s+(\w+)\s*\??$/i,
+      /^(?:the\s+)?meaning\s+of\s+(\w+)\s*\??$/i,
+      /^(\w+)\s+meaning\s*\??$/i
+    ];
+
+    for (const pattern of defPatterns) {
+      const match = lower.match(pattern);
+      if (match) {
+        const targetWord = match[1].toLowerCase();
+        const entry = this.lexicon.lookup(targetWord);
+
+        if (entry) {
+          // Build a natural response from the lexicon entry
+          let answer = '';
+          const senses = entry.senses;
+
+          if (senses.length === 1) {
+            answer = `${this.capitalize(targetWord)} is ${entry.type === 'noun' ? 'a ' : ''}${entry.type}. It means: ${senses[0].definition}`;
+            if (senses[0].examples.length > 0) {
+              answer += ` For example: "${senses[0].examples[0]}"`;
+            }
+          } else {
+            answer = `${this.capitalize(targetWord)} is ${entry.type === 'noun' ? 'a ' : ''}${entry.type} with ${senses.length} meanings. `;
+            senses.forEach((sense, i) => {
+              answer += `${i + 1}) ${sense.definition}`;
+              if (sense.examples.length > 0) {
+                answer += ` (e.g., "${sense.examples[0]}")`;
+              }
+              if (i < senses.length - 1) answer += ' ';
+            });
+          }
+
+          // Add synonyms if available
+          const synonyms = entry.relations.synonyms;
+          if (synonyms.length > 0) {
+            answer += ` Similar words: ${synonyms.join(', ')}.`;
+          }
+
+          // Add antonyms if available
+          const antonyms = entry.relations.antonyms;
+          if (antonyms.length > 0) {
+            answer += ` Opposite: ${antonyms.join(', ')}.`;
+          }
+
+          answer = this.enhanceWithEmotion(answer, userEmotion, userMessage);
+
+          return {
+            answer,
+            confidence: 0.95,
+            source_id: null,
+            category: 'lexicon',
+            emotion: userEmotion,
+            mode: 'lexicon'
+          };
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Use lexicon analysis to improve knowledge search.
+   * Expands search with synonyms and related categories.
+   */
+  expandSearchWithLexicon(keywords) {
+    const expanded = [...keywords];
+
+    for (const kw of keywords) {
+      // Add synonyms
+      const synonyms = this.lexicon.getSynonyms(kw);
+      for (const syn of synonyms) {
+        if (!expanded.includes(syn)) expanded.push(syn);
+      }
+
+      // Add category words (words in the same category)
+      const categories = this.lexicon.getCategories(kw);
+      for (const cat of categories) {
+        const catWords = this.lexicon.getWordsByCategory(cat);
+        for (const cw of catWords) {
+          if (!expanded.includes(cw) && cw !== kw) expanded.push(cw);
+        }
+      }
+    }
+
+    return expanded;
+  }
+
+  /**
+   * Capitalize first letter of a string.
+   */
+  capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
   // ── Emotional awareness: Detect user mood and intent ──
   detectUserEmotion(text) {
     const lower = text.toLowerCase();
@@ -1097,6 +1549,20 @@ class SproutEngine {
         this.taskGoal.successCount++;
         return contextualResult;
       }
+    }
+
+    // ═══════════════════════════════════════════════
+    // STEP 0.75: LEXICON ANALYSIS — Understand the words in the message
+    // Break the message into known words, identify their types and meanings.
+    // This gives Sprout genuine word-level understanding.
+    // ═══════════════════════════════════════════════
+    const lexiconAnalysis = this.lexicon.analyzeMessage(userMessage);
+
+    // If asking "what is [word]?" and we know the word, answer from lexicon
+    const definitionResult = this.tryLexiconDefinition(userMessage, lexiconAnalysis, userEmotion);
+    if (definitionResult) {
+      this.recordConversation(userMessage, definitionResult.answer);
+      return definitionResult;
     }
 
     // ═══════════════════════════════════════════════
@@ -1507,9 +1973,51 @@ class SproutEngine {
       this.mindContextAge = 0;
       this.cache.clear();
 
+      // Also try to learn any new words from this exchange
+      this.learnWordsFromText(question + ' ' + answer);
+
       console.log(`[Sprout Brain] Learned new answer: "${question}" → "${answer.substring(0, 50)}..."`);
     } catch (e) {
       console.warn('[Sprout Brain] Failed to save learned answer:', e.message);
+    }
+  }
+
+  /**
+   * Attempt to learn new words from text by detecting definition patterns.
+   * Patterns like "X is a Y", "X means Y", "X is defined as Y".
+   * Also learns from "what is X" → answer pairs.
+   */
+  learnWordsFromText(text) {
+    // Pattern: "A [word] is a [definition]"
+    const defPatterns = [
+      /\b(\w+)\s+is\s+(?:a|an)\s+(.{10,60}?)[.!?]/gi,
+      /\b(\w+)\s+means?\s+(.{10,60}?)[.!?]/gi,
+      /\b(\w+)\s+(?:is|are)\s+defined\s+as\s+(.{10,60}?)[.!?]/gi
+    ];
+
+    for (const pattern of defPatterns) {
+      let match;
+      while ((match = pattern.exec(text)) !== null) {
+        const word = match[1].toLowerCase();
+        const definition = match[2].trim();
+
+        // Skip very common words and short words
+        if (word.length <= 2) continue;
+        const skipWords = new Set(['this', 'that', 'there', 'here', 'what', 'which', 'they', 'them', 'then', 'also', 'just', 'very', 'really']);
+        if (skipWords.has(word)) continue;
+
+        // Only learn if we don't already know this word
+        if (!this.lexicon.knows(word)) {
+          // Try to guess the word type from the definition
+          let type = 'unknown';
+          if (/^(?:a|an|the)\s/.test(definition)) type = 'noun';
+          if (/^to\s/.test(definition)) type = 'verb';
+          if (/^(?:very|more|less)\s/.test(definition)) type = 'adjective';
+
+          this.lexicon.learnWord(word, type, definition, [], [], 'conversation');
+          console.log(`[Sprout Lexicon] Learned new word: "${word}" → "${definition}"`);
+        }
+      }
     }
   }
 
@@ -1891,7 +2399,15 @@ class SproutEngine {
   // The CORE thinking method — Sprout's own mind at work
   async think(userMessage, userEmotion, keywords) {
     // Find relevant knowledge from training data
-    const relevantKnowledge = await this.findRelevantKnowledge(userMessage, 8);
+    let relevantKnowledge = await this.findRelevantKnowledge(userMessage, 8);
+
+    // If initial search found nothing, try expanding with lexicon synonyms/categories
+    if (relevantKnowledge.length === 0 && keywords.length > 0) {
+      const expandedKeywords = this.expandSearchWithLexicon(keywords);
+      if (expandedKeywords.length > keywords.length) {
+        relevantKnowledge = await this.findRelevantKnowledge(expandedKeywords.join(' '), 8);
+      }
+    }
 
     // If we have no relevant knowledge at all, return null to fall through to lookup/fallback
     if (relevantKnowledge.length === 0) return null;
@@ -2676,7 +3192,8 @@ class SproutEngine {
       averageRating: avgRating,
       totalDirectives: directivesResult.count || 0,
       totalWritingPatterns: patternsResult.count || 0,
-      totalIdentityEntries: identityResult.count || 0
+      totalIdentityEntries: identityResult.count || 0,
+      lexicon: this.lexicon.getStats()
     };
   }
 }
