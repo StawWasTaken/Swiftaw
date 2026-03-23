@@ -3,7 +3,8 @@
  * Custom AI with its own brain — no external LLM dependency
  * Thinks using its own knowledge base, personality, and reasoning
  * Now with: Logic Engine, Math, Context Awareness, Feedback Learning,
- *           Chat-based Self-Learning, Task Goal System, Auto-Upgrades
+ *           Chat-based Self-Learning, Task Goal System, Auto-Upgrades,
+ *           Semantic Intent Dictionary, Context-Aware Message Interpretation
  * Powered by Supabase for training data storage
  */
 
@@ -493,6 +494,425 @@ class SproutEngine {
       'What do you think?', 'Curious to hear your thoughts!',
       '', '', '', '' // Empty closers so it doesn't always append one
     ];
+
+    // ══════════════════════════════════════════════════════════════
+    // SEMANTIC INTENT DICTIONARY — Words mapped to meanings
+    // The AI must KNOW what words mean, not just pattern-match them.
+    // Each entry: pattern → { intent, meaning, requiresContext, handler }
+    // ══════════════════════════════════════════════════════════════
+    this.semanticDictionary = [
+      // ── Confusion / Clarification requests ──
+      { pattern: /^(huh|what|hm+|eh|um+)\??$/i, intent: 'confusion', meaning: 'user does not understand the last response', requiresContext: true },
+      { pattern: /^(what|huh)\s*\??\s*$/i, intent: 'confusion', meaning: 'user is confused by what was just said', requiresContext: true },
+      { pattern: /^i\s*don'?t\s*(get|understand)\s*(it|that)?\s*\??$/i, intent: 'confusion', meaning: 'user wants clarification of the last response', requiresContext: true },
+      { pattern: /^what\s+do\s+you\s+mean\s*\??$/i, intent: 'clarification', meaning: 'user wants the last response explained differently', requiresContext: true },
+      { pattern: /^(explain|elaborate|clarify)\s*\??$/i, intent: 'clarification', meaning: 'user wants more detail about the last response', requiresContext: true },
+      { pattern: /^(say\s+that\s+again|come\s+again|repeat\s+that)\s*\??$/i, intent: 'repeat', meaning: 'user wants the last response repeated or rephrased', requiresContext: true },
+
+      // ── Continuation requests ──
+      { pattern: /^(go\s+on|continue|keep\s+going|and\s*\??|then\s+what|more|tell\s+me\s+more)\s*\??$/i, intent: 'continuation', meaning: 'user wants more information about the current topic', requiresContext: true },
+      { pattern: /^(what\s+else|anything\s+else|is\s+there\s+more)\s*\??$/i, intent: 'continuation', meaning: 'user wants additional information on the topic', requiresContext: true },
+
+      // ── Agreement / Acknowledgment ──
+      { pattern: /^(ok|okay|alright|sure|got\s+it|i\s+see|ah\s*i?\s*see|makes\s+sense|fair\s+enough|understood)\s*\.?$/i, intent: 'acknowledgment', meaning: 'user understands and acknowledges', requiresContext: true },
+      { pattern: /^(interesting|cool|nice|neat|wow|oh)\s*[.!]?$/i, intent: 'acknowledgment', meaning: 'user finds the information interesting', requiresContext: true },
+
+      // ── Disagreement / Challenge ──
+      { pattern: /^(really|seriously|are\s+you\s+sure|you\s+sure)\s*\??$/i, intent: 'skepticism', meaning: 'user doubts the accuracy of the last response', requiresContext: true },
+      { pattern: /^(no\s+way|that\s+can'?t\s+be\s+(right|true)|i\s+don'?t\s+(think|believe)\s+so)\s*\.?$/i, intent: 'disagreement', meaning: 'user believes the last response was incorrect', requiresContext: true },
+      { pattern: /^(but\s+)?why\s*\??$/i, intent: 'why', meaning: 'user wants the reasoning behind the last response', requiresContext: true },
+      { pattern: /^how\s+(come|so)\s*\??$/i, intent: 'why', meaning: 'user wants to understand the reasoning', requiresContext: true },
+
+      // ── Topic reference (pronouns referring to previous context) ──
+      { pattern: /^(what\s+about\s+)?(it|that|this|those|them)\s*\??$/i, intent: 'reference', meaning: 'user is referring to something from the previous exchange', requiresContext: true },
+      { pattern: /^and\s+(it|that|this)\s*\??$/i, intent: 'reference', meaning: 'user wants more about the previously mentioned thing', requiresContext: true },
+
+      // ── Simple social/conversational (do NOT require context) ──
+      { pattern: /^(yes|yeah|yep|yea|ya|mhm|uh\s*huh)\s*[.!]?$/i, intent: 'affirmation', meaning: 'user agrees or says yes', requiresContext: false },
+      { pattern: /^(no|nah|nope)\s*[.!]?$/i, intent: 'negation', meaning: 'user disagrees or says no', requiresContext: false },
+    ];
+
+    // ── Contextual response templates ──
+    // These handle how the AI responds to context-dependent intents
+    this.contextualResponders = {
+      confusion: {
+        templates: [
+          'Let me try saying that differently. {simplified}',
+          'Sorry if that was unclear! What I meant was: {simplified}',
+          'I\'ll rephrase — {simplified}',
+          'Let me break that down. {simplified}'
+        ]
+      },
+      clarification: {
+        templates: [
+          'Sure, let me explain. {elaboration}',
+          'Of course! What I was getting at is: {elaboration}',
+          'To put it another way — {elaboration}'
+        ]
+      },
+      repeat: {
+        templates: [
+          'Sure! What I said was: {lastResponse}',
+          'No problem — {lastResponse}'
+        ]
+      },
+      continuation: {
+        templates: [
+          '{continuation}',
+          'Sure! {continuation}',
+          'Absolutely. {continuation}'
+        ]
+      },
+      acknowledgment: {
+        templates: [
+          'Glad that makes sense! Is there anything else you\'d like to know?',
+          'Happy to help! Anything else on your mind?',
+          'Great! Let me know if you want to explore anything further.',
+          'Awesome! Feel free to ask me anything else.'
+        ]
+      },
+      skepticism: {
+        templates: [
+          'I understand the doubt! {justification}',
+          'Fair question — let me back that up. {justification}',
+          'I get the skepticism. {justification}'
+        ]
+      },
+      disagreement: {
+        templates: [
+          'I could be wrong — I\'m still learning! {justification}',
+          'That\'s fair to question. {justification}',
+          'Hmm, you might be right. {justification}'
+        ]
+      },
+      why: {
+        templates: [
+          'Good question! {reasoning}',
+          'The reason is: {reasoning}',
+          'Here\'s why — {reasoning}'
+        ]
+      },
+      reference: {
+        templates: [
+          '{elaboration}',
+          'Regarding that — {elaboration}'
+        ]
+      },
+      affirmation: {
+        requiresContext: false
+      },
+      negation: {
+        requiresContext: false
+      }
+    };
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // SEMANTIC INTERPRETER — Understand what messages MEAN
+  // Before processing, figure out the TRUE intent of the message
+  // by looking at the message itself AND the conversation context
+  // ══════════════════════════════════════════════════════════════
+
+  /**
+   * Interpret a message using the semantic dictionary + conversation context.
+   * Returns { intent, meaning, isContextual, matchedPattern } or null if
+   * the message is a normal standalone message.
+   */
+  interpretMessage(userMessage) {
+    const trimmed = userMessage.trim();
+
+    for (const entry of this.semanticDictionary) {
+      if (entry.pattern.test(trimmed)) {
+        return {
+          intent: entry.intent,
+          meaning: entry.meaning,
+          isContextual: entry.requiresContext,
+          matchedPattern: entry.pattern.toString()
+        };
+      }
+    }
+
+    // Check for very short messages (1-3 words) that likely depend on context
+    const wordCount = trimmed.split(/\s+/).length;
+    if (wordCount <= 2 && this.conversationHistory.length >= 2) {
+      // Short messages in an active conversation are likely contextual
+      // but we don't have a specific pattern for them
+      return {
+        intent: 'contextual_short',
+        meaning: 'short message that may reference previous conversation',
+        isContextual: true,
+        matchedPattern: null
+      };
+    }
+
+    return null; // Normal standalone message
+  }
+
+  /**
+   * Handle a context-dependent message by generating an appropriate response
+   * that relates to the conversation history.
+   * Returns a response object or null if it can't be handled contextually.
+   */
+  async handleContextualMessage(userMessage, interpretation, userEmotion) {
+    if (!interpretation || !interpretation.isContextual) return null;
+
+    const lastAssistant = [...this.conversationHistory].reverse().find(t => t.role === 'assistant');
+    const lastUser = [...this.conversationHistory].reverse().find(t => t.role === 'user');
+
+    // Can't handle contextual messages without conversation history
+    if (!lastAssistant) return null;
+
+    const lastResponse = lastAssistant.content;
+    const intent = interpretation.intent;
+    const responder = this.contextualResponders[intent];
+
+    if (!responder || !responder.templates) return null;
+
+    let responseText = '';
+
+    switch (intent) {
+      case 'confusion':
+      case 'clarification': {
+        // Simplify/rephrase the last response
+        const simplified = this.simplifyResponse(lastResponse);
+        const template = this.pickRandom(responder.templates);
+        responseText = template
+          .replace('{simplified}', simplified)
+          .replace('{elaboration}', simplified);
+        break;
+      }
+
+      case 'repeat': {
+        // Rephrase the last response slightly
+        const rephrased = this.paraphrase(lastResponse);
+        const template = this.pickRandom(responder.templates);
+        responseText = template.replace('{lastResponse}', rephrased);
+        break;
+      }
+
+      case 'continuation': {
+        // Find more information about the current topic
+        const topicKeywords = this.extractKeywords(this.normalize(lastResponse));
+        if (lastUser) {
+          topicKeywords.push(...this.extractKeywords(this.normalize(lastUser.content)));
+        }
+        const uniqueKeywords = [...new Set(topicKeywords)];
+
+        // Search for more knowledge on this topic
+        const moreKnowledge = await this.findRelevantKnowledge(
+          uniqueKeywords.join(' '), 5
+        );
+
+        // Filter out knowledge that's too similar to what we already said
+        const lastResponseNorm = this.normalize(lastResponse);
+        const newKnowledge = moreKnowledge.filter(k =>
+          !this.isSimilarAnswer(this.normalize(k.answer), lastResponseNorm)
+        );
+
+        if (newKnowledge.length > 0) {
+          const fragment = this.paraphrase(newKnowledge[0].answer);
+          const template = this.pickRandom(responder.templates);
+          responseText = template.replace('{continuation}', fragment);
+        } else {
+          responseText = "That's about all I know on that topic for now! But I'm always learning more. Is there something specific you'd like to dive into?";
+        }
+        break;
+      }
+
+      case 'acknowledgment': {
+        responseText = this.pickRandom(responder.templates);
+        break;
+      }
+
+      case 'skepticism':
+      case 'disagreement': {
+        // Try to provide reasoning or evidence for the last response
+        const justification = this.extractReasoning(lastResponse, lastUser?.content);
+        const template = this.pickRandom(responder.templates);
+        responseText = template.replace('{justification}', justification);
+        break;
+      }
+
+      case 'why': {
+        // Explain the reasoning behind the last response
+        const reasoning = this.extractReasoning(lastResponse, lastUser?.content);
+        const template = this.pickRandom(responder.templates);
+        responseText = template.replace('{reasoning}', reasoning);
+        break;
+      }
+
+      case 'reference': {
+        // Try to elaborate on whatever "it/that/this" refers to
+        const topicKw = this.extractKeywords(this.normalize(lastResponse));
+        const moreInfo = await this.findRelevantKnowledge(topicKw.join(' '), 3);
+        const lastNorm = this.normalize(lastResponse);
+        const fresh = moreInfo.filter(k => !this.isSimilarAnswer(this.normalize(k.answer), lastNorm));
+        if (fresh.length > 0) {
+          const elaboration = this.paraphrase(fresh[0].answer);
+          const template = this.pickRandom(responder.templates);
+          responseText = template.replace('{elaboration}', elaboration);
+        } else {
+          responseText = "I don't have much more to add on that specifically. Could you ask me in a different way?";
+        }
+        break;
+      }
+
+      case 'contextual_short': {
+        // Very short message in conversation — try to interpret using context
+        // First check if this could be an answer to something we asked
+        if (lastResponse.includes('?')) {
+          // We asked a question, and they gave a short answer — acknowledge it
+          responseText = this.pickRandom([
+            `Got it! Thanks for letting me know.`,
+            `Ah, I see! Thanks for sharing that.`,
+            `Okay, noted! Is there anything else you'd like to chat about?`
+          ]);
+        } else {
+          // Try to relate the short message to the current topic
+          const combined = (lastUser?.content || '') + ' ' + userMessage;
+          const keywords = this.extractKeywords(this.normalize(combined));
+          if (keywords.length > 0) {
+            const related = await this.findRelevantKnowledge(keywords.join(' '), 3);
+            if (related.length > 0) {
+              responseText = this.paraphrase(related[0].answer);
+            }
+          }
+          // If we still have nothing, don't force a contextual response
+          if (!responseText) return null;
+        }
+        break;
+      }
+
+      default:
+        return null;
+    }
+
+    if (!responseText) return null;
+
+    this.recordConversation(userMessage, responseText);
+    return {
+      answer: responseText,
+      confidence: 0.8,
+      source_id: null,
+      category: 'contextual',
+      emotion: userEmotion,
+      mode: 'context-aware'
+    };
+  }
+
+  /**
+   * Simplify a response — break it down into simpler language.
+   * Used when the user says "huh?" or asks for clarification.
+   */
+  simplifyResponse(response) {
+    // Remove emotional fluff/wrappers that were added by enhanceWithEmotion
+    let simplified = response;
+
+    // Strip common emotional prefixes
+    const emotionalPrefixes = [
+      /^(Ooh, great question! |I love that you asked that! |That's a really thoughtful question\. |Ah, I was hoping someone would ask me this! )/,
+      /^(Hey there! Welcome back\. |Hi! So glad you're here\. |Hello! I was hoping someone would come chat with me\. )/,
+      /^(I totally understand the frustration\. |That does sound really annoying\. Let me see if I can help\. )/,
+      /^(No worries, let me break it down for you! |Totally fair — that can be confusing\. )/,
+      /^(Haha, I love that energy! |Oh, you're fun! |Ha! Okay, okay\. )/,
+      /^(I love the positive vibes! |That's awesome! |Yesss! )/,
+      /^(From what I know, |Based on my understanding, |Here's what I can tell you — )/,
+      /^(So basically, |The way I see it, |What I've learned is that )/,
+      /^(Here's the thing — |To put it simply, )/,
+      /^(Building on that, |And speaking of that, |That actually connects to )/
+    ];
+
+    for (const prefix of emotionalPrefixes) {
+      simplified = simplified.replace(prefix, '');
+    }
+
+    // Strip common closers
+    const emotionalSuffixes = [
+      / Hope that helps!$/, / Let me know what you think!$/,
+      / Happy to dive deeper if you're curious!$/, / Does that make sense\?$/,
+      / What do you think\?$/, / Curious to hear your thoughts!$/,
+      / Feel free to ask me anything else!$/,
+      / Let me know if you want to dig deeper into that!$/
+    ];
+
+    for (const suffix of emotionalSuffixes) {
+      simplified = simplified.replace(suffix, '');
+    }
+
+    simplified = simplified.trim();
+
+    // If the simplified version is still long, take the core sentence(s)
+    const sentences = simplified.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 5);
+    if (sentences.length > 2) {
+      simplified = sentences.slice(0, 2).join(' ');
+    }
+
+    // If we ended up with the same thing, try to rephrase
+    if (simplified === response) {
+      simplified = this.paraphrase(simplified);
+    }
+
+    return simplified || response;
+  }
+
+  /**
+   * Extract or generate reasoning/justification for a response.
+   * Used when user asks "why?" or expresses skepticism.
+   */
+  extractReasoning(lastResponse, originalQuestion) {
+    // Try to find the knowledge source that was used
+    const responseKeywords = this.extractKeywords(this.normalize(lastResponse));
+    const questionKeywords = originalQuestion ? this.extractKeywords(this.normalize(originalQuestion)) : [];
+    const allKeywords = [...new Set([...responseKeywords, ...questionKeywords])];
+
+    // Build a reasoning explanation from the response itself
+    const sentences = lastResponse.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 10);
+
+    if (sentences.length >= 2) {
+      return `Based on what I know: ${this.paraphrase(sentences[0])} That's the understanding I have so far, but I'm always open to learning more!`;
+    }
+
+    if (allKeywords.length > 0) {
+      return `That's based on what I've learned about ${allKeywords.slice(0, 3).join(', ')}. I could be wrong though — I'm still growing and learning!`;
+    }
+
+    return "That's based on my current knowledge, which is still growing. If you think I'm off, I'd genuinely love to learn the correct answer!";
+  }
+
+  /**
+   * Validate that a response is coherent given the conversation context.
+   * Returns the response if valid, or null if it's a non-sequitur.
+   */
+  validateResponseCoherence(response, userMessage, interpretation) {
+    if (!response || !response.answer) return response;
+
+    const answer = response.answer;
+    const confidence = response.confidence || 0;
+
+    // If confidence is very low, the response is likely irrelevant
+    if (confidence < 0.15 && response.mode === 'lookup') {
+      return null; // Let it fall through to fallback
+    }
+
+    // If the user sent a contextual message (like "huh?") and we're returning
+    // a knowledge-base lookup that has nothing to do with the conversation,
+    // that's a non-sequitur — reject it
+    if (interpretation && interpretation.isContextual && response.mode === 'lookup') {
+      // Check if the response relates to the conversation at all
+      const lastAssistant = [...this.conversationHistory].reverse().find(t => t.role === 'assistant');
+      if (lastAssistant) {
+        const lastKeywords = this.extractKeywords(this.normalize(lastAssistant.content));
+        const responseKeywords = this.extractKeywords(this.normalize(answer));
+        const overlap = lastKeywords.filter(k => responseKeywords.includes(k));
+
+        // If the lookup response shares almost nothing with the conversation, reject it
+        if (overlap.length === 0 && lastKeywords.length > 0) {
+          return null;
+        }
+      }
+    }
+
+    return response;
   }
 
   // ── Emotional awareness: Detect user mood and intent ──
@@ -663,6 +1083,23 @@ class SproutEngine {
     if (feedbackResult) return feedbackResult;
 
     // ═══════════════════════════════════════════════
+    // STEP 0.5: SEMANTIC INTERPRETATION — Understand what the message MEANS
+    // Before doing anything else, figure out if this message depends on
+    // conversation context. "huh?" means confusion, "go on" means continue,
+    // "why?" means explain reasoning. The AI must KNOW what words mean.
+    // ═══════════════════════════════════════════════
+    const interpretation = this.interpretMessage(userMessage);
+
+    if (interpretation && interpretation.isContextual && this.conversationHistory.length >= 2) {
+      const contextualResult = await this.handleContextualMessage(userMessage, interpretation, userEmotion);
+      if (contextualResult) {
+        this.taskGoal.isComplete = true;
+        this.taskGoal.successCount++;
+        return contextualResult;
+      }
+    }
+
+    // ═══════════════════════════════════════════════
     // STEP 1: LOGIC ENGINE — Try to solve with pure logic first
     // Math, yes/no, comparisons, writing tasks
     // ═══════════════════════════════════════════════
@@ -793,14 +1230,25 @@ class SproutEngine {
       mode: 'lookup'
     };
 
+    // ═══════════════════════════════════════════════
+    // COHERENCE CHECK — Make sure the response makes sense
+    // Don't return a non-sequitur to a contextual message
+    // ═══════════════════════════════════════════════
+    const validatedResult = this.validateResponseCoherence(result, userMessage, interpretation);
+    if (!validatedResult) {
+      // The response was incoherent — fall through to fallback
+      this.taskGoal.failCount++;
+      return this.getFallbackResponse(userEmotion);
+    }
+
     if (!skipCache) {
-      this.cache.set(cacheKey, { data: result, time: Date.now() });
+      this.cache.set(cacheKey, { data: validatedResult, time: Date.now() });
     }
 
     this.taskGoal.isComplete = true;
     this.taskGoal.successCount++;
-    this.recordConversation(userMessage, enhancedAnswer);
-    return result;
+    this.recordConversation(userMessage, validatedResult.answer);
+    return validatedResult;
   }
 
   // ══════════════════════════════════════════════════════════════
