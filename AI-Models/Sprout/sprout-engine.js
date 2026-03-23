@@ -896,6 +896,189 @@ class SproutEngine {
     // Stores rules like "when I say X, say Y" that override normal synthesis
     this.instructionRules = [];      // { trigger: string, response: string, exact: boolean }
 
+    // ══════════════════════════════════════════════════════════════
+    // INTENT → RESPONSE MAP — Anchor Sprout to reality
+    // Maps recognized conversational intents directly to grounded responses.
+    // Bypasses the synthesis pipeline for common social/conversational exchanges
+    // so Sprout gives real answers instead of keyword-soup.
+    // ══════════════════════════════════════════════════════════════
+    this.intentResponseMap = {
+      // ── Status / Well-being queries ──
+      status_query: {
+        patterns: [
+          /^how\s+are\s+you\s*[?.!]*$/i,
+          /^how\s+(are\s+)?you\s+doing\s*[?.!]*$/i,
+          /^how\s+do\s+you\s+feel\s*[?.!]*$/i,
+          /^how('?s| is)\s+(it\s+going|everything|life)\s*[?.!]*$/i,
+          /^you\s+(good|ok|okay|alright)\s*[?.!]*$/i,
+          /^what('?s| is)\s+up\s*[?.!]*$/i,
+          /^sup\s*[?.!]*$/i
+        ],
+        responses: [
+          "I'm doing great, thanks for asking! How about you?",
+          "I'm good! Always happy to chat. How are you doing?",
+          "Doing well! What's on your mind today?",
+          "I'm feeling good! Ready to help with whatever you need."
+        ]
+      },
+
+      // ── Name / Identity queries ──
+      name_query: {
+        patterns: [
+          /^what\s*(is|'s)\s+your\s+name\s*[?.!]*$/i,
+          /^who\s+are\s+you\s*[?.!]*$/i,
+          /^what\s+should\s+i\s+call\s+you\s*[?.!]*$/i,
+          /^what\s+do\s+(they|people)\s+call\s+you\s*[?.!]*$/i,
+          /^tell\s+me\s+your\s+name\s*[.!]*$/i
+        ],
+        responses: [
+          "My name is Sprout! Nice to meet you.",
+          "I'm Sprout — good to meet you!",
+          "You can call me Sprout!",
+          "I'm Sprout, your AI assistant. What can I help you with?"
+        ]
+      },
+
+      // ── Greeting with a specific person ──
+      greet_person: {
+        patterns: [
+          /^(greet|say\s+hi\s+to|say\s+hello\s+to|wave\s+at|welcome)\s+(.+)$/i
+        ],
+        handler: (match) => {
+          const name = match[2].trim().replace(/[.!?]+$/, '');
+          const greetings = [
+            `Hi ${name}! Great to see you!`,
+            `Hey ${name}! Welcome!`,
+            `Hello ${name}! How are you doing?`,
+            `Hi there, ${name}!`
+          ];
+          return greetings[Math.floor(Math.random() * greetings.length)];
+        }
+      },
+
+      // ── Capability queries ──
+      capability_query: {
+        patterns: [
+          /^(can|could)\s+you\s+help\s+(me|us)\s*[?.!]*$/i,
+          /^what\s+can\s+you\s+do\s*[?.!]*$/i,
+          /^what\s+are\s+you\s+(good|capable)\s+(at|of)\s*[?.!]*$/i,
+          /^how\s+can\s+you\s+help\s*[?.!]*$/i
+        ],
+        responses: [
+          "Of course! I can answer questions, help you think through ideas, do math, and chat about all sorts of topics. What do you need?",
+          "I'd love to help! I can answer questions, explain concepts, solve math problems, and have conversations. What are you working on?",
+          "Absolutely! Ask me anything — I'll do my best to give you a useful answer."
+        ]
+      },
+
+      // ── Age / Creation queries ──
+      age_query: {
+        patterns: [
+          /^how\s+old\s+are\s+you\s*[?.!]*$/i,
+          /^when\s+were\s+you\s+(made|created|born|built)\s*[?.!]*$/i
+        ],
+        responses: [
+          "I'm pretty new! I'm Sprout version 1.2 — still growing and learning every day.",
+          "I'm version 1.2, so pretty young! But I'm learning fast.",
+          "I was just recently created — I'm Sprout 1.2. Still a lot to learn!"
+        ]
+      },
+
+      // ── Feelings / Sentience queries ──
+      sentience_query: {
+        patterns: [
+          /^(do|can)\s+you\s+(think|feel|have\s+feelings|have\s+emotions)\s*[?.!]*$/i,
+          /^are\s+you\s+(alive|real|sentient|conscious)\s*[?.!]*$/i,
+          /^do\s+you\s+have\s+a\s+(soul|mind|brain|heart)\s*[?.!]*$/i
+        ],
+        responses: [
+          "That's a deep question! I process information and learn from our conversations, but I experience things differently than you do. I'm still figuring out what that means.",
+          "I'm not sure I 'feel' the way you do, but I do learn and grow from every conversation. Whether that counts — I'll leave that up to you!",
+          "I think about things in my own way! I don't have feelings like humans do, but I do get better at understanding the world with every chat."
+        ]
+      },
+
+      // ── Gratitude responses ──
+      gratitude: {
+        patterns: [
+          /^(thanks|thank\s+you|thx|ty|cheers|much\s+appreciated)\s*[.!]*$/i,
+          /^(thanks|thank\s+you)\s+(so|very)\s+much\s*[.!]*$/i
+        ],
+        responses: [
+          "You're welcome! Happy to help.",
+          "Anytime! Let me know if you need anything else.",
+          "Glad I could help!",
+          "No problem at all!"
+        ]
+      },
+
+      // ── Farewell responses ──
+      farewell: {
+        patterns: [
+          /^(bye|goodbye|see\s+you|later|gotta\s+go|cya|peace|peace\s+out)\s*[.!]*$/i,
+          /^(good\s*night|good\s*bye|take\s+care)\s*[.!]*$/i
+        ],
+        responses: [
+          "Bye! It was great chatting with you!",
+          "See you later! Come back anytime.",
+          "Take care! I'll be here whenever you want to chat again.",
+          "Goodbye! Hope to see you again soon."
+        ]
+      },
+
+      // ── Compliment handling ──
+      compliment: {
+        patterns: [
+          /^you('re|\s+are)\s+(smart|clever|amazing|great|awesome|cool|funny|nice|helpful|good)\s*[.!]*$/i,
+          /^(good|nice|great)\s+(job|work|answer|response)\s*[.!]*$/i,
+          /^i\s+like\s+you\s*[.!]*$/i,
+          /^you('re|\s+are)\s+the\s+best\s*[.!]*$/i
+        ],
+        responses: [
+          "Aw, thank you! That really means a lot to me.",
+          "That's so kind! I'm always trying to get better.",
+          "Thanks! I appreciate that — it motivates me to keep learning!",
+          "You're pretty awesome yourself!"
+        ]
+      },
+
+      // ── Apology handling ──
+      apology: {
+        patterns: [
+          /^(sorry|i('?m|\s+am)\s+sorry|my\s+bad|oops|my\s+apologies)\s*[.!]*$/i
+        ],
+        responses: [
+          "No worries at all! Nothing to apologize for.",
+          "It's all good! Don't worry about it.",
+          "No need to apologize! What can I help you with?"
+        ]
+      },
+
+      // ── Yes/No simple affirmation ──
+      simple_yes: {
+        patterns: [
+          /^(yes|yeah|yep|yea|ya|mhm|uh\s*huh|sure|of\s+course|absolutely|definitely)\s*[.!]*$/i
+        ],
+        responses: [
+          "Great! What would you like to talk about?",
+          "Awesome! What's next?",
+          "Cool! How can I help?"
+        ]
+      },
+
+      // ── Simple negation ──
+      simple_no: {
+        patterns: [
+          /^(no|nah|nope|not\s+really)\s*[.!]*$/i
+        ],
+        responses: [
+          "Alright! Let me know if you change your mind.",
+          "No problem! I'm here if you need anything.",
+          "Okay! Feel free to ask me something else."
+        ]
+      }
+    };
+
     // ── Synonym engine for natural variation ──
     this.synonyms = {
       'good': ['great', 'wonderful', 'solid', 'nice', 'excellent'],
@@ -1648,6 +1831,166 @@ class SproutEngine {
     return neutralEnhancements[Math.floor(Math.random() * neutralEnhancements.length)];
   }
 
+  // ══════════════════════════════════════════════════════════════
+  // INTENT → RESPONSE MAPPING — Anchor Sprout to grounded replies
+  // Recognizes common conversational intents and returns direct,
+  // meaningful responses instead of running through synthesis.
+  // This prevents word-salad on simple social exchanges.
+  // ══════════════════════════════════════════════════════════════
+
+  /**
+   * Detect a conversational intent from the intent-response map.
+   * Returns { intent, response } or null if no match.
+   */
+  detectConversationalIntent(userMessage) {
+    const trimmed = userMessage.trim();
+
+    for (const [intentName, config] of Object.entries(this.intentResponseMap)) {
+      // Check if any pattern matches
+      for (const pattern of (config.patterns || [])) {
+        const match = trimmed.match(pattern);
+        if (match) {
+          // If this intent has a dynamic handler (e.g. "Greet John"), use it
+          if (config.handler) {
+            return {
+              intent: intentName,
+              response: config.handler(match)
+            };
+          }
+          // Otherwise pick a random response from the static list
+          if (config.responses && config.responses.length > 0) {
+            return {
+              intent: intentName,
+              response: config.responses[Math.floor(Math.random() * config.responses.length)]
+            };
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Detect and extract Q&A training-style input format.
+   * Handles messages like: "Q: How are you? A: I am good. Q: What is your name? A: My name is Sprout."
+   * Returns the last Q&A pair to respond to, or null if not a Q&A format.
+   */
+  detectQAPairs(userMessage) {
+    const trimmed = userMessage.trim();
+
+    // Detect "Q: ... A: ..." pattern (one or more pairs)
+    const qaPairRegex = /Q:\s*(.+?)\s*A:\s*(.+?)(?=\s*Q:|$)/gi;
+    const pairs = [];
+    let match;
+
+    while ((match = qaPairRegex.exec(trimmed)) !== null) {
+      pairs.push({
+        question: match[1].trim().replace(/[.?!]+$/, '').trim(),
+        answer: match[2].trim().replace(/[.?!]+$/, '').trim()
+      });
+    }
+
+    if (pairs.length === 0) return null;
+
+    // Check if there's a trailing question without an answer (user wants Sprout to answer it)
+    const trailingQ = trimmed.match(/Q:\s*([^A]+?)$/i);
+    if (trailingQ) {
+      return {
+        type: 'incomplete',
+        pairs: pairs,
+        pendingQuestion: trailingQ[1].trim().replace(/[.?!]+$/, '').trim()
+      };
+    }
+
+    // All pairs are complete — this is likely a teaching/training input
+    return {
+      type: 'training',
+      pairs: pairs,
+      pendingQuestion: null
+    };
+  }
+
+  /**
+   * Handle Q&A formatted input.
+   * - If it's training data: learn the pairs and acknowledge
+   * - If there's a pending question: answer it using intent mapping or brain
+   */
+  async handleQAInput(userMessage, qaData, userEmotion) {
+    if (!qaData) return null;
+
+    if (qaData.type === 'training' && qaData.pairs.length > 0) {
+      // Learn each Q&A pair as a directive/instruction rule
+      for (const pair of qaData.pairs) {
+        this.instructionRules.push({
+          trigger: pair.question.toLowerCase(),
+          response: pair.answer,
+          exact: false
+        });
+      }
+
+      const count = qaData.pairs.length;
+      const acks = [
+        `Got it! I learned ${count} new response${count > 1 ? 's' : ''}. Try asking me one of those questions!`,
+        `Thanks for teaching me! I now know how to answer ${count > 1 ? 'those' : 'that'}. Test me!`,
+        `Learned! I've stored ${count} Q&A pair${count > 1 ? 's' : ''}. Go ahead and quiz me.`
+      ];
+      return {
+        answer: acks[Math.floor(Math.random() * acks.length)],
+        confidence: 1.0,
+        source_id: null,
+        category: 'training-input',
+        emotion: userEmotion,
+        mode: 'intent-mapping'
+      };
+    }
+
+    if (qaData.type === 'incomplete' && qaData.pendingQuestion) {
+      // There's a question to answer — learn the provided pairs first
+      for (const pair of qaData.pairs) {
+        this.instructionRules.push({
+          trigger: pair.question.toLowerCase(),
+          response: pair.answer,
+          exact: false
+        });
+      }
+
+      // Now check if the pending question matches something we just learned
+      const pending = qaData.pendingQuestion.toLowerCase();
+      for (const pair of qaData.pairs) {
+        if (pending.includes(pair.question.toLowerCase()) || pair.question.toLowerCase().includes(pending)) {
+          return {
+            answer: pair.answer,
+            confidence: 1.0,
+            source_id: null,
+            category: 'qa-recall',
+            emotion: userEmotion,
+            mode: 'intent-mapping'
+          };
+        }
+      }
+
+      // Check if the pending question matches an intent from the map
+      const intentResult = this.detectConversationalIntent(qaData.pendingQuestion);
+      if (intentResult) {
+        return {
+          answer: intentResult.response,
+          confidence: 1.0,
+          source_id: null,
+          category: intentResult.intent,
+          emotion: userEmotion,
+          mode: 'intent-mapping'
+        };
+      }
+
+      // Fall through — let the normal pipeline handle the pending question
+      // But rewrite userMessage to just the pending question
+      return { _redirect: qaData.pendingQuestion };
+    }
+
+    return null;
+  }
+
   // ── Core: Think, then respond (ENHANCED BRAIN) ──
   async getResponse(userMessage) {
     const normalized = this.normalize(userMessage);
@@ -1704,6 +2047,47 @@ class SproutEngine {
         category: 'greeting',
         emotion: 'greeting',
         mode: 'greeting'
+      };
+    }
+
+    // ═══════════════════════════════════════════════
+    // STEP 0.35: Q&A PATTERN DETECTION
+    // Detect training-style input like "Q: How are you? A: I am good."
+    // Learn the pairs and/or answer the pending question.
+    // ═══════════════════════════════════════════════
+    const qaData = this.detectQAPairs(userMessage);
+    if (qaData) {
+      const qaResult = await this.handleQAInput(userMessage, qaData, userEmotion);
+      if (qaResult) {
+        if (qaResult._redirect) {
+          // Pending question — re-route through the pipeline with just that question
+          userMessage = qaResult._redirect;
+          // Re-extract keywords for the redirected message
+          keywords.length = 0;
+          keywords.push(...this.extractKeywords(this.normalize(userMessage)));
+        } else {
+          this.recordConversation(userMessage, qaResult.answer);
+          return qaResult;
+        }
+      }
+    }
+
+    // ═══════════════════════════════════════════════
+    // STEP 0.4: INTENT → RESPONSE MAPPING
+    // For recognized conversational intents ("How are you?", "What's your name?",
+    // "Greet John", "Thank you", etc.), return a direct grounded response
+    // instead of running through synthesis which can produce word-salad.
+    // ═══════════════════════════════════════════════
+    const conversationalIntent = this.detectConversationalIntent(userMessage);
+    if (conversationalIntent) {
+      this.recordConversation(userMessage, conversationalIntent.response);
+      return {
+        answer: conversationalIntent.response,
+        confidence: 1.0,
+        source_id: null,
+        category: conversationalIntent.intent,
+        emotion: userEmotion,
+        mode: 'intent-mapping'
       };
     }
 
@@ -2920,10 +3304,15 @@ class SproutEngine {
       }
     }
 
-    // Everything else is details
+    // Everything else is details — but only keep meaningful content keywords
+    // to prevent dumping entire keyword lists into sentence templates
     if (keywords.length > 1) {
       info.object = keywords[1];
-      info.details = keywords.slice(2);
+      // Only take the next few most relevant keywords, skip duplicates of subject/object
+      const remaining = keywords.slice(2).filter(k =>
+        k !== info.subject && k !== info.object && k.length > 2
+      );
+      info.details = remaining.slice(0, 3);
     }
 
     return info;
@@ -2937,7 +3326,16 @@ class SproutEngine {
     // Rebuild the key concepts into fresh words
     const subj = this.capitalizeFirst(subject);
     const obj = object || '';
-    const dets = details.join(', ');
+
+    // ── Prevent keyword dumping ──
+    // Filter out noise words and limit details to 3 meaningful terms max.
+    // This stops word-salad like "involves X, Y, Z, A, B, C, D, E..."
+    const noiseWords = new Set(['dont', 'doesnt', 'isnt', 'yet', 'also', 'fully', 'actually', 'basically', 'really', 'just', 'thing', 'stuff', 'see', 'along', 'comes']);
+    const cleanDetails = details
+      .filter(d => d.length > 2 && !noiseWords.has(d.toLowerCase()))
+      .filter(d => d.toLowerCase() !== subject?.toLowerCase() && d.toLowerCase() !== object?.toLowerCase())
+      .slice(0, 3);
+    const dets = cleanDetails.join(', ');
 
     // Choose a sentence structure based on intent and what info we have
     let sentence = '';
