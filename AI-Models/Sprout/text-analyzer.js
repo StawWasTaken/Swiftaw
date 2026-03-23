@@ -646,7 +646,7 @@ class TextAnalyzer {
         await this.db
           .from(SPROUT_TABLES.KNOWLEDGE_GRAPH)
           .insert({
-            model: 'sprout-1.2',
+            model: 'sprout-1.3',
             concept: conn.concept,
             related_concept: conn.related_concept,
             relationship: conn.relationship,
@@ -687,7 +687,7 @@ class TextAnalyzer {
       await this.db
         .from(SPROUT_TABLES.LEARNING_LOG)
         .insert({
-          model: 'sprout-1.2',
+          model: 'sprout-1.3',
           event_type: 'text_ingestion',
           summary,
           details,
