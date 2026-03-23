@@ -1107,6 +1107,80 @@ class SproutEngine {
           "No problem! I'm here if you need anything.",
           "Okay! Feel free to ask me something else."
         ]
+      },
+
+      // ── User status responses (replies to "How are you?" / "How about you?") ──
+      user_status_positive: {
+        patterns: [
+          /^i'?m\s+(good|great|fine|well|okay|ok|doing\s+(good|great|well|fine|okay)|alright|fantastic|amazing|awesome|excellent|happy|pretty\s+good)\s*[!.:)]*$/i,
+          /^(good|great|fine|well|okay|ok|alright|fantastic|amazing|awesome|excellent|not\s+bad|pretty\s+good|doing\s+(good|great|well|fine))\s*[!.:)]*$/i,
+          /^i\s+am\s+(good|great|fine|well|okay|alright|doing\s+(good|great|well|fine))\s*[!.:)]*$/i,
+          /^(i'?ve\s+been|i\s+have\s+been)\s+(good|great|fine|well|okay|alright)\s*[!.:)]*$/i,
+          /^(yes\s+)?i'?m\s+good\s*[!.:)]*$/i
+        ],
+        responses: [
+          "That's great to hear! What's on your mind today?",
+          "Glad to hear that! Anything I can help you with?",
+          "Awesome! So what would you like to talk about?",
+          "Nice! I'm happy to hear that. What can I do for you?"
+        ]
+      },
+
+      user_status_negative: {
+        patterns: [
+          /^i'?m\s+(not\s+(good|great|well|okay|doing\s+well)|bad|terrible|awful|sad|tired|exhausted|stressed|sick|unwell)\s*[!.]*$/i,
+          /^(not\s+(good|great|so\s+good)|bad|terrible|awful|could\s+be\s+better|meh|eh)\s*[!.]*$/i
+        ],
+        responses: [
+          "I'm sorry to hear that. I hope things get better soon! I'm here if you want to talk.",
+          "Aw, that's tough. I hope your day improves! Want to chat about something to take your mind off it?",
+          "I hope you feel better soon! Let me know if there's anything I can do."
+        ]
+      },
+
+      // ── Casual affirmations / acknowledgments in conversation ──
+      casual_affirmation: {
+        patterns: [
+          /^(oh\s+)?(that'?s?\s+)?(cool|nice|neat|interesting|awesome|great|sweet|dope|sick|fair\s+enough)\s*[!.]*$/i,
+          /^(oh\s+)?(ok|okay|alright|got\s+it|i\s+see|makes\s+sense|right|ah)\s*[!.]*$/i,
+          /^(hm+|hmm+|ah|oh|ohh|ooh)\s*[.!]*$/i
+        ],
+        responses: [
+          "Anything else you'd like to chat about?",
+          "Let me know if there's something else on your mind!",
+          "Feel free to ask me anything!",
+          "What else would you like to talk about?"
+        ]
+      },
+
+      // ── User reaffirming/restating something they said ──
+      user_restatement: {
+        patterns: [
+          /^(yes\s+)?(i('?ve|\s+have)\s+said|i\s+(said|told\s+you|mentioned|was\s+saying))\s+/i,
+          /^(like\s+i\s+said|as\s+i\s+said|i\s+already\s+said|i\s+just\s+said)\s*/i
+        ],
+        responses: [
+          "Got it, I hear you! Is there anything else you'd like to talk about?",
+          "Understood! Sorry if I missed that. What else is on your mind?",
+          "Right, my apologies! What would you like to discuss?",
+          "Ah, I see! Thanks for clarifying. What else can I help with?"
+        ]
+      },
+
+      // ── Grammar/spelling corrections directed at the AI ──
+      grammar_correction: {
+        patterns: [
+          /\b(did\s+you\s+(say|mean|write|type)|you\s+(said|wrote|typed|spelled))\b.*\b(instead\s+of|not|rather\s+than)\b/i,
+          /\b(it'?s|that'?s|should\s+be)\s+["']?\w+["']?\s*,?\s*not\s+["']?\w+["']?/i,
+          /\b(you\s+(misspelled|misspelt|spelled\s+wrong)|that'?s\s+(a\s+)?(typo|misspelling|spelling\s+error|grammar\s+(error|mistake)))\b/i,
+          /\b(the\s+correct\s+(spelling|word|form)\s+is)\b/i
+        ],
+        responses: [
+          "Oops, you're right! Thanks for the correction — I'll try to be more careful with that.",
+          "Good catch! Thanks for pointing that out. I appreciate the help!",
+          "Ah, my mistake! Thanks for correcting me — that helps me improve.",
+          "You're right, sorry about that! I'll keep that in mind."
+        ]
       }
     };
 
@@ -1273,9 +1347,9 @@ class SproutEngine {
         'If I\'m being honest, ', 'This is something I care about — '
       ],
       connective: [
-        'Building on that, ', 'And speaking of that, ', 'That actually connects to ',
-        'Related to what we were discussing, ', 'On a similar note, ',
-        'That reminds me — '
+        'Building on that, ', 'On a similar note, ',
+        'That reminds me — ', 'Going off of that, ',
+        'Along those lines, ', 'Adding to that, '
       ],
       curious: [
         'I\'m curious about that too — ', 'That\'s an interesting angle. ',
@@ -1440,17 +1514,22 @@ class SproutEngine {
       }
     }
 
-    // Check for very short messages (1-3 words) that likely depend on context
+    // Check for very short messages (1-2 words) that likely depend on context
+    // BUT skip if the message matches common conversational patterns
+    // (those are handled by the intent map, not the contextual handler)
     const wordCount = trimmed.split(/\s+/).length;
     if (wordCount <= 2 && this.conversationHistory.length >= 2) {
-      // Short messages in an active conversation are likely contextual
-      // but we don't have a specific pattern for them
-      return {
-        intent: 'contextual_short',
-        meaning: 'short message that may reference previous conversation',
-        isContextual: true,
-        matchedPattern: null
-      };
+      const lower = trimmed.toLowerCase().replace(/[^a-z\s']/g, '').trim();
+      // Skip casual/conversational messages — let the intent map handle these
+      const casualWords = /^(i'?m\s+\w+|good|great|fine|ok|okay|yes|yeah|no|nah|nope|cool|nice|sure|thanks|bye|hi|hello|hey|wow|lol|haha|true|same|mood|right|alright|interesting)$/i;
+      if (!casualWords.test(lower)) {
+        return {
+          intent: 'contextual_short',
+          meaning: 'short message that may reference previous conversation',
+          isContextual: true,
+          matchedPattern: null
+        };
+      }
     }
 
     return null; // Normal standalone message
@@ -1627,7 +1706,7 @@ class SproutEngine {
       /^(From what I know, |Based on my understanding, |Here's what I can tell you — )/,
       /^(So basically, |The way I see it, |What I've learned is that )/,
       /^(Here's the thing — |To put it simply, )/,
-      /^(Building on that, |And speaking of that, |That actually connects to )/
+      /^(Building on that, |On a similar note, |That reminds me — |Going off of that, |Along those lines, |Adding to that, )/
     ];
 
     for (const prefix of emotionalPrefixes) {
@@ -3538,8 +3617,7 @@ class SproutEngine {
       wantsDetail: /\b(explain|detail|elaborate|more|deeper|thorough|full|tell me more)\b/i.test(lower),
       wantsBrief: /\b(brief|short|quick|simple|one sentence|tldr|summary)\b/i.test(lower),
       isFollowUp: this.conversationHistory.length > 0 && (
-        /\b(what about|how about|and|also|more|else|another|too)\b/i.test(lower) ||
-        keywords.length <= 2
+        /\b(what about|how about|and also|more about|else|another|tell me more)\b/i.test(lower)
       ),
       topic: keywords.slice(0, 3).join(' '),
       subjectWords: keywords.filter(k => k.length > 2)
@@ -3711,7 +3789,7 @@ class SproutEngine {
       const continuations = [
         `Additionally, ${subject} ${action || 'relates to'} ${obj}`,
         `It also ${action || 'involves'} ${obj}`,
-        `On top of that, ${subject} ${action || 'connects to'} ${obj}`,
+        `On top of that, ${subject} ${action || 'is tied to'} ${obj}`,
         `Another aspect is that ${subject} ${action || 'plays a role in'} ${obj}`
       ];
       sentence = this.pickRandom(continuations);
@@ -3785,24 +3863,52 @@ class SproutEngine {
   reasonAlone(userMessage, intent, keywords, conversationContext) {
     // The AI doesn't have this in its data. It must THINK.
 
+    // ── Pre-check: Is this just casual conversation? ──
+    // Don't try to "reason" about casual statements — respond naturally
+    const lower = userMessage.toLowerCase().trim();
+    const casualPatterns = [
+      /^(i'?m|im|i\s+am)\s+(good|great|fine|well|okay|ok|alright|bad|tired|bored)/i,
+      /^(good|great|fine|okay|not\s+bad|pretty\s+good|doing\s+(good|well))\s*[!.)?]*$/i,
+      /^(yes|yeah|yep|no|nah|nope|sure|maybe|idk|idc)\s*[!.]*$/i,
+      /^(oh|ah|hm+|ok|okay|right|cool|nice|interesting|wow)\s*[!.]*$/i,
+      /^(lol|haha|heh|lmao|true|same|mood|fr|real)\s*[!.]*$/i
+    ];
+    if (casualPatterns.some(p => p.test(lower))) {
+      const casualResponses = [
+        "What else is on your mind?",
+        "Anything you'd like to talk about?",
+        "What can I help you with?",
+        "Feel free to ask me anything!"
+      ];
+      return this.pickRandom(casualResponses);
+    }
+
     // ── Strategy 1: Try to answer from word meanings and common sense ──
     if (intent.isDefinition && keywords.length > 0) {
       const topic = keywords.join(' ');
-      // We don't know the exact definition, but we can be honest about it
-      // while still trying to think
-      const attempts = [
-        `I haven't learned about ${topic} yet, but based on the words themselves, I think it might involve ${this.guessFromWordParts(keywords)}. I could be wrong though — can you tell me if that's close?`,
-        `Hmm, ${topic} is something I don't have in my knowledge base yet. Let me think... ${this.guessFromWordParts(keywords)}. Am I on the right track?`,
-        `I'm going to take a guess here — ${topic} seems like it could relate to ${this.guessFromWordParts(keywords)}. Tell me if I'm right and I'll remember it!`
+      const guess = this.guessFromWordParts(keywords);
+      // Only attempt a guess if we actually found meaningful word parts
+      if (guess && !guess.includes('need to learn more about')) {
+        const attempts = [
+          `I haven't learned about ${topic} yet, but based on the words themselves, I think it might involve ${guess}. Am I on the right track?`,
+          `Hmm, let me think... ${topic} seems like it could relate to ${guess}. Tell me if I'm right and I'll remember it!`,
+          `I'm going to take a guess here — ${topic} seems like it could relate to ${guess}. Can you tell me if that's close?`
+        ];
+        return this.pickRandom(attempts);
+      }
+      // If we can't guess from word parts, give a more natural response
+      const honestAttempts = [
+        `I'm not sure about ${topic} yet — could you tell me more about it?`,
+        `I don't have a good answer for ${topic} right now. What can you tell me about it?`,
+        `That's a new one for me! What does ${topic} mean to you?`
       ];
-      return this.pickRandom(attempts);
+      return this.pickRandom(honestAttempts);
     }
 
     // ── Strategy 2: Use conversation context to reason ──
-    // Filter out short/noise keywords from context to avoid nonsensical sentences
-    // like "Building on what we were just discussing about hey..."
+    // Filter out noise AND Sprout's own meta-phrases from context
     if (intent.isFollowUp && conversationContext?.lastAssistantMessage) {
-      const noiseWords = new Set(['hey', 'hi', 'hello', 'the', 'is', 'are', 'was', 'it', 'that', 'this', 'you', 'your', 'today', 'now', 'just', 'really', 'very', 'also', 'well']);
+      const noiseWords = new Set(['hey', 'hi', 'hello', 'the', 'is', 'are', 'was', 'it', 'that', 'this', 'you', 'your', 'today', 'now', 'just', 'really', 'very', 'also', 'well', 'dont', 'have', 'enough', 'knowledge', 'database', 'learn', 'teach', 'tell', 'about', 'more', 'still', 'learning', 'give', 'confident', 'answer', 'love', 'want', 'real', 'vague', 'remember', 'think', 'know', 'sure', 'could', 'would', 'building', 'connects']);
       const lastKeywords = this.extractKeywords(this.normalize(conversationContext.lastAssistantMessage))
         .filter(k => k.length > 3 && !noiseWords.has(k));
       const currentKeywords = keywords.filter(k => k.length > 3 && !noiseWords.has(k));
@@ -3810,23 +3916,21 @@ class SproutEngine {
       if (lastKeywords.length > 0 && currentKeywords.length > 0) {
         const contextTopic = lastKeywords.slice(0, 2).join(' and ');
         const currentTopic = currentKeywords.slice(0, 2).join(' and ');
-        return `That's a great follow-up! I think ${currentTopic} connects to what we were discussing about ${contextTopic}. I'm still building my knowledge here though — what's your take on it?`;
+        return `I think ${currentTopic} relates to ${contextTopic}. I'm still learning about this though — what's your take?`;
       }
-      // If keywords are too vague, give an honest "I need more to work with" response
       if (lastKeywords.length === 0 && currentKeywords.length === 0) {
-        return "That's an interesting thought! I'd love to explore it more — could you give me a bit more to work with?";
+        return "Could you tell me a bit more about what you mean? I want to make sure I understand.";
       }
     }
 
-    // ── Strategy 3: Honest reasoning attempt ──
-    // Only use if we have meaningful keywords (not just stop words)
+    // ── Strategy 3: Honest but natural response ──
     const meaningfulKeywords = keywords.filter(k => k.length > 3);
     if (meaningfulKeywords.length > 0) {
       const topic = meaningfulKeywords.slice(0, 3).join(' ');
       const reasoningAttempts = [
-        `I don't have ${topic} in my database yet, but I'd love to learn about it. Can you tell me more?`,
-        `That's something I'm still learning about. I don't have enough knowledge on ${topic} to give you a confident answer yet. Teach me?`,
-        `I want to give you a real answer, not a vague one. I don't know enough about ${topic} yet — if you can tell me about it, I'll remember it!`
+        `I'm not sure about ${topic} yet — could you tell me more?`,
+        `That's something I'm still learning about. What can you tell me about ${topic}?`,
+        `I'd love to know more about ${topic}. Can you fill me in?`
       ];
       return this.pickRandom(reasoningAttempts);
     }
@@ -3872,9 +3976,11 @@ class SproutEngine {
     const topic = keywords.join(' ');
 
     // Try to find ANY loosely related knowledge
+    // Filter out Sprout's own meta-phrases (admission of ignorance, prompts to teach, etc.)
+    const metaPhrases = /\b(don'?t have|database|knowledge base|still learning|teach me|tell me more|not sure|haven'?t learned|can you tell|fill me in|love to learn)\b/i;
     const allKeywords = new Set();
     for (const entry of this.conversationHistory) {
-      if (entry.role === 'assistant') {
+      if (entry.role === 'assistant' && !metaPhrases.test(entry.content)) {
         this.extractKeywords(this.normalize(entry.content)).forEach(k => allKeywords.add(k));
       }
     }
@@ -3882,10 +3988,10 @@ class SproutEngine {
     // See if any query keywords overlap with things we've discussed
     const relatedTopics = keywords.filter(k => allKeywords.has(k));
     if (relatedTopics.length > 0) {
-      return `I recall we touched on ${relatedTopics.join(' and ')} earlier in our conversation. I think ${topic} might be related, but I'd need you to confirm or teach me the right answer.`;
+      return `I think ${topic} might relate to ${relatedTopics.join(' and ')} — we touched on that earlier. What do you think?`;
     }
 
-    return `I think ${topic} is something interesting that I want to understand better. If you can tell me about it, I'll add it to my knowledge and remember it from now on.`;
+    return `I'd like to know more about ${topic}. Can you tell me about it?`;
   }
 
   // Get recent conversation context for continuity
@@ -4069,11 +4175,11 @@ class SproutEngine {
     }
 
     const baseFallbacks = [
-      "I searched everywhere I could, but I couldn't find a solid answer for that one yet. My researchers are teaching me new things every day though, so I'm getting there!",
-      "Hmm, I looked through my knowledge and the web but couldn't find what I needed — I really want to help though. Every conversation helps me grow!",
-      "That's a great question! I searched for an answer but couldn't find one I'm confident about yet. I'm still in my early days, but I'm learning fast. Try me on something else?",
-      "I'm not going to pretend I know something I don't — that wouldn't be fair to you. I searched but came up short. I'm getting smarter with every session though!",
-      "Oof, you stumped me! I searched my knowledge base and the web but couldn't crack it. My team is constantly expanding what I know."
+      "I'm not sure about that one yet, but I'm always learning! Try me on something else?",
+      "Hmm, I couldn't find a good answer for that. I'm still growing — every conversation helps!",
+      "That's a tough one! I don't have a confident answer yet, but I'm getting better every day.",
+      "I don't want to guess and be wrong — I'm not sure about that one yet. What else can I help with?",
+      "I couldn't find what I needed for that one. Try asking me something else!"
     ];
 
     let answer = baseFallbacks[Math.floor(Math.random() * baseFallbacks.length)];
