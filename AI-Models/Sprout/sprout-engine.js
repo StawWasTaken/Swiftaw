@@ -555,12 +555,52 @@ class SproutEngine {
       }
     }
 
+    // MY KNOWLEDGE GRAPH — How concepts connect
+    try {
+      const { data: graphData } = await this.db
+        .from(SPROUT_TABLES.KNOWLEDGE_GRAPH)
+        .select('concept, related_concept, relationship, strength')
+        .eq('model', 'sprout-1.2')
+        .eq('active', true)
+        .order('strength', { ascending: false })
+        .limit(100);
+
+      if (graphData && graphData.length > 0) {
+        mind.push('');
+        mind.push('=== MY KNOWLEDGE CONNECTIONS ===');
+        mind.push('(These show how concepts in my mind are connected. Use them to give richer, more connected answers.)');
+        graphData.forEach(g => {
+          mind.push(`- ${g.concept} —[${g.relationship}]→ ${g.related_concept} (strength: ${(g.strength * 100).toFixed(0)}%)`);
+        });
+      }
+    } catch (e) { /* knowledge graph not available yet */ }
+
+    // MY SELF-REFLECTIONS — What I think about my own growth
+    try {
+      const { data: reflections } = await this.db
+        .from(SPROUT_TABLES.SELF_REFLECTIONS)
+        .select('reflection_type, content')
+        .eq('model', 'sprout-1.2')
+        .eq('resolved', false)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (reflections && reflections.length > 0) {
+        mind.push('');
+        mind.push('=== MY CURRENT THOUGHTS ===');
+        reflections.forEach(r => {
+          mind.push(`- [${r.reflection_type}] ${r.content}`);
+        });
+      }
+    } catch (e) { /* reflections not available yet */ }
+
     this.mindContext = mind.join('\n');
     this.mindContextAge = Date.now();
     return this.mindContext;
   }
 
   // Find relevant knowledge for a specific question (targeted context)
+  // Now also searches the knowledge graph for connected concepts
   async findRelevantKnowledge(userMessage, topN = 5) {
     const normalized = this.normalize(userMessage);
     const keywords = this.extractKeywords(normalized);
@@ -578,6 +618,37 @@ class SproutEngine {
       ...entry,
       relevance: this.calculateMatchScore(normalized, keywords, entry)
     }));
+
+    // Boost scores using knowledge graph connections
+    try {
+      const { data: graphData } = await this.db
+        .from(SPROUT_TABLES.KNOWLEDGE_GRAPH)
+        .select('concept, related_concept, strength')
+        .eq('model', 'sprout-1.2')
+        .eq('active', true);
+
+      if (graphData && graphData.length > 0) {
+        // Find concepts the user is asking about
+        const matchedConcepts = new Set();
+        for (const k of graphData) {
+          if (keywords.some(kw => k.concept.includes(kw) || k.related_concept.includes(kw))) {
+            matchedConcepts.add(k.concept);
+            matchedConcepts.add(k.related_concept);
+          }
+        }
+
+        // Boost training entries that match connected concepts
+        for (const entry of scored) {
+          const entryKeywords = this.extractKeywords(this.normalize(entry.question + ' ' + entry.answer));
+          for (const ek of entryKeywords) {
+            if (matchedConcepts.has(ek)) {
+              entry.relevance += 0.15; // Knowledge graph connection boost
+              break;
+            }
+          }
+        }
+      }
+    } catch (e) { /* knowledge graph not available yet */ }
 
     return scored
       .filter(e => e.relevance > 0.05)
