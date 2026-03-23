@@ -2422,7 +2422,6 @@ class SproutEngine {
     const topicContinuity = this.detectTopicContinuity(keywords);
 
     // ── Phase 1: Extract CONCEPTS from knowledge (not full sentences) ──
-    const relevantKnowledge = await this.findRelevantKnowledge(userMessage, 8);
     const concepts = this.extractConcepts(relevantKnowledge, keywords);
 
     // ── Phase 2: Understand what the user is asking for ──
