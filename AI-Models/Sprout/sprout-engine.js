@@ -1914,7 +1914,7 @@ class SproutEngine {
     // Try knowledge base with different scoring
     const relevantKnowledge = await this.findRelevantKnowledge(originalQuestion, 10);
     for (const entry of relevantKnowledge) {
-      const candidateAnswer = this.paraphrase(entry.answer);
+      const candidateAnswer = this.applySynonyms(entry.answer);
       if (!wrongAnswers.some(wrong => this.isSimilarAnswer(wrong, candidateAnswer.toLowerCase()))) {
         const enhanced = this.enhanceWithEmotion(candidateAnswer, userEmotion, originalQuestion);
         return {
@@ -2392,11 +2392,12 @@ class SproutEngine {
   }
 
   // ══════════════════════════════════════════
-  // SPROUT'S BRAIN — Custom thinking engine
-  // No external AI. Sprout thinks for itself.
+  // SPROUT'S REAL BRAIN — Synthesize, don't copy
+  // No sentence is ever copied from training data.
+  // Sprout extracts CONCEPTS, then BUILDS its own sentences.
   // ══════════════════════════════════════════
 
-  // The CORE thinking method — Sprout's own mind at work
+  // The CORE thinking method — real synthesis, not copy-paste
   async think(userMessage, userEmotion, keywords) {
     // Find relevant knowledge from training data
     let relevantKnowledge = await this.findRelevantKnowledge(userMessage, 8);
@@ -2417,26 +2418,41 @@ class SproutEngine {
       try { await this.loadPersonality(); } catch (e) { /* continue */ }
     }
 
-    // ── Phase 1: Extract and understand ──
-    const knowledgeFragments = this.extractKnowledgeFragments(relevantKnowledge);
     const conversationContext = this.getConversationContext();
     const topicContinuity = this.detectTopicContinuity(keywords);
 
-    // ── Phase 2: Compose an original response ──
-    let response = this.composeResponse(
-      userMessage, userEmotion, keywords,
-      knowledgeFragments, conversationContext, topicContinuity
-    );
+    // ── Phase 1: Extract CONCEPTS from knowledge (not full sentences) ──
+    const relevantKnowledge = await this.findRelevantKnowledge(userMessage, 8);
+    const concepts = this.extractConcepts(relevantKnowledge, keywords);
 
-    // ── Phase 3: Apply personality and style ──
+    // ── Phase 2: Understand what the user is asking for ──
+    const intent = this.analyzeIntent(userMessage, keywords);
+
+    // ── Phase 3: SYNTHESIZE a response from concepts ──
+    let response = null;
+
+    if (concepts.length > 0) {
+      // We have relevant knowledge — build an answer from extracted concepts
+      response = this.synthesizeFromConcepts(userMessage, intent, concepts, conversationContext, topicContinuity);
+    }
+
+    // ── Phase 4: If no concepts matched, REASON from scratch ──
+    if (!response) {
+      response = this.reasonAlone(userMessage, intent, keywords, conversationContext);
+    }
+
+    if (!response) return null; // Truly don't know — let fallback handle it
+
+    // ── Phase 5: Apply personality ──
     response = this.applyPersonality(response, userEmotion);
 
-    // ── Phase 4: Apply emotional enhancement ──
+    // ── Phase 6: Emotional enhancement ──
     response = this.enhanceWithEmotion(response, userEmotion, userMessage);
 
-    // Calculate confidence based on knowledge relevance
-    const avgRelevance = relevantKnowledge.reduce((s, k) => s + k.relevance, 0) / relevantKnowledge.length;
-    const confidence = Math.min(0.95, avgRelevance + 0.3);
+    // Confidence: higher if we had concepts, lower if we reasoned alone
+    const confidence = concepts.length > 0
+      ? Math.min(0.9, 0.3 + concepts.length * 0.1)
+      : 0.35;
 
     return {
       answer: response,
@@ -2444,45 +2460,392 @@ class SproutEngine {
       source_id: relevantKnowledge[0]?.id || null,
       category: relevantKnowledge[0]?.category || 'synthesized',
       emotion: userEmotion,
-      mode: 'sprout-brain'
+      mode: concepts.length > 0 ? 'sprout-brain' : 'sprout-reasoning'
     };
   }
 
-  // Break knowledge entries into reusable fragments
-  extractKnowledgeFragments(knowledgeEntries) {
-    const fragments = [];
+  // ══════════════════════════════════════════
+  // CONCEPT EXTRACTION — Pull facts/ideas from data, NOT sentences
+  // ══════════════════════════════════════════
+
+  extractConcepts(knowledgeEntries, queryKeywords) {
+    const concepts = [];
+    const seen = new Set();
 
     for (const entry of knowledgeEntries) {
       const answer = entry.answer || '';
-      // Split on sentence boundaries
-      const sentences = answer.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 10);
+      const question = entry.question || '';
 
-      for (const sentence of sentences) {
-        fragments.push({
-          text: sentence.trim(),
-          category: entry.category || 'general',
-          relevance: entry.relevance || 0,
-          topic: entry.question || '',
-          tags: entry.tags || []
-        });
-      }
+      // Extract individual FACTS from the answer
+      const facts = this.breakIntoFacts(answer);
 
-      // Also keep the full answer as a fragment for short entries
-      if (sentences.length <= 2 && answer.length > 10) {
-        fragments.push({
-          text: answer.trim(),
+      for (const fact of facts) {
+        // Only keep facts relevant to the query
+        const factWords = this.extractKeywords(this.normalize(fact));
+        const relevance = queryKeywords.filter(k => factWords.includes(k)).length;
+        if (relevance === 0 && facts.length > 1) continue; // Skip irrelevant facts (unless it's the only one)
+
+        const key = this.normalize(fact).substring(0, 50);
+        if (seen.has(key)) continue;
+        seen.add(key);
+
+        concepts.push({
+          fact: fact.trim(),
+          keywords: factWords,
           category: entry.category || 'general',
-          relevance: (entry.relevance || 0) + 0.1,
-          topic: entry.question || '',
-          tags: entry.tags || [],
-          isComplete: true
+          relevance: (entry.relevance || 0) + relevance * 0.1,
+          sourceQuestion: question
         });
       }
     }
 
-    // Sort by relevance — most relevant fragments first
-    fragments.sort((a, b) => b.relevance - a.relevance);
-    return fragments;
+    // Sort by relevance
+    concepts.sort((a, b) => b.relevance - a.relevance);
+    return concepts.slice(0, 10); // Top 10 concepts
+  }
+
+  // Break an answer into individual facts/claims
+  breakIntoFacts(text) {
+    if (!text || text.length < 5) return [];
+
+    // Split on sentence boundaries
+    const sentences = text.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 5);
+
+    const facts = [];
+    for (const sentence of sentences) {
+      // Split compound sentences on conjunctions
+      const parts = sentence.split(/\b(?:and also|additionally|furthermore|moreover)\b/i);
+      for (const part of parts) {
+        const clean = part.trim();
+        if (clean.length > 5) {
+          facts.push(clean);
+        }
+      }
+    }
+
+    return facts;
+  }
+
+  // ══════════════════════════════════════════
+  // INTENT ANALYSIS — Understand WHAT the user wants
+  // ══════════════════════════════════════════
+
+  analyzeIntent(message, keywords) {
+    const lower = message.toLowerCase().trim();
+    const normalized = this.normalize(message);
+
+    return {
+      isQuestion: /\?$/.test(message.trim()) || /^(what|who|where|when|which|how|why|can|could|would|should|do|does|is|are|tell me|explain)\b/i.test(lower),
+      isDefinition: /^(what is|what are|what does|define|meaning of|what do you mean by)\b/i.test(lower),
+      isExplanation: /\b(explain|why|how does|how do|how is|how are)\b/i.test(lower),
+      isList: /\b(list|name|give me|tell me)\b.*\b(\d+|some|few|several)\b/i.test(lower),
+      isOpinion: /\b(think|believe|opinion|feel about|your take)\b/i.test(lower),
+      isCreative: /\b(write|compose|create|make|generate|come up with)\b/i.test(lower),
+      wantsDetail: /\b(explain|detail|elaborate|more|deeper|thorough|full|tell me more)\b/i.test(lower),
+      wantsBrief: /\b(brief|short|quick|simple|one sentence|tldr|summary)\b/i.test(lower),
+      isFollowUp: this.conversationHistory.length > 0 && (
+        /\b(what about|how about|and|also|more|else|another|too)\b/i.test(lower) ||
+        keywords.length <= 2
+      ),
+      topic: keywords.slice(0, 3).join(' '),
+      subjectWords: keywords.filter(k => k.length > 2)
+    };
+  }
+
+  // ══════════════════════════════════════════
+  // SENTENCE SYNTHESIS — Build NEW sentences from concepts
+  // This is the real brain. No copying. Pure generation.
+  // ══════════════════════════════════════════
+
+  synthesizeFromConcepts(userMessage, intent, concepts, conversationContext, topicContinuity) {
+    const parts = [];
+    const topic = intent.topic || concepts[0]?.keywords[0] || 'that';
+
+    // ── Step 1: Pick a contextual opener ──
+    const opener = this.pickOpener(intent, topicContinuity);
+    if (opener) parts.push(opener);
+
+    // ── Step 2: Build the core answer from concept FACTS ──
+    // Don't copy — extract the KEY INFORMATION and restate it in new words
+    const maxConcepts = intent.wantsDetail ? 4 : (intent.wantsBrief ? 1 : 2);
+    const usedFacts = new Set();
+
+    for (let i = 0; i < Math.min(concepts.length, maxConcepts); i++) {
+      const concept = concepts[i];
+      const factKey = this.normalize(concept.fact).substring(0, 40);
+      if (usedFacts.has(factKey)) continue;
+      usedFacts.add(factKey);
+
+      // EXTRACT the core information from the fact
+      const coreInfo = this.extractCoreInfo(concept.fact);
+
+      // BUILD a new sentence using the core info
+      const newSentence = this.buildSentence(coreInfo, intent, i > 0);
+
+      if (newSentence && !this.usedResponses.has(newSentence)) {
+        parts.push(newSentence);
+        this.usedResponses.add(newSentence);
+      }
+    }
+
+    // ── Step 3: Add a natural closer (sometimes) ──
+    if (parts.length > 1 && Math.random() > 0.5) {
+      const closer = this.pickRandom(this.closers);
+      if (closer) parts.push(closer);
+    }
+
+    if (parts.length <= 1) return null; // Only had an opener, no real content
+
+    // Clean up usedResponses memory
+    if (this.usedResponses.size > 100) {
+      const arr = [...this.usedResponses];
+      this.usedResponses = new Set(arr.slice(-50));
+    }
+
+    let result = parts.join(' ').trim();
+    result = result.replace(/\s{2,}/g, ' ').replace(/([.!?])\s*([.!?])/g, '$1');
+    return result;
+  }
+
+  // Extract the CORE INFORMATION from a fact (subject, verb, object, details)
+  extractCoreInfo(fact) {
+    const words = fact.split(/\s+/);
+    const normalized = this.normalize(fact);
+    const keywords = this.extractKeywords(normalized);
+
+    // Try to identify subject-verb-object structure
+    const info = {
+      subject: null,
+      action: null,
+      object: null,
+      details: [],
+      fullKeywords: keywords,
+      originalLength: words.length
+    };
+
+    // Find the main subject (first noun-like keywords)
+    if (keywords.length > 0) {
+      info.subject = keywords[0];
+    }
+
+    // Find action words (verbs)
+    const verbs = ['is', 'are', 'was', 'were', 'has', 'have', 'can', 'does', 'do',
+      'makes', 'creates', 'causes', 'helps', 'provides', 'involves', 'means',
+      'refers', 'contains', 'includes', 'uses', 'produces', 'works', 'allows',
+      'enables', 'supports', 'requires', 'depends', 'affects', 'plays'];
+    for (const word of words) {
+      if (verbs.includes(word.toLowerCase())) {
+        info.action = word.toLowerCase();
+        break;
+      }
+    }
+
+    // Everything else is details
+    if (keywords.length > 1) {
+      info.object = keywords[1];
+      info.details = keywords.slice(2);
+    }
+
+    return info;
+  }
+
+  // BUILD a completely new sentence from core information
+  buildSentence(info, intent, isFollowOn) {
+    const { subject, action, object, details, fullKeywords } = info;
+    if (!subject) return null;
+
+    // Rebuild the key concepts into fresh words
+    const subj = this.capitalizeFirst(subject);
+    const obj = object || '';
+    const dets = details.join(', ');
+
+    // Choose a sentence structure based on intent and what info we have
+    let sentence = '';
+
+    if (intent.isDefinition && !isFollowOn) {
+      // "X is/refers to something that involves Y"
+      const defVerbs = ['refers to', 'is essentially', 'is about', 'involves', 'deals with', 'can be described as', 'has to do with'];
+      sentence = `${subj} ${this.pickRandom(defVerbs)} ${obj}`;
+      if (dets) sentence += `, which involves ${dets}`;
+      sentence += '.';
+    } else if (intent.isExplanation && !isFollowOn) {
+      // "The way X works is through Y"
+      const explainStarters = [
+        `The way ${subject} works is`,
+        `${subj} functions by`,
+        `What happens with ${subject} is that it`,
+        `${subj} operates through`,
+        `The key thing about ${subject} is that it`
+      ];
+      sentence = `${this.pickRandom(explainStarters)} ${action || 'involves'} ${obj}`;
+      if (dets) sentence += ` with ${dets}`;
+      sentence += '.';
+    } else if (isFollowOn) {
+      // Continuation sentence
+      const continuations = [
+        `Additionally, ${subject} ${action || 'relates to'} ${obj}`,
+        `It also ${action || 'involves'} ${obj}`,
+        `On top of that, ${subject} ${action || 'connects to'} ${obj}`,
+        `Another aspect is that ${subject} ${action || 'plays a role in'} ${obj}`
+      ];
+      sentence = this.pickRandom(continuations);
+      if (dets) sentence += ` (including ${dets})`;
+      sentence += '.';
+    } else {
+      // General informative sentence
+      const patterns = [
+        `${subj} ${action || 'is related to'} ${obj}`,
+        `When it comes to ${subject}, ${action || 'it involves'} ${obj}`,
+        `${subj} is known for ${action || 'being connected to'} ${obj}`,
+        `From what I understand, ${subject} ${action || 'has to do with'} ${obj}`
+      ];
+      sentence = this.pickRandom(patterns);
+      if (dets) sentence += `, along with ${dets}`;
+      sentence += '.';
+    }
+
+    // Apply synonym variation to keep it fresh
+    sentence = this.applySynonyms(sentence);
+
+    return sentence;
+  }
+
+  // Apply synonym substitution without changing meaning
+  applySynonyms(text) {
+    let result = text;
+    for (const [word, alternatives] of Object.entries(this.synonyms)) {
+      const regex = new RegExp(`\\b${word}\\b`, 'gi');
+      if (regex.test(result) && Math.random() > 0.6) {
+        const replacement = this.pickRandom(alternatives);
+        result = result.replace(regex, (match) => {
+          if (match[0] === match[0].toUpperCase()) {
+            return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+          }
+          return replacement;
+        });
+      }
+    }
+    return result;
+  }
+
+  // Pick a contextual opener based on intent
+  pickOpener(intent, topicContinuity) {
+    if (topicContinuity && topicContinuity.turnGap <= 3) {
+      return this.pickRandom(this.sentenceStarters.connective);
+    }
+    if (intent.isQuestion && intent.isDefinition) {
+      return this.pickRandom(this.sentenceStarters.informative);
+    }
+    if (intent.isExplanation) {
+      return this.pickRandom(this.sentenceStarters.informative);
+    }
+    if (intent.isFollowUp) {
+      return this.pickRandom(this.sentenceStarters.connective);
+    }
+    if (intent.isOpinion) {
+      return this.pickRandom(this.sentenceStarters.reflective);
+    }
+    if (intent.isQuestion) {
+      return this.pickRandom(this.sentenceStarters.informative);
+    }
+    return null;
+  }
+
+  // ══════════════════════════════════════════
+  // REASONING ENGINE — Think ALONE when no data matches
+  // Generate an answer purely from logic and what we can infer
+  // ══════════════════════════════════════════
+
+  reasonAlone(userMessage, intent, keywords, conversationContext) {
+    // The AI doesn't have this in its data. It must THINK.
+
+    // ── Strategy 1: Try to answer from word meanings and common sense ──
+    if (intent.isDefinition && keywords.length > 0) {
+      const topic = keywords.join(' ');
+      // We don't know the exact definition, but we can be honest about it
+      // while still trying to think
+      const attempts = [
+        `I haven't learned about ${topic} yet, but based on the words themselves, I think it might involve ${this.guessFromWordParts(keywords)}. I could be wrong though — can you tell me if that's close?`,
+        `Hmm, ${topic} is something I don't have in my knowledge base yet. Let me think... ${this.guessFromWordParts(keywords)}. Am I on the right track?`,
+        `I'm going to take a guess here — ${topic} seems like it could relate to ${this.guessFromWordParts(keywords)}. Tell me if I'm right and I'll remember it!`
+      ];
+      return this.pickRandom(attempts);
+    }
+
+    // ── Strategy 2: Use conversation context to reason ──
+    if (intent.isFollowUp && conversationContext?.lastAssistantMessage) {
+      const lastKeywords = this.extractKeywords(this.normalize(conversationContext.lastAssistantMessage));
+      if (lastKeywords.length > 0) {
+        return `Building on what we were just discussing about ${lastKeywords.slice(0, 2).join(' and ')}, I think this connects to ${keywords.join(' ')}. Though I'll be honest — I'm reasoning through this on my own since I don't have specific data on it. What do you think?`;
+      }
+    }
+
+    // ── Strategy 3: Honest reasoning attempt ──
+    if (keywords.length > 0) {
+      const topic = keywords.join(' ');
+      const reasoningAttempts = [
+        `I don't have ${topic} in my database yet, but let me think about it from what I do know. ${this.attemptReasoning(keywords)}`,
+        `That's something I'm still learning about. My best reasoning on ${topic}: ${this.attemptReasoning(keywords)}`,
+        `I want to give you a real answer, not a fake one. I don't fully know about ${topic} yet. ${this.attemptReasoning(keywords)} Does that sound right? If not, tell me the answer and I'll learn it!`
+      ];
+      return this.pickRandom(reasoningAttempts);
+    }
+
+    return null; // Can't reason about this at all
+  }
+
+  // Try to guess meaning from word parts (prefixes, suffixes, roots)
+  guessFromWordParts(keywords) {
+    const guesses = [];
+    const wordRoots = {
+      'bio': 'life or living things', 'geo': 'earth or land', 'hydro': 'water',
+      'therm': 'heat or temperature', 'photo': 'light', 'auto': 'self',
+      'micro': 'very small things', 'macro': 'very large things', 'tele': 'distance',
+      'multi': 'many things', 'mono': 'one or single', 'poly': 'many',
+      'anti': 'against or opposing', 'pre': 'before', 'post': 'after',
+      'inter': 'between', 'trans': 'across', 'sub': 'under or below',
+      'super': 'above or beyond', 'semi': 'half or partial', 'neo': 'new',
+      'pseudo': 'false or fake', 'graph': 'writing or recording',
+      'scope': 'viewing or observing', 'ology': 'study of', 'phobia': 'fear of',
+      'phil': 'love of', 'chem': 'chemicals or substances', 'electr': 'electricity',
+      'astro': 'stars or space', 'aqua': 'water', 'aero': 'air',
+      'psych': 'the mind', 'neuro': 'the brain or nerves', 'cardio': 'the heart'
+    };
+
+    for (const keyword of keywords) {
+      for (const [root, meaning] of Object.entries(wordRoots)) {
+        if (keyword.toLowerCase().includes(root)) {
+          guesses.push(meaning);
+        }
+      }
+    }
+
+    if (guesses.length > 0) {
+      return `something related to ${[...new Set(guesses)].join(' and ')}`;
+    }
+
+    return `something I'd need to learn more about`;
+  }
+
+  // Attempt basic reasoning using what we know from word associations
+  attemptReasoning(keywords) {
+    const topic = keywords.join(' ');
+
+    // Try to find ANY loosely related knowledge
+    const allKeywords = new Set();
+    for (const entry of this.conversationHistory) {
+      if (entry.role === 'assistant') {
+        this.extractKeywords(this.normalize(entry.content)).forEach(k => allKeywords.add(k));
+      }
+    }
+
+    // See if any query keywords overlap with things we've discussed
+    const relatedTopics = keywords.filter(k => allKeywords.has(k));
+    if (relatedTopics.length > 0) {
+      return `I recall we touched on ${relatedTopics.join(' and ')} earlier in our conversation. I think ${topic} might be related, but I'd need you to confirm or teach me the right answer.`;
+    }
+
+    return `I think ${topic} is something interesting that I want to understand better. If you can tell me about it, I'll add it to my knowledge and remember it from now on.`;
   }
 
   // Get recent conversation context for continuity
@@ -2516,120 +2879,10 @@ class SproutEngine {
     return null;
   }
 
-  // ── The heart of Sprout's brain: Compose an original response ──
-  composeResponse(userMessage, userEmotion, keywords, fragments, conversationContext, topicContinuity) {
-    const parts = [];
-    const usedTexts = new Set();
-    const normalized = this.normalize(userMessage);
-
-    // Determine response strategy
-    const isQuestion = /\?$/.test(userMessage.trim()) || ['how', 'why', 'what', 'when', 'where', 'who', 'which', 'can', 'could', 'would', 'should', 'do', 'does', 'is', 'are'].some(w => normalized.startsWith(w));
-    const isShort = userMessage.split(/\s+/).length <= 4;
-    const wantsDetail = /\b(explain|detail|elaborate|more|deeper|thorough|full)\b/i.test(userMessage);
-
-    // ── Pick a sentence starter based on context ──
-    if (topicContinuity && topicContinuity.turnGap <= 3) {
-      // Continuing a topic — use connective starter
-      parts.push(this.pickRandom(this.sentenceStarters.connective));
-    } else if (isQuestion && userEmotion === 'curious') {
-      parts.push(this.pickRandom(this.sentenceStarters.curious));
-    } else if (['sad', 'angry', 'confused'].includes(userEmotion)) {
-      parts.push(this.pickRandom(this.sentenceStarters.empathetic));
-    } else if (isQuestion) {
-      parts.push(this.pickRandom(this.sentenceStarters.informative));
-    } else if (this.turnCount > 3) {
-      // Deep in conversation — use reflective starters
-      parts.push(this.pickRandom(this.sentenceStarters.reflective));
-    }
-
-    // ── Build the core response from knowledge fragments ──
-    const maxFragments = wantsDetail ? 4 : (isShort ? 1 : 2);
-    let fragmentsUsed = 0;
-
-    for (const fragment of fragments) {
-      if (fragmentsUsed >= maxFragments) break;
-      if (usedTexts.has(fragment.text)) continue;
-      if (this.usedResponses.has(fragment.text)) continue;
-
-      let text = fragment.text;
-
-      // Paraphrase to avoid copying training data verbatim
-      text = this.paraphrase(text);
-
-      // Add transition between fragments
-      if (fragmentsUsed > 0) {
-        text = this.pickRandom(this.transitions) + text.charAt(0).toLowerCase() + text.slice(1);
-      }
-
-      parts.push(text);
-      usedTexts.add(fragment.text);
-      this.usedResponses.add(fragment.text);
-      fragmentsUsed++;
-
-      // Keep usedResponses from growing unbounded
-      if (this.usedResponses.size > 100) {
-        const arr = [...this.usedResponses];
-        this.usedResponses = new Set(arr.slice(-50));
-      }
-    }
-
-    // ── Add a closer (sometimes) ──
-    if (fragmentsUsed > 0 && Math.random() > 0.4) {
-      const closer = this.pickRandom(this.closers);
-      if (closer) parts.push(closer);
-    }
-
-    // ── If we somehow have no parts, fall through ──
-    if (parts.length === 0) return null;
-
-    // Join parts naturally
-    let response = parts.join('').trim();
-
-    // Clean up any double spaces or weird punctuation
-    response = response.replace(/\s{2,}/g, ' ').replace(/([.!?])\s*([.!?])/g, '$1');
-
-    return response;
-  }
-
-  // ── Paraphrase engine: Vary language to create original expression ──
-  paraphrase(text) {
-    let result = text;
-
-    // Apply synonym substitution (with some randomness so it's not always changed)
-    for (const [word, alternatives] of Object.entries(this.synonyms)) {
-      // Create regex that matches the word with word boundaries
-      const regex = new RegExp(`\\b${word}\\b`, 'gi');
-      if (regex.test(result) && Math.random() > 0.5) {
-        const replacement = this.pickRandom(alternatives);
-        result = result.replace(regex, (match) => {
-          // Preserve capitalization
-          if (match[0] === match[0].toUpperCase()) {
-            return replacement.charAt(0).toUpperCase() + replacement.slice(1);
-          }
-          return replacement;
-        });
-      }
-    }
-
-    // Occasionally restructure sentence (move clause to the beginning/end)
-    if (Math.random() > 0.7) {
-      const commaIndex = result.indexOf(', ');
-      if (commaIndex > 10 && commaIndex < result.length - 20) {
-        const before = result.substring(0, commaIndex);
-        const after = result.substring(commaIndex + 2);
-        // Only swap if both parts are substantive
-        if (before.split(' ').length > 2 && after.split(' ').length > 2 && Math.random() > 0.5) {
-          result = after.charAt(0).toUpperCase() + after.slice(1);
-          if (!result.endsWith('.') && !result.endsWith('!') && !result.endsWith('?')) {
-            result += ', ' + before.charAt(0).toLowerCase() + before.slice(1) + '.';
-          } else {
-            result = result.replace(/[.!?]$/, '') + ', ' + before.charAt(0).toLowerCase() + before.slice(1) + '.';
-          }
-        }
-      }
-    }
-
-    return result;
+  // ── Capitalize first letter of a string ──
+  capitalizeFirst(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
   // ── Apply personality traits to shape the response ──

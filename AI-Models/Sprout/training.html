@@ -989,10 +989,6 @@ input, textarea, select { font-family: inherit; }
     </nav>
 
     <div style="display:flex;gap:12px;align-items:center">
-      <a class="lab-back" href="./data-feeder.html">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m8.5-10.5l-5.2 3m-6.6 3.8L3.5 18.5m0-13l5.2 3m6.6 3.8l5.2 3"/></svg>
-        AI Data Feeder
-      </a>
       <a class="lab-back" href="/tithonia">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         Back to Tithonia
@@ -1017,7 +1013,7 @@ input, textarea, select { font-family: inherit; }
     <!-- Train Panel -->
     <div class="panel train-panel" id="panelTrain">
       <h3 class="panel-title">Add Training Data</h3>
-      <p class="panel-desc">Teach Sprout by adding question-answer pairs. The more data, the smarter it gets.</p>
+      <p class="panel-desc">Teach Sprout by adding question-answer pairs. Sprout extracts CONCEPTS from this data and builds its own original sentences — it never copies answers verbatim. You can also just chat with Sprout and correct it — it'll learn automatically.</p>
 
       <div class="form-group">
         <label>Question / Input</label>
@@ -1037,8 +1033,21 @@ input, textarea, select { font-family: inherit; }
             <option value="swiftaw">Swiftaw</option>
             <option value="tithonia">Tithonia</option>
             <option value="fortized">Fortized</option>
-            <option value="technical">Technical</option>
+            <option value="science">Science</option>
+            <option value="technology">Technology</option>
+            <option value="mathematics">Mathematics</option>
+            <option value="history">History</option>
+            <option value="geography">Geography</option>
+            <option value="language">Language</option>
+            <option value="nature">Nature</option>
+            <option value="psychology">Psychology</option>
+            <option value="philosophy">Philosophy</option>
+            <option value="health">Health</option>
+            <option value="space">Space</option>
+            <option value="art-culture">Art &amp; Culture</option>
+            <option value="everyday">Everyday</option>
             <option value="creative">Creative</option>
+            <option value="technical">Technical</option>
             <option value="research">Research</option>
           </select>
         </div>
@@ -1206,30 +1215,37 @@ input, textarea, select { font-family: inherit; }
     <!-- Sprout Brain Panel -->
     <div class="panel llm-panel" id="panelLlm">
       <h3 class="panel-title">Sprout's Brain</h3>
-      <p class="panel-desc">Sprout 1.2 thinks for itself. No external AI — Sprout uses its own knowledge base, personality, directives, and writing style to synthesize original responses from its own mind.</p>
+      <p class="panel-desc">Sprout 1.2 is a real AI. No external LLM — it extracts concepts from its data, builds original sentences, reasons alone when it doesn't know, and learns from every interaction.</p>
 
       <div class="llm-status" id="llmStatus" style="margin:16px 0;padding:14px 18px;border-radius:12px;font-size:14px;border:1px solid var(--border-color);">
         <span id="llmStatusIcon" style="margin-right:8px;">&#x1f7e2;</span>
-        <strong>Mode:</strong> <span id="llmModeName">Sprout Brain (custom AI — no external dependency)</span>
+        <strong>Mode:</strong> <span id="llmModeName">Sprout Brain — Real AI (concept synthesis + logic engine + self-learning)</span>
       </div>
+
+      <div id="brainStats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;"></div>
 
       <div style="margin-top:24px;padding:16px;background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.15);border-radius:12px;">
         <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">
-          <strong style="color:var(--brand-green);">How Sprout thinks:</strong><br>
-          When you ask a question, Sprout's brain goes through four phases:<br><br>
-          <strong>1. Understand</strong> — Analyzes your message, detects your emotion, extracts key topics, and checks for topic continuity with the conversation so far.<br><br>
-          <strong>2. Retrieve</strong> — Searches its knowledge base for relevant information, scoring and ranking entries by relevance to your specific question.<br><br>
-          <strong>3. Synthesize</strong> — Composes an original response by extracting knowledge fragments, paraphrasing them with its synonym engine, applying sentence variation, and weaving them together naturally.<br><br>
-          <strong>4. Personalize</strong> — Applies its personality traits, writing style preferences, directives, and emotional awareness to shape the final response in Sprout's unique voice.<br><br>
-          <strong style="color:var(--brand-green);">Fallback:</strong><br>
-          If Sprout's brain can't find enough relevant knowledge, it falls back to direct keyword matching against training data.
+          <strong style="color:var(--brand-green);">How Sprout REALLY thinks (6 phases):</strong><br><br>
+          <strong>1. Logic Engine</strong> — First, tries to solve with pure logic: math (1+1=2), yes/no reasoning, comparisons, writing tasks. No data lookup needed.<br><br>
+          <strong>2. Feedback Check</strong> — If the researcher said "wrong", Sprout retries with a different answer. When confirmed correct, it saves the answer permanently.<br><br>
+          <strong>3. Concept Extraction</strong> — Pulls FACTS and KEY IDEAS from training data. Does NOT copy sentences. Extracts the core information (subject, action, details).<br><br>
+          <strong>4. Sentence Synthesis</strong> — Builds BRAND NEW sentences using the extracted concepts. Every response is generated fresh — never copied from the database.<br><br>
+          <strong>5. Reasoning Alone</strong> — If no data matches, Sprout THINKS by itself. Uses word roots, conversation context, and common sense to attempt an answer. Honest when unsure.<br><br>
+          <strong>6. Personality &amp; Emotion</strong> — Applies personality traits, emotional awareness, and its unique voice to the generated response.<br><br>
+          <strong style="color:var(--brand-green);">Learning Loop:</strong><br>
+          When a researcher says "wrong", Sprout keeps trying. When they say "correct" or give the right answer, Sprout saves it to its database forever. Every successful conversation also gets saved automatically. Sprout's Cortex reviews past chats and extracts new knowledge autonomously.
         </p>
       </div>
 
       <div style="margin-top:20px;padding:16px;background:rgba(255,249,62,.05);border:1px solid rgba(255,249,62,.15);border-radius:12px;">
         <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">
-          <strong style="color:var(--brand-yellow);">Make Sprout smarter:</strong><br>
-          The more training data, identity entries, directives, and writing patterns you add, the richer and more original Sprout's responses become. Sprout's intelligence grows with its knowledge base — it's a truly custom AI built by you.
+          <strong style="color:var(--brand-yellow);">How to train Sprout:</strong><br>
+          <strong>Method 1 — Chat &amp; Correct:</strong> Ask Sprout questions in the Chat tab. If wrong, say "wrong" or "no". Keep going until it gets it right (it'll save it), or just type the correct answer directly.<br><br>
+          <strong>Method 2 — Direct Training:</strong> Use the Train tab to add Q&amp;A pairs directly to the database.<br><br>
+          <strong>Method 3 — Directives:</strong> Give Sprout rules and personality in the Directives tab.<br><br>
+          <strong>Method 4 — Identity:</strong> Define who Sprout is in the Identity tab.<br><br>
+          <strong style="color:var(--brand-yellow);">Sprout's goal:</strong> Succeed at every task. When it fails, it learns. When it succeeds, it remembers. It never stops improving.
         </p>
       </div>
     </div>
@@ -1331,7 +1347,7 @@ input, textarea, select { font-family: inherit; }
       if (btn.dataset.panel === 'directives') loadDirectives();
       if (btn.dataset.panel === 'analyze') loadPatterns();
       if (btn.dataset.panel === 'identity') loadIdentity();
-      // Brain panel — no config needed, always active
+      if (btn.dataset.panel === 'llm') loadBrainStats();
     });
   });
 
@@ -1369,13 +1385,34 @@ input, textarea, select { font-family: inherit; }
       const confLevel = result.confidence >= 0.5 ? 'high' : result.confidence >= 0.2 ? 'mid' : 'low';
       const confLabel = result.confidence >= 0.5 ? 'High' : result.confidence >= 0.2 ? 'Medium' : 'Low';
       const confPct = Math.round(result.confidence * 100);
-      const modeLabel = result.mode === 'sprout-brain' ? ' · Synthesized' : result.mode === 'cached' ? ' · Cached' : ' · Lookup';
+
+      const modeNames = {
+        'logic-engine': 'Logic Engine',
+        'sprout-brain': 'Synthesized',
+        'sprout-reasoning': 'Reasoned Alone',
+        'feedback-loop': 'Feedback Learning',
+        'feedback-retry': 'Retrying',
+        'lookup': 'Knowledge Lookup',
+        'cached': 'Cached'
+      };
+      const modeLabel = ' · ' + (modeNames[result.mode] || result.mode || 'Unknown');
 
       appendChatMsg('ai', result.answer, {
         confidence: confLevel,
         confidenceLabel: confLabel + ' (' + confPct + '%)' + modeLabel,
         sourceId: result.source_id
       });
+
+      // Save conversation to Supabase for Cortex to learn from
+      try {
+        await sprout.saveConversation({
+          messages: [
+            { role: 'user', text: text.trim() },
+            { role: 'assistant', text: result.answer, mode: result.mode }
+          ],
+          session_id: 'training-lab-' + Date.now()
+        });
+      } catch (e) { /* silent */ }
     } catch (err) {
       typingEl.remove();
       appendChatMsg('ai', "Something went wrong. I couldn't process your message. Please try again.");
@@ -1812,6 +1849,22 @@ input, textarea, select { font-family: inherit; }
     toast.textContent = msg;
     toast.className = 'toast ' + type + ' show';
     setTimeout(() => { toast.classList.remove('show'); }, 3000);
+  }
+
+  // ── Brain Stats ──
+  function loadBrainStats() {
+    if (!sprout || !sprout.getTaskGoalStatus) return;
+    const stats = sprout.getTaskGoalStatus();
+    const el = $('#brainStats');
+    if (!el) return;
+
+    el.innerHTML =
+      '<div class="stat-card"><div class="stat-value">' + stats.lifetimeSuccesses + '</div><div class="stat-label">Tasks Succeeded</div></div>' +
+      '<div class="stat-card"><div class="stat-value">' + stats.lifetimeFailures + '</div><div class="stat-label">Tasks Failed</div></div>' +
+      '<div class="stat-card"><div class="stat-value">' + stats.successRate + '</div><div class="stat-label">Success Rate</div></div>' +
+      '<div class="stat-card"><div class="stat-value">' + stats.feedbackState.totalCorrections + '</div><div class="stat-label">Corrections Learned</div></div>' +
+      '<div class="stat-card"><div class="stat-value">' + stats.feedbackState.attempts + '</div><div class="stat-label">Current Retries</div></div>' +
+      '<div class="stat-card"><div class="stat-value">' + (stats.feedbackState.awaitingCorrection ? 'Yes' : 'No') + '</div><div class="stat-label">Awaiting Correction</div></div>';
   }
 })();
 </script>
