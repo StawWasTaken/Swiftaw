@@ -335,25 +335,38 @@ input, textarea, select { font-family: inherit; }
 }
 
 .chat-input-area {
+  position: relative;
   padding: 0 24px 24px;
   max-width: 768px;
   margin: 0 auto;
   width: 100%;
+  pointer-events: none;
 }
 
 .chat-input-bar {
+  max-width: var(--input-max-w, 768px);
+  margin: 0 auto;
   display: flex;
-  align-items: flex-end;
-  gap: 0;
+  flex-direction: column;
   background: var(--bg-input);
   border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 6px 6px 6px 16px;
-  transition: border-color .2s;
+  border-radius: 16px;
+  padding: 0;
+  transition: border-color .2s, box-shadow .2s;
+  pointer-events: all;
+  overflow: hidden;
 }
 
 .chat-input-bar:focus-within {
-  border-color: rgba(74,222,128,.3);
+  border-color: rgba(255,156,60,.3);
+  box-shadow: 0 0 0 3px rgba(255,156,60,.06);
+}
+
+.chat-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  padding: 6px 6px 6px 18px;
 }
 
 .chat-input-bar textarea {
@@ -362,36 +375,79 @@ input, textarea, select { font-family: inherit; }
   border: none;
   outline: none;
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: 14.5px;
   line-height: 1.5;
   padding: 10px 0;
   resize: none;
-  max-height: 120px;
+  max-height: 150px;
   min-height: 22px;
 }
 
 .chat-input-bar textarea::placeholder { color: var(--text-muted); }
 
 .chat-send-btn {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  border-radius: 10px;
-  background: var(--brand-green);
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: 12px;
+  background: var(--brand-orange);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity .15s;
+  transition: background .15s, transform .1s, opacity .15s;
   opacity: .4;
 }
 
 .chat-send-btn.active { opacity: 1; }
-.chat-send-btn.active:hover { opacity: .85; }
+.chat-send-btn.active:hover { background: #ffab55; transform: scale(1.04); }
 
 .chat-send-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   color: var(--bg-dark);
+}
+
+.chat-input-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px 6px;
+  border-top: 1px solid rgba(255,255,255,.04);
+}
+
+.chat-input-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.chat-model-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: default;
+  user-select: none;
+}
+
+.chat-model-btn .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4ade80;
+}
+
+.chat-input-disclaimer {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  pointer-events: all;
 }
 
 /* ── Train Panel ── */
@@ -1002,11 +1058,22 @@ input, textarea, select { font-family: inherit; }
       <div class="chat-messages" id="labChatMessages"></div>
       <div class="chat-input-area">
         <div class="chat-input-bar">
-          <textarea id="labChatInput" rows="1" placeholder="Talk to Sprout 1.2..." autocomplete="off"></textarea>
-          <button class="chat-send-btn" id="labChatSend">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z"/></svg>
-          </button>
+          <div class="chat-input-row">
+            <textarea id="labChatInput" rows="1" placeholder="Talk to Sprout 1.2..." autocomplete="off"></textarea>
+            <button class="chat-send-btn" id="labChatSend" aria-label="Send message">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z"/></svg>
+            </button>
+          </div>
+          <div class="chat-input-toolbar">
+            <div class="chat-input-toolbar-right">
+              <span class="chat-model-btn">
+                <span class="dot"></span>
+                <span>Sprout 1.2</span>
+              </span>
+            </div>
+          </div>
         </div>
+        <div class="chat-input-disclaimer">Sprout 1.2 Training Lab. Responses may vary as Sprout learns.</div>
       </div>
     </div>
 
@@ -1354,7 +1421,7 @@ input, textarea, select { font-family: inherit; }
   // ── Chat ──
   chatInput.addEventListener('input', function() {
     this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    this.style.height = Math.min(this.scrollHeight, 150) + 'px';
     chatSend.classList.toggle('active', this.value.trim().length > 0);
   });
 
