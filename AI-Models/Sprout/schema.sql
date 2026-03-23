@@ -222,6 +222,115 @@ do $$ begin
 end $$;
 
 -- ============================================
+-- 8. Knowledge Graph
+-- Stores extracted concepts and their connections
+-- Tithonia builds a web of understanding from analyzed text
+-- ============================================
+
+create table if not exists sprout_knowledge_graph (
+  id uuid default gen_random_uuid() primary key,
+  model text not null default 'sprout-1.2',
+  concept text not null,
+  related_concept text,
+  relationship text not null default 'related_to',
+  strength float not null default 0.5,
+  source_text text,
+  category text not null default 'general',
+  tags text[] default '{}',
+  active boolean default true,
+  created_at timestamptz default now(),
+  updated_at timestamptz
+);
+
+create index if not exists idx_knowledge_model on sprout_knowledge_graph(model, active);
+create index if not exists idx_knowledge_concept on sprout_knowledge_graph(concept);
+create index if not exists idx_knowledge_related on sprout_knowledge_graph(related_concept);
+create index if not exists idx_knowledge_category on sprout_knowledge_graph(category);
+
+alter table sprout_knowledge_graph enable row level security;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where tablename = 'sprout_knowledge_graph' and policyname = 'Public can read knowledge') then
+    create policy "Public can read knowledge" on sprout_knowledge_graph for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_knowledge_graph' and policyname = 'Public can insert knowledge') then
+    create policy "Public can insert knowledge" on sprout_knowledge_graph for insert with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_knowledge_graph' and policyname = 'Public can update knowledge') then
+    create policy "Public can update knowledge" on sprout_knowledge_graph for update using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_knowledge_graph' and policyname = 'Public can delete knowledge') then
+    create policy "Public can delete knowledge" on sprout_knowledge_graph for delete using (true);
+  end if;
+end $$;
+
+-- ============================================
+-- 9. Learning Log
+-- Tracks what Tithonia learned, when, and how it evolved
+-- ============================================
+
+create table if not exists sprout_learning_log (
+  id uuid default gen_random_uuid() primary key,
+  model text not null default 'sprout-1.2',
+  event_type text not null default 'text_ingestion',
+  summary text not null,
+  details jsonb not null default '{}',
+  source_type text default 'paste',
+  knowledge_gained integer default 0,
+  connections_made integer default 0,
+  created_at timestamptz default now()
+);
+
+create index if not exists idx_learning_model on sprout_learning_log(model);
+create index if not exists idx_learning_type on sprout_learning_log(event_type);
+
+alter table sprout_learning_log enable row level security;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where tablename = 'sprout_learning_log' and policyname = 'Public can read learning log') then
+    create policy "Public can read learning log" on sprout_learning_log for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_learning_log' and policyname = 'Public can insert learning log') then
+    create policy "Public can insert learning log" on sprout_learning_log for insert with check (true);
+  end if;
+end $$;
+
+-- ============================================
+-- 10. Self-Reflections
+-- Tithonia's own thoughts about its knowledge gaps,
+-- strengths, and areas for growth
+-- ============================================
+
+create table if not exists sprout_self_reflections (
+  id uuid default gen_random_uuid() primary key,
+  model text not null default 'sprout-1.2',
+  reflection_type text not null default 'gap_analysis',
+  content text not null,
+  priority integer not null default 0,
+  resolved boolean default false,
+  resolution text,
+  created_at timestamptz default now(),
+  resolved_at timestamptz
+);
+
+create index if not exists idx_reflections_model on sprout_self_reflections(model);
+create index if not exists idx_reflections_type on sprout_self_reflections(reflection_type);
+
+alter table sprout_self_reflections enable row level security;
+
+do $$ begin
+  if not exists (select 1 from pg_policies where tablename = 'sprout_self_reflections' and policyname = 'Public can read reflections') then
+    create policy "Public can read reflections" on sprout_self_reflections for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_self_reflections' and policyname = 'Public can insert reflections') then
+    create policy "Public can insert reflections" on sprout_self_reflections for insert with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where tablename = 'sprout_self_reflections' and policyname = 'Public can update reflections') then
+    create policy "Public can update reflections" on sprout_self_reflections for update using (true);
+  end if;
+end $$;
+
+-- ============================================
 -- Notify PostgREST to reload schema cache
 -- Run this after creating new tables so the API
 -- recognizes them immediately

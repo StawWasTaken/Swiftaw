@@ -22,5 +22,8 @@ const SPROUT_TABLES = {
   MEDIA: 'sprout_media',
   DIRECTIVES: 'sprout_directives',
   WRITING_PATTERNS: 'sprout_writing_patterns',
-  IDENTITY: 'sprout_identity'
+  IDENTITY: 'sprout_identity',
+  KNOWLEDGE_GRAPH: 'sprout_knowledge_graph',
+  LEARNING_LOG: 'sprout_learning_log',
+  SELF_REFLECTIONS: 'sprout_self_reflections'
 };
