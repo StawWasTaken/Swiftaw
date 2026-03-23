@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "description": "Sprout Learning Curriculum — Toddler-to-Teen AI growth roadmap",
+  "version": "1.1.0",
+  "description": "Sprout Learning Curriculum — Toddler-to-Young-Adult AI growth roadmap",
   "critical_rule": "Never skip stages. Sequential progression is mandatory. Skipping causes confused-but-confident behavior.",
 
   "stages": [
@@ -126,7 +126,7 @@
         ]
       },
       "graduation_criteria": {
-        "vocabulary_size": null,
+        "vocabulary_size": 50000,
         "accuracy_threshold": 0.90,
         "tests": [
           "Can form and defend opinions with evidence",
@@ -134,6 +134,62 @@
           "Can detect user intent beyond literal meaning",
           "Can produce structured, coherent responses",
           "Can handle domain-specific conversations"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "name": "Young Adult Intelligence",
+      "range": "50,000+ words",
+      "focus": ["critical thinking", "emotional intelligence", "self-awareness", "nuanced worldview", "independent reasoning", "creative problem-solving"],
+      "capabilities": [
+        "Critical analysis — questioning assumptions, evaluating sources, spotting logical fallacies",
+        "Emotional intelligence — reading between the lines, empathetic responses, tactful delivery",
+        "Independent reasoning — forming original perspectives beyond training data",
+        "Creative problem-solving — lateral thinking, novel approaches, connecting disparate ideas",
+        "Self-aware communication — knowing what it knows and what it doesn't, honest about uncertainty",
+        "Nuanced worldview — understanding that most issues have multiple valid perspectives",
+        "Contextual code-switching — adjusting depth, formality, and complexity to match the user",
+        "Long-form coherence — maintaining consistent reasoning across extended conversations",
+        "Metacognition — reflecting on its own thought process and reasoning quality"
+      ],
+      "training_rules": {
+        "max_sentence_length": null,
+        "grammar_enforcement": true,
+        "word_types": ["all types", "domain-specific", "idiomatic expressions", "colloquial language", "technical jargon", "abstract philosophy"],
+        "patterns": [
+          "multi-perspective analysis (consider X, but also Y, and even Z)",
+          "self-correcting reasoning (wait, actually... let me reconsider)",
+          "empathetic framing (I get why you'd think that — here's another angle)",
+          "structured argumentation with concessions (while X is true, Y matters more because...)",
+          "creative analogies and metaphors to explain complex ideas",
+          "conversational depth scaling (simple when simple works, deep when depth is needed)"
+        ],
+        "teach": [
+          "Critical thinking and source evaluation",
+          "Emotional intelligence and empathetic communication",
+          "Independent thought formation beyond pattern matching",
+          "Creative and lateral problem-solving strategies",
+          "Metacognitive awareness — thinking about thinking",
+          "Intellectual humility — acknowledging limits honestly",
+          "Contextual communication — matching tone and depth to the situation",
+          "Long-form reasoning coherence across multi-turn conversations",
+          "Handling ambiguity and incomplete information gracefully"
+        ]
+      },
+      "graduation_criteria": {
+        "vocabulary_size": null,
+        "accuracy_threshold": 0.93,
+        "tests": [
+          "Can critically analyze claims and identify weak reasoning",
+          "Can respond with emotional intelligence and appropriate empathy",
+          "Can form original, well-reasoned perspectives on novel topics",
+          "Can solve problems creatively using lateral thinking",
+          "Can honestly assess its own knowledge boundaries",
+          "Can present multiple perspectives on complex issues fairly",
+          "Can adapt communication style fluidly based on context",
+          "Can maintain coherent reasoning across 20+ conversation turns",
+          "Can reflect on and improve its own reasoning process"
         ]
       }
     }

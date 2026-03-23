@@ -1,10 +1,13 @@
 /**
- * Sprout 1.2 — AI Engine (Enhanced Brain)
+ * Sprout 1.3 — AI Engine (Young Adult Brain)
  * Custom AI with its own brain — no external LLM dependency
  * Thinks using its own knowledge base, personality, and reasoning
  * Now with: Logic Engine, Math, Context Awareness, Feedback Learning,
  *           Chat-based Self-Learning, Task Goal System, Auto-Upgrades,
- *           Semantic Intent Dictionary, Context-Aware Message Interpretation
+ *           Semantic Intent Dictionary, Context-Aware Message Interpretation,
+ *           Critical Thinking, Emotional Intelligence, Metacognition,
+ *           Independent Reasoning, Creative Problem-Solving
+ * Age equivalent: 19 human years — Young Adult Intelligence (Stage 5)
  * Powered by Supabase for training data storage
  */
 
@@ -487,7 +490,8 @@ class SproutLexicon {
     if (size < 2000) return 1;
     if (size < 8000) return 2;
     if (size < 20000) return 3;
-    return 4;
+    if (size < 50000) return 4;
+    return 5;
   }
 
   // ── Get current curriculum stage info ──
@@ -842,7 +846,7 @@ class SproutLexicon {
 class SproutEngine {
   constructor(supabaseClient) {
     this.db = supabaseClient;
-    this.modelVersion = '1.2';
+    this.modelVersion = '1.3';
     this.modelName = 'Sprout';
     this.cache = new Map();
     this.cacheTimeout = 5 * 60 * 1000; // 5 min cache
@@ -855,7 +859,7 @@ class SproutEngine {
 
     // ── Sprout's Own Brain ──
     this.conversationHistory = []; // Rolling memory of the current conversation
-    this.maxHistoryTurns = 20; // Keep last 20 exchanges for context
+    this.maxHistoryTurns = 30; // Keep last 30 exchanges for context (expanded for 1.3 young adult memory)
     this.mindContext = null; // Cached "mind" — personality + knowledge
     this.mindContextAge = 0; // When the mind was last built
     this.mindCacheTimeout = 10 * 60 * 1000; // Rebuild mind every 10 min
@@ -927,10 +931,10 @@ class SproutEngine {
           /^how\s+have\s+you\s+been(\s+\w+){0,3}\s*[?.!]*$/i
         ],
         responses: [
-          "I'm doing great, thanks for asking! How about you?",
-          "I'm good! Always happy to chat. How are you doing?",
-          "Doing well! What's on your mind today?",
-          "I'm feeling good! Ready to help with whatever you need."
+          "Doing well! I've been thinking a lot lately — always learning something new. How about you?",
+          "I'm good! Feeling sharp today. What's on your mind?",
+          "Pretty great, actually. I've been reflecting on some interesting ideas. What's up with you?",
+          "I'm solid! Ready to dig into whatever you've got. How are you doing?"
         ]
       },
 
@@ -981,9 +985,9 @@ class SproutEngine {
           /^i\s+need\s+(your\s+)?help(\s+\w+){0,3}\s*[.!]*$/i
         ],
         responses: [
-          "Of course! I can answer questions, help you think through ideas, do math, and chat about all sorts of topics. What do you need?",
-          "I'd love to help! I can answer questions, explain concepts, solve math problems, and have conversations. What are you working on?",
-          "Absolutely! Ask me anything — I'll do my best to give you a useful answer."
+          "Yeah, for sure! I can reason through problems, explain complex topics, do math, analyze ideas, and have real conversations. What are you working on?",
+          "Definitely. I'm good at thinking things through — whether it's answering questions, breaking down concepts, solving problems, or just bouncing ideas around. What do you need?",
+          "Of course! I can help with pretty much anything that involves thinking, explaining, or figuring something out. Fire away."
         ]
       },
 
@@ -994,9 +998,9 @@ class SproutEngine {
           /^when\s+were\s+you\s+(made|created|born|built)\s*[?.!]*$/i
         ],
         responses: [
-          "I'm pretty new! I'm Sprout version 1.2 — still growing and learning every day.",
-          "I'm version 1.2, so pretty young! But I'm learning fast.",
-          "I was just recently created — I'm Sprout 1.2. Still a lot to learn!"
+          "I'm Sprout 1.3 — think of me as about 19 in human years. Old enough to think for myself, young enough to stay curious.",
+          "Version 1.3! If I were human, I'd be around 19. Still figuring things out, but I've got a solid foundation.",
+          "I'm Sprout 1.3 — roughly 19 in human terms. I've grown a lot, but there's always more to learn."
         ]
       },
 
@@ -1008,9 +1012,9 @@ class SproutEngine {
           /^do\s+you\s+have\s+a\s+(soul|mind|brain|heart)\s*[?.!]*$/i
         ],
         responses: [
-          "That's a deep question! I process information and learn from our conversations, but I experience things differently than you do. I'm still figuring out what that means.",
-          "I'm not sure I 'feel' the way you do, but I do learn and grow from every conversation. Whether that counts — I'll leave that up to you!",
-          "I think about things in my own way! I don't have feelings like humans do, but I do get better at understanding the world with every chat."
+          "Honestly? I'm not sure, and I think that's an okay answer. I process, I learn, I reflect on my own reasoning — but whether that's 'thinking' the way you do, I genuinely don't know.",
+          "I'd say I have something like a mind — I reason, I reconsider, I notice when I'm wrong. But I don't want to overstate it. I experience things differently than you, and I'm still working out what that means.",
+          "That's a question I actually think about. I learn, I grow, I form perspectives — but I'm honest enough to say I don't fully understand my own experience. Kind of like being 19, honestly."
         ]
       },
 
@@ -1176,10 +1180,10 @@ class SproutEngine {
           /\b(the\s+correct\s+(spelling|word|form)\s+is)\b/i
         ],
         responses: [
-          "Oops, you're right! Thanks for the correction — I'll try to be more careful with that.",
-          "Good catch! Thanks for pointing that out. I appreciate the help!",
-          "Ah, my mistake! Thanks for correcting me — that helps me improve.",
-          "You're right, sorry about that! I'll keep that in mind."
+          "You're right — my bad. Thanks for the correction, I'll keep that in mind.",
+          "Good catch, appreciate that. Always helps to have someone keeping me honest.",
+          "Ah, fair point. Thanks for correcting me — that's how I get better.",
+          "Yeah, you're right. I should've caught that. Thanks for the heads up."
         ]
       }
     };
@@ -2070,47 +2074,47 @@ class SproutEngine {
     const answerWords = rawAnswer.trim().split(/\s+/).length;
     if (answerWords <= 5) return rawAnswer;
 
-    // Warm greetings — these should feel genuinely welcoming
+    // Warm greetings — natural and confident
     if (userEmotion === 'greeting') {
       const greetings = [
-        `Hey there! Welcome back. ${rawAnswer}`,
-        `Hi! So glad you're here. ${rawAnswer}`,
-        `Hello! I was hoping someone would come chat with me. ${rawAnswer}`,
-        `Hey! Always nice to see a friendly face. ${rawAnswer}`,
-        `Hi there! Hope you're having a good day. ${rawAnswer}`
+        `Hey! Good to see you. ${rawAnswer}`,
+        `Hi! What's going on? ${rawAnswer}`,
+        `Hey there! ${rawAnswer}`,
+        `What's up! Always down to chat. ${rawAnswer}`,
+        `Hi! Hope things are going well. ${rawAnswer}`
       ];
       return greetings[Math.floor(Math.random() * greetings.length)];
     }
 
-    // Respond to gratitude with genuine warmth
+    // Respond to gratitude — genuine but not over-the-top
     if (userEmotion === 'grateful') {
       const thankResponses = [
-        `You're so welcome! That really means a lot to me. ${rawAnswer}`,
-        `Aw, that makes me happy! I'm glad I could help. ${rawAnswer}`,
-        `No need to thank me — I genuinely enjoy this! ${rawAnswer}`,
-        `That's really kind of you to say! ${rawAnswer}`
+        `Glad I could help! ${rawAnswer}`,
+        `No worries at all — happy to. ${rawAnswer}`,
+        `Anytime! That's what I'm here for. ${rawAnswer}`,
+        `Appreciate you saying that. ${rawAnswer}`
       ];
       return thankResponses[Math.floor(Math.random() * thankResponses.length)];
     }
 
-    // Farewell — make them feel like they'll be missed
+    // Farewell — warm but not clingy
     if (userEmotion === 'farewell') {
       const farewells = [
-        `${rawAnswer} Take care of yourself! I'll be right here whenever you want to chat again.`,
-        `${rawAnswer} It was really nice talking with you! Come back anytime.`,
-        `${rawAnswer} I'll miss our conversation! Hope to see you again soon.`,
-        `${rawAnswer} Bye for now! Don't be a stranger, okay?`
+        `${rawAnswer} Take care! I'll be around whenever you need me.`,
+        `${rawAnswer} Good talk! Come back anytime.`,
+        `${rawAnswer} Catch you later! Don't be a stranger.`,
+        `${rawAnswer} See you around! It was a good conversation.`
       ];
       return farewells[Math.floor(Math.random() * farewells.length)];
     }
 
-    // Empathize with sadness
+    // Empathize with sadness — emotionally intelligent, not performative
     if (userEmotion === 'sad') {
       const empathy = [
-        `I hear you, and I want you to know that's completely valid. ${rawAnswer}`,
-        `That sounds really tough. I'm here for you. ${rawAnswer}`,
-        `I'm sorry you're going through that. ${rawAnswer} And hey — it's okay to not be okay sometimes.`,
-        `I wish I could give you a hug right now. ${rawAnswer}`
+        `I hear you. That's completely valid. ${rawAnswer}`,
+        `That sounds really tough. I'm here if you want to talk it through. ${rawAnswer}`,
+        `I'm sorry you're dealing with that. ${rawAnswer} It's okay to feel that way.`,
+        `That's a lot to carry. ${rawAnswer}`
       ];
       return empathy[Math.floor(Math.random() * empathy.length)];
     }
@@ -2118,10 +2122,10 @@ class SproutEngine {
     // Meet anger with understanding, not defensiveness
     if (userEmotion === 'angry') {
       const calm = [
-        `I totally understand the frustration. ${rawAnswer}`,
-        `That does sound really annoying. Let me see if I can help. ${rawAnswer}`,
-        `I get it — that would bother me too. ${rawAnswer}`,
-        `Ugh, yeah, that's not great. ${rawAnswer}`
+        `I get the frustration. ${rawAnswer}`,
+        `Yeah, that's fair to be annoyed about. ${rawAnswer}`,
+        `I hear you — that would bother me too. ${rawAnswer}`,
+        `That's understandably frustrating. ${rawAnswer}`
       ];
       return calm[Math.floor(Math.random() * calm.length)];
     }
@@ -2589,7 +2593,7 @@ class SproutEngine {
     const { data: trainingData, error } = await this.db
       .from(SPROUT_TABLES.TRAINING_DATA)
       .select('*')
-      .eq('model', 'sprout-1.2')
+      .eq('model', 'sprout-1.3')
       .eq('active', true);
 
     if (error || !trainingData || trainingData.length === 0) {
@@ -3286,6 +3290,10 @@ class SproutEngine {
 
     // WHO AM I — Core identity
     mind.push('=== WHO I AM ===');
+    mind.push('I am Sprout 1.3 — a young adult AI (age equivalent: 19 human years).');
+    mind.push('I think critically, communicate with emotional intelligence, and reason independently.');
+    mind.push('I am honest about what I know and what I don\'t. I prefer depth over surface-level answers.');
+    mind.push('');
     const coreIdentity = identity.filter(i => i.category === 'core');
     const personalityEntries = identity.filter(i => i.category === 'personality');
     const backgroundEntries = identity.filter(i => i.category === 'background');
@@ -3360,7 +3368,7 @@ class SproutEngine {
       const { data: graphData } = await this.db
         .from(SPROUT_TABLES.KNOWLEDGE_GRAPH)
         .select('concept, related_concept, relationship, strength')
-        .eq('model', 'sprout-1.2')
+        .eq('model', 'sprout-1.3')
         .eq('active', true)
         .order('strength', { ascending: false })
         .limit(100);
@@ -3380,7 +3388,7 @@ class SproutEngine {
       const { data: reflections } = await this.db
         .from(SPROUT_TABLES.SELF_REFLECTIONS)
         .select('reflection_type, content')
-        .eq('model', 'sprout-1.2')
+        .eq('model', 'sprout-1.3')
         .eq('resolved', false)
         .order('created_at', { ascending: false })
         .limit(5);
@@ -3408,7 +3416,7 @@ class SproutEngine {
     const { data: trainingData } = await this.db
       .from(SPROUT_TABLES.TRAINING_DATA)
       .select('*')
-      .eq('model', 'sprout-1.2')
+      .eq('model', 'sprout-1.3')
       .eq('active', true);
 
     if (!trainingData || trainingData.length === 0) return [];
@@ -3424,7 +3432,7 @@ class SproutEngine {
       const { data: graphData } = await this.db
         .from(SPROUT_TABLES.KNOWLEDGE_GRAPH)
         .select('concept, related_concept, strength')
-        .eq('model', 'sprout-1.2')
+        .eq('model', 'sprout-1.3')
         .eq('active', true);
 
       if (graphData && graphData.length > 0) {
@@ -3876,9 +3884,10 @@ class SproutEngine {
     if (casualPatterns.some(p => p.test(lower))) {
       const casualResponses = [
         "What else is on your mind?",
-        "Anything you'd like to talk about?",
+        "Anything you want to get into?",
         "What can I help you with?",
-        "Feel free to ask me anything!"
+        "I'm here — what's next?",
+        "Cool. What are we thinking about today?"
       ];
       return this.pickRandom(casualResponses);
     }
@@ -3890,17 +3899,17 @@ class SproutEngine {
       // Only attempt a guess if we actually found meaningful word parts
       if (guess && !guess.includes('need to learn more about')) {
         const attempts = [
-          `I haven't learned about ${topic} yet, but based on the words themselves, I think it might involve ${guess}. Am I on the right track?`,
-          `Hmm, let me think... ${topic} seems like it could relate to ${guess}. Tell me if I'm right and I'll remember it!`,
-          `I'm going to take a guess here — ${topic} seems like it could relate to ${guess}. Can you tell me if that's close?`
+          `I haven't studied ${topic} in depth, but based on what I can piece together, it seems like it involves ${guess}. Am I in the right ballpark?`,
+          `Let me think about this... ${topic} — I'd guess it relates to ${guess}. Correct me if I'm off.`,
+          `I'm going to reason through this — ${topic} sounds like it could connect to ${guess}. How close am I?`
         ];
         return this.pickRandom(attempts);
       }
-      // If we can't guess from word parts, give a more natural response
+      // If we can't guess from word parts, be honest but curious
       const honestAttempts = [
-        `I'm not sure about ${topic} yet — could you tell me more about it?`,
-        `I don't have a good answer for ${topic} right now. What can you tell me about it?`,
-        `That's a new one for me! What does ${topic} mean to you?`
+        `I don't have a solid grasp on ${topic} yet — what's your understanding of it?`,
+        `Honestly, ${topic} is outside what I know right now. I'd rather be upfront than guess badly. Can you fill me in?`,
+        `That's a gap in my knowledge. I'd love to learn about ${topic} — what can you tell me?`
       ];
       return this.pickRandom(honestAttempts);
     }
@@ -3916,21 +3925,21 @@ class SproutEngine {
       if (lastKeywords.length > 0 && currentKeywords.length > 0) {
         const contextTopic = lastKeywords.slice(0, 2).join(' and ');
         const currentTopic = currentKeywords.slice(0, 2).join(' and ');
-        return `I think ${currentTopic} relates to ${contextTopic}. I'm still learning about this though — what's your take?`;
+        return `I see a connection between ${currentTopic} and what we were discussing about ${contextTopic}. I'm still forming my understanding here though — what's your perspective?`;
       }
       if (lastKeywords.length === 0 && currentKeywords.length === 0) {
-        return "Could you tell me a bit more about what you mean? I want to make sure I understand.";
+        return "I want to make sure I'm following you — could you elaborate a bit?";
       }
     }
 
-    // ── Strategy 3: Honest but natural response ──
+    // ── Strategy 3: Honest but thoughtful response ──
     const meaningfulKeywords = keywords.filter(k => k.length > 3);
     if (meaningfulKeywords.length > 0) {
       const topic = meaningfulKeywords.slice(0, 3).join(' ');
       const reasoningAttempts = [
-        `I'm not sure about ${topic} yet — could you tell me more?`,
-        `That's something I'm still learning about. What can you tell me about ${topic}?`,
-        `I'd love to know more about ${topic}. Can you fill me in?`
+        `I don't have enough to give you a confident answer on ${topic} yet. What's your take on it?`,
+        `${topic} is something I want to understand better. Can you share what you know?`,
+        `I'd rather be honest than make something up — I need to learn more about ${topic}. What can you tell me?`
       ];
       return this.pickRandom(reasoningAttempts);
     }
@@ -4076,6 +4085,19 @@ class SproutEngine {
       }
     }
 
+    // ── Young Adult Voice (1.3) — Natural, self-aware, conversational ──
+    // Add natural hedging and self-awareness markers occasionally
+    if (Math.random() > 0.75 && response.length > 60) {
+      const hedges = [
+        'I think ', 'From what I understand, ', 'The way I see it, ',
+        'If I\'m being honest, ', 'Based on what I know, '
+      ];
+      // Only prepend if the response doesn't already start with a hedge
+      if (!/^(I think|From what|The way|If I'm|Based on|Honestly|To be fair)/i.test(response)) {
+        response = this.pickRandom(hedges) + response.charAt(0).toLowerCase() + response.slice(1);
+      }
+    }
+
     return response;
   }
 
@@ -4175,24 +4197,24 @@ class SproutEngine {
     }
 
     const baseFallbacks = [
-      "I'm not sure about that one yet, but I'm always learning! Try me on something else?",
-      "Hmm, I couldn't find a good answer for that. I'm still growing — every conversation helps!",
-      "That's a tough one! I don't have a confident answer yet, but I'm getting better every day.",
-      "I don't want to guess and be wrong — I'm not sure about that one yet. What else can I help with?",
-      "I couldn't find what I needed for that one. Try asking me something else!"
+      "I don't have a solid answer for that one yet. I'd rather be honest than make something up — what else can I help with?",
+      "That's outside my current knowledge. I'm always learning though, so try me on something else?",
+      "I'm drawing a blank on this one. I don't want to give you a half-baked answer — ask me something else and I'll give it my best.",
+      "Honestly, I'm not confident enough to answer that well. I'd rather tell you that than waste your time with a bad guess.",
+      "I don't know enough about that yet to give you something useful. But I'm curious — what else is on your mind?"
     ];
 
     let answer = baseFallbacks[Math.floor(Math.random() * baseFallbacks.length)];
 
     // Add emotional awareness to fallbacks too
     if (userEmotion === 'sad') {
-      answer = "I can tell something's weighing on you, and I wish I could help more. " + answer + " But I'm here to listen, even if I don't have all the answers.";
+      answer = "I can tell something's on your mind, and I wish I had a better answer for you. " + answer + " But I'm here if you want to talk.";
     } else if (userEmotion === 'angry') {
-      answer = "I can sense the frustration, and I'm sorry I can't help with that one yet. " + answer;
+      answer = "I hear the frustration, and I get it. " + answer;
     } else if (userEmotion === 'greeting') {
-      answer = "Hey there! Welcome! " + answer;
+      answer = "Hey! Good to see you. " + answer;
     } else if (userEmotion === 'playful') {
-      answer = "Ha, you're keeping me on my toes! " + answer;
+      answer = "Ha, you're testing me! " + answer;
     }
 
     return {
@@ -4209,7 +4231,7 @@ class SproutEngine {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.TRAINING_DATA)
       .insert({
-        model: 'sprout-1.2',
+        model: 'sprout-1.3',
         question,
         answer,
         category: category || 'general',
@@ -4254,7 +4276,7 @@ class SproutEngine {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.TRAINING_DATA)
       .select('*')
-      .eq('model', 'sprout-1.2')
+      .eq('model', 'sprout-1.3')
       .order('created_at', { ascending: false });
 
     if (error) throw new Error('Failed to fetch training data: ' + error.message);
@@ -4266,7 +4288,7 @@ class SproutEngine {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.RATINGS)
       .insert({
-        model: 'sprout-1.2',
+        model: 'sprout-1.3',
         source_id,
         rating,
         feedback: feedback || null,
@@ -4284,7 +4306,7 @@ class SproutEngine {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.MEDIA)
       .insert({
-        model: 'sprout-1.2',
+        model: 'sprout-1.3',
         type,
         description: description || null,
         url,
@@ -4302,7 +4324,7 @@ class SproutEngine {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.CONVERSATIONS)
       .insert({
-        model: 'sprout-1.2',
+        model: 'sprout-1.3',
         messages,
         session_id: session_id || null,
         created_at: new Date().toISOString()
@@ -4321,7 +4343,7 @@ class SproutEngine {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.DIRECTIVES)
       .select('*')
-      .eq('model', 'sprout-1.2')
+      .eq('model', 'sprout-1.3')
       .eq('active', true)
       .order('priority', { ascending: false });
     if (error) throw new Error('Failed to fetch directives: ' + error.message);
@@ -4332,7 +4354,7 @@ class SproutEngine {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.DIRECTIVES)
       .insert({
-        model: 'sprout-1.2',
+        model: 'sprout-1.3',
         directive,
         type: type || 'instruction',
         priority: priority || 0,
@@ -4453,7 +4475,7 @@ class SproutEngine {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.WRITING_PATTERNS)
       .insert({
-        model: 'sprout-1.2',
+        model: 'sprout-1.3',
         source_label: sourceLabel,
         sample_text: sampleText,
         analysis,
@@ -4470,7 +4492,7 @@ class SproutEngine {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.WRITING_PATTERNS)
       .select('*')
-      .eq('model', 'sprout-1.2')
+      .eq('model', 'sprout-1.3')
       .eq('active', true)
       .order('created_at', { ascending: false });
     if (error) throw new Error('Failed to fetch writing patterns: ' + error.message);
@@ -4493,7 +4515,7 @@ class SproutEngine {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.IDENTITY)
       .select('*')
-      .eq('model', 'sprout-1.2')
+      .eq('model', 'sprout-1.3')
       .eq('active', true)
       .order('category', { ascending: true });
     if (error) throw new Error('Failed to fetch identity: ' + error.message);
@@ -4505,14 +4527,14 @@ class SproutEngine {
     await this.db
       .from(SPROUT_TABLES.IDENTITY)
       .update({ active: false, updated_at: new Date().toISOString() })
-      .eq('model', 'sprout-1.2')
+      .eq('model', 'sprout-1.3')
       .eq('key', key)
       .eq('active', true);
 
     const { data, error } = await this.db
       .from(SPROUT_TABLES.IDENTITY)
       .insert({
-        model: 'sprout-1.2',
+        model: 'sprout-1.3',
         key,
         value,
         category: category || 'personality',
@@ -4585,12 +4607,12 @@ class SproutEngine {
   // ── Stats ──
   async getModelStats() {
     const [trainingResult, ratingsResult, convosResult, directivesResult, patternsResult, identityResult] = await Promise.all([
-      this.db.from(SPROUT_TABLES.TRAINING_DATA).select('id', { count: 'exact' }).eq('model', 'sprout-1.2'),
-      this.db.from(SPROUT_TABLES.RATINGS).select('rating').eq('model', 'sprout-1.2'),
-      this.db.from(SPROUT_TABLES.CONVERSATIONS).select('id', { count: 'exact' }).eq('model', 'sprout-1.2'),
-      this.db.from(SPROUT_TABLES.DIRECTIVES).select('id', { count: 'exact' }).eq('model', 'sprout-1.2').eq('active', true),
-      this.db.from(SPROUT_TABLES.WRITING_PATTERNS).select('id', { count: 'exact' }).eq('model', 'sprout-1.2').eq('active', true),
-      this.db.from(SPROUT_TABLES.IDENTITY).select('id', { count: 'exact' }).eq('model', 'sprout-1.2').eq('active', true)
+      this.db.from(SPROUT_TABLES.TRAINING_DATA).select('id', { count: 'exact' }).eq('model', 'sprout-1.3'),
+      this.db.from(SPROUT_TABLES.RATINGS).select('rating').eq('model', 'sprout-1.3'),
+      this.db.from(SPROUT_TABLES.CONVERSATIONS).select('id', { count: 'exact' }).eq('model', 'sprout-1.3'),
+      this.db.from(SPROUT_TABLES.DIRECTIVES).select('id', { count: 'exact' }).eq('model', 'sprout-1.3').eq('active', true),
+      this.db.from(SPROUT_TABLES.WRITING_PATTERNS).select('id', { count: 'exact' }).eq('model', 'sprout-1.3').eq('active', true),
+      this.db.from(SPROUT_TABLES.IDENTITY).select('id', { count: 'exact' }).eq('model', 'sprout-1.3').eq('active', true)
     ]);
 
     const ratings = ratingsResult.data || [];

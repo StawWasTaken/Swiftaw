@@ -384,7 +384,7 @@ class SproutSmartSearch {
       await this.db
         .from('sprout_training_data')
         .insert({
-          model: 'sprout-1.2',
+          model: 'sprout-1.3',
           question,
           answer,
           category,

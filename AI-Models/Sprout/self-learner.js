@@ -179,7 +179,7 @@ class SelfLearner {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.KNOWLEDGE_GRAPH)
       .select('*')
-      .eq('model', 'sprout-1.2')
+      .eq('model', 'sprout-1.3')
       .eq('active', true)
       .order('created_at', { ascending: false })
       .limit(500);
@@ -191,7 +191,7 @@ class SelfLearner {
     let query = this.db
       .from(SPROUT_TABLES.SELF_REFLECTIONS)
       .select('*')
-      .eq('model', 'sprout-1.2')
+      .eq('model', 'sprout-1.3')
       .order('created_at', { ascending: false })
       .limit(100);
 
@@ -208,7 +208,7 @@ class SelfLearner {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.LEARNING_LOG)
       .select('*')
-      .eq('model', 'sprout-1.2')
+      .eq('model', 'sprout-1.3')
       .order('created_at', { ascending: false })
       .limit(limit);
     if (error) throw error;
@@ -264,7 +264,7 @@ class SelfLearner {
           await this.db
             .from(SPROUT_TABLES.KNOWLEDGE_GRAPH)
             .insert({
-              model: 'sprout-1.2',
+              model: 'sprout-1.3',
               concept,
               related_concept: related,
               relationship: 'cross_domain',
@@ -355,7 +355,7 @@ class SelfLearner {
         await this.db
           .from(SPROUT_TABLES.SELF_REFLECTIONS)
           .insert({
-            model: 'sprout-1.2',
+            model: 'sprout-1.3',
             reflection_type: 'gap_analysis',
             content: gap.message,
             priority: gap.severity === 'critical' ? 10 : gap.severity === 'weak' ? 5 : 3,
@@ -546,7 +546,7 @@ class SelfLearner {
       const { data, error } = await this.db
         .from(SPROUT_TABLES.CONVERSATIONS)
         .select('*')
-        .eq('model', 'sprout-1.2')
+        .eq('model', 'sprout-1.3')
         .order('created_at', { ascending: false })
         .limit(20);
       if (!error && data) conversations = data;
@@ -674,7 +674,7 @@ class SelfLearner {
       await this.db
         .from(SPROUT_TABLES.SELF_REFLECTIONS)
         .insert({
-          model: 'sprout-1.2',
+          model: 'sprout-1.3',
           reflection_type: reflectionType,
           content: reflection,
           priority: 5,
@@ -883,7 +883,7 @@ class SelfLearner {
       await this.db
         .from(SPROUT_TABLES.LEARNING_LOG)
         .insert({
-          model: 'sprout-1.2',
+          model: 'sprout-1.3',
           event_type: eventType,
           summary,
           details: details || {},
