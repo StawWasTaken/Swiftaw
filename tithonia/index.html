@@ -260,7 +260,7 @@ input, textarea { font-family: inherit; }
 .messages {
   max-width: var(--input-max-w);
   margin: 0 auto;
-  padding: 24px 24px 100px;
+  padding: 24px 24px 140px;
 }
 
 /* ── Landing state ── */
@@ -270,7 +270,7 @@ input, textarea { font-family: inherit; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 24px 120px;
+  padding: 40px 24px 160px;
   text-align: center;
 }
 
@@ -880,7 +880,7 @@ input, textarea { font-family: inherit; }
   }
 
   .messages {
-    padding: 16px 16px 100px;
+    padding: 16px 16px 140px;
   }
 
   .input-bar-wrap {
@@ -1443,15 +1443,17 @@ input, textarea { font-family: inherit; }
     } else {
       // Fallback if Supabase not connected
       const delay = 1000 + Math.random() * 1500;
-      setTimeout(() => {
-        typingEl.remove();
-        const fallback = "Sprout 1.2 is still warming up. The AI model isn't connected yet, but it will be soon!";
-        convo.messages.push({ role: 'assistant', text: fallback });
-        saveConversations();
-        renderMessage('assistant', fallback);
-        scrollToBottom();
-        isGenerating = false;
-      }, delay);
+      await new Promise(resolve => {
+        setTimeout(() => {
+          typingEl.remove();
+          const fallback = "Sprout 1.2 is still warming up. The AI model isn't connected yet, but it will be soon!";
+          convo.messages.push({ role: 'assistant', text: fallback });
+          saveConversations();
+          renderMessage('assistant', fallback);
+          scrollToBottom();
+          resolve();
+        }, delay);
+      });
     }
 
     isGenerating = false;
