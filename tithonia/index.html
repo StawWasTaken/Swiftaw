@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/AI-Models/Sprout/supabase-config.js"></script>
+<script src="/AI-Models/Sprout/smart-search.js"></script>
 <script src="/AI-Models/Sprout/sprout-engine.js"></script>
 <style>
 /* ── Variables ── */
@@ -1479,7 +1480,9 @@ input, textarea { font-family: inherit; }
     'lookup': 'from knowledge base',
     'cached': 'remembered',
     'context-aware': 'understood context',
-    'lexicon': 'knows this word'
+    'lexicon': 'knows this word',
+    'smart-search': 'searched the web',
+    'sprout-reasoning': 'reasoned it out'
   };
 
   function renderMessage(role, text, emotion, mode, files) {

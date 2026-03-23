@@ -868,6 +868,16 @@ class SproutEngine {
     // ── Lexicon — Word meanings, senses, categories, relations ──
     this.lexicon = new SproutLexicon();
 
+    // ── Smart Search — Web knowledge engine ──
+    this.smartSearch = new SproutSmartSearch(supabaseClient);
+
+    // ── Multilingual Support ──
+    this.currentLanguage = 'en'; // Default language
+    this.supportedLanguages = ['en', 'fr', 'de', 'es', 'it'];
+    this.languageNames = {
+      en: 'English', fr: 'French', de: 'German', es: 'Spanish', it: 'Italian'
+    };
+
     // ── Feedback Loop Learning ──
     this.feedbackState = {
       awaitingCorrection: false,     // True when researcher said "wrong"
@@ -1096,6 +1106,123 @@ class SproutEngine {
           "Alright! Let me know if you change your mind.",
           "No problem! I'm here if you need anything.",
           "Okay! Feel free to ask me something else."
+        ]
+      }
+    };
+
+    // ══════════════════════════════════════════════════════════════
+    // MULTILINGUAL INTENT RESPONSES
+    // Grounded responses in French, German, Spanish, Italian
+    // ══════════════════════════════════════════════════════════════
+    this.multilingualIntents = {
+      fr: {
+        greeting: ["Salut !", "Bonjour !", "Hey !", "Coucou !"],
+        status_query: [
+          "Je vais bien, merci ! Et toi ?",
+          "Ça va bien ! Toujours content de discuter. Et toi ?",
+          "Je me porte bien ! Qu'est-ce que je peux faire pour toi ?"
+        ],
+        name_query: [
+          "Je m'appelle Sprout ! Enchanté !",
+          "Mon nom c'est Sprout — ravi de te rencontrer !",
+          "Tu peux m'appeler Sprout !"
+        ],
+        capability_query: [
+          "Bien sûr ! Je peux répondre à des questions, t'aider à réfléchir, faire des maths et discuter. De quoi as-tu besoin ?",
+          "Je serais ravi de t'aider ! Pose-moi n'importe quelle question."
+        ],
+        gratitude: ["De rien !", "Avec plaisir !", "Content de pouvoir aider !"],
+        farewell: ["Au revoir ! C'était super de discuter !", "À plus tard ! Reviens quand tu veux.", "Prends soin de toi !"],
+        positive_feedback: ["Merci ! Content que ça t'aide !", "Super, je suis sur la bonne voie !"],
+        compliment: ["Oh, merci ! Ça me fait vraiment plaisir.", "C'est gentil ! J'essaie toujours de m'améliorer."],
+        apology: ["Pas de souci ! T'inquiète pas.", "Aucun problème ! Comment puis-je t'aider ?"],
+        simple_yes: ["Super ! De quoi on parle ?", "Cool ! Qu'est-ce qu'on fait ?"],
+        simple_no: ["D'accord ! Fais-moi signe si tu changes d'avis.", "Pas de problème !"],
+        fallback: [
+          "Hmm, laisse-moi chercher ça pour toi...",
+          "Bonne question ! Je vais voir ce que je peux trouver.",
+          "Je ne sais pas encore, mais je vais chercher !"
+        ]
+      },
+      de: {
+        greeting: ["Hallo!", "Hey!", "Hi!", "Guten Tag!"],
+        status_query: [
+          "Mir geht's gut, danke! Und dir?",
+          "Gut! Immer froh zu plaudern. Wie geht's dir?",
+          "Mir geht es gut! Was kann ich für dich tun?"
+        ],
+        name_query: [
+          "Ich heiße Sprout! Freut mich!",
+          "Mein Name ist Sprout — schön, dich kennenzulernen!"
+        ],
+        capability_query: [
+          "Natürlich! Ich kann Fragen beantworten, bei Mathe helfen und über viele Themen reden. Was brauchst du?"
+        ],
+        gratitude: ["Gern geschehen!", "Immer gerne!", "Freut mich, helfen zu können!"],
+        farewell: ["Tschüss! War schön mit dir zu reden!", "Bis später! Komm jederzeit wieder.", "Pass auf dich auf!"],
+        positive_feedback: ["Danke! Schön, dass es hilft!", "Super, freut mich!"],
+        compliment: ["Oh, danke! Das freut mich wirklich.", "Wie nett! Ich versuche immer besser zu werden."],
+        apology: ["Kein Problem! Mach dir keine Sorgen.", "Alles gut!"],
+        simple_yes: ["Super! Worüber reden wir?", "Toll! Was kommt als nächstes?"],
+        simple_no: ["Okay! Sag Bescheid, wenn du deine Meinung änderst.", "Kein Problem!"],
+        fallback: [
+          "Hmm, lass mich das für dich nachschlagen...",
+          "Gute Frage! Ich schaue mal, was ich finden kann.",
+          "Das weiß ich noch nicht, aber ich suche nach einer Antwort!"
+        ]
+      },
+      es: {
+        greeting: ["¡Hola!", "¡Hey!", "¡Qué tal!"],
+        status_query: [
+          "¡Estoy bien, gracias! ¿Y tú?",
+          "¡Bien! Siempre contento de charlar. ¿Cómo estás?",
+          "¡Estoy bien! ¿En qué te puedo ayudar?"
+        ],
+        name_query: [
+          "¡Me llamo Sprout! ¡Encantado!",
+          "Mi nombre es Sprout — ¡mucho gusto!"
+        ],
+        capability_query: [
+          "¡Claro! Puedo responder preguntas, ayudar con matemáticas y hablar de muchos temas. ¿Qué necesitas?"
+        ],
+        gratitude: ["¡De nada!", "¡Con gusto!", "¡Me alegra poder ayudar!"],
+        farewell: ["¡Adiós! ¡Fue genial charlar!", "¡Hasta luego! Vuelve cuando quieras.", "¡Cuídate!"],
+        positive_feedback: ["¡Gracias! ¡Me alegra que te sirva!", "¡Genial, voy por buen camino!"],
+        compliment: ["¡Oh, gracias! Eso me hace muy feliz.", "¡Qué amable! Siempre trato de mejorar."],
+        apology: ["¡No te preocupes!", "¡Sin problema! ¿En qué te puedo ayudar?"],
+        simple_yes: ["¡Genial! ¿De qué hablamos?", "¡Cool! ¿Qué sigue?"],
+        simple_no: ["¡Está bien! Avísame si cambias de opinión.", "¡Sin problema!"],
+        fallback: [
+          "Hmm, déjame buscar eso para ti...",
+          "¡Buena pregunta! Voy a ver qué encuentro.",
+          "Aún no lo sé, ¡pero voy a buscar!"
+        ]
+      },
+      it: {
+        greeting: ["Ciao!", "Ehi!", "Salve!"],
+        status_query: [
+          "Sto bene, grazie! E tu?",
+          "Bene! Sempre felice di chiacchierare. Come stai?",
+          "Sto bene! Come posso aiutarti?"
+        ],
+        name_query: [
+          "Mi chiamo Sprout! Piacere!",
+          "Il mio nome è Sprout — piacere di conoscerti!"
+        ],
+        capability_query: [
+          "Certo! Posso rispondere a domande, aiutare con la matematica e parlare di tanti argomenti. Di cosa hai bisogno?"
+        ],
+        gratitude: ["Prego!", "Con piacere!", "Felice di poter aiutare!"],
+        farewell: ["Arrivederci! È stato bello chiacchierare!", "A dopo! Torna quando vuoi.", "Abbi cura di te!"],
+        positive_feedback: ["Grazie! Mi fa piacere che ti sia utile!", "Fantastico, sono sulla strada giusta!"],
+        compliment: ["Oh, grazie! Mi fa davvero piacere.", "Che gentile! Cerco sempre di migliorare."],
+        apology: ["Non ti preoccupare!", "Nessun problema! Come posso aiutarti?"],
+        simple_yes: ["Fantastico! Di cosa parliamo?", "Bene! Cosa facciamo?"],
+        simple_no: ["Va bene! Fammi sapere se cambi idea.", "Nessun problema!"],
+        fallback: [
+          "Hmm, lasciami cercare per te...",
+          "Bella domanda! Vedo cosa riesco a trovare.",
+          "Non lo so ancora, ma cerco subito!"
         ]
       }
     };
@@ -1699,6 +1826,116 @@ class SproutEngine {
     return expanded;
   }
 
+  // ══════════════════════════════════════════════════════════════
+  // LANGUAGE DETECTION — Detect what language the user is speaking
+  // ══════════════════════════════════════════════════════════════
+
+  detectLanguage(text) {
+    const lower = text.toLowerCase().trim();
+
+    // French indicators
+    const frenchWords = /\b(je|tu|il|elle|nous|vous|ils|elles|est|suis|sont|avez|avons|ont|pas|les|des|une|que|qui|dans|avec|sur|pour|mais|ou|donc|bonjour|salut|merci|oui|non|bien|très|aussi|comment|pourquoi|quand|quel|quelle|quoi|où|ça|c'est|j'ai|s'il|cette|mon|ton|son|ma|ta|sa)\b/;
+    const frenchPatterns = /[àâéèêëïîôùûüÿçœæ]|qu'|l'|d'|n'|s'|c'|j'/;
+
+    // German indicators
+    const germanWords = /\b(ich|du|er|sie|es|wir|ihr|ist|bin|sind|habe|hat|haben|nicht|ein|eine|das|der|die|und|oder|aber|wenn|weil|dass|auch|noch|schon|sehr|wie|was|wer|wo|warum|wann|guten|tag|danke|bitte|ja|nein|gut|hallo)\b/;
+    const germanPatterns = /[äöüß]|sch|ch\b|ung\b|keit\b|heit\b|lich\b/;
+
+    // Spanish indicators
+    const spanishWords = /\b(yo|tú|él|ella|nosotros|ellos|es|soy|son|estoy|está|están|tengo|tiene|tienen|no|las|los|una|uno|que|quien|con|para|pero|por|como|donde|cuando|hola|gracias|sí|muy|también|bueno|buenos|bien|qué|cómo|dónde|cuándo|este|esta|ese|esa)\b/;
+    const spanishPatterns = /[áéíóúñ¿¡]/;
+
+    // Italian indicators
+    const italianWords = /\b(io|tu|lui|lei|noi|voi|loro|sono|sei|siamo|ho|ha|hanno|non|il|la|le|gli|una|uno|che|chi|con|per|ma|come|dove|quando|perché|ciao|grazie|buono|buona|bene|molto|anche|questo|questa|quello|quella)\b/;
+    const italianPatterns = /[àèéìíòóùú]|zz|zione\b|mente\b|ità\b/;
+
+    // Score each language
+    const scores = { en: 0, fr: 0, de: 0, es: 0, it: 0 };
+
+    // Count word matches for each language
+    const frenchMatches = (lower.match(frenchWords) || []).length;
+    const germanMatches = (lower.match(germanWords) || []).length;
+    const spanishMatches = (lower.match(spanishWords) || []).length;
+    const italianMatches = (lower.match(italianWords) || []).length;
+
+    scores.fr += frenchMatches * 2;
+    scores.de += germanMatches * 2;
+    scores.es += spanishMatches * 2;
+    scores.it += italianMatches * 2;
+
+    // Pattern bonuses (accented characters, language-specific patterns)
+    if (frenchPatterns.test(lower)) scores.fr += 3;
+    if (germanPatterns.test(lower)) scores.de += 3;
+    if (spanishPatterns.test(lower)) scores.es += 3;
+    if (italianPatterns.test(lower)) scores.it += 3;
+
+    // Find the highest scoring non-English language
+    const bestLang = Object.entries(scores)
+      .filter(([lang]) => lang !== 'en')
+      .sort((a, b) => b[1] - a[1])[0];
+
+    // Need a minimum threshold to switch from English
+    if (bestLang && bestLang[1] >= 3) {
+      return bestLang[0];
+    }
+
+    return 'en';
+  }
+
+  /**
+   * Get a multilingual response for a given intent
+   */
+  getMultilingualResponse(intent, language) {
+    const langIntents = this.multilingualIntents[language];
+    if (!langIntents || !langIntents[intent]) return null;
+
+    const responses = langIntents[intent];
+    return responses[Math.floor(Math.random() * responses.length)];
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // SMART SEARCH INTEGRATION — Search the web when knowledge runs out
+  // ══════════════════════════════════════════════════════════════
+
+  /**
+   * Attempt a smart web search when local knowledge is insufficient.
+   * Returns a response object or null.
+   */
+  async trySmartSearch(userMessage, keywords, userEmotion, language = 'en') {
+    if (!this.smartSearch) return null;
+
+    try {
+      const searchResult = await this.smartSearch.search(userMessage, keywords, language);
+      if (!searchResult || !searchResult.answer) return null;
+
+      // Store what we learned for future queries (auto-upgrade knowledge base)
+      this.smartSearch.storeLearnedKnowledge(
+        userMessage,
+        searchResult.answer,
+        searchResult.source,
+        'web-learned'
+      );
+
+      // Apply personality to the answer
+      let answer = searchResult.answer;
+      answer = this.applyPersonality(answer, userEmotion);
+
+      return {
+        answer,
+        confidence: searchResult.confidence,
+        source_id: null,
+        category: 'smart-search',
+        emotion: userEmotion,
+        mode: 'smart-search',
+        webSource: searchResult.source,
+        webSourceUrl: searchResult.sourceUrl
+      };
+    } catch (e) {
+      console.warn('Smart search attempt failed:', e.message);
+      return null;
+    }
+  }
+
   /**
    * Capitalize first letter of a string.
    */
@@ -2059,6 +2296,12 @@ class SproutEngine {
     this.lastUserEmotion = userEmotion;
     this.turnCount++;
 
+    // Detect language
+    const detectedLanguage = this.detectLanguage(userMessage);
+    if (detectedLanguage !== 'en') {
+      this.currentLanguage = detectedLanguage;
+    }
+
     // Load personality context on first interaction
     if (!this.personalityLoaded) {
       try {
@@ -2089,14 +2332,13 @@ class SproutEngine {
     // return a simple greeting instead of running through synthesis.
     // ═══════════════════════════════════════════════
     if (userEmotion === 'greeting' && keywords.length <= 1) {
-      const simpleGreetings = [
-        'Hey there!',
-        'Hi!',
-        'Hello!',
-        'Hey!',
-        'Hi there!'
-      ];
-      const greeting = simpleGreetings[Math.floor(Math.random() * simpleGreetings.length)];
+      let greeting;
+      if (this.currentLanguage !== 'en' && this.multilingualIntents[this.currentLanguage]?.greeting) {
+        greeting = this.getMultilingualResponse('greeting', this.currentLanguage);
+      } else {
+        const simpleGreetings = ['Hey there!', 'Hi!', 'Hello!', 'Hey!', 'Hi there!'];
+        greeting = simpleGreetings[Math.floor(Math.random() * simpleGreetings.length)];
+      }
       this.recordConversation(userMessage, greeting);
       return {
         answer: greeting,
@@ -2138,9 +2380,15 @@ class SproutEngine {
     // ═══════════════════════════════════════════════
     const conversationalIntent = this.detectConversationalIntent(userMessage);
     if (conversationalIntent) {
-      this.recordConversation(userMessage, conversationalIntent.response);
+      // If non-English, try to respond in the detected language
+      let response = conversationalIntent.response;
+      if (this.currentLanguage !== 'en') {
+        const mlResponse = this.getMultilingualResponse(conversationalIntent.intent, this.currentLanguage);
+        if (mlResponse) response = mlResponse;
+      }
+      this.recordConversation(userMessage, response);
       return {
-        answer: conversationalIntent.response,
+        answer: response,
         confidence: 1.0,
         source_id: null,
         category: conversationalIntent.intent,
@@ -2266,6 +2514,17 @@ class SproutEngine {
       .eq('active', true);
 
     if (error || !trainingData || trainingData.length === 0) {
+      // ═══════════════════════════════════════════════
+      // SMART SEARCH — Try web search before giving up
+      // ═══════════════════════════════════════════════
+      const smartResult = await this.trySmartSearch(userMessage, keywords, userEmotion, this.currentLanguage);
+      if (smartResult) {
+        this.taskGoal.isComplete = true;
+        this.taskGoal.successCount++;
+        this.recordConversation(userMessage, smartResult.answer);
+        this.bufferForLearning(userMessage, smartResult.answer, 'smart-search');
+        return smartResult;
+      }
       this.taskGoal.failCount++;
       return this.getFallbackResponse(userEmotion);
     }
@@ -2297,6 +2556,17 @@ class SproutEngine {
 
     const bestMatch = scored[0];
     if (bestMatch.score < 0.15) {
+      // ═══════════════════════════════════════════════
+      // SMART SEARCH — Search the web before falling back
+      // ═══════════════════════════════════════════════
+      const smartResult = await this.trySmartSearch(userMessage, keywords, userEmotion, this.currentLanguage);
+      if (smartResult) {
+        this.taskGoal.isComplete = true;
+        this.taskGoal.successCount++;
+        this.recordConversation(userMessage, smartResult.answer);
+        this.bufferForLearning(userMessage, smartResult.answer, 'smart-search');
+        return smartResult;
+      }
       this.taskGoal.failCount++;
       return this.getFallbackResponse(userEmotion);
     }
@@ -3126,8 +3396,12 @@ class SproutEngine {
       }
     }
 
-    // If we have no relevant knowledge at all, return null to fall through to lookup/fallback
-    if (relevantKnowledge.length === 0) return null;
+    // If we have no relevant knowledge at all, try smart search before giving up
+    if (relevantKnowledge.length === 0) {
+      const smartResult = await this.trySmartSearch(userMessage, keywords, userEmotion, this.currentLanguage);
+      if (smartResult) return smartResult;
+      return null; // Fall through to lookup/fallback
+    }
 
     // Load personality context if not loaded
     if (!this.personalityLoaded) {
@@ -3151,8 +3425,13 @@ class SproutEngine {
       response = this.synthesizeFromConcepts(userMessage, intent, concepts, conversationContext, topicContinuity);
     }
 
-    // ── Phase 4: If no concepts matched, REASON from scratch ──
+    // ── Phase 4: If no concepts matched, try SMART SEARCH then REASON ──
     if (!response) {
+      // Try web search first — be proactive about finding answers
+      const smartResult = await this.trySmartSearch(userMessage, keywords, userEmotion, this.currentLanguage);
+      if (smartResult) return smartResult;
+
+      // Fall back to reasoning from scratch
       response = this.reasonAlone(userMessage, intent, keywords, conversationContext);
     }
 
@@ -3775,12 +4054,26 @@ class SproutEngine {
 
   // ── Fallback when no match — emotionally aware ──
   getFallbackResponse(userEmotion) {
+    // Try multilingual fallback first
+    if (this.currentLanguage !== 'en') {
+      const mlFallback = this.getMultilingualResponse('fallback', this.currentLanguage);
+      if (mlFallback) {
+        return {
+          answer: mlFallback,
+          confidence: 0,
+          source_id: null,
+          category: 'fallback',
+          emotion: userEmotion || 'neutral'
+        };
+      }
+    }
+
     const baseFallbacks = [
-      "I'm still learning, and I honestly wish I had a better answer for you right now. My researchers are teaching me new things every day, so I promise I'm getting there!",
-      "Hmm, I don't quite have the knowledge for that one yet — but I really want to. Every conversation helps me grow, so thank you for asking!",
-      "That's a great question, and I feel a little bad that I can't do it justice yet. I'm still in my early days, but I'm learning fast. Try me on something else?",
-      "I'm not going to pretend I know something I don't — that wouldn't be fair to you. I haven't been trained on that yet, but I'm getting smarter with every session!",
-      "Oof, you stumped me! I love a good challenge though. I don't have an answer yet, but my team is constantly expanding what I know."
+      "I searched everywhere I could, but I couldn't find a solid answer for that one yet. My researchers are teaching me new things every day though, so I'm getting there!",
+      "Hmm, I looked through my knowledge and the web but couldn't find what I needed — I really want to help though. Every conversation helps me grow!",
+      "That's a great question! I searched for an answer but couldn't find one I'm confident about yet. I'm still in my early days, but I'm learning fast. Try me on something else?",
+      "I'm not going to pretend I know something I don't — that wouldn't be fair to you. I searched but came up short. I'm getting smarter with every session though!",
+      "Oof, you stumped me! I searched my knowledge base and the web but couldn't crack it. My team is constantly expanding what I know."
     ];
 
     let answer = baseFallbacks[Math.floor(Math.random() * baseFallbacks.length)];
