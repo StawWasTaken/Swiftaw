@@ -761,6 +761,10 @@ class SproutEngine {
     this.chatLearnInterval = null;
     this.chatLearnCooldown = 60 * 1000; // Process learning buffer every 60s
 
+    // ── Instruction Registry — User-defined response rules ──
+    // Stores rules like "when I say X, say Y" that override normal synthesis
+    this.instructionRules = [];      // { trigger: string, response: string, exact: boolean }
+
     // ── Synonym engine for natural variation ──
     this.synonyms = {
       'good': ['great', 'wonderful', 'solid', 'nice', 'excellent'],
@@ -1397,6 +1401,11 @@ class SproutEngine {
     const lower = userMessage.toLowerCase();
     this.turnCount++;
 
+    // Skip emotional enhancement for short/concise responses
+    // to avoid bloating already-appropriate answers
+    const answerWords = rawAnswer.trim().split(/\s+/).length;
+    if (answerWords <= 5) return rawAnswer;
+
     // Warm greetings — these should feel genuinely welcoming
     if (userEmotion === 'greeting') {
       const greetings = [
@@ -1533,6 +1542,39 @@ class SproutEngine {
     // ═══════════════════════════════════════════════
     const feedbackResult = await this.handleFeedbackLoop(userMessage, normalized, userEmotion);
     if (feedbackResult) return feedbackResult;
+
+    // ═══════════════════════════════════════════════
+    // STEP 0.25: INSTRUCTION FOLLOWING — Check for user-defined rules
+    // "When I say X, say Y" rules take priority over everything else.
+    // This also detects new instructions being given.
+    // ═══════════════════════════════════════════════
+    const instructionResult = this.handleInstructions(userMessage, userEmotion);
+    if (instructionResult) return instructionResult;
+
+    // ═══════════════════════════════════════════════
+    // STEP 0.3: SIMPLE GREETING SHORT-CIRCUIT
+    // For pure greetings ("hi", "hello", "hey") with no other content,
+    // return a simple greeting instead of running through synthesis.
+    // ═══════════════════════════════════════════════
+    if (userEmotion === 'greeting' && keywords.length <= 1) {
+      const simpleGreetings = [
+        'Hey there!',
+        'Hi!',
+        'Hello!',
+        'Hey!',
+        'Hi there!'
+      ];
+      const greeting = simpleGreetings[Math.floor(Math.random() * simpleGreetings.length)];
+      this.recordConversation(userMessage, greeting);
+      return {
+        answer: greeting,
+        confidence: 1.0,
+        source_id: null,
+        category: 'greeting',
+        emotion: 'greeting',
+        mode: 'greeting'
+      };
+    }
 
     // ═══════════════════════════════════════════════
     // STEP 0.5: SEMANTIC INTERPRETATION — Understand what the message MEANS
@@ -1877,6 +1919,17 @@ class SproutEngine {
           'feedback-learning'
         );
 
+        // Also store as an instruction rule for exact matching
+        // This ensures short, exact responses are returned verbatim
+        const triggerNorm = this.feedbackState.lastQuestion.toLowerCase().trim();
+        if (userMessage.trim().split(/\s+/).length <= 10) {
+          this.addInstructionRule({
+            trigger: triggerNorm,
+            response: userMessage.trim(),
+            exact: true
+          });
+        }
+
         this.feedbackState.awaitingCorrection = false;
         this.feedbackState.attempts = 0;
         const savedMsg = `Got it! I've learned that the answer to "${this.feedbackState.lastQuestion}" is "${userMessage.trim()}". I'll remember this from now on!`;
@@ -1896,6 +1949,96 @@ class SproutEngine {
     }
 
     return null; // Not a feedback interaction
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // INSTRUCTION FOLLOWING — Detect and store "When I say X, say Y" rules
+  // This lets researchers teach Tithonia exact response patterns
+  // ══════════════════════════════════════════════════════════════
+
+  // Detect if user is giving an instruction like "When I say X, say Y"
+  detectInstruction(userMessage) {
+    const lower = userMessage.trim();
+
+    // Patterns: "When I say X, say Y" / "When I say X say exactly Y" / "If I say X, respond with Y"
+    const patterns = [
+      /^when\s+i\s+say\s+["'](.+?)["']\s*,?\s*say\s+(?:exactly\s*:?\s*)?["']?(.+?)["']?\s*$/i,
+      /^when\s+i\s+say\s+["'](.+?)["']\s*,?\s*respond\s+(?:with\s+)?(?:exactly\s*:?\s*)?["']?(.+?)["']?\s*$/i,
+      /^if\s+i\s+say\s+["'](.+?)["']\s*,?\s*(?:you\s+)?say\s+(?:exactly\s*:?\s*)?["']?(.+?)["']?\s*$/i,
+      /^when\s+i\s+say\s+["'](.+?)["']\s+say\s+(?:exactly\s*:?\s*)?(.+)\s*$/i,
+      /^when\s+i\s+say\s+(.+?)\s+say\s+exactly\s*:?\s*(.+)\s*$/i
+    ];
+
+    for (const pattern of patterns) {
+      const match = lower.match(pattern);
+      if (match) {
+        return {
+          trigger: match[1].trim().toLowerCase(),
+          response: match[2].trim(),
+          exact: true
+        };
+      }
+    }
+
+    return null;
+  }
+
+  // Store an instruction rule
+  addInstructionRule(rule) {
+    // Remove any existing rule with the same trigger
+    this.instructionRules = this.instructionRules.filter(
+      r => r.trigger !== rule.trigger
+    );
+    this.instructionRules.push(rule);
+  }
+
+  // Check if user message matches any stored instruction rule
+  matchInstructionRule(userMessage) {
+    const lower = userMessage.toLowerCase().trim();
+    for (const rule of this.instructionRules) {
+      if (rule.exact && lower === rule.trigger) {
+        return rule;
+      }
+      if (!rule.exact && lower.includes(rule.trigger)) {
+        return rule;
+      }
+    }
+    return null;
+  }
+
+  // Handle instruction detection and matching in the response pipeline
+  handleInstructions(userMessage, userEmotion) {
+    // First: check if user is GIVING an instruction
+    const instruction = this.detectInstruction(userMessage);
+    if (instruction) {
+      this.addInstructionRule(instruction);
+      const confirmMsg = `Got it! From now on, when you say "${instruction.trigger}", I'll respond with: "${instruction.response}"`;
+      this.recordConversation(userMessage, confirmMsg);
+      return {
+        answer: confirmMsg,
+        confidence: 1.0,
+        source_id: null,
+        category: 'instruction-learned',
+        emotion: 'happy',
+        mode: 'instruction'
+      };
+    }
+
+    // Second: check if the current message matches a stored instruction
+    const matchedRule = this.matchInstructionRule(userMessage);
+    if (matchedRule) {
+      this.recordConversation(userMessage, matchedRule.response);
+      return {
+        answer: matchedRule.response,
+        confidence: 1.0,
+        source_id: null,
+        category: 'instruction-match',
+        emotion: userEmotion,
+        mode: 'instruction'
+      };
+    }
+
+    return null;
   }
 
   // ── Retry with a DIFFERENT answer (avoid repeating wrong ones) ──
@@ -2560,13 +2703,20 @@ class SproutEngine {
     const parts = [];
     const topic = intent.topic || concepts[0]?.keywords[0] || 'that';
 
-    // ── Step 1: Pick a contextual opener ──
-    const opener = this.pickOpener(intent, topicContinuity);
-    if (opener) parts.push(opener);
+    // ── Brevity check: short user messages should get shorter responses ──
+    const userWords = userMessage.trim().split(/\s+/).length;
+    const isShortMessage = userWords <= 5;
+
+    // ── Step 1: Pick a contextual opener (skip for short/brief messages) ──
+    if (!isShortMessage && !intent.wantsBrief) {
+      const opener = this.pickOpener(intent, topicContinuity);
+      if (opener) parts.push(opener);
+    }
 
     // ── Step 2: Build the core answer from concept FACTS ──
     // Don't copy — extract the KEY INFORMATION and restate it in new words
-    const maxConcepts = intent.wantsDetail ? 4 : (intent.wantsBrief ? 1 : 2);
+    // Use fewer concepts for short messages to keep responses proportional
+    const maxConcepts = intent.wantsDetail ? 4 : (intent.wantsBrief || isShortMessage ? 1 : 2);
     const usedFacts = new Set();
 
     for (let i = 0; i < Math.min(concepts.length, maxConcepts); i++) {
@@ -2587,8 +2737,8 @@ class SproutEngine {
       }
     }
 
-    // ── Step 3: Add a natural closer (sometimes) ──
-    if (parts.length > 1 && Math.random() > 0.5) {
+    // ── Step 3: Add a natural closer (sometimes, not for short/brief messages) ──
+    if (parts.length > 1 && !isShortMessage && !intent.wantsBrief && Math.random() > 0.5) {
       const closer = this.pickRandom(this.closers);
       if (closer) parts.push(closer);
     }
