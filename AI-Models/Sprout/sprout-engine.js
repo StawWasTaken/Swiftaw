@@ -390,8 +390,132 @@ class SproutLexicon {
     this.loadStarterDataset();
   }
 
-  // ── Load the v1 Core Language starter dataset ──
+  // ── Load production datasets from data/ directory ──
+  // Uses the 600-word core lexicon + enrichment layer for full semantic understanding.
+  // Falls back to inline starter words if data files aren't available (browser env).
   loadStarterDataset() {
+    // Try to load from production datasets (Node.js / build pipeline)
+    if (typeof window !== 'undefined') {
+      this.loadFromEmbeddedData();
+      return;
+    }
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const dataDir = path.join(__dirname, 'data');
+
+      // Load the enrichment layer (full word entries with definitions)
+      const enrichmentPath = path.join(dataDir, 'enrichment-layer.json');
+      if (fs.existsSync(enrichmentPath)) {
+        const enrichment = JSON.parse(fs.readFileSync(enrichmentPath, 'utf8'));
+        for (const entry of enrichment.words) {
+          this.addWord(entry);
+        }
+      }
+
+      // Load the core lexicon (600-word lightweight list) — register any words
+      // not already enriched as basic entries so the lexicon knows them
+      const lexiconPath = path.join(dataDir, 'core-lexicon.json');
+      if (fs.existsSync(lexiconPath)) {
+        const lexicon = JSON.parse(fs.readFileSync(lexiconPath, 'utf8'));
+        const wordTypes = { nouns: 'noun', verbs: 'verb', adjectives: 'adjective', adverbs: 'adverb' };
+        for (const [key, type] of Object.entries(wordTypes)) {
+          if (lexicon[key]) {
+            for (const word of lexicon[key]) {
+              if (!this.words.has(word.toLowerCase())) {
+                this.addWord({
+                  word, type,
+                  senses: [],
+                  relations: { category: [], synonyms: [], antonyms: [] },
+                  learnedFrom: 'core-lexicon'
+                });
+              }
+            }
+          }
+        }
+        // Load function words (pronouns, articles, conjunctions, etc.)
+        if (lexicon.function_words) {
+          for (const [subtype, words] of Object.entries(lexicon.function_words)) {
+            for (const word of words) {
+              if (!this.words.has(word.toLowerCase())) {
+                this.addWord({
+                  word, type: 'function',
+                  senses: [],
+                  relations: { category: [subtype], synonyms: [], antonyms: [] },
+                  learnedFrom: 'core-lexicon'
+                });
+              }
+            }
+          }
+        }
+      }
+
+      // Load French lexicon for bilingual grounding
+      const frenchPath = path.join(dataDir, 'french-lexicon.json');
+      if (fs.existsSync(frenchPath)) {
+        const french = JSON.parse(fs.readFileSync(frenchPath, 'utf8'));
+        this.frenchLexicon = new Map();
+        this.frenchToEnglish = new Map();
+        this.englishToFrench = new Map();
+        for (const entry of french.words) {
+          this.frenchLexicon.set(entry.word.toLowerCase(), entry);
+          if (entry.english) {
+            this.frenchToEnglish.set(entry.word.toLowerCase(), entry.english.toLowerCase());
+            this.englishToFrench.set(entry.english.toLowerCase(), entry.word.toLowerCase());
+          }
+        }
+      }
+
+      // Load learning curriculum config
+      const curriculumPath = path.join(dataDir, 'learning-curriculum.json');
+      if (fs.existsSync(curriculumPath)) {
+        this.curriculum = JSON.parse(fs.readFileSync(curriculumPath, 'utf8'));
+        this.currentStage = this.detectCurrentStage();
+      }
+
+      console.log(`[SproutLexicon] Loaded ${this.words.size} English words, ${this.frenchLexicon?.size || 0} French words`);
+    } catch (e) {
+      // Fallback: load embedded data if file loading fails
+      console.warn('[SproutLexicon] Could not load data files, using embedded dataset:', e.message);
+      this.loadFromEmbeddedData();
+    }
+  }
+
+  // ── Detect which curriculum stage we're at based on vocabulary size ──
+  detectCurrentStage() {
+    const size = this.words.size;
+    if (size < 2000) return 1;
+    if (size < 8000) return 2;
+    if (size < 20000) return 3;
+    return 4;
+  }
+
+  // ── Get current curriculum stage info ──
+  getCurrentStage() {
+    if (!this.curriculum) return null;
+    const stageId = this.currentStage || this.detectCurrentStage();
+    return this.curriculum.stages.find(s => s.id === stageId) || null;
+  }
+
+  // ── Translate between English and French ──
+  translateToFrench(englishWord) {
+    if (!this.englishToFrench) return null;
+    return this.englishToFrench.get(englishWord.toLowerCase()) || null;
+  }
+
+  translateToEnglish(frenchWord) {
+    if (!this.frenchToEnglish) return null;
+    return this.frenchToEnglish.get(frenchWord.toLowerCase()) || null;
+  }
+
+  // ── Look up a French word ──
+  lookupFrench(word) {
+    if (!this.frenchLexicon) return null;
+    return this.frenchLexicon.get(word.toLowerCase()) || null;
+  }
+
+  // ── Fallback: embedded starter dataset for browser environments ──
+  loadFromEmbeddedData() {
     const starterWords = [
       {
         word: 'dog', type: 'noun',
@@ -697,13 +821,20 @@ class SproutLexicon {
 
   // ── Get lexicon stats ──
   getStats() {
+    const allWords = [...this.words.values()];
     return {
       totalWords: this.words.size,
-      nouns: [...this.words.values()].filter(w => w.type === 'noun').length,
-      verbs: [...this.words.values()].filter(w => w.type === 'verb').length,
-      adjectives: [...this.words.values()].filter(w => w.type === 'adjective').length,
+      nouns: allWords.filter(w => w.type === 'noun').length,
+      verbs: allWords.filter(w => w.type === 'verb').length,
+      adjectives: allWords.filter(w => w.type === 'adjective').length,
+      adverbs: allWords.filter(w => w.type === 'adverb').length,
+      functionWords: allWords.filter(w => w.type === 'function').length,
+      enrichedWords: allWords.filter(w => w.senses && w.senses.length > 0).length,
       categories: this.categoryIndex.size,
-      learnedWords: [...this.words.values()].filter(w => w.learnedFrom !== 'starter').length
+      learnedWords: allWords.filter(w => w.learnedFrom !== 'starter' && w.learnedFrom !== 'core-lexicon').length,
+      frenchWords: this.frenchLexicon ? this.frenchLexicon.size : 0,
+      currentStage: this.currentStage || this.detectCurrentStage(),
+      currentStageName: this.getCurrentStage()?.name || 'Unknown'
     };
   }
 }
