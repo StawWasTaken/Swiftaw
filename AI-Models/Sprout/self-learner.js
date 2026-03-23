@@ -36,6 +36,7 @@ class SelfLearner {
       gapsIdentified: 0,
       insightsGenerated: 0,
       connectionsStrengthened: 0,
+      conversationsReviewed: 0,
       reflectionsWritten: 0,
       selfUpgrades: 0
     };
@@ -51,6 +52,7 @@ class SelfLearner {
       'gap_analysis',        // Identify what's missing
       'insight_generation',  // Combine facts to create new understanding
       'strength_analysis',   // Find and reinforce strong knowledge areas
+      'conversation_review', // Learn from real user conversations
       'self_reflection',     // Think about its own growth
       'self_upgrade'         // Evolve its own directives based on learning
     ];
@@ -136,6 +138,9 @@ class SelfLearner {
           break;
         case 'strength_analysis':
           await this._analyzeStrengths();
+          break;
+        case 'conversation_review':
+          await this._reviewConversations();
           break;
         case 'self_reflection':
           await this._selfReflect();
@@ -529,7 +534,105 @@ class SelfLearner {
   }
 
   // ══════════════════════════════════════════
-  // PHASE 5: SELF-REFLECTION
+  // PHASE 5: CONVERSATION REVIEW
+  // Learn from real user chats (training & real)
+  // Extract knowledge from successful exchanges
+  // ══════════════════════════════════════════
+
+  async _reviewConversations() {
+    // Fetch recent conversations from the database
+    let conversations = [];
+    try {
+      const { data, error } = await this.db
+        .from(SPROUT_TABLES.CONVERSATIONS)
+        .select('*')
+        .eq('model', 'sprout-1.2')
+        .order('created_at', { ascending: false })
+        .limit(20);
+      if (!error && data) conversations = data;
+    } catch (e) {
+      this._log('info', 'No conversations to review yet');
+      return;
+    }
+
+    if (conversations.length === 0) {
+      this._log('info', 'No conversations found to learn from');
+      return;
+    }
+
+    const { training } = this.knowledgeSnapshot;
+    const existingQuestions = new Set(training.map(t => t.question.toLowerCase().trim()));
+    let learned = 0;
+
+    for (const convo of conversations) {
+      const messages = convo.messages || [];
+      if (!Array.isArray(messages)) continue;
+
+      // Look for user→assistant pairs that could become training data
+      for (let i = 0; i < messages.length - 1; i++) {
+        const userMsg = messages[i];
+        const assistantMsg = messages[i + 1];
+
+        if (!userMsg || !assistantMsg) continue;
+        if (userMsg.role !== 'user' || assistantMsg.role !== 'assistant') continue;
+
+        const question = (userMsg.text || userMsg.content || '').trim();
+        const answer = (assistantMsg.text || assistantMsg.content || '').trim();
+
+        // Skip if too short, a greeting, or already exists
+        if (question.length < 10 || answer.length < 15) continue;
+        if (/^(hi|hello|hey|bye|thanks|ok)\b/i.test(question)) continue;
+        if (existingQuestions.has(question.toLowerCase())) continue;
+
+        // Skip if the answer is a fallback/error response
+        if (/still learning|don't quite have|stumped me|having trouble connecting/i.test(answer)) continue;
+
+        // This looks like a good exchange — save it as training data
+        try {
+          await this.engine.addTrainingData({
+            question: question,
+            answer: answer,
+            category: 'conversation-learned',
+            tags: ['auto-learned', 'from-conversation', 'cortex-reviewed'],
+            created_by: 'cortex-conversation-review'
+          });
+          existingQuestions.add(question.toLowerCase());
+          learned++;
+        } catch (e) { /* skip */ }
+
+        // Don't learn too many at once
+        if (learned >= 5) break;
+      }
+      if (learned >= 5) break;
+    }
+
+    if (learned > 0) {
+      this.stats.insightsGenerated += learned;
+      this._log('success', `Learned ${learned} new Q&A pairs from real conversations`);
+
+      await this._logLearning('conversation_review',
+        `Reviewed conversations and extracted ${learned} new pieces of knowledge from real user interactions`,
+        { learnedFromConversations: learned }
+      );
+
+      if (this.onThought) {
+        this.onThought({
+          type: 'conversation_learning',
+          message: `I just reviewed my past conversations and learned ${learned} new things from real user interactions! I'm getting smarter from every chat.`
+        });
+      }
+
+      // Invalidate engine caches so new knowledge is used immediately
+      this.engine.mindContext = null;
+      this.engine.mindContextAge = 0;
+      this.engine.cache.clear();
+    } else {
+      this._log('info', 'No new knowledge to extract from conversations this cycle');
+    }
+  }
+
+  // ══════════════════════════════════════════
+  // PHASE 6: SELF-REFLECTION
   // Think about what it's learning and growing
   // ══════════════════════════════════════════
 
@@ -681,6 +784,73 @@ class SelfLearner {
         upgraded = true;
         this._log('success', 'Added new self-awareness directive about autonomous learning');
       } catch (e) { /* skip */ }
+    }
+
+    // ── Upgrade 5: Track task success rate and upgrade goal directives ──
+    if (this.engine.taskGoal) {
+      const goalStatus = this.engine.getTaskGoalStatus();
+      const successRate = goalStatus.successRate;
+      const totalCorrections = goalStatus.feedbackState.totalCorrections;
+
+      // Update identity with performance stats
+      try {
+        await this.engine.setIdentity({
+          key: 'Task Performance',
+          value: `Success rate: ${successRate}, Total corrections learned from: ${totalCorrections}. I improve with every interaction.`,
+          category: 'Self-Knowledge'
+        });
+        upgraded = true;
+      } catch (e) { /* skip */ }
+
+      // Add goal-oriented directive if not present
+      const hasGoalDirective = directives.some(d =>
+        d.directive.toLowerCase().includes('goal') && d.directive.toLowerCase().includes('succeed')
+      );
+      if (!hasGoalDirective && training.length > 20) {
+        try {
+          await this.engine.addDirective({
+            directive: 'My primary goal is to succeed at every task given to me. When I fail, I learn from the correction and improve. I use logic, my knowledge base, and feedback from researchers to get better. I never give up.',
+            type: 'core-goal',
+            priority: 10
+          });
+          upgraded = true;
+          this._log('success', 'Added goal-oriented directive: succeed at every task');
+        } catch (e) { /* skip */ }
+      }
+
+      // Add conversation-learning directive
+      const hasChatLearnDirective = directives.some(d =>
+        d.directive.toLowerCase().includes('conversation') && d.directive.toLowerCase().includes('learn')
+      );
+      if (!hasChatLearnDirective && training.length > 30) {
+        try {
+          await this.engine.addDirective({
+            directive: 'I learn from every conversation — both training sessions and real chats. Successful exchanges become part of my knowledge. When researchers correct me, I save the correct answer to my database and never make the same mistake again.',
+            type: 'self-awareness',
+            priority: 9
+          });
+          upgraded = true;
+          this._log('success', 'Added conversation-learning directive');
+        } catch (e) { /* skip */ }
+      }
+    }
+
+    // ── Upgrade 6: Add logic-awareness if we have the logic engine ──
+    if (this.engine.logicEngine) {
+      const hasLogicDirective = directives.some(d =>
+        d.directive.toLowerCase().includes('logic') && d.directive.toLowerCase().includes('math')
+      );
+      if (!hasLogicDirective) {
+        try {
+          await this.engine.addDirective({
+            directive: 'I have a built-in logic engine that lets me solve math problems, answer yes/no questions with reasoning, write sentences and paragraphs, and compare things. I use logic first before searching my knowledge base.',
+            type: 'capability',
+            priority: 8
+          });
+          upgraded = true;
+          this._log('success', 'Added logic engine awareness directive');
+        } catch (e) { /* skip */ }
+      }
     }
 
     if (upgraded) {
