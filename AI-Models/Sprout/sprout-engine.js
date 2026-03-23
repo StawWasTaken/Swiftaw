@@ -904,15 +904,17 @@ class SproutEngine {
     // ══════════════════════════════════════════════════════════════
     this.intentResponseMap = {
       // ── Status / Well-being queries ──
+      // Allow trailing words: "how are you today?", "how are you doing right now?"
       status_query: {
         patterns: [
-          /^how\s+are\s+you\s*[?.!]*$/i,
-          /^how\s+(are\s+)?you\s+doing\s*[?.!]*$/i,
-          /^how\s+do\s+you\s+feel\s*[?.!]*$/i,
-          /^how('?s| is)\s+(it\s+going|everything|life)\s*[?.!]*$/i,
-          /^you\s+(good|ok|okay|alright)\s*[?.!]*$/i,
-          /^what('?s| is)\s+up\s*[?.!]*$/i,
-          /^sup\s*[?.!]*$/i
+          /^how\s+are\s+you(\s+\w+){0,3}\s*[?.!]*$/i,
+          /^how\s+(are\s+)?you\s+doing(\s+\w+){0,3}\s*[?.!]*$/i,
+          /^how\s+do\s+you\s+feel(\s+\w+){0,3}\s*[?.!]*$/i,
+          /^how('?s| is)\s+(it\s+going|everything|life)(\s+\w+){0,3}\s*[?.!]*$/i,
+          /^you\s+(good|ok|okay|alright)(\s+\w+){0,2}\s*[?.!]*$/i,
+          /^what('?s| is)\s+up(\s+\w+){0,2}\s*[?.!]*$/i,
+          /^sup\s*[?.!]*$/i,
+          /^how\s+have\s+you\s+been(\s+\w+){0,3}\s*[?.!]*$/i
         ],
         responses: [
           "I'm doing great, thanks for asking! How about you?",
@@ -929,7 +931,8 @@ class SproutEngine {
           /^who\s+are\s+you\s*[?.!]*$/i,
           /^what\s+should\s+i\s+call\s+you\s*[?.!]*$/i,
           /^what\s+do\s+(they|people)\s+call\s+you\s*[?.!]*$/i,
-          /^tell\s+me\s+your\s+name\s*[.!]*$/i
+          /^tell\s+me\s+your\s+name\s*[.!]*$/i,
+          /^do\s+you\s+have\s+a\s+name\s*[?.!]*$/i
         ],
         responses: [
           "My name is Sprout! Nice to meet you.",
@@ -956,13 +959,16 @@ class SproutEngine {
         }
       },
 
-      // ── Capability queries ──
+      // ── Capability / Help queries ──
+      // Flexible: "can you help me?", "can you help me with something?", "help me with X"
       capability_query: {
         patterns: [
-          /^(can|could)\s+you\s+help\s+(me|us)\s*[?.!]*$/i,
-          /^what\s+can\s+you\s+do\s*[?.!]*$/i,
-          /^what\s+are\s+you\s+(good|capable)\s+(at|of)\s*[?.!]*$/i,
-          /^how\s+can\s+you\s+help\s*[?.!]*$/i
+          /^(can|could)\s+you\s+help(\s+me|\s+us)?(\s+with\s+.+)?\s*[?.!]*$/i,
+          /^(please\s+)?help(\s+me)?(\s+with\s+.+)?\s*[?.!]*$/i,
+          /^what\s+can\s+you\s+do(\s+\w+){0,3}\s*[?.!]*$/i,
+          /^what\s+are\s+you\s+(good|capable)\s+(at|of)(\s+\w+){0,2}\s*[?.!]*$/i,
+          /^how\s+can\s+you\s+help(\s+me)?\s*[?.!]*$/i,
+          /^i\s+need\s+(your\s+)?help(\s+\w+){0,3}\s*[.!]*$/i
         ],
         responses: [
           "Of course! I can answer questions, help you think through ideas, do math, and chat about all sorts of topics. What do you need?",
@@ -998,10 +1004,26 @@ class SproutEngine {
         ]
       },
 
+      // ── Positive feedback / Compliments about responses ──
+      positive_feedback: {
+        patterns: [
+          /^(i\s+think\s+)?(that|your|this)\s+(sentence|response|answer|reply)\s+(was|is|were)\s+(pretty\s+)?(good|great|nice|awesome|cool|amazing|perfect|excellent)\s*[.!]*$/i,
+          /^(that('?s| is)|this\s+is|it('?s| is))\s+(pretty\s+)?(good|great|nice|awesome|cool|right|correct|perfect|excellent)\s*[.!]*$/i,
+          /^(well\s+done|nice\s+one|good\s+one|great\s+job|good\s+job|nice\s+work|good\s+work)\s*[.!]*$/i,
+          /^(not\s+bad|pretty\s+good|that\s+works|that\s+makes\s+sense)\s*[.!]*$/i
+        ],
+        responses: [
+          "Thanks! I'm glad that made sense. What else would you like to talk about?",
+          "Awesome, glad I'm on the right track! Anything else you'd like to know?",
+          "That means a lot! I'm always trying to improve. What's next?",
+          "Great to hear! Feel free to ask me anything else."
+        ]
+      },
+
       // ── Gratitude responses ──
       gratitude: {
         patterns: [
-          /^(thanks|thank\s+you|thx|ty|cheers|much\s+appreciated)\s*[.!]*$/i,
+          /^(thanks|thank\s+you|thx|ty|cheers|much\s+appreciated)(\s+\w+){0,3}\s*[.!]*$/i,
           /^(thanks|thank\s+you)\s+(so|very)\s+much\s*[.!]*$/i
         ],
         responses: [
@@ -1029,8 +1051,7 @@ class SproutEngine {
       // ── Compliment handling ──
       compliment: {
         patterns: [
-          /^you('re|\s+are)\s+(smart|clever|amazing|great|awesome|cool|funny|nice|helpful|good)\s*[.!]*$/i,
-          /^(good|nice|great)\s+(job|work|answer|response)\s*[.!]*$/i,
+          /^you('re|\s+are)\s+(so\s+)?(smart|clever|amazing|great|awesome|cool|funny|nice|helpful|good)\s*[.!]*$/i,
           /^i\s+like\s+you\s*[.!]*$/i,
           /^you('re|\s+are)\s+the\s+best\s*[.!]*$/i
         ],
@@ -1715,6 +1736,19 @@ class SproutEngine {
     const lower = userMessage.toLowerCase();
     this.turnCount++;
 
+    // Skip emotional enhancement if the response looks like keyword soup.
+    // Signs: too many commas relative to words, or repeated template phrases.
+    // This prevents wrapping garbage like "involves seed, assist, grow" with
+    // enthusiastic filler like "I was hoping someone would ask me this!"
+    const commaCount = (rawAnswer.match(/,/g) || []).length;
+    const wordCount = rawAnswer.trim().split(/\s+/).length;
+    const commaRatio = wordCount > 0 ? commaCount / wordCount : 0;
+    if (commaRatio > 0.15 && commaCount >= 3) return rawAnswer;
+
+    // Also skip if the response contains "involves" more than once (keyword template artifact)
+    const involvesCount = (rawAnswer.match(/\binvolves?\b/gi) || []).length;
+    if (involvesCount >= 2) return rawAnswer;
+
     // Skip emotional enhancement for short/concise responses
     // to avoid bloating already-appropriate answers
     const answerWords = rawAnswer.trim().split(/\s+/).length;
@@ -1840,24 +1874,49 @@ class SproutEngine {
 
   /**
    * Detect a conversational intent from the intent-response map.
+   * Also handles compound messages like "Hi! can you help me?" by
+   * stripping greeting prefixes and checking the remainder.
    * Returns { intent, response } or null if no match.
    */
   detectConversationalIntent(userMessage) {
     const trimmed = userMessage.trim();
 
+    // First: try matching the full message
+    const directMatch = this._matchIntentPatterns(trimmed);
+    if (directMatch) return directMatch;
+
+    // Second: handle compound messages — strip greeting prefix, try the rest
+    // e.g. "Hi! can you help me with something?" → "can you help me with something?"
+    const compoundSplit = trimmed.match(/^(hi|hello|hey|yo|hiya|greetings)[\s!.,]+(.{8,})$/i);
+    if (compoundSplit) {
+      const remainder = compoundSplit[2].trim();
+      const innerMatch = this._matchIntentPatterns(remainder);
+      if (innerMatch) {
+        // Prepend a short greeting to the response
+        const greetPrefixes = ['Hey! ', 'Hi! ', 'Hello! ', 'Hey there! '];
+        const prefix = greetPrefixes[Math.floor(Math.random() * greetPrefixes.length)];
+        return {
+          intent: innerMatch.intent,
+          response: prefix + innerMatch.response
+        };
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Internal: Match a message against all intent patterns.
+   * Returns { intent, response } or null.
+   */
+  _matchIntentPatterns(text) {
     for (const [intentName, config] of Object.entries(this.intentResponseMap)) {
-      // Check if any pattern matches
       for (const pattern of (config.patterns || [])) {
-        const match = trimmed.match(pattern);
+        const match = text.match(pattern);
         if (match) {
-          // If this intent has a dynamic handler (e.g. "Greet John"), use it
           if (config.handler) {
-            return {
-              intent: intentName,
-              response: config.handler(match)
-            };
+            return { intent: intentName, response: config.handler(match) };
           }
-          // Otherwise pick a random response from the static list
           if (config.responses && config.responses.length > 0) {
             return {
               intent: intentName,
@@ -1867,7 +1926,6 @@ class SproutEngine {
         }
       }
     }
-
     return null;
   }
 
@@ -3268,6 +3326,17 @@ class SproutEngine {
 
     let result = parts.join(' ').trim();
     result = result.replace(/\s{2,}/g, ' ').replace(/([.!?])\s*([.!?])/g, '$1');
+
+    // ── Quality gate: reject keyword-soup responses ──
+    // If the result has too many commas (sign of keyword list dumping),
+    // or uses "involves" multiple times, it's probably not a real sentence.
+    const commaCount = (result.match(/,/g) || []).length;
+    const resultWordCount = result.split(/\s+/).length;
+    const involvesCount = (result.match(/\binvolves?\b/gi) || []).length;
+    if ((commaCount >= 4 && commaCount / resultWordCount > 0.12) || involvesCount >= 3) {
+      return null; // Let fallback/reasonAlone handle it instead
+    }
+
     return result;
   }
 
@@ -3451,20 +3520,34 @@ class SproutEngine {
     }
 
     // ── Strategy 2: Use conversation context to reason ──
+    // Filter out short/noise keywords from context to avoid nonsensical sentences
+    // like "Building on what we were just discussing about hey..."
     if (intent.isFollowUp && conversationContext?.lastAssistantMessage) {
-      const lastKeywords = this.extractKeywords(this.normalize(conversationContext.lastAssistantMessage));
-      if (lastKeywords.length > 0) {
-        return `Building on what we were just discussing about ${lastKeywords.slice(0, 2).join(' and ')}, I think this connects to ${keywords.join(' ')}. Though I'll be honest — I'm reasoning through this on my own since I don't have specific data on it. What do you think?`;
+      const noiseWords = new Set(['hey', 'hi', 'hello', 'the', 'is', 'are', 'was', 'it', 'that', 'this', 'you', 'your', 'today', 'now', 'just', 'really', 'very', 'also', 'well']);
+      const lastKeywords = this.extractKeywords(this.normalize(conversationContext.lastAssistantMessage))
+        .filter(k => k.length > 3 && !noiseWords.has(k));
+      const currentKeywords = keywords.filter(k => k.length > 3 && !noiseWords.has(k));
+
+      if (lastKeywords.length > 0 && currentKeywords.length > 0) {
+        const contextTopic = lastKeywords.slice(0, 2).join(' and ');
+        const currentTopic = currentKeywords.slice(0, 2).join(' and ');
+        return `That's a great follow-up! I think ${currentTopic} connects to what we were discussing about ${contextTopic}. I'm still building my knowledge here though — what's your take on it?`;
+      }
+      // If keywords are too vague, give an honest "I need more to work with" response
+      if (lastKeywords.length === 0 && currentKeywords.length === 0) {
+        return "That's an interesting thought! I'd love to explore it more — could you give me a bit more to work with?";
       }
     }
 
     // ── Strategy 3: Honest reasoning attempt ──
-    if (keywords.length > 0) {
-      const topic = keywords.join(' ');
+    // Only use if we have meaningful keywords (not just stop words)
+    const meaningfulKeywords = keywords.filter(k => k.length > 3);
+    if (meaningfulKeywords.length > 0) {
+      const topic = meaningfulKeywords.slice(0, 3).join(' ');
       const reasoningAttempts = [
-        `I don't have ${topic} in my database yet, but let me think about it from what I do know. ${this.attemptReasoning(keywords)}`,
-        `That's something I'm still learning about. My best reasoning on ${topic}: ${this.attemptReasoning(keywords)}`,
-        `I want to give you a real answer, not a fake one. I don't fully know about ${topic} yet. ${this.attemptReasoning(keywords)} Does that sound right? If not, tell me the answer and I'll learn it!`
+        `I don't have ${topic} in my database yet, but I'd love to learn about it. Can you tell me more?`,
+        `That's something I'm still learning about. I don't have enough knowledge on ${topic} to give you a confident answer yet. Teach me?`,
+        `I want to give you a real answer, not a vague one. I don't know enough about ${topic} yet — if you can tell me about it, I'll remember it!`
       ];
       return this.pickRandom(reasoningAttempts);
     }
