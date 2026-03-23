@@ -474,19 +474,94 @@ input, textarea { font-family: inherit; }
   max-width: var(--input-max-w);
   margin: 0 auto;
   display: flex;
-  align-items: flex-end;
-  gap: 0;
+  flex-direction: column;
   background: var(--bg-input);
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  padding: 6px 6px 6px 18px;
+  padding: 0;
   transition: border-color .2s, box-shadow .2s;
   pointer-events: all;
+  overflow: hidden;
 }
 
 .input-bar:focus-within {
   border-color: rgba(255,156,60,.3);
   box-shadow: 0 0 0 3px rgba(255,156,60,.06);
+}
+
+/* File preview area */
+.file-preview-area {
+  display: none;
+  padding: 8px 14px 0;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.file-preview-area.has-files {
+  display: flex;
+}
+
+.file-preview-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  max-width: 200px;
+  animation: msgIn .2s ease;
+}
+
+.file-preview-item .file-icon {
+  font-size: 14px;
+  min-width: 16px;
+  text-align: center;
+}
+
+.file-preview-item .file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.file-preview-item .file-remove {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.1);
+  cursor: pointer;
+  transition: background .15s;
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.file-preview-item .file-remove:hover {
+  background: rgba(255,80,80,.3);
+  color: #ff6b6b;
+}
+
+.file-preview-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+/* Text input row */
+.input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  padding: 6px 6px 6px 18px;
 }
 
 .input-bar textarea {
@@ -535,6 +610,87 @@ input, textarea { font-family: inherit; }
   color: var(--bg-dark);
 }
 
+/* Bottom toolbar row */
+.input-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px 6px;
+  border-top: 1px solid rgba(255,255,255,.04);
+}
+
+.input-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.input-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Attach button */
+.btn-attach {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s, color .15s;
+  color: var(--text-muted);
+}
+
+.btn-attach:hover {
+  background: rgba(255,255,255,.08);
+  color: var(--text-secondary);
+}
+
+.btn-attach svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Inline model selector */
+.input-model-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  user-select: none;
+}
+
+.input-model-btn:hover {
+  background: rgba(255,255,255,.06);
+  color: var(--text-secondary);
+}
+
+.input-model-btn .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4ade80;
+}
+
+.input-model-btn .chevron {
+  width: 12px;
+  height: 12px;
+  opacity: .4;
+  transition: transform .2s;
+}
+
+.model-selector.open .input-model-btn .chevron {
+  transform: rotate(180deg);
+}
+
 .input-disclaimer {
   text-align: center;
   font-size: 11px;
@@ -543,54 +699,51 @@ input, textarea { font-family: inherit; }
   pointer-events: all;
 }
 
+/* File analysis message styles */
+.file-attachment-preview {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,.04);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+.file-attachment-preview img {
+  max-width: 280px;
+  max-height: 200px;
+  border-radius: 6px;
+  margin-top: 6px;
+  display: block;
+}
+
+.file-attachment-preview .file-text-preview {
+  font-size: 12px;
+  color: var(--text-muted);
+  max-height: 80px;
+  overflow: hidden;
+  white-space: pre-wrap;
+  margin-top: 6px;
+  font-family: monospace;
+}
+
+.file-attachment-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* ── Model Selector ── */
 .model-selector {
   position: relative;
-  margin-left: 8px;
-}
-
-.model-selector-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-primary);
-  background: transparent;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background .15s;
-  user-select: none;
-}
-
-.model-selector-btn:hover {
-  background: var(--bg-hover);
-}
-
-.model-selector-btn .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #4ade80;
-}
-
-.model-selector-btn .chevron {
-  width: 14px;
-  height: 14px;
-  opacity: .4;
-  transition: transform .2s;
-}
-
-.model-selector.open .model-selector-btn .chevron {
-  transform: rotate(180deg);
 }
 
 .model-dropdown {
   position: absolute;
-  top: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: calc(100% + 6px);
+  right: 0;
   min-width: 280px;
   background: #1a1a1a;
   border: 1px solid rgba(255,255,255,.1);
@@ -599,7 +752,7 @@ input, textarea { font-family: inherit; }
   z-index: 500;
   opacity: 0;
   visibility: hidden;
-  transform: translateX(-50%) translateY(-4px);
+  transform: translateY(4px);
   transition: opacity .15s, visibility .15s, transform .15s;
   box-shadow: 0 8px 32px rgba(0,0,0,.5);
 }
@@ -607,7 +760,7 @@ input, textarea { font-family: inherit; }
 .model-selector.open .model-dropdown {
   opacity: 1;
   visibility: visible;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 
 .model-option {
@@ -805,22 +958,6 @@ input, textarea { font-family: inherit; }
   <main class="main">
     <div class="topbar">
       <div class="topbar-title" id="topbarTitle">New chat</div>
-      <div class="model-selector" id="modelSelector">
-        <button class="model-selector-btn" id="modelSelectorBtn">
-          <span class="dot"></span>
-          <span id="selectedModelName">Sprout 1.2</span>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-        <div class="model-dropdown" id="modelDropdown">
-          <button class="model-option active" data-model="sprout-1.2">
-            <svg class="model-option-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            <div class="model-option-info">
-              <div class="model-option-name">Sprout 1.2</div>
-              <div class="model-option-desc">Best for everyday tasks. Fast and reliable.</div>
-            </div>
-          </button>
-        </div>
-      </div>
     </div>
 
     <!-- Landing state -->
@@ -856,10 +993,33 @@ input, textarea { font-family: inherit; }
     <!-- Input bar -->
     <div class="input-bar-wrap">
       <div class="input-bar">
-        <textarea id="chatInput" rows="1" placeholder="Message Tithonia..." autocomplete="off"></textarea>
-        <button class="btn-send" id="btnSend" aria-label="Send message">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z"/></svg>
-        </button>
+        <div class="file-preview-area" id="filePreviewArea"></div>
+        <div class="input-row">
+          <textarea id="chatInput" rows="1" placeholder="Message Tithonia..." autocomplete="off"></textarea>
+          <button class="btn-send" id="btnSend" aria-label="Send message">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.478 2.405a.75.75 0 0 0-.926.94l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.405Z"/></svg>
+          </button>
+        </div>
+        <div class="input-toolbar">
+          <div class="input-toolbar-left">
+            <button class="btn-attach" id="btnAttach" aria-label="Attach file" title="Attach images, text files, or PDFs">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+            <input type="file" id="fileInput" hidden accept="image/*,.txt,.pdf,.md,.csv,.json,.xml,.html,.log,.py,.js,.ts,.css" multiple>
+          </div>
+          <div class="input-toolbar-right">
+            <div class="model-selector" id="modelSelector">
+              <button class="input-model-btn" id="modelSelectorBtn">
+                <span class="dot"></span>
+                <span id="selectedModelName">Sprout 1.2</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="model-dropdown" id="modelDropdown"></div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="input-disclaimer" id="inputDisclaimer">Tithonia is powered by Sprout 1.2. It can make mistakes. Verify important information.</div>
     </div>
@@ -890,6 +1050,9 @@ input, textarea { font-family: inherit; }
   const selectedModelName = $('#selectedModelName');
   const inputDisclaimer = $('#inputDisclaimer');
   const landingDesc = $('#landingDesc');
+  const btnAttach = $('#btnAttach');
+  const fileInput = $('#fileInput');
+  const filePreviewArea = $('#filePreviewArea');
 
   // ── Available Models ──
   const MODELS = {
@@ -907,6 +1070,7 @@ input, textarea { font-family: inherit; }
   let activeConvoId = null;
   let isGenerating = false;
   let activeModel = localStorage.getItem('tithonia_model') || 'sprout-1.2';
+  let pendingFiles = []; // Files waiting to be sent with the next message
 
   // ── Sprout 1.2 Engine ──
   const db = createSupabaseClient();
@@ -994,22 +1158,229 @@ input, textarea { font-family: inherit; }
     });
   }
 
+  // ── File handling ──
+  function getFileIcon(file) {
+    if (file.type.startsWith('image/')) return '\u{1F5BC}';
+    if (file.type === 'application/pdf') return '\u{1F4C4}';
+    return '\u{1F4C3}';
+  }
+
+  function renderFilePreview() {
+    filePreviewArea.innerHTML = '';
+    if (pendingFiles.length === 0) {
+      filePreviewArea.classList.remove('has-files');
+      updateSendButtonState();
+      return;
+    }
+    filePreviewArea.classList.add('has-files');
+
+    pendingFiles.forEach((fileObj, idx) => {
+      const item = document.createElement('div');
+      item.className = 'file-preview-item';
+
+      let thumbHtml = '';
+      if (fileObj.type === 'image' && fileObj.dataUrl) {
+        thumbHtml = `<img class="file-preview-thumb" src="${fileObj.dataUrl}" alt="">`;
+      } else {
+        thumbHtml = `<span class="file-icon">${getFileIcon(fileObj.file)}</span>`;
+      }
+
+      item.innerHTML = `
+        ${thumbHtml}
+        <span class="file-name">${escapeHtml(fileObj.file.name)}</span>
+        <span class="file-remove" data-idx="${idx}">&times;</span>`;
+      filePreviewArea.appendChild(item);
+    });
+
+    // Remove button handlers
+    filePreviewArea.querySelectorAll('.file-remove').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const idx = parseInt(e.target.dataset.idx);
+        pendingFiles.splice(idx, 1);
+        renderFilePreview();
+      });
+    });
+    updateSendButtonState();
+  }
+
+  function readFileAsText(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+  }
+
+  function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function processFiles(files) {
+    for (const file of files) {
+      const fileObj = { file, type: 'unknown', content: null, dataUrl: null };
+
+      if (file.type.startsWith('image/')) {
+        fileObj.type = 'image';
+        fileObj.dataUrl = await readFileAsDataUrl(file);
+      } else if (file.type === 'application/pdf') {
+        fileObj.type = 'pdf';
+        // Extract text content from PDF (basic approach — read raw text)
+        try {
+          const text = await readFileAsText(file);
+          // PDF files have embedded text between stream markers
+          const extracted = extractPdfText(text);
+          fileObj.content = extracted || '[PDF content — could not extract readable text. The file was received.]';
+        } catch (e) {
+          fileObj.content = '[PDF file received but could not be read.]';
+        }
+      } else {
+        fileObj.type = 'text';
+        try {
+          fileObj.content = await readFileAsText(file);
+          if (fileObj.content.length > 10000) {
+            fileObj.content = fileObj.content.substring(0, 10000) + '\n\n[...content truncated at 10,000 characters]';
+          }
+        } catch (e) {
+          fileObj.content = '[File could not be read as text.]';
+        }
+      }
+
+      pendingFiles.push(fileObj);
+    }
+    renderFilePreview();
+  }
+
+  function extractPdfText(rawContent) {
+    // Basic PDF text extraction — looks for text between BT/ET markers and parentheses
+    const textChunks = [];
+    const parenRegex = /\(([^)]*)\)/g;
+    let match;
+    while ((match = parenRegex.exec(rawContent)) !== null) {
+      const chunk = match[1]
+        .replace(/\\n/g, '\n')
+        .replace(/\\r/g, '')
+        .replace(/\\t/g, ' ')
+        .replace(/\\\(/g, '(')
+        .replace(/\\\)/g, ')')
+        .replace(/\\\\/g, '\\');
+      if (chunk.trim().length > 1 && /[a-zA-Z]/.test(chunk)) {
+        textChunks.push(chunk.trim());
+      }
+    }
+    const result = textChunks.join(' ').replace(/\s+/g, ' ').trim();
+    return result.length > 50 ? result : null;
+  }
+
+  function buildFileContext(files) {
+    const parts = [];
+    for (const f of files) {
+      if (f.type === 'image') {
+        parts.push(`[User attached an image: ${f.file.name} (${f.file.type}, ${formatFileSize(f.file.size)}). Describe what you understand about this image based on its filename and context.]`);
+      } else if (f.type === 'pdf') {
+        parts.push(`[User attached a PDF: ${f.file.name}]\nExtracted content:\n${f.content}`);
+      } else {
+        parts.push(`[User attached a file: ${f.file.name}]\nFile content:\n${f.content}`);
+      }
+    }
+    return parts.join('\n\n');
+  }
+
+  function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function renderFileAttachments(files) {
+    // Build HTML for file attachments shown in the message
+    let html = '';
+    for (const f of files) {
+      html += '<div class="file-attachment-preview">';
+      if (f.type === 'image' && f.dataUrl) {
+        html += `<div class="file-attachment-label">\u{1F5BC} ${escapeHtml(f.file.name)}</div>`;
+        html += `<img src="${f.dataUrl}" alt="${escapeHtml(f.file.name)}">`;
+      } else if (f.type === 'pdf') {
+        html += `<div class="file-attachment-label">\u{1F4C4} ${escapeHtml(f.file.name)} (${formatFileSize(f.file.size)})</div>`;
+      } else {
+        html += `<div class="file-attachment-label">\u{1F4C3} ${escapeHtml(f.file.name)} (${formatFileSize(f.file.size)})</div>`;
+        if (f.content) {
+          const preview = f.content.length > 200 ? f.content.substring(0, 200) + '...' : f.content;
+          html += `<div class="file-text-preview">${escapeHtml(preview)}</div>`;
+        }
+      }
+      html += '</div>';
+    }
+    return html;
+  }
+
+  // File attach button & input
+  btnAttach.addEventListener('click', () => {
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      processFiles(Array.from(e.target.files));
+    }
+    fileInput.value = ''; // Reset so the same file can be re-selected
+  });
+
+  // Drag & drop on input bar
+  const inputBar = document.querySelector('.input-bar');
+  inputBar.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    inputBar.style.borderColor = 'rgba(255,156,60,.5)';
+  });
+  inputBar.addEventListener('dragleave', () => {
+    inputBar.style.borderColor = '';
+  });
+  inputBar.addEventListener('drop', (e) => {
+    e.preventDefault();
+    inputBar.style.borderColor = '';
+    if (e.dataTransfer.files.length > 0) {
+      processFiles(Array.from(e.dataTransfer.files));
+    }
+  });
+
   // ── Auto-resize textarea ──
+  function updateSendButtonState() {
+    const hasContent = chatInput.value.trim().length > 0 || pendingFiles.length > 0;
+    btnSend.classList.toggle('active', hasContent);
+  }
+
   chatInput.addEventListener('input', function() {
     this.style.height = 'auto';
     this.style.height = Math.min(this.scrollHeight, 150) + 'px';
-    btnSend.classList.toggle('active', this.value.trim().length > 0);
+    updateSendButtonState();
   });
 
   // ── Send message ──
   async function sendMessage(text) {
-    if (!text.trim() || isGenerating) return;
+    const hasFiles = pendingFiles.length > 0;
+    if ((!text.trim() && !hasFiles) || isGenerating) return;
+
+    // Capture files before clearing
+    const filesToSend = hasFiles ? [...pendingFiles] : [];
+    const fileContext = hasFiles ? buildFileContext(filesToSend) : '';
+    const displayText = text.trim();
+
+    // Build the full message for the AI (text + file context)
+    const fullMessage = fileContext
+      ? (displayText ? displayText + '\n\n' + fileContext : 'Please analyze these files.\n\n' + fileContext)
+      : displayText;
 
     // Create new conversation if none active
     if (!activeConvoId) {
+      const title = displayText || filesToSend[0].file.name;
       const convo = {
         id: genId(),
-        title: truncate(text.trim(), 40),
+        title: truncate(title, 40),
         messages: [],
         created: Date.now()
       };
@@ -1027,15 +1398,17 @@ input, textarea { font-family: inherit; }
     messagesWrap.style.display = 'block';
     topbarTitle.textContent = convo.title;
 
-    // Add user message
-    convo.messages.push({ role: 'user', text: text.trim() });
+    // Add user message (store display text, not the full AI context)
+    convo.messages.push({ role: 'user', text: displayText || 'Attached files', hasFiles: hasFiles });
     saveConversations();
-    renderMessage('user', text.trim());
+    renderMessage('user', displayText || 'Attached files', null, null, hasFiles ? filesToSend : null);
 
-    // Clear input
+    // Clear input & files
     chatInput.value = '';
     chatInput.style.height = 'auto';
-    btnSend.classList.remove('active');
+    pendingFiles = [];
+    renderFilePreview();
+    updateSendButtonState();
 
     // Show typing indicator
     isGenerating = true;
@@ -1045,7 +1418,7 @@ input, textarea { font-family: inherit; }
     // Get response from Sprout 1.2 engine
     if (sprout) {
       try {
-        const result = await sprout.getResponse(text.trim());
+        const result = await sprout.getResponse(fullMessage);
         typingEl.remove();
         convo.messages.push({ role: 'assistant', text: result.answer, emotion: result.emotion, mode: result.mode });
         saveConversations();
@@ -1109,15 +1482,18 @@ input, textarea { font-family: inherit; }
     'lexicon': 'knows this word'
   };
 
-  function renderMessage(role, text, emotion, mode) {
+  function renderMessage(role, text, emotion, mode, files) {
     const div = document.createElement('div');
     div.className = 'message';
+
+    const fileHtml = files ? renderFileAttachments(files) : '';
 
     if (role === 'user') {
       div.innerHTML = `
         <div class="message-avatar user-avatar">Y</div>
         <div class="message-content">
           <div class="message-sender">You</div>
+          ${fileHtml}
           <div class="message-text">${escapeHtml(text)}</div>
         </div>`;
     } else {
@@ -1207,6 +1583,8 @@ input, textarea { font-family: inherit; }
     messagesWrap.style.display = 'none';
     landing.style.display = '';
     topbarTitle.textContent = 'New chat';
+    pendingFiles = [];
+    renderFilePreview();
     renderChatList();
     closeSidebar();
     chatInput.focus();
