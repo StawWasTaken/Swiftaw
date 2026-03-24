@@ -2325,15 +2325,15 @@ class SproutEngine {
     const lower = text.toLowerCase();
 
     const emotionPatterns = {
-      happy: /\b(happy|great|awesome|amazing|love|excited|wonderful|fantastic|yay|haha|lol|good|nice|cool|fun)\b|[!]{2,}|:\)|<3/,
+      greeting: /\b(hi|hello|hey|yo|sup|whats up|howdy|good morning|good evening|good afternoon|hiya|greetings)\b/,
+      farewell: /\b(bye|goodbye|see you|later|gotta go|cya|goodnight|peace out|take care)\b/,
+      grateful: /\b(thanks|thank you|appreciate|grateful|thx|ty|cheers)\b/,
       sad: /\b(sad|unhappy|depressed|down|lonely|miss|crying|upset|hurt|pain|lost|sorry|sigh)\b|:\(|;\(/,
       angry: /\b(angry|mad|furious|hate|annoyed|frustrated|stupid|terrible|worst|ugh|damn)\b|[!]{3,}/,
-      curious: /\b(how|why|what|when|where|wonder|curious|explain|tell me|teach|learn|understand)\b|\?/,
-      greeting: /\b(hi|hello|hey|yo|sup|whats up|howdy|good morning|good evening|good afternoon|hiya|greetings)\b/,
-      grateful: /\b(thanks|thank you|appreciate|grateful|thx|ty|cheers)\b/,
       confused: /\b(confused|dont understand|idk|what do you mean|huh|unclear|lost|help)\b/,
       playful: /\b(hehe|haha|lmao|rofl|joke|funny|silly|lol|xd)\b/,
-      farewell: /\b(bye|goodbye|see you|later|gotta go|cya|goodnight|peace out|take care)\b/
+      happy: /\b(happy|great|awesome|amazing|love|excited|wonderful|fantastic|yay|good|nice|cool|fun)\b|:\)|<3/,
+      curious: /\b(how|why|what|when|where|wonder|curious|explain|tell me|teach|learn|understand)\b|\?/
     };
 
     for (const [emotion, pattern] of Object.entries(emotionPatterns)) {
@@ -2348,7 +2348,6 @@ class SproutEngine {
   // ── Emotional response enhancement ──
   enhanceWithEmotion(rawAnswer, userEmotion, userMessage) {
     const lower = userMessage.toLowerCase();
-    this.turnCount++;
 
     // Skip emotional enhancement if the response looks like keyword soup.
     // Signs: too many commas relative to words, or repeated template phrases.
@@ -4334,7 +4333,7 @@ class SproutEngine {
       const overlap = currentKeywords.filter(k => pastTopic.keywords.includes(k));
       if (overlap.length > 0) {
         return {
-          isContination: true,
+          isContinuation: true,
           sharedKeywords: overlap,
           turnGap: this.turnCount - pastTopic.turn
         };

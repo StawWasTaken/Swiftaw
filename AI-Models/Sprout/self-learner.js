@@ -459,7 +459,7 @@ class SelfLearner {
       if (this.onThought) {
         this.onThought({
           type: 'insight',
-          message: `I just created ${insightsGenerated} new piece(s) of knowledge by connecting things I already knew!`
+          message: `I just created ${insightsGenerated} new ${insightsGenerated === 1 ? 'piece' : 'pieces'} of knowledge by connecting things I already knew!`
         });
       }
     }
