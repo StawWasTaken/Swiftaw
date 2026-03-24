@@ -231,25 +231,27 @@ class SproutSmartSearch {
       en: {
         openers: [
           "Here's what I found —",
-          "Great question! From what I've learned,",
-          "I looked this up for you!",
-          "Let me share what I discovered —",
-          "I did some searching and here's what I found:",
-          "Ooh, interesting question!"
+          "From what I've gathered,",
+          "So,",
+          "Alright, here's the deal —",
+          "Good one!",
+          "Here's a quick rundown —",
+          "Okay so from what I know,"
         ],
         transitions: [
           "Also,",
           "On top of that,",
           "What's interesting is that",
-          "Additionally,",
-          "It's also worth knowing that"
+          "Plus,",
+          "And"
         ],
         closers: [
           "Pretty cool, right?",
           "Hope that helps!",
-          "Want to know more about this?",
-          "I just learned that too!",
+          "Want to know more?",
           "Let me know if you want me to dig deeper!",
+          "",
+          "",
           ""
         ]
       },
@@ -384,7 +386,7 @@ class SproutSmartSearch {
       await this.db
         .from('sprout_training_data')
         .insert({
-          model: 'sprout-1.3',
+          model: 'sprout-1.2',
           question,
           answer,
           category,
