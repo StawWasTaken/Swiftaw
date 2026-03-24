@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/styles/github-dark.min.css">
 <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11/build/highlight.min.js"></script>
 <script src="/AI-Models/Sprout/supabase-config.js"></script>
+<script src="/AI-Models/Sprout/smart-search.js"></script>
 <script src="/AI-Models/Sprout/sprout-engine.js"></script>
 <style>
 /* ── Variables ── */
@@ -410,13 +411,11 @@ input, textarea { font-family: inherit; }
 .message-text h1 { font-size: 1.4em; }
 .message-text h2 { font-size: 1.2em; }
 .message-text h3 { font-size: 1.05em; }
-
 .message-text ul, .message-text ol {
   margin: 8px 0;
   padding-left: 24px;
 }
 .message-text li { margin: 4px 0; }
-
 .message-text pre {
   background: #111;
   border: 1px solid rgba(255,255,255,.08);
@@ -442,7 +441,6 @@ input, textarea { font-family: inherit; }
   font-family: 'SFMono-Regular', 'Fira Code', 'Consolas', monospace;
   color: #e6e6e6;
 }
-
 .message-text blockquote {
   border-left: 3px solid var(--brand-yellow);
   padding: 4px 12px;
@@ -450,7 +448,6 @@ input, textarea { font-family: inherit; }
   color: rgba(255,255,255,.65);
   font-style: italic;
 }
-
 .message-text table {
   border-collapse: collapse;
   margin: 12px 0;
@@ -466,13 +463,6 @@ input, textarea { font-family: inherit; }
   background: rgba(255,255,255,.04);
   font-weight: 600;
 }
-
-.message-text a {
-  color: var(--brand-yellow);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
 .message-text strong { color: var(--text-primary); }
 .message-text hr { border: none; border-top: 1px solid rgba(255,255,255,.08); margin: 16px 0; }
 
@@ -1549,11 +1539,19 @@ input, textarea { font-family: inherit; }
   };
 
   const modeLabels = {
-    'ai-engine': 'powered by AI',
-    'error': 'setup needed',
+    'logic-engine': 'solved with logic',
+    'sprout-brain': 'thought about it',
+    'feedback-loop': 'learning from feedback',
+    'feedback-retry': 'trying again',
+    'lookup': 'from knowledge base',
+    'cached': 'remembered',
+    'context-aware': 'understood context',
+    'lexicon': 'knows this word',
+    'smart-search': 'searched the web',
+    'sprout-reasoning': 'reasoned it out'
   };
 
-  // Render markdown to safe HTML (for AI responses)
+  // Render markdown to HTML (for AI responses — code blocks, lists, bold, etc.)
   function renderMarkdown(text) {
     if (typeof marked === 'undefined') return escapeHtml(text);
     try {
@@ -1595,6 +1593,7 @@ input, textarea { font-family: inherit; }
       const moodText = emotion ? (moodLabels[emotion] || 'listening') : 'listening';
       const modeText = mode ? (modeLabels[mode] || '') : '';
       const modeHtml = modeText ? ` <span class="mode-indicator">${modeText}</span>` : '';
+      // AI responses get markdown rendering for code blocks, formatting, etc.
       const renderedText = renderMarkdown(text);
       div.innerHTML = `
         <div class="message-avatar ai-avatar">
@@ -1663,8 +1662,22 @@ input, textarea { font-family: inherit; }
     const convo = conversations.find(c => c.id === id);
     if (!convo) return;
 
-    // Load conversation history into the AI engine for context
-    if (sprout) sprout.loadHistory(convo.messages);
+    // Restore conversation history into the AI engine so it has full context
+    if (sprout && convo.messages) {
+      sprout.conversationHistory = [];
+      sprout.turnCount = 0;
+      sprout.topicMemory = [];
+      for (const msg of convo.messages) {
+        if (msg.role === 'user' && msg.text) {
+          sprout.conversationHistory.push({ role: 'user', content: msg.text });
+          sprout.turnCount++;
+          const kw = sprout.extractKeywords(sprout.normalize(msg.text));
+          if (kw.length > 0) sprout.topicMemory.push({ keywords: kw.slice(0, 3), turn: sprout.turnCount });
+        } else if (msg.role === 'assistant' && msg.text) {
+          sprout.conversationHistory.push({ role: 'assistant', content: msg.text });
+        }
+      }
+    }
 
     landing.style.display = 'none';
     messagesWrap.style.display = 'block';
@@ -1687,8 +1700,14 @@ input, textarea { font-family: inherit; }
     closeSidebar();
     chatInput.focus();
 
-    // Clear AI engine history for fresh context
-    if (sprout) sprout.clearHistory();
+    // Clear the AI engine's memory for a fresh conversation
+    if (sprout) {
+      sprout.conversationHistory = [];
+      sprout.turnCount = 0;
+      sprout.topicMemory = [];
+      sprout.usedResponses.clear();
+      sprout.feedbackState.awaitingCorrection = false;
+    }
   }
 
   // ── Sidebar mobile ──
