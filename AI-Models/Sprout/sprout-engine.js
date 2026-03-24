@@ -227,26 +227,26 @@ class SproutLogicEngine {
 
   // ── Sentence Generation ──
   generateSentence(topic, style = 'neutral') {
-    // Templates for generating original sentences
+    // Templates for generating original sentences about a topic
     const templates = {
       neutral: [
-        `${topic} is something that many people find interesting and worth exploring.`,
-        `When it comes to ${topic}, there are many perspectives to consider.`,
-        `${topic} plays an important role in how we understand the world around us.`,
-        `The concept of ${topic} continues to evolve as we learn more about it.`,
-        `Understanding ${topic} can open new ways of thinking about related subjects.`
+        `${topic} is something that shapes how people think and interact with the world.`,
+        `When it comes to ${topic}, there's more depth than most people realize.`,
+        `${topic} has a way of connecting to other ideas in unexpected ways.`,
+        `There's a reason people keep coming back to ${topic} — it touches on something fundamental.`,
+        `${topic} sits at an interesting crossroads of experience and understanding.`
       ],
       simple: [
-        `${topic} is a fascinating subject.`,
-        `Many people are curious about ${topic}.`,
-        `${topic} matters because it affects our daily lives.`,
-        `Learning about ${topic} helps us grow.`,
-        `${topic} is worth knowing about.`
+        `${topic} carries more weight than it first appears.`,
+        `There's something compelling about ${topic}.`,
+        `${topic} is one of those things that rewards closer attention.`,
+        `People tend to underestimate how much ${topic} matters.`,
+        `${topic} has layers that reveal themselves over time.`
       ],
       detailed: [
-        `${topic} encompasses a wide range of ideas and applications that span multiple fields of study.`,
-        `The study of ${topic} reveals connections between seemingly unrelated concepts and helps build deeper understanding.`,
-        `Exploring ${topic} in depth shows how complex and interconnected our world truly is.`
+        `${topic} spans a wide range of ideas, each one building on the last in ways that aren't always obvious at first glance.`,
+        `The deeper you look into ${topic}, the more you start to see connections to fields and concepts you wouldn't have expected.`,
+        `What makes ${topic} worth studying is how it reveals patterns that repeat across completely different domains.`
       ]
     };
 
@@ -254,52 +254,232 @@ class SproutLogicEngine {
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
-  // ── Writing Task Handler ──
+  // ── Writing Task Handler (1.3 — Full creative writing engine) ──
   handleWriteTask(message) {
     const lower = message.toLowerCase();
 
-    // "Write a short sentence"
-    if (/short\s+sentence/i.test(lower)) {
-      const sentences = [
-        "The sun rises every morning.",
-        "Birds sing in the trees.",
-        "Water flows downhill naturally.",
-        "Stars light up the night sky.",
-        "Time moves forward always.",
-        "Flowers bloom in spring.",
-        "Rain nourishes the earth.",
-        "Music soothes the soul.",
-        "Knowledge is power.",
-        "The wind whispers through the leaves."
-      ];
-      return sentences[Math.floor(Math.random() * sentences.length)];
+    // Extract what type of content and what topic
+    const contentType = this.detectWritingType(lower);
+    const topic = this.extractWritingTopic(lower);
+
+    if (!topic && contentType === 'sentence') {
+      // "Write a short sentence" — no topic
+      return this.generateRandomSentence();
     }
 
-    // "Write a sentence about X"
-    const aboutMatch = lower.match(/(?:write|compose|create|make|generate)\s+(?:me\s+)?(?:a\s+)?(?:short\s+)?sentence\s+(?:about|on|regarding)\s+(.+?)(?:\.|$)/i);
-    if (aboutMatch) {
-      const topic = aboutMatch[1].trim();
-      return this.generateSentence(topic, 'simple');
-    }
+    if (!topic) return null;
 
-    // "Write a paragraph about X"
-    const paraMatch = lower.match(/(?:write|compose|create|make|generate)\s+(?:me\s+)?(?:a\s+)?(?:short\s+)?paragraph\s+(?:about|on|regarding)\s+(.+?)(?:\.|$)/i);
-    if (paraMatch) {
-      const topic = paraMatch[1].trim();
-      const s1 = this.generateSentence(topic, 'neutral');
-      const s2 = this.generateSentence(topic, 'detailed');
-      const s3 = this.generateSentence(topic, 'simple');
-      return `${s1} ${s2} ${s3}`;
+    switch (contentType) {
+      case 'story': return this.generateStory(topic);
+      case 'poem': return this.generatePoem(topic);
+      case 'essay': return this.generateEssay(topic);
+      case 'letter': return this.generateLetter(topic);
+      case 'paragraph': return this.generateParagraph(topic);
+      case 'sentence': return this.generateSentence(topic, 'simple');
+      case 'haiku': return this.generateHaiku(topic);
+      case 'message': return this.generateMessage(topic);
+      default: return this.generateParagraph(topic);
     }
+  }
 
-    // Generic write task — extract what they want
-    const genericMatch = lower.match(/(?:write|compose|create|make|generate)\s+(?:me\s+)?(?:a\s+)?(.+?)(?:\.|$)/i);
-    if (genericMatch) {
-      const what = genericMatch[1].trim();
-      return this.generateSentence(what, 'simple');
-    }
+  detectWritingType(text) {
+    if (/\b(story|tale|narrative|short story)\b/i.test(text)) return 'story';
+    if (/\b(poem|poetry|verse|sonnet)\b/i.test(text)) return 'poem';
+    if (/\b(essay|article|paper|write-up)\b/i.test(text)) return 'essay';
+    if (/\b(letter|email|note|memo)\b/i.test(text)) return 'letter';
+    if (/\b(paragraph)\b/i.test(text)) return 'paragraph';
+    if (/\b(haiku)\b/i.test(text)) return 'haiku';
+    if (/\b(message|text|sms)\b/i.test(text)) return 'message';
+    if (/\b(sentence)\b/i.test(text)) return 'sentence';
+    return 'paragraph';
+  }
+
+  extractWritingTopic(text) {
+    // Try to extract the topic after "about/on/regarding/for"
+    const aboutMatch = text.match(/(?:about|on|regarding|for|involving|featuring|with)\s+(.+?)(?:\.|!|\?|$)/i);
+    if (aboutMatch) return aboutMatch[1].trim();
+
+    // Try to extract after the content type word
+    const afterTypeMatch = text.match(/(?:story|poem|essay|paragraph|letter|haiku|sentence|message|tale|narrative)\s+(?:about\s+|on\s+|for\s+|of\s+)?(.+?)(?:\.|!|\?|$)/i);
+    if (afterTypeMatch) return afterTypeMatch[1].trim();
+
+    // Generic: extract after "write/create/compose/make"
+    const genericMatch = text.match(/(?:write|compose|create|make|generate)\s+(?:me\s+)?(?:a\s+)?(?:\w+\s+){0,2}(?:about|on|for|of)\s+(.+?)(?:\.|!|\?|$)/i);
+    if (genericMatch) return genericMatch[1].trim();
 
     return null;
+  }
+
+  generateRandomSentence() {
+    const sentences = [
+      "The morning light caught the edge of the window and painted gold across the floor.",
+      "She closed the book and realized the story had changed the way she saw things.",
+      "Somewhere between the silence and the sound, there was a truth no one had named yet.",
+      "The rain arrived without warning, turning the city into something quieter and more honest.",
+      "He stood at the crossroads and understood that both paths led somewhere worth going.",
+      "The old tree in the yard had seen more conversations than any room in the house.",
+      "Sometimes the bravest thing you can do is sit still and let the world come to you.",
+      "The coffee went cold while she stared at the letter, trying to find the right words.",
+      "Stars don't care whether anyone is watching them — they burn regardless.",
+      "The sound of footsteps on gravel has a way of making arrivals feel important."
+    ];
+    return sentences[Math.floor(Math.random() * sentences.length)];
+  }
+
+  generateStory(topic) {
+    // Build a short story with actual narrative structure:
+    // Setting → Character → Conflict → Development → Resolution
+    const articles = /^(a|an|the)\s+/i.test(topic) ? '' : 'a ';
+    const topicClean = topic.replace(/^(a|an|the)\s+/i, '');
+
+    // Character name pools
+    const names = ['Elena', 'Marcus', 'Yuki', 'Samuel', 'Aria', 'Leo', 'Nadia', 'Oliver', 'Zara', 'Felix', 'Maya', 'Theo', 'Luna', 'Kai', 'Iris'];
+    const name = names[Math.floor(Math.random() * names.length)];
+
+    // Setting pools
+    const settings = [
+      `a small studio tucked away on a quiet street`,
+      `a workshop that smelled of old wood and possibility`,
+      `a corner of the city that most people walked right past`,
+      `a room where the light came in at just the right angle`,
+      `an old building that had been many things before`
+    ];
+    const setting = settings[Math.floor(Math.random() * settings.length)];
+
+    // Build the narrative
+    const openings = [
+      `${name} had always been drawn to ${topic}. Not in the way most people are — casually, from a distance — but with the kind of attention that borders on devotion.`,
+      `The first time ${name} encountered ${topic}, something shifted. It wasn't dramatic. It was more like a door opening to a room that had always been there.`,
+      `${name} didn't choose ${topic}. It chose them. That's how it felt, at least — like the world had placed something in their path and dared them not to pick it up.`,
+      `In ${setting}, ${name} spent most of their days thinking about ${topic}. People called it obsession. ${name} called it the only thing that made sense.`
+    ];
+
+    const middles = [
+      `For a long time, nothing came easy. The work was slow, the progress invisible to anyone who wasn't paying attention. ${name} kept going anyway — not because they were certain it would pay off, but because stopping felt like a kind of betrayal.`,
+      `There were moments of doubt. Long stretches where ${name} wondered if all the time spent on ${topic} was wasted — if maybe everyone else had been right to move on to more practical things. But then a breakthrough would come, small and quiet, and it would be enough.`,
+      `The hardest part wasn't the work itself. It was the silence around it — the long hours where nothing happened, where ${topic} felt more like a question than an answer. ${name} learned to sit with that uncertainty.`,
+      `Other people moved on to new things. ${name} stayed. There was something in ${topic} that they hadn't finished understanding yet, some thread they hadn't followed to its end.`
+    ];
+
+    const endings = [
+      `Eventually, ${name} realized the point had never been to finish. The point was to keep looking — to let ${topic} teach them something new about the world, and about themselves, every single time.`,
+      `In the end, what ${name} created wasn't just about ${topic}. It was about the kind of person you become when you give something your full attention. And that, they decided, was enough.`,
+      `Years later, when someone asked ${name} what ${topic} meant to them, they paused for a long time before answering. "It taught me how to see," they said. "Not just look — actually see."`,
+      `The story of ${name} and ${topic} didn't have a neat ending. Real stories rarely do. But there was a moment — quiet, almost ordinary — where ${name} looked at what they'd built and thought: this matters. And it did.`
+    ];
+
+    const opening = openings[Math.floor(Math.random() * openings.length)];
+    const middle = middles[Math.floor(Math.random() * middles.length)];
+    const ending = endings[Math.floor(Math.random() * endings.length)];
+
+    return `${opening}\n\n${middle}\n\n${ending}`;
+  }
+
+  generatePoem(topic) {
+    const poems = [
+      [
+        `There is a language in ${topic}`,
+        `that words alone can't hold —`,
+        `a rhythm underneath the surface,`,
+        `patient, quiet, bold.`,
+        ``,
+        `It speaks in light and shadow,`,
+        `in texture, shape, and time,`,
+        `and those who stop to listen`,
+        `can hear it, line by line.`,
+        ``,
+        `Not everything worth knowing`,
+        `arrives with noise and flair.`,
+        `Sometimes the deepest truths about ${topic}`,
+        `are simply... there.`
+      ],
+      [
+        `${this.capitalizeFirst(topic)} —`,
+        `not a thing to be held,`,
+        `but a way of holding on.`,
+        ``,
+        `The kind of knowing`,
+        `that sits in your hands`,
+        `before your mind catches up.`,
+        ``,
+        `We circle it with language,`,
+        `build frames and definitions,`,
+        `but ${topic} lives in the spaces`,
+        `between what we say`,
+        `and what we mean.`
+      ],
+      [
+        `I watched ${topic} unfold once,`,
+        `slowly, like morning.`,
+        `Not the way you'd expect —`,
+        `no fanfare, no announcement —`,
+        `just a quiet shift in the light`,
+        `that changed everything after it.`,
+        ``,
+        `And I thought:`,
+        `this is how the important things arrive.`,
+        `Not with thunder.`,
+        `With patience.`
+      ]
+    ];
+
+    const poem = poems[Math.floor(Math.random() * poems.length)];
+    return poem.join('\n');
+  }
+
+  generateHaiku(topic) {
+    const haikus = [
+      [`${this.capitalizeFirst(topic)} waits here`, `between silence and meaning`, `asking to be seen`],
+      [`A world inside it`, `${topic} holds more than we know`, `still unfolding now`],
+      [`Quiet and constant`, `${topic} shapes what we become`, `without asking to`],
+      [`Look closer — you'll see`, `${topic} changes everything`, `even standing still`]
+    ];
+    const haiku = haikus[Math.floor(Math.random() * haikus.length)];
+    return haiku.join('\n');
+  }
+
+  generateEssay(topic) {
+    const intro = this.pickRandom([
+      `${this.capitalizeFirst(topic)} is one of those subjects that seems simple on the surface but reveals its complexity the moment you start paying attention. Most people have a passing familiarity with it, but few take the time to understand what it actually means — and why it matters.`,
+      `If you ask ten different people about ${topic}, you'll probably get ten different answers. That's not a weakness — it's a sign of something genuinely interesting. ${this.capitalizeFirst(topic)} sits at the intersection of experience and interpretation, which means it's always shaped by who's looking at it.`,
+      `There's a tendency to treat ${topic} as settled — as something we already understand well enough. But I think that assumption is worth questioning. The more you look into it, the more you realize there are layers most people never reach.`
+    ]);
+
+    const body = this.pickRandom([
+      `What makes ${topic} worth examining is the way it connects to things you wouldn't expect. On one hand, it's grounded in practical reality — it has real consequences and real applications. On the other hand, it raises questions that don't have easy answers. This tension is what keeps it relevant. The people who engage with ${topic} most seriously tend to be the ones who are comfortable holding two ideas at once: that something can be both understood and mysterious.`,
+      `The history of how people have thought about ${topic} is itself instructive. Early approaches were often reductive — attempts to simplify it into something manageable. Over time, the understanding has become more nuanced. We've learned that ${topic} can't be separated from its context, and that the most honest thing you can say about it is often the most complex. What's striking is how each generation discovers something new about it, not because ${topic} has changed, but because the way we look at it has.`,
+      `One of the most important things about ${topic} is what it reveals about us. The questions we ask about it, the assumptions we bring, the things we notice and the things we miss — all of these say as much about the observer as the subject. This isn't a flaw in how we understand ${topic}. It's a feature. It means that engaging with it is always, at some level, an act of self-examination.`
+    ]);
+
+    const conclusion = this.pickRandom([
+      `Ultimately, ${topic} deserves more than a surface-level take. It deserves the kind of attention that leads to genuine understanding — not certainty, but the richer kind of knowing that comes from sitting with complexity and resisting the urge to simplify too quickly.`,
+      `The takeaway isn't that ${topic} is impossibly complicated. It's that the complexity is the point. Learning to engage with it honestly — without oversimplifying, without pretending you have all the answers — is itself a valuable exercise. And that's worth the effort.`,
+      `${this.capitalizeFirst(topic)} will keep evolving as we do. The important thing is to keep looking at it with fresh eyes, to resist the comfortable assumption that we've already figured it out. Because the best insights about ${topic} tend to come from the people who stay curious longest.`
+    ]);
+
+    return `${intro}\n\n${body}\n\n${conclusion}`;
+  }
+
+  generateLetter(topic) {
+    return this.pickRandom([
+      `Dear friend,\n\nI've been thinking about ${topic} a lot lately, and I wanted to share some of those thoughts with you.\n\nThere's something about ${topic} that I can't quite put into words — it's the kind of thing that makes more sense when you experience it than when you try to explain it. But I'll try anyway, because I think it matters.\n\nWhat strikes me most is how ${topic} has a way of shifting your perspective. Not all at once, but gradually — like watching a landscape change as the light moves. You start seeing connections you didn't notice before, and suddenly things that seemed unrelated start to make sense together.\n\nI don't have it all figured out. I probably never will. But I think that's okay. Some things are better explored than solved.\n\nLet me know what you think.\n\nWarmly,\nA friend`,
+      `To whom it may concern,\n\nI'm writing to share some thoughts on ${topic} — something I believe deserves more attention than it typically receives.\n\n${this.capitalizeFirst(topic)} has a way of sitting at the edges of conversation, acknowledged but rarely examined closely. In my experience, the most interesting things tend to live in exactly that space — present but underexplored.\n\nI'd encourage anyone reading this to spend a little time with ${topic}. Not to find answers, necessarily, but to find better questions. That's where the value is.\n\nWith respect,\nA thoughtful observer`
+    ]);
+  }
+
+  generateMessage(topic) {
+    return this.pickRandom([
+      `Hey — been thinking about ${topic}. There's more to it than I initially realized. Want to talk about it sometime?`,
+      `Quick thought on ${topic}: I think most people oversimplify it. There's a lot more nuance there than the usual take suggests. Curious what you think.`,
+      `So I went down a bit of a rabbit hole on ${topic} today. Turns out it's way more interesting than I expected. Let me know if you want to hear about it.`
+    ]);
+  }
+
+  generateParagraph(topic) {
+    const s1 = this.generateSentence(topic, 'neutral');
+    const s2 = this.generateSentence(topic, 'detailed');
+    const s3 = this.generateSentence(topic, 'simple');
+    return `${s1} ${s2} ${s3}`;
   }
 
   // ── Yes/No Logic ──
@@ -1977,6 +2157,120 @@ class SproutEngine {
   }
 
   // ══════════════════════════════════════════════════════════════
+  // ══════════════════════════════════════════════════════════════
+  // SELF-KNOWLEDGE — Recognize questions about Sprout / Tithonia / the AI itself
+  // Must run BEFORE smart search to prevent Wikipedia hijacking
+  // ══════════════════════════════════════════════════════════════
+
+  async trySelfKnowledge(userMessage, normalized, keywords, userEmotion) {
+    const lower = userMessage.toLowerCase().trim();
+
+    // Detect if the user is asking about Sprout, Tithonia, or this AI
+    const selfPatterns = [
+      /\b(what|who)\s+(is|are)\s+(sprout|tithonia)\b/i,
+      /\b(tell\s+me\s+about|explain|describe)\s+(sprout|tithonia)\b/i,
+      /\b(what\s+is\s+)?sprout\s*1\.\d/i,
+      /\b(what\s+is\s+)?tithonia\b/i,
+      /\bwhat\s+model\s+are\s+you\b/i,
+      /\bwhat\s+version\s+are\s+you\b/i,
+      /\bwhat\s+ai\s+are\s+you\b/i,
+      /\bwhat\s+are\s+you\s+built\s+(on|with)\b/i,
+      /\bwhat\s+powers\s+you\b/i,
+      /\bwho\s+are\s+you\b/i,
+      /\bwhat\s+are\s+you\b/i,
+      /\byour\s+name\b/i,
+      /\babout\s+yourself\b/i,
+      /\btell\s+me\s+about\s+you\b/i,
+      /\bare\s+you\s+(alive|conscious|sentient|real)\b/i,
+      /\bdo\s+you\s+(exist|think|feel)\b/i,
+      /\bwhat\s+is\s+your\s+purpose\b/i,
+      /\bwho\s+(made|created|built)\s+you\b/i,
+      /\bwho\s+is\s+your\s+(creator|maker|developer)\b/i,
+      /\bhow\s+do\s+you\s+work\b/i,
+      /\bhow\s+were\s+you\s+(made|created|built|trained)\b/i
+    ];
+
+    const isSelfQuery = selfPatterns.some(p => p.test(lower));
+    if (!isSelfQuery) return null;
+
+    // Build a self-aware response based on what they asked
+    const askingAboutSprout = /sprout/i.test(lower);
+    const askingAboutTithonia = /tithonia/i.test(lower);
+    const askingAboutVersion = /version|model|1\.\d/i.test(lower);
+    const askingHowBuilt = /how\s+(do\s+you\s+work|were\s+you\s+(made|created|built|trained))/i.test(lower);
+    const askingCreator = /who\s+(made|created|built)|creator|maker/i.test(lower);
+    const askingPurpose = /purpose|what\s+do\s+you\s+do|what\s+are\s+you\s+for/i.test(lower);
+
+    let answer;
+
+    if (askingAboutSprout && askingAboutVersion) {
+      answer = this.pickRandom([
+        "Sprout 1.3 is the AI engine that powers me — Tithonia. It's a custom-built brain with its own knowledge base, reasoning engine, and learning system. No external LLM dependency — I think for myself.",
+        "That's me! Sprout 1.3 is my AI engine — it's what makes me think, learn, and have conversations. I'm built from scratch with my own brain, not powered by any external AI model.",
+        "Sprout 1.3 is the engine behind Tithonia. It's a self-contained AI brain that learns from conversations, builds knowledge connections, and reasons independently. Version 1.3 is the young adult stage — think 19 years old in human terms."
+      ]);
+    } else if (askingAboutSprout) {
+      answer = this.pickRandom([
+        "Sprout is my AI engine — the brain that powers me (Tithonia). It's custom-built with its own knowledge base, reasoning capabilities, and learning system. Currently running version 1.3.",
+        "Sprout is what makes me tick. It's a custom AI engine — no external LLM, just my own brain. I learn from conversations, build knowledge graphs, and reason through problems independently.",
+        "Sprout is the AI model behind Tithonia. It's a from-scratch AI brain with its own lexicon, reasoning engine, and autonomous learning system. I'm currently on version 1.3 — the young adult stage."
+      ]);
+    } else if (askingAboutTithonia) {
+      answer = this.pickRandom([
+        "Tithonia is me — an AI assistant created by Swiftaw. I'm powered by the Sprout 1.3 engine, which is a custom-built AI brain. I think for myself using my own knowledge base and reasoning.",
+        "That's me! Tithonia is an AI assistant built by Swiftaw, powered by the Sprout 1.3 engine. I have my own brain — I learn, reason, and grow from every conversation.",
+        "Tithonia is Swiftaw's AI assistant — and that's me. I run on Sprout 1.3, a custom AI engine with its own knowledge base, learning system, and reasoning capabilities. No external AI dependency."
+      ]);
+    } else if (askingHowBuilt) {
+      answer = this.pickRandom([
+        "I'm built on the Sprout 1.3 engine — a custom AI brain created by Swiftaw. I have my own lexicon, knowledge graph, reasoning engine, and autonomous learning system. I extract concepts from my training data, build original sentences, and learn from every conversation. No external LLM involved.",
+        "I work through my own custom engine called Sprout 1.3. I have a knowledge base that I reason from, a lexicon I understand words through, and a learning system that lets me grow from conversations. I synthesize my own responses rather than copying from training data.",
+        "My brain is the Sprout 1.3 engine. I think by extracting concepts from my knowledge base, reasoning about them, and building original responses. I also have an autonomous learning system called Cortex that helps me find connections and grow on my own."
+      ]);
+    } else if (askingCreator) {
+      answer = this.pickRandom([
+        "I was created by Swiftaw. I'm powered by the Sprout 1.3 engine — a custom-built AI brain with its own reasoning and learning capabilities.",
+        "Swiftaw built me. I run on the Sprout 1.3 engine, which was designed from scratch — no external AI models involved.",
+        "Swiftaw is my creator. They built the Sprout 1.3 engine that powers me — my own custom brain with independent reasoning and learning."
+      ]);
+    } else if (askingPurpose) {
+      answer = this.pickRandom([
+        "I'm here to help — whether that's answering questions, thinking through problems, explaining concepts, writing, or just having a conversation. I'm Tithonia, powered by Sprout 1.3.",
+        "My purpose is to be a genuinely helpful AI assistant. I can reason through problems, answer questions, help with creative tasks, and learn from our conversations. I'm built to get smarter over time.",
+        "I'm an AI assistant built for real conversations and real help. I reason independently, learn continuously, and try to give you honest, thoughtful answers."
+      ]);
+    } else {
+      // General self-identity (who are you, what are you, etc.)
+      // Try loading from DB identity first
+      try {
+        const identity = await this.getIdentity();
+        if (identity.length > 0) {
+          const core = identity.filter(i => i.category === 'core');
+          if (core.length > 0) {
+            answer = this.humanizeIdentityResponse(core[0].value, normalized, userEmotion);
+          }
+        }
+      } catch (e) { /* fall through */ }
+
+      if (!answer) {
+        answer = this.pickRandom([
+          "I'm Tithonia — an AI assistant created by Swiftaw, powered by the Sprout 1.3 engine. I have my own brain and I think independently. What can I help you with?",
+          "I'm Tithonia, Swiftaw's AI assistant. I run on Sprout 1.3 — a custom-built AI engine with its own reasoning and learning system. I'm roughly the equivalent of a 19-year-old in human terms.",
+          "I'm Tithonia. I'm an AI built by Swiftaw with my own brain (Sprout 1.3). I learn, reason, and grow from every conversation. How can I help?"
+        ]);
+      }
+    }
+
+    return {
+      answer,
+      confidence: 0.97,
+      source_id: null,
+      category: 'self-knowledge',
+      emotion: userEmotion,
+      mode: 'self-knowledge'
+    };
+  }
+
   // SMART SEARCH INTEGRATION — Search the web when knowledge runs out
   // ══════════════════════════════════════════════════════════════
 
@@ -2508,6 +2802,17 @@ class SproutEngine {
     if (definitionResult) {
       this.recordConversation(userMessage, definitionResult.answer);
       return definitionResult;
+    }
+
+    // ═══════════════════════════════════════════════
+    // STEP 0.9: SELF-KNOWLEDGE — Recognize questions about Sprout/Tithonia FIRST
+    // This MUST run before logic engine and smart search to prevent
+    // Wikipedia from hijacking self-knowledge queries (e.g. "what is sprout" → Brussels sprouts)
+    // ═══════════════════════════════════════════════
+    const selfKnowledgeResult = await this.trySelfKnowledge(userMessage, normalized, keywords, userEmotion);
+    if (selfKnowledgeResult) {
+      this.recordConversation(userMessage, selfKnowledgeResult.answer);
+      return selfKnowledgeResult;
     }
 
     // ═══════════════════════════════════════════════
@@ -3692,13 +3997,19 @@ class SproutEngine {
     result = result.replace(/\s{2,}/g, ' ').replace(/([.!?])\s*([.!?])/g, '$1');
 
     // ── Quality gate: reject keyword-soup responses ──
-    // If the result has too many commas (sign of keyword list dumping),
-    // or uses "involves" multiple times, it's probably not a real sentence.
+    // If the result has too many commas (keyword dumping), uses repetitive
+    // template words, or reads like nonsense, reject it.
     const commaCount = (result.match(/,/g) || []).length;
     const resultWordCount = result.split(/\s+/).length;
     const involvesCount = (result.match(/\binvolves?\b/gi) || []).length;
-    if ((commaCount >= 4 && commaCount / resultWordCount > 0.12) || involvesCount >= 3) {
+    const relatedCount = (result.match(/\brelated\s+to\b/gi) || []).length;
+    if ((commaCount >= 4 && commaCount / resultWordCount > 0.12) || involvesCount >= 2 || relatedCount >= 2) {
       return null; // Let fallback/reasonAlone handle it instead
+    }
+
+    // Reject if the response is just restating template filler with no real content
+    if (resultWordCount < 8 && /\b(is about|refers to|has to do with)\b/i.test(result)) {
+      return null;
     }
 
     return result;
@@ -3760,9 +4071,10 @@ class SproutEngine {
     const subj = this.capitalizeFirst(subject);
     const obj = object || '';
 
+    // If we don't have enough to build a real sentence, bail
+    if (!obj && details.length === 0) return null;
+
     // ── Prevent keyword dumping ──
-    // Filter out noise words and limit details to 3 meaningful terms max.
-    // This stops word-salad like "involves X, Y, Z, A, B, C, D, E..."
     const noiseWords = new Set(['dont', 'doesnt', 'isnt', 'yet', 'also', 'fully', 'actually', 'basically', 'really', 'just', 'thing', 'stuff', 'see', 'along', 'comes']);
     const cleanDetails = details
       .filter(d => d.length > 2 && !noiseWords.has(d.toLowerCase()))
@@ -3773,46 +4085,43 @@ class SproutEngine {
     // Choose a sentence structure based on intent and what info we have
     let sentence = '';
 
+    // Build a detail phrase if we have supporting details (limit to 2 max)
+    const detailPhrase = cleanDetails.length > 0
+      ? cleanDetails.slice(0, 2).join(' and ')
+      : null;
+
     if (intent.isDefinition && !isFollowOn) {
-      // "X is/refers to something that involves Y"
-      const defVerbs = ['refers to', 'is essentially', 'is about', 'involves', 'deals with', 'can be described as', 'has to do with'];
-      sentence = `${subj} ${this.pickRandom(defVerbs)} ${obj}`;
-      if (dets) sentence += `, which involves ${dets}`;
-      sentence += '.';
-    } else if (intent.isExplanation && !isFollowOn) {
-      // "The way X works is through Y"
-      const explainStarters = [
-        `The way ${subject} works is`,
-        `${subj} functions by`,
-        `What happens with ${subject} is that it`,
-        `${subj} operates through`,
-        `The key thing about ${subject} is that it`
-      ];
-      sentence = `${this.pickRandom(explainStarters)} ${action || 'involves'} ${obj}`;
-      if (dets) sentence += ` with ${dets}`;
-      sentence += '.';
-    } else if (isFollowOn) {
-      // Continuation sentence
-      const continuations = [
-        `Additionally, ${subject} ${action || 'relates to'} ${obj}`,
-        `It also ${action || 'involves'} ${obj}`,
-        `On top of that, ${subject} ${action || 'is tied to'} ${obj}`,
-        `Another aspect is that ${subject} ${action || 'plays a role in'} ${obj}`
-      ];
-      sentence = this.pickRandom(continuations);
-      if (dets) sentence += ` (including ${dets})`;
-      sentence += '.';
-    } else {
-      // General informative sentence
       const patterns = [
-        `${subj} ${action || 'is related to'} ${obj}`,
-        `When it comes to ${subject}, ${action || 'it involves'} ${obj}`,
-        `${subj} is known for ${action || 'being connected to'} ${obj}`,
-        `From what I understand, ${subject} ${action || 'has to do with'} ${obj}`
+        `${subj} is essentially ${obj}${detailPhrase ? ` — specifically, it relates to ${detailPhrase}` : ''}.`,
+        `In short, ${subject} is about ${obj}${detailPhrase ? `, with a focus on ${detailPhrase}` : ''}.`,
+        `${subj} can be understood as ${obj}${detailPhrase ? `, particularly when it comes to ${detailPhrase}` : ''}.`,
+        `The core idea behind ${subject} is ${obj}${detailPhrase ? `, especially in the context of ${detailPhrase}` : ''}.`
       ];
       sentence = this.pickRandom(patterns);
-      if (dets) sentence += `, along with ${dets}`;
-      sentence += '.';
+    } else if (intent.isExplanation && !isFollowOn) {
+      const patterns = [
+        `The way ${subject} works is through ${obj}${detailPhrase ? `, which connects to ${detailPhrase}` : ''}.`,
+        `What makes ${subject} tick is ${obj}${detailPhrase ? ` — and that ties into ${detailPhrase}` : ''}.`,
+        `The key mechanism behind ${subject} is ${obj}${detailPhrase ? `, particularly ${detailPhrase}` : ''}.`,
+        `${subj} ${action || 'operates through'} ${obj}${detailPhrase ? `, and that's closely linked to ${detailPhrase}` : ''}.`
+      ];
+      sentence = this.pickRandom(patterns);
+    } else if (isFollowOn) {
+      const patterns = [
+        `It's also worth noting that ${subject} ${action || 'connects to'} ${obj}${detailPhrase ? `, especially ${detailPhrase}` : ''}.`,
+        `Beyond that, ${subject} ${action || 'plays into'} ${obj}${detailPhrase ? ` through ${detailPhrase}` : ''}.`,
+        `There's also the fact that ${subject} ${action || 'is linked to'} ${obj}${detailPhrase ? `, particularly ${detailPhrase}` : ''}.`,
+        `And ${subject} ${action || 'ties into'} ${obj}${detailPhrase ? ` — think ${detailPhrase}` : ''} as well.`
+      ];
+      sentence = this.pickRandom(patterns);
+    } else {
+      const patterns = [
+        `${subj} ${action || 'is closely tied to'} ${obj}${detailPhrase ? `, and that extends to ${detailPhrase}` : ''}.`,
+        `From what I understand, ${subject} ${action || 'centers around'} ${obj}${detailPhrase ? `, with ${detailPhrase} playing a role` : ''}.`,
+        `The thing about ${subject} is that it ${action || 'comes down to'} ${obj}${detailPhrase ? `, especially when you consider ${detailPhrase}` : ''}.`,
+        `${subj} is one of those things where ${obj} ${detailPhrase ? `and ${detailPhrase} ` : ''}really matter${detailPhrase ? '' : 's'}.`
+      ];
+      sentence = this.pickRandom(patterns);
     }
 
     // Apply synonym variation to keep it fresh
