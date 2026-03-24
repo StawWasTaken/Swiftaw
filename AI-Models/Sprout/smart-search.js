@@ -33,6 +33,12 @@ class SproutSmartSearch {
   async search(query, keywords, language = 'en') {
     if (!query || query.trim().length < 2) return null;
 
+    // ── Block self-knowledge queries from hitting Wikipedia ──
+    // Prevents "what is sprout" from returning Brussels sprouts, etc.
+    const lower = query.toLowerCase();
+    const selfTerms = /\b(sprout|tithonia|swiftaw)\b/i;
+    if (selfTerms.test(lower)) return null;
+
     // Check cache first
     const cacheKey = `${language}:${query.toLowerCase().trim()}`;
     if (this.searchCache.has(cacheKey)) {
