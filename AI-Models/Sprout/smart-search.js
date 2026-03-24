@@ -236,13 +236,13 @@ class SproutSmartSearch {
     const templates = {
       en: {
         openers: [
-          "Here's what I found —",
+          "Here's what I know —",
           "From what I've gathered,",
           "So,",
-          "Alright, here's the deal —",
-          "Good one!",
+          "Here's the deal —",
+          "Right, so",
           "Here's a quick rundown —",
-          "Okay so from what I know,"
+          "From what I know,"
         ],
         transitions: [
           "Also,",
@@ -252,10 +252,10 @@ class SproutSmartSearch {
           "And"
         ],
         closers: [
-          "Pretty cool, right?",
-          "Hope that helps!",
-          "Want to know more?",
-          "Let me know if you want me to dig deeper!",
+          "",
+          "",
+          "",
+          "",
           "",
           "",
           ""
