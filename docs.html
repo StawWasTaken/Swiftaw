@@ -20,6 +20,8 @@
       --text-light: #555;
       --text-muted: #888;
       --border: #e5e5e5;
+      /* Raw GitHub asset base */
+      --gh-raw: 'https://raw.githubusercontent.com/StawWasTaken/Swiftaw/main/';
     }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -27,7 +29,7 @@
     a { text-decoration: none; color: inherit; }
     img { max-width: 100%; display: block; }
 
-    /* NAV */
+    /* ── NAV ── */
     .nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: rgba(255,255,255,.72); backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
     .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 32px; height: 64px; gap: 8px; }
     .nav-logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-serif); font-weight: 600; font-size: 1.18rem; color: var(--text); margin-right: 32px; white-space: nowrap; }
@@ -49,7 +51,7 @@
     .nav-cta { background: var(--brand-yellow); color: var(--brand-deep); font-size: .88rem; font-weight: 600; padding: 9px 22px; border-radius: 100px; white-space: nowrap; transition: box-shadow .2s, transform .15s; }
     .nav-cta:hover { box-shadow: 0 0 32px rgba(255,249,62,.4); transform: translateY(-1px); }
 
-    /* HERO */
+    /* ── HERO ── */
     .hero { background: #faf8f3; padding: 180px 32px 80px; border-bottom: 1px solid var(--border); }
     .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: start; }
     .hero-left h1 { font-family: var(--font-display); font-size: clamp(3rem, 6vw, 4.4rem); font-weight: 700; line-height: 1.05; color: var(--text); margin: 0 0 20px; }
@@ -58,7 +60,7 @@
     .hero-right p { font-family: var(--font-serif); font-size: 1.18rem; font-weight: 400; color: var(--text-light); line-height: 1.75; margin: 0 0 32px; }
     .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-    /* BUTTONS */
+    /* ── BUTTONS ── */
     .btn-yellow { display: inline-flex; align-items: center; gap: 8px; background: var(--brand-yellow); color: var(--brand-deep); font-size: .95rem; font-weight: 600; padding: 14px 28px; border-radius: 100px; border: none; cursor: pointer; transition: box-shadow .2s, transform .15s; font-family: var(--font-sans); }
     .btn-yellow:hover { box-shadow: 0 0 32px rgba(255,249,62,.4); transform: translateY(-1px); }
     .btn-dark { display: inline-flex; align-items: center; gap: 8px; background: var(--brand-deep); color: #fff; font-size: .95rem; font-weight: 600; padding: 14px 28px; border-radius: 100px; border: none; cursor: pointer; transition: box-shadow .2s, transform .15s; font-family: var(--font-sans); }
@@ -66,25 +68,26 @@
     .btn-outline { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--text); font-size: .95rem; font-weight: 600; padding: 14px 28px; border-radius: 100px; border: 1.5px solid var(--border); cursor: pointer; transition: border-color .2s, transform .15s; font-family: var(--font-sans); }
     .btn-outline:hover { border-color: var(--text-muted); transform: translateY(-1px); }
 
-    /* SECTION */
+    /* ── LAYOUT ── */
     .section { padding: 80px 32px; max-width: 1200px; margin: 0 auto; }
     .divider { max-width: 1200px; margin: 0 auto; border: none; border-top: 1px solid var(--border); }
 
-    /* TABS */
-    .tabs-bar { display: flex; gap: 4px; margin-bottom: 40px; border-bottom: 1.5px solid var(--border); padding-bottom: 0; }
+    /* ── TABS ── */
+    .tabs-bar { display: flex; gap: 4px; margin-bottom: 40px; border-bottom: 1.5px solid var(--border); }
     .tab-btn { font-size: .92rem; font-weight: 600; padding: 10px 20px; background: none; border: none; cursor: pointer; color: var(--text-muted); border-bottom: 2.5px solid transparent; margin-bottom: -1.5px; transition: color .2s, border-color .2s; font-family: var(--font-sans); }
     .tab-btn.active { color: var(--brand-deep); border-bottom-color: var(--brand-deep); }
     .tab-btn:hover:not(.active) { color: var(--text); }
 
-    /* BADGES */
+    /* ── BADGES ── */
     .badge { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; }
     .badge-public { background: #e8f5e9; color: #2e7d32; }
     .badge-intern { background: #fff3e0; color: #bf5a00; }
 
-    /* DOCUMENT CARDS */
+    /* ── DOCUMENT CARDS ── */
     .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
-    .doc-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 28px; transition: box-shadow .25s, transform .2s; cursor: pointer; position: relative; }
-    .doc-card:hover { box-shadow: 0 8px 40px rgba(0,0,0,.07); transform: translateY(-3px); }
+    .doc-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 28px; transition: box-shadow .25s, transform .2s; position: relative; overflow: hidden; }
+    .doc-card.clickable { cursor: pointer; }
+    .doc-card.clickable:hover { box-shadow: 0 8px 40px rgba(0,0,0,.07); transform: translateY(-3px); }
     .doc-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
     .doc-card-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--brand-deep); display: flex; align-items: center; justify-content: center; }
     .doc-card-icon svg { width: 22px; height: 22px; stroke: var(--brand-yellow); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -93,16 +96,18 @@
     .doc-card p { font-size: .9rem; color: var(--text-light); line-height: 1.6; }
     .doc-card-footer { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
     .doc-card-author { font-size: .8rem; color: var(--text-muted); }
-    .locked-overlay { position: absolute; inset: 0; background: rgba(255,255,255,.8); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; backdrop-filter: blur(2px); }
+
+    /* Locked overlay */
+    .locked-overlay { position: absolute; inset: 0; background: rgba(255,255,255,.88); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; backdrop-filter: blur(3px); z-index: 2; pointer-events: all; }
     .locked-overlay svg { width: 32px; height: 32px; stroke: var(--brand-deep); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     .locked-overlay span { font-size: .88rem; font-weight: 600; color: var(--brand-deep); }
 
-    /* EMPTY STATE */
+    /* ── EMPTY STATE ── */
     .empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
-    .empty-state svg { width: 48px; height: 48px; stroke: var(--border); fill: none; stroke-width: 1.5; margin: 0 auto 16px; }
+    .empty-state svg { width: 48px; height: 48px; stroke: var(--border); fill: none; stroke-width: 1.5; margin: 0 auto 16px; display: block; }
     .empty-state p { font-size: .95rem; }
 
-    /* MODAL OVERLAY */
+    /* ── MODALS ── */
     .modal-bg { display: none; position: fixed; inset: 0; background: rgba(10,10,10,.45); z-index: 2000; align-items: center; justify-content: center; }
     .modal-bg.open { display: flex; }
     .modal { background: #fff; border-radius: 20px; padding: 44px 40px; max-width: 560px; width: calc(100% - 40px); box-shadow: 0 24px 80px rgba(0,0,0,.12); position: relative; max-height: 90vh; overflow-y: auto; }
@@ -119,45 +124,125 @@
     .error-msg { color: #c62828; font-size: .83rem; margin-top: 6px; display: none; }
     .error-msg.show { display: block; }
     .modal-actions { display: flex; gap: 12px; margin-top: 28px; }
-
-    /* DOCUMENT VIEWER */
-    .doc-viewer { display: none; position: fixed; inset: 0; background: rgba(10,10,10,.55); z-index: 3000; align-items: center; justify-content: center; }
-    .doc-viewer.open { display: flex; }
-    .doc-viewer-inner { background: #fff; border-radius: 20px; max-width: 680px; width: calc(100% - 40px); max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,.15); position: relative; }
-    .dv-close { position: absolute; top: 16px; right: 18px; background: none; border: none; cursor: pointer; font-size: 1.3rem; color: var(--text-muted); padding: 6px; z-index: 10; }
-    .dv-close:hover { color: var(--text); }
-
-    /* SWIFTAW DOCUMENT TEMPLATE */
-    .sw-doc { padding: 44px 44px 40px; }
-    .sw-doc-logo { width: 60px; margin-bottom: 32px; }
-    .sw-doc-logo-placeholder { width: 60px; height: 60px; background: var(--brand-deep); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 32px; }
-    .sw-doc-logo-placeholder span { color: var(--brand-yellow); font-weight: 700; font-size: .9rem; font-family: var(--font-display); }
-    .sw-doc h1 { font-family: var(--font-sans); font-size: 2.4rem; font-weight: 800; line-height: 1.1; margin-bottom: 12px; }
-    .sw-doc-subtitle { font-size: 1.05rem; color: var(--text-light); margin-bottom: 4px; }
-    .sw-doc-date { font-size: 1.05rem; color: var(--text-light); margin-bottom: 24px; }
-    .sw-doc-divider { border: none; border-top: 2px solid var(--text); margin-bottom: 28px; }
-    .sw-doc-body { font-size: 1rem; color: var(--text); line-height: 1.8; white-space: pre-wrap; word-break: break-word; margin-bottom: 40px; }
-    .sw-doc-footer { text-align: center; }
-    .sw-doc-footer .author { font-size: 1rem; font-weight: 500; color: var(--text); }
-    .sw-doc-footer .dept { font-size: .95rem; color: var(--text-light); }
-
-    /* DOC FRAME DECORATIONS (like screenshot) */
-    .sw-doc-outer { position: relative; overflow: hidden; }
-    .sw-deco-left { position: absolute; left: -22px; top: 50%; transform: translateY(-50%); width: 52px; height: 70%; background: var(--brand-orange); border-radius: 0 30px 30px 0; opacity: .9; }
-    .sw-deco-right { position: absolute; right: -22px; top: 50%; transform: translateY(-50%); width: 52px; height: 70%; background: var(--brand-orange); border-radius: 30px 0 0 30px; opacity: .9; }
-    .sw-deco-bottom { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); width: 120px; height: 44px; background: var(--brand-yellow); border-radius: 50% 50% 0 0; }
-    .sw-deco-tl { position: absolute; top: 0; left: 0; width: 12px; height: 100%; background: var(--brand-deep); }
-    .sw-deco-tr { position: absolute; top: 0; right: 0; width: 12px; height: 100%; background: var(--brand-deep); }
-
-    /* INTERN UNLOCK MODAL */
     .intern-unlock { max-width: 400px; }
 
-    /* SECTION HEADER */
-    .section-eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--brand-orange); margin-bottom: 10px; }
-    .section-title { font-family: var(--font-display); font-size: clamp(1.7rem, 3vw, 2.3rem); font-weight: 700; margin-bottom: 12px; }
-    .section-lead { font-family: var(--font-serif); font-size: 1.05rem; color: var(--text-light); line-height: 1.7; margin-bottom: 32px; }
+    /* ══════════════════════════════════════════
+       DOCUMENT VIEWER
+       The PNG (swftw_docsbackground.png) is portrait ~930×1200px.
+       It has:
+         - Navy border ~12px all sides
+         - Logo top-left corner (~55px from edge), baked in
+         - A horizontal black rule at ~38% from top
+         - Orange wavy blobs left & right
+         - Yellow arc bottom-centre
+       We size the modal to match that aspect ratio and position
+       text precisely into the two white zones.
+    ══════════════════════════════════════════ */
+    .doc-viewer {
+      display: none; position: fixed; inset: 0;
+      background: rgba(10,10,10,.65);
+      z-index: 3000;
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .doc-viewer.open { display: flex; }
 
-    /* FOOTER */
+    /* Outer wrapper: fixed aspect ratio matching the PNG */
+    .doc-viewer-inner {
+      position: relative;
+      /* Max sizes — keep it on screen */
+      width: min(520px, calc(92vh * 0.775));
+      height: min(670px, 92vh);
+      flex-shrink: 0;
+      background-image: url('/swftw_docsbackground.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      box-shadow: 0 32px 80px rgba(0,0,0,.4);
+      /* No overflow:hidden — we let content scroll inside dv-scroll */
+    }
+
+    /* Close button — top-right, inside navy border */
+    .dv-close {
+      position: absolute; top: 14px; right: 16px;
+      background: none; border: none; cursor: pointer;
+      font-size: 1.1rem; color: #555;
+      z-index: 20; padding: 4px; line-height: 1;
+    }
+    .dv-close:hover { color: #000; }
+
+    /*
+      Content scroll area.
+      Padding maps text into the white region of the PNG:
+        - Left/right: ~7% to clear navy border + orange blob
+        - Top: ~12% to clear logo area at top
+        - Bottom: ~11% to clear yellow arc
+    */
+    .dv-scroll {
+      position: absolute;
+      /* Inset to the white content area of the PNG */
+      top: 11%;
+      left: 7%;
+      right: 7%;
+      bottom: 10%;
+      overflow-y: auto;
+      z-index: 5;
+      /* Hide scrollbar visually but keep functionality */
+      scrollbar-width: thin;
+      scrollbar-color: #ccc transparent;
+    }
+    .dv-scroll::-webkit-scrollbar { width: 4px; }
+    .dv-scroll::-webkit-scrollbar-track { background: transparent; }
+    .dv-scroll::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+
+    /* ── HEADER ZONE: title / project / subject / date ──
+       Sits above the baked-in rule line (~38% from top of PNG = ~27% of the scroll area).
+       We give it a min-height so it always pushes body below the rule.
+    */
+    .sw-doc-header {
+      /* The rule in the PNG is at ~38% of total card height.
+         Our scroll area starts at 11%, so the rule is at (38-11)/89 ≈ 30% of scroll area.
+         We fix the header height to push body below it. */
+      min-height: 28%;
+      padding-bottom: 8px;
+    }
+    .sw-doc-title {
+      font-family: var(--font-sans);
+      font-size: clamp(1.4rem, 3.2vw, 2rem);
+      font-weight: 900;
+      line-height: 1.05;
+      color: #0a0a0a;
+      margin-bottom: 8px;
+      letter-spacing: -.02em;
+    }
+    .sw-doc-project { font-size: .82rem; color: #0a0a0a; margin-bottom: 1px; }
+    .sw-doc-subject { font-size: .82rem; color: #0a0a0a; margin-bottom: 1px; }
+    .sw-doc-date    { font-size: .82rem; color: #0a0a0a; }
+
+    /* ── BODY ZONE: below the baked-in rule ── */
+    .sw-doc-body-wrap { padding-top: 10px; }
+    .sw-doc-body {
+      font-size: .78rem;
+      color: #0a0a0a;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-bottom: 16px;
+    }
+    .sw-doc-footer { text-align: center; padding-top: 4px; }
+    .sw-doc-footer .sw-author { font-size: .8rem; font-weight: 600; color: #0a0a0a; margin-bottom: 1px; }
+    .sw-doc-footer .sw-dept   { font-size: .76rem; color: #0a0a0a; }
+
+    /* CSS fallback decorations — shown only if PNG fails to load */
+    .dv-deco-bl { display:none; position: absolute; left: 0; top: 0; bottom: 0; width: 12px; background: var(--brand-deep); z-index: 1; pointer-events: none; }
+    .dv-deco-br { display:none; position: absolute; right: 0; top: 0; bottom: 0; width: 12px; background: var(--brand-deep); z-index: 1; pointer-events: none; }
+    .dv-deco-l  { display:none; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 46px; height: 74%; background: var(--brand-orange); clip-path: polygon(0 0,72% 0,100% 7%,82% 20%,100% 35%,78% 50%,100% 65%,82% 80%,100% 93%,72% 100%,0 100%); z-index: 1; pointer-events: none; }
+    .dv-deco-r  { display:none; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 46px; height: 74%; background: var(--brand-orange); clip-path: polygon(28% 0,100% 0,100% 100%,28% 100%,0 93%,18% 80%,0 65%,22% 50%,0 35%,18% 20%,0 7%); z-index: 1; pointer-events: none; }
+    .dv-deco-b  { display:none; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 150px; height: 50px; background: var(--brand-yellow); border-radius: 75px 75px 0 0; z-index: 1; pointer-events: none; }
+
+    /* ── EYEBROW ── */
+    .section-eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--brand-orange); margin-bottom: 10px; }
+
+    /* ── FOOTER ── */
     footer { background: var(--bg); border-top: 1px solid var(--border); }
     .footer-inner { max-width: 1200px; margin: 0 auto; padding: 64px 32px 32px; }
     .footer-top { display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 56px; }
@@ -172,6 +257,7 @@
     .footer-socials a { color: var(--text-muted); transition: color .15s; }
     .footer-socials a:hover { color: var(--text); }
 
+    /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .nav-links { display: none; }
       .hero { padding: 120px 20px 60px; }
@@ -181,8 +267,8 @@
       .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
       .form-row { grid-template-columns: 1fr; }
       .modal { padding: 32px 24px; }
-      .sw-doc { padding: 32px 28px 28px; }
-      .sw-doc h1 { font-size: 1.8rem; }
+      .dv-scroll { padding: 32px 44px 65px; }
+      .sw-doc-title { font-size: 1.9rem; }
     }
   </style>
 </head>
@@ -192,7 +278,7 @@
 <nav class="nav">
   <div class="nav-inner">
     <a href="/" class="nav-logo">
-      <img src="/Swiftaw logomark black.png" alt="Swiftaw" onerror="this.style.display='none'">
+      <img src="https://raw.githubusercontent.com/StawWasTaken/Swiftaw/main/Swiftaw%20logomark%20black.png" alt="Swiftaw" onerror="this.style.display='none'">
       <span class="nav-logo-text">Swiftaw</span>
     </a>
     <div class="nav-links">
@@ -204,7 +290,7 @@
         </div>
       </div>
       <a href="/research" class="nav-link">Research</a>
-      <a href="/documents" class="nav-link" style="color:var(--text); font-weight:600;">Documents</a>
+      <a href="/documents" class="nav-link" style="color:var(--text);font-weight:600;">Documents</a>
       <a href="/blog" class="nav-link">Blog</a>
       <div class="nav-dropdown-wrap">
         <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
@@ -251,16 +337,13 @@
 <section class="section">
   <div class="section-eyebrow" id="tab-eyebrow">All Documents</div>
   <div class="tabs-bar">
-    <button class="tab-btn active" onclick="switchTab('all', this)">All</button>
-    <button class="tab-btn" onclick="switchTab('public', this)">Public</button>
-    <button class="tab-btn" onclick="switchTab('intern', this)">Intern</button>
+    <button class="tab-btn active" onclick="switchTab('all',this)">All</button>
+    <button class="tab-btn" onclick="switchTab('public',this)">Public</button>
+    <button class="tab-btn" onclick="switchTab('intern',this)">Intern</button>
   </div>
-
-  <div class="doc-grid" id="doc-grid">
-    <!-- populated by JS -->
-  </div>
+  <div class="doc-grid" id="doc-grid"></div>
   <div class="empty-state" id="empty-state" style="display:none;">
-    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     <p>No documents in this category yet.</p>
   </div>
 </section>
@@ -271,7 +354,7 @@
     <div class="footer-top">
       <div class="footer-brand">
         <a href="/" class="nav-logo" style="margin-right:0;">
-          <img src="/SwiftawLogo.png" alt="Swiftaw" onerror="this.style.display='none'">
+          <img src="https://raw.githubusercontent.com/StawWasTaken/Swiftaw/main/SwiftawLogo.png" alt="Swiftaw" onerror="this.style.display='none'">
           <span class="nav-logo-text">Swiftaw</span>
         </a>
         <p>Building the ultimate digital ecosystem. Mastering human connection and machine intelligence.</p>
@@ -327,7 +410,6 @@
         <button class="btn-outline" onclick="closeCreateModal()">Cancel</button>
       </div>
     </div>
-
     <div id="create-step-form" style="display:none;">
       <h2>New Document</h2>
       <p class="modal-sub">Fill in the details below. The document will be published immediately.</p>
@@ -339,7 +421,7 @@
       <div class="form-row">
         <div class="form-group">
           <label>Project / Category</label>
-          <input type="text" id="doc-project" placeholder="Project or "General"">
+          <input type="text" id="doc-project" placeholder="Project or General">
         </div>
         <div class="form-group">
           <label>Visibility</label>
@@ -356,7 +438,7 @@
         </div>
         <div class="form-group">
           <label>Department</label>
-          <input type="text" id="doc-dept" placeholder="Department or "Swiftaw Leadership"">
+          <input type="text" id="doc-dept" placeholder="Department">
         </div>
       </div>
       <div class="form-group">
@@ -396,24 +478,38 @@
 
 <!-- DOCUMENT VIEWER -->
 <div class="doc-viewer" id="doc-viewer">
-  <div class="doc-viewer-inner sw-doc-outer">
+  <div class="doc-viewer-inner" id="doc-viewer-inner">
+    <!-- CSS fallback decorations (hidden when background image loads) -->
+    <div class="dv-deco-bl" id="dv-deco-bl"></div>
+    <div class="dv-deco-br" id="dv-deco-br"></div>
+    <div class="dv-deco-l"  id="dv-deco-l"></div>
+    <div class="dv-deco-r"  id="dv-deco-r"></div>
+    <div class="dv-deco-b"  id="dv-deco-b"></div>
+    <!-- Close -->
     <button class="dv-close" onclick="closeViewer()">&times;</button>
-    <div class="sw-deco-left"></div>
-    <div class="sw-deco-right"></div>
-    <div class="sw-deco-bottom"></div>
-    <div class="sw-deco-tl"></div>
-    <div class="sw-deco-tr"></div>
-    <div class="sw-doc" id="doc-content-inner">
-      <!-- populated by JS -->
-    </div>
+    <!-- Document content -->
+    <div class="dv-scroll" id="doc-content-inner"></div>
   </div>
 </div>
 
 <script>
   const CREATE_PW = '1478';
   const INTERN_PW = 'SW1FT';
+  const GH_RAW = 'https://raw.githubusercontent.com/StawWasTaken/Swiftaw/main/';
   let internUnlocked = false;
   let currentTab = 'all';
+
+  /* Hide CSS fallback decos once the background image successfully loads */
+  (function() {
+    const img = new Image();
+    img.onload = function() {
+      ['dv-deco-bl','dv-deco-br','dv-deco-l','dv-deco-r','dv-deco-b'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+    };
+    img.src = GH_RAW + 'swftw_docsbackground.png';
+  })();
 
   const defaultDocs = [
     {
@@ -422,32 +518,26 @@
       project: 'Fortized',
       subject: 'Official public announcement of the Fortized gaming platform launch.',
       body: 'We are thrilled to announce the official launch of Fortized, our flagship gaming community platform.\n\nFortized brings together gamers, streamers, and communities in one unified space. Built on our latest AI infrastructure, the platform offers real-time chat, community hubs, leaderboards, and intelligent matchmaking.\n\nThis launch marks a major milestone for Swiftaw as we deliver on our mission to empower people through technology and connection.\n\nAll users can sign up at fortized.com starting today. We look forward to growing this community with you.',
-      author: 'Swiftaw Leadership',
-      dept: 'Swiftaw Leadership',
-      date: 'March 2026',
-      visibility: 'public'
+      author: 'Swiftaw Leadership', dept: 'Swiftaw Leadership',
+      date: 'March 2026', visibility: 'public'
     },
     {
       id: 2,
       title: 'R&D Roadmap Q2 2026',
       project: 'R&D',
       subject: 'Internal research and development priorities for Q2.',
-      body: 'This document outlines the R&D department's strategic priorities for Q2 2026.\n\n1. Tithonia AI model improvements — focus on contextual memory and multi-turn reasoning.\n2. Social graph research — mapping connection patterns across Fortized communities.\n3. Safety systems — deployment of the next-generation content moderation pipeline.\n4. Infrastructure scaling — preparation for 10× user growth across all products.\n\nAll department leads are expected to review and confirm alignment by April 15. Budget allocations will follow in a separate memo.',
-      author: 'R&D Team',
-      dept: 'R&D',
-      date: 'March 2026',
-      visibility: 'intern'
+      body: "This document outlines the R&D department's strategic priorities for Q2 2026.\n\n1. Tithonia AI model improvements — focus on contextual memory and multi-turn reasoning.\n2. Social graph research — mapping connection patterns across Fortized communities.\n3. Safety systems — deployment of the next-generation content moderation pipeline.\n4. Infrastructure scaling — preparation for 10× user growth across all products.\n\nAll department leads are expected to review and confirm alignment by April 15. Budget allocations will follow in a separate memo.",
+      author: 'R&D Team', dept: 'R&D',
+      date: 'March 2026', visibility: 'intern'
     },
     {
       id: 3,
       title: 'Swiftaw Safety Commitments',
       project: 'Safety',
-      subject: 'Public statement on Swiftaw's approach to platform safety.',
-      body: 'Swiftaw is committed to building safe, trustworthy digital spaces for all users.\n\nOur safety principles:\n\n— Every product we build is reviewed by our Safety department before launch.\n— We invest in AI moderation tools that scale with our communities.\n— We maintain transparent reporting on safety incidents.\n— User feedback is central to how we improve our systems.\n\nSafety is not an afterthought at Swiftaw — it is embedded in our engineering culture from day one.',
-      author: 'Safety Department',
-      dept: 'Safety',
-      date: 'February 2026',
-      visibility: 'public'
+      subject: "Public statement on Swiftaw's approach to platform safety.",
+      body: "Swiftaw is committed to building safe, trustworthy digital spaces for all users.\n\nOur safety principles:\n\n— Every product we build is reviewed by our Safety department before launch.\n— We invest in AI moderation tools that scale with our communities.\n— We maintain transparent reporting on safety incidents.\n— User feedback is central to how we improve our systems.\n\nSafety is not an afterthought at Swiftaw — it is embedded in our engineering culture from day one.",
+      author: 'Safety Department', dept: 'Safety',
+      date: 'February 2026', visibility: 'public'
     },
     {
       id: 4,
@@ -455,69 +545,78 @@
       project: 'Tithonia',
       subject: 'Technical overview of the Tithonia AI platform internals.',
       body: 'This document is restricted to Swiftaw engineering and leadership.\n\nTithonia is built on a hybrid retrieval-augmented generation (RAG) architecture with a proprietary context window management layer. Key components:\n\n— Vector store: custom-built, optimized for sub-50ms retrieval at scale.\n— Model serving: multi-tenant inference cluster with dynamic load balancing.\n— Memory module: session-persistent and cross-session user preference graph.\n— Safety layer: real-time output filtering integrated at the token level.\n\nDetailed API documentation is available in the internal developer portal. Access requires two-factor authentication.',
-      author: 'Engineering Team',
-      dept: 'R&D',
-      date: 'January 2026',
-      visibility: 'intern'
+      author: 'Engineering Team', dept: 'R&D',
+      date: 'January 2026', visibility: 'intern'
     },
     {
       id: 5,
       title: 'Goals for the World — 2026 Edition',
       project: 'General',
-      subject: 'Swiftaw's annual statement of mission and global objectives.',
-      body: 'At Swiftaw, we believe technology should serve humanity — not the other way around.\n\nOur 2026 goals:\n\n1. Reach 1 million active users across all products by year-end.\n2. Publish three research papers on responsible AI development.\n3. Reduce platform carbon footprint by 30% through infrastructure optimisation.\n4. Launch an educational initiative to bring AI literacy to underserved communities.\n5. Open-source two internal tools to benefit the wider developer ecosystem.\n\nWe are accountable to these goals. Progress updates will be shared publicly each quarter.',
-      author: 'Swiftaw Leadership',
-      dept: 'Swiftaw Leadership',
-      date: 'January 2026',
-      visibility: 'public'
+      subject: "Swiftaw's annual statement of mission and global objectives.",
+      body: "At Swiftaw, we believe technology should serve humanity — not the other way around.\n\nOur 2026 goals:\n\n1. Reach 1 million active users across all products by year-end.\n2. Publish three research papers on responsible AI development.\n3. Reduce platform carbon footprint by 30% through infrastructure optimisation.\n4. Launch an educational initiative to bring AI literacy to underserved communities.\n5. Open-source two internal tools to benefit the wider developer ecosystem.\n\nWe are accountable to these goals. Progress updates will be shared publicly each quarter.",
+      author: 'Swiftaw Leadership', dept: 'Swiftaw Leadership',
+      date: 'January 2026', visibility: 'public'
     }
   ];
 
   let documents = [...defaultDocs];
 
+  function esc(str) {
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
   function formatDate() {
-    const now = new Date();
-    return now.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+    return new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
   }
 
   function renderDocs() {
-    const grid = document.getElementById('doc-grid');
+    const grid  = document.getElementById('doc-grid');
     const empty = document.getElementById('empty-state');
-    const filtered = documents.filter(d => {
-      if (currentTab === 'public') return d.visibility === 'public';
-      if (currentTab === 'intern') return d.visibility === 'intern';
-      return true;
-    });
-
+    const filtered = documents.filter(d =>
+      currentTab === 'all' ? true : d.visibility === currentTab
+    );
     grid.innerHTML = '';
-    if (filtered.length === 0) { empty.style.display = 'block'; return; }
+    if (!filtered.length) { empty.style.display = 'block'; return; }
     empty.style.display = 'none';
 
     filtered.forEach(doc => {
-      const isLocked = doc.visibility === 'intern' && !internUnlocked;
+      const locked = doc.visibility === 'intern' && !internUnlocked;
       const card = document.createElement('div');
-      card.className = 'doc-card';
+      card.className = 'doc-card' + (locked ? '' : ' clickable');
       card.innerHTML = `
         <div class="doc-card-header">
           <div class="doc-card-icon">
             <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           </div>
-          <span class="badge badge-${doc.visibility}">${doc.visibility === 'intern' ? 'Intern' : 'Public'}</span>
+          <span class="badge badge-${esc(doc.visibility)}">${doc.visibility === 'intern' ? 'Intern' : 'Public'}</span>
         </div>
-        <h3>${doc.title}</h3>
-        <div class="doc-meta">${doc.project} &middot; ${doc.date}</div>
-        <p>${doc.subject}</p>
+        <h3>${esc(doc.title)}</h3>
+        <div class="doc-meta">${esc(doc.project)} &middot; ${esc(doc.date)}</div>
+        <p>${esc(doc.subject)}</p>
         <div class="doc-card-footer">
-          <span class="doc-card-author">${doc.author}</span>
-          <span style="font-size:.8rem;font-weight:600;color:var(--brand-deep);">Read &rarr;</span>
+          <span class="doc-card-author">${esc(doc.author)}</span>
+          ${locked ? '' : '<span style="font-size:.8rem;font-weight:600;color:var(--brand-deep);">Read &rarr;</span>'}
         </div>
-        ${isLocked ? `<div class="locked-overlay">
-          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <span>Intern Access Required</span>
-          <button class="btn-dark" style="padding:8px 18px;font-size:.82rem;margin-top:4px;" onclick="openInternModal()">Unlock</button>
-        </div>` : ''}
       `;
-      if (!isLocked) card.addEventListener('click', () => openViewer(doc.id));
+      if (locked) {
+        const ov = document.createElement('div');
+        ov.className = 'locked-overlay';
+        ov.innerHTML = `
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Intern Access Required</span>
+        `;
+        const btn = document.createElement('button');
+        btn.className = 'btn-dark';
+        btn.style.cssText = 'padding:8px 18px;font-size:.82rem;margin-top:4px;';
+        btn.textContent = 'Unlock';
+        btn.addEventListener('click', e => { e.stopPropagation(); openInternModal(); });
+        ov.appendChild(btn);
+        card.appendChild(ov);
+      } else {
+        card.addEventListener('click', () => openViewer(doc.id));
+      }
       grid.appendChild(card);
     });
   }
@@ -526,8 +625,8 @@
     currentTab = tab;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const eyebrow = document.getElementById('tab-eyebrow');
-    eyebrow.textContent = tab === 'all' ? 'All Documents' : tab === 'public' ? 'Public Documents' : 'Intern Documents';
+    document.getElementById('tab-eyebrow').textContent =
+      tab === 'all' ? 'All Documents' : tab === 'public' ? 'Public Documents' : 'Intern Documents';
     renderDocs();
   }
 
@@ -535,19 +634,23 @@
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
     const inner = document.getElementById('doc-content-inner');
+    // Logo and rule are baked into the PNG — we only render text
     inner.innerHTML = `
-      <div class="sw-doc-logo-placeholder"><span>SW</span></div>
-      <h1>${doc.title}</h1>
-      <div class="sw-doc-subtitle">${doc.project}</div>
-      <div class="sw-doc-subtitle">${doc.subject}</div>
-      <div class="sw-doc-date">${doc.date}</div>
-      <hr class="sw-doc-divider">
-      <div class="sw-doc-body">${doc.body}</div>
-      <div class="sw-doc-footer">
-        <div class="author">${doc.author}</div>
-        <div class="dept">${doc.dept}</div>
+      <div class="sw-doc-header">
+        <div class="sw-doc-title">${esc(doc.title)}</div>
+        <div class="sw-doc-project">${esc(doc.project)}</div>
+        <div class="sw-doc-subject">${esc(doc.subject)}</div>
+        <div class="sw-doc-date">${esc(doc.date)}</div>
+      </div>
+      <div class="sw-doc-body-wrap">
+        <div class="sw-doc-body">${esc(doc.body)}</div>
+        <div class="sw-doc-footer">
+          <div class="sw-author">${esc(doc.author)}</div>
+          <div class="sw-dept">${esc(doc.dept)}</div>
+        </div>
       </div>
     `;
+    inner.scrollTop = 0;
     document.getElementById('doc-viewer').classList.add('open');
   }
 
@@ -555,7 +658,7 @@
     document.getElementById('doc-viewer').classList.remove('open');
   }
 
-  /* CREATE FLOW */
+  /* ── CREATE ── */
   function openCreateModal() {
     document.getElementById('create-step-pw').style.display = 'block';
     document.getElementById('create-step-form').style.display = 'none';
@@ -564,64 +667,53 @@
     document.getElementById('create-modal-bg').classList.add('open');
     setTimeout(() => document.getElementById('create-pw').focus(), 100);
   }
-
-  function closeCreateModal() {
-    document.getElementById('create-modal-bg').classList.remove('open');
-  }
-
+  function closeCreateModal() { document.getElementById('create-modal-bg').classList.remove('open'); }
   function checkCreatePw() {
-    const val = document.getElementById('create-pw').value;
-    if (val === CREATE_PW) {
+    if (document.getElementById('create-pw').value === CREATE_PW) {
       document.getElementById('create-step-pw').style.display = 'none';
       document.getElementById('create-step-form').style.display = 'block';
     } else {
       document.getElementById('create-pw-error').classList.add('show');
     }
   }
-
   function submitDocument() {
     const title = document.getElementById('doc-title').value.trim();
-    const body = document.getElementById('doc-body').value.trim();
-    let valid = true;
-    if (!title) { document.getElementById('title-error').classList.add('show'); valid = false; }
-    else { document.getElementById('title-error').classList.remove('show'); }
-    if (!body) { document.getElementById('body-error').classList.add('show'); valid = false; }
-    else { document.getElementById('body-error').classList.remove('show'); }
-    if (!valid) return;
-
-    const newDoc = {
+    const body  = document.getElementById('doc-body').value.trim();
+    let ok = true;
+    if (!title) { document.getElementById('title-error').classList.add('show'); ok = false; }
+    else document.getElementById('title-error').classList.remove('show');
+    if (!body)  { document.getElementById('body-error').classList.add('show');  ok = false; }
+    else document.getElementById('body-error').classList.remove('show');
+    if (!ok) return;
+    documents.unshift({
       id: Date.now(),
       title,
-      project: document.getElementById('doc-project').value.trim() || 'General',
-      subject: document.getElementById('doc-subject').value.trim() || '',
+      project:    document.getElementById('doc-project').value.trim() || 'General',
+      subject:    document.getElementById('doc-subject').value.trim() || '',
       body,
-      author: document.getElementById('doc-author').value.trim() || 'Swiftaw Team',
-      dept: document.getElementById('doc-dept').value.trim() || 'Swiftaw',
-      date: formatDate(),
+      author:     document.getElementById('doc-author').value.trim() || 'Swiftaw Team',
+      dept:       document.getElementById('doc-dept').value.trim()   || 'Swiftaw',
+      date:       formatDate(),
       visibility: document.getElementById('doc-visibility').value
-    };
-    documents.unshift(newDoc);
+    });
     closeCreateModal();
     renderDocs();
-    ['doc-title','doc-project','doc-subject','doc-author','doc-dept','doc-body'].forEach(id => document.getElementById(id).value = '');
+    ['doc-title','doc-project','doc-subject','doc-author','doc-dept','doc-body'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
     document.getElementById('doc-visibility').value = 'public';
   }
 
-  /* INTERN UNLOCK */
+  /* ── INTERN ── */
   function openInternModal() {
     document.getElementById('intern-pw').value = '';
     document.getElementById('intern-pw-error').classList.remove('show');
     document.getElementById('intern-modal-bg').classList.add('open');
     setTimeout(() => document.getElementById('intern-pw').focus(), 100);
   }
-
-  function closeInternModal() {
-    document.getElementById('intern-modal-bg').classList.remove('open');
-  }
-
+  function closeInternModal() { document.getElementById('intern-modal-bg').classList.remove('open'); }
   function checkInternPw() {
-    const val = document.getElementById('intern-pw').value;
-    if (val === INTERN_PW) {
+    if (document.getElementById('intern-pw').value === INTERN_PW) {
       internUnlocked = true;
       closeInternModal();
       renderDocs();
@@ -630,10 +722,13 @@
     }
   }
 
-  /* Close on backdrop click */
-  document.getElementById('create-modal-bg').addEventListener('click', function(e) { if (e.target === this) closeCreateModal(); });
-  document.getElementById('intern-modal-bg').addEventListener('click', function(e) { if (e.target === this) closeInternModal(); });
-  document.getElementById('doc-viewer').addEventListener('click', function(e) { if (e.target === this) closeViewer(); });
+  /* ── Backdrop + Escape ── */
+  document.getElementById('create-modal-bg').addEventListener('click', e => { if (e.target === e.currentTarget) closeCreateModal(); });
+  document.getElementById('intern-modal-bg').addEventListener('click', e => { if (e.target === e.currentTarget) closeInternModal(); });
+  document.getElementById('doc-viewer').addEventListener('click', e => { if (e.target === e.currentTarget) closeViewer(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeViewer(); closeCreateModal(); closeInternModal(); }
+  });
 
   renderDocs();
 </script>
