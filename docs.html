@@ -309,207 +309,171 @@
     .intern-unlock { max-width: 400px; }
 
     /* ══════════════════════════════════════════
-       DOCUMENT VIEWER — matches paper card aesthetic
+       DOCUMENT VIEWER
+       ─ PNG provides the frame (logo, orange blobs, navy border, yellow arc)
+       ─ Paper texture overlaid on top via pseudo-element
+       ─ Black rule rendered inline in the HTML
+       ─ PNG ratio: ~930×1200 → 0.775
     ══════════════════════════════════════════ */
     .doc-viewer {
       display: none; position: fixed; inset: 0;
-      background: rgba(40,35,55,.75);
+      background: rgba(20,16,32,.80);
       z-index: 3000;
       align-items: center; justify-content: center;
-      padding: 24px;
+      padding: 20px;
     }
     .doc-viewer.open { display: flex; }
 
-    /* Stacked sheets behind the main paper — same as card */
-    .doc-viewer-stack {
-      position: relative;
-      width: min(600px, 100%);
-      flex-shrink: 0;
-    }
-    .doc-viewer-stack::before,
-    .doc-viewer-stack::after {
-      content: '';
-      position: absolute;
-      left: 50%; bottom: -6px;
-      width: 96%; height: 100%;
-      background: #f0ece3;
-      border: 1px solid #d6d0c4;
-      border-radius: 2px;
-      transform: translateX(-50%) rotate(-1.8deg);
-      z-index: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,.1);
-    }
-    .doc-viewer-stack::after {
-      bottom: -12px;
-      width: 92%;
-      background: #e8e3d8;
-      transform: translateX(-50%) rotate(1.4deg);
-      z-index: -1;
-    }
-
-    /* The main paper sheet */
+    /* Fixed-ratio card, PNG as background */
     .doc-viewer-inner {
-      position: relative; z-index: 1;
-      width: 100%;
-      max-height: 88vh;
-      background: #fdfcf8;
-      background-image:
-        repeating-linear-gradient(
-          transparent,
-          transparent 28px,
-          rgba(0,0,0,.032) 28px,
-          rgba(0,0,0,.032) 29px
-        );
-      border: 1px solid #ccc9bc;
-      border-radius: 2px;
-      border-left: 4px solid #e8b4b8;
+      position: relative;
+      width:  min(500px, calc(86vh * 0.775));
+      height: min(645px, 86vh);
+      flex-shrink: 0;
+      /* The Swiftaw document template */
+      background-image: url('/swftw_docsbackground.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
       box-shadow:
-        0 1px 2px rgba(0,0,0,.07),
-        0 6px 16px rgba(0,0,0,.1),
-        0 20px 48px rgba(0,0,0,.1);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+        0 2px 8px  rgba(0,0,0,.18),
+        0 16px 48px rgba(0,0,0,.45);
     }
 
-    /* Folded corner top-right — same as card */
+    /* Paper texture layer — sits over the PNG, under the text */
     .doc-viewer-inner::before {
       content: '';
-      position: absolute; top: 0; right: 0;
-      width: 0; height: 0;
-      border-style: solid;
-      border-width: 0 36px 36px 0;
-      border-color: transparent #e8e3d8 transparent transparent;
-      filter: drop-shadow(-2px 2px 2px rgba(0,0,0,.13));
-      z-index: 10;
+      position: absolute;
+      /* Inset to white zone only — don't cover the orange/border frame */
+      top: 10%; left: 6%; right: 6%; bottom: 8%;
+      /* Horizontal ruled lines matching card texture */
+      background-image: repeating-linear-gradient(
+        transparent,
+        transparent 27px,
+        rgba(0,0,0,.033) 27px,
+        rgba(0,0,0,.033) 28px
+      );
+      pointer-events: none;
+      z-index: 1;
     }
+
+    /* Folded corner top-right (inside the white zone) */
     .doc-viewer-inner::after {
       content: '';
-      position: absolute; top: 0; right: 0;
-      width: 36px; height: 36px;
-      background: linear-gradient(225deg, #ccc9bc 0%, transparent 60%);
-      clip-path: polygon(100% 0, 0 0, 100% 100%);
-      z-index: 10;
+      position: absolute;
+      top: 10%; right: 6%;
+      width: 0; height: 0;
+      border-style: solid;
+      border-width: 0 28px 28px 0;
+      border-color: transparent #e0dcd1 transparent transparent;
+      filter: drop-shadow(-1px 1px 2px rgba(0,0,0,.15));
+      z-index: 6;
     }
 
     /* Close button */
     .dv-close {
-      position: absolute; top: 10px; right: 44px;
+      position: absolute;
+      top: calc(10% + 6px); right: calc(6% + 34px);
       background: none; border: none; cursor: pointer;
-      font-size: 1rem; color: #888;
-      z-index: 20; padding: 4px 8px; line-height: 1;
-      font-weight: 600; letter-spacing: .05em;
+      font-size: .62rem; font-weight: 700; color: #999;
+      letter-spacing: .1em; text-transform: uppercase;
+      z-index: 20; padding: 2px 5px; line-height: 1.5;
+      border: 1px solid #ddd; border-radius: 2px;
     }
-    .dv-close:hover { color: #222; }
+    .dv-close:hover { color: #111; border-color: #999; }
 
-    /* Scrollable area */
+    /* Scroll area — precisely inside the PNG's white zone */
     .dv-scroll {
+      position: absolute;
+      top: 11%; left: 7%; right: 7%; bottom: 9%;
       overflow-y: auto;
-      max-height: 88vh;
-      padding: 32px 44px 48px 36px;
+      z-index: 5;
       scrollbar-width: thin;
-      scrollbar-color: #d0cbbf transparent;
+      scrollbar-color: #ccc transparent;
     }
-    .dv-scroll::-webkit-scrollbar { width: 5px; }
+    .dv-scroll::-webkit-scrollbar { width: 3px; }
     .dv-scroll::-webkit-scrollbar-track { background: transparent; }
-    .dv-scroll::-webkit-scrollbar-thumb { background: #d0cbbf; border-radius: 3px; }
+    .dv-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
 
-    /* ── Paper document header ── */
+    /* ── Stamp row (classification + date) ── */
     .sw-doc-stamp {
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 10px;
     }
     .sw-doc-stamp-dot {
-      width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+      width: 7px; height: 7px;
+      border-radius: 50%; flex-shrink: 0;
     }
     .sw-doc-stamp-dot-public { background: #2e7d32; }
     .sw-doc-stamp-dot-intern { background: #bf5a00; }
     .sw-doc-stamp-type {
-      font-size: .7rem; font-weight: 700;
+      font-size: .6rem; font-weight: 700;
       letter-spacing: .12em; text-transform: uppercase;
-      color: #888;
+      color: #aaa;
     }
     .sw-doc-stamp-date {
       margin-left: auto;
-      font-size: .7rem; color: #aaa; font-style: italic;
+      font-size: .6rem; color: #bbb; font-style: italic;
     }
 
+    /* ── Title ── */
     .sw-doc-title {
       font-family: var(--font-sans);
-      font-size: clamp(1.6rem, 3vw, 2.4rem);
-      font-weight: 900;
-      line-height: 1.05;
-      color: #0a0a0a;
-      margin-bottom: 6px;
-      letter-spacing: -.025em;
+      font-size: clamp(1.15rem, 2.6vw, 1.75rem);
+      font-weight: 900; line-height: 1.08;
+      color: #080808; margin-bottom: 6px;
+      letter-spacing: -.02em;
     }
+    /* Project tag */
     .sw-doc-project {
-      font-size: .72rem; font-weight: 700;
+      font-size: .6rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: .1em;
-      color: var(--brand-orange);
-      margin-bottom: 4px;
+      color: var(--brand-orange); margin-bottom: 3px;
     }
+    /* Subject line */
     .sw-doc-subject {
-      font-size: .88rem; color: #444;
+      font-size: .74rem; color: #555;
       margin-bottom: 2px; font-style: italic;
     }
-    .sw-doc-date-line {
-      font-size: .82rem; color: #888;
-      margin-bottom: 0;
-    }
 
-    /* Ruled divider — same feel as the card's border-top */
+    /* ── THE BLACK RULE — inline, solid, matches reference ── */
     .sw-doc-rule {
-      border: none;
-      border-top: 1px solid rgba(0,0,0,.12);
-      margin: 18px 0 20px;
+      display: block; width: 100%;
+      height: 2px; background: #0a0a0a;
+      border: none; margin: 13px 0 12px;
     }
 
-    /* Body — text on ruled paper lines */
+    /* ── Body text — line-height locked to paper grid (28px) ── */
     .sw-doc-body {
-      font-size: .9rem;
-      color: #1a1a1a;
-      line-height: 29px; /* matches background-image line spacing */
-      white-space: pre-wrap;
-      word-break: break-word;
-      margin-bottom: 32px;
+      font-size: .76rem; color: #111;
+      line-height: 28px;
+      white-space: pre-wrap; word-break: break-word;
+      margin-bottom: 14px;
     }
 
-    /* Signature footer */
+    /* ── Signature footer ── */
     .sw-doc-sig {
-      border-top: 1px solid rgba(0,0,0,.1);
-      padding-top: 16px;
-      display: flex;
-      align-items: flex-end;
+      border-top: 1px solid rgba(0,0,0,.09);
+      padding-top: 8px;
+      display: flex; align-items: flex-end;
       justify-content: space-between;
     }
-    .sw-doc-sig-left { }
     .sw-doc-sig-author {
-      font-size: .85rem; font-weight: 700; color: #0a0a0a;
-      margin-bottom: 2px;
+      font-size: .72rem; font-weight: 700; color: #111;
+      margin-bottom: 1px;
     }
     .sw-doc-sig-dept {
-      font-size: .75rem; color: #888; font-style: italic;
+      font-size: .65rem; color: #999; font-style: italic;
     }
-    /* Rubber stamp effect on the right */
+    /* Rubber stamp */
     .sw-doc-sig-stamp {
-      border: 2px solid;
-      border-radius: 4px;
-      padding: 5px 12px;
-      font-size: .65rem;
-      font-weight: 800;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      opacity: .55;
-      transform: rotate(-4deg);
-      flex-shrink: 0;
+      border: 2px solid; border-radius: 3px;
+      padding: 3px 8px;
+      font-size: .56rem; font-weight: 800;
+      letter-spacing: .13em; text-transform: uppercase;
+      opacity: .5; transform: rotate(-5deg); flex-shrink: 0;
     }
-    .sw-doc-sig-stamp-public {
-      border-color: #2e7d32; color: #2e7d32;
-    }
-    .sw-doc-sig-stamp-intern {
-      border-color: #bf5a00; color: #bf5a00;
-    }
+    .sw-doc-sig-stamp-public { border-color: #2e7d32; color: #2e7d32; }
+    .sw-doc-sig-stamp-intern { border-color: #bf5a00; color: #bf5a00; }
 
     /* ── EYEBROW ── */
     .section-eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--brand-orange); margin-bottom: 10px; }
@@ -750,11 +714,9 @@
 
 <!-- DOCUMENT VIEWER -->
 <div class="doc-viewer" id="doc-viewer">
-  <div class="doc-viewer-stack">
-    <div class="doc-viewer-inner">
-      <button class="dv-close" onclick="closeViewer()">✕ Close</button>
-      <div class="dv-scroll" id="doc-content-inner"></div>
-    </div>
+  <div class="doc-viewer-inner">
+    <button class="dv-close" onclick="closeViewer()">✕ Close</button>
+    <div class="dv-scroll" id="doc-content-inner"></div>
   </div>
 </div>
 
@@ -909,7 +871,7 @@
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
     const inner = document.getElementById('doc-content-inner');
-    const isIntern = doc.visibility === 'intern';
+    const isIntern  = doc.visibility === 'intern';
     const stampClass = isIntern ? 'sw-doc-sig-stamp-intern' : 'sw-doc-sig-stamp-public';
     const stampText  = isIntern ? 'Confidential' : 'Public';
     const dotClass   = isIntern ? 'sw-doc-stamp-dot-intern' : 'sw-doc-stamp-dot-public';
@@ -926,7 +888,7 @@
       <hr class="sw-doc-rule">
       <div class="sw-doc-body">${esc(doc.body)}</div>
       <div class="sw-doc-sig">
-        <div class="sw-doc-sig-left">
+        <div>
           <div class="sw-doc-sig-author">${esc(doc.author)}</div>
           <div class="sw-doc-sig-dept">${esc(doc.dept)}</div>
         </div>
