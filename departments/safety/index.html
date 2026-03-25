@@ -10,7 +10,7 @@
 <style>
 :root{--font-sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;--font-serif:'Newsreader',Georgia,serif;--font-display:'Afronaut Test','Newsreader',sans-serif;--brand-deep:#241f3c;--brand-yellow:#fff93e;--brand-orange:#ff9c3c;--bg:#ffffff;--bg-dark:#0a0a0a;--text:#0a0a0a;--text-light:#555;--text-muted:#888;--border:#e5e5e5}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}::selection{background:rgba(255,249,62,.25)}html{scroll-behavior:smooth}body{font-family:var(--font-sans);color:var(--text);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}img{max-width:100%;display:block}a{color:inherit;text-decoration:none}
-.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.82);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;padding:0 32px;height:64px}.nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem;margin-right:36px;flex-shrink:0}.nav-logo img{height:28px;width:auto}.nav-links{display:flex;align-items:center;gap:6px}.nav-link{padding:8px 14px;font-size:.9rem;font-weight:500;color:var(--text-light);border-radius:8px;transition:background .2s,color .2s;cursor:pointer;white-space:nowrap}.nav-link:hover{background:#f5f5f5;color:var(--text)}.nav-link.has-dropdown{display:flex;align-items:center;gap:4px;user-select:none}.caret{font-size:.65em;opacity:.55}.nav-dropdown-wrap{position:relative}.nav-dropdown{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:220px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.10);padding:8px;z-index:100}.nav-dropdown-wrap:hover .nav-dropdown{display:block}.nav-dropdown a{display:block;padding:10px 14px;border-radius:8px;font-size:.88rem;font-weight:500;transition:background .15s}.nav-dropdown a:hover{background:#f7f7f7}.dd-desc{display:block;font-size:.78rem;font-weight:400;color:var(--text-muted);margin-top:2px}.nav-spacer{flex:1}.nav-cta{padding:9px 22px;background:var(--brand-yellow);color:var(--brand-deep);border-radius:100px;font-size:.88rem;font-weight:600;transition:box-shadow .2s}.nav-cta:hover{box-shadow:0 0 20px rgba(255,249,62,.4)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(255,255,255,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;padding:0 32px;height:64px}.nav-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem;margin-right:36px;flex-shrink:0}.nav-logo img{height:28px;width:auto}.nav-links{display:flex;align-items:center;gap:6px}.nav-link{padding:8px 14px;font-size:.9rem;font-weight:500;color:var(--text-light);border-radius:8px;transition:background .2s,color .2s;cursor:pointer;white-space:nowrap}.nav-link:hover{background:#f5f5f5;color:var(--text)}.nav-link.has-dropdown{display:flex;align-items:center;gap:4px;user-select:none}.caret{font-size:.65em;opacity:.55}.nav-dropdown-wrap{position:relative}.nav-dropdown{display:none;position:absolute;top:calc(100% + 8px);left:0;min-width:220px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.10);padding:8px;z-index:100}.nav-dropdown-wrap:hover .nav-dropdown{display:block}.nav-dropdown a{display:block;padding:10px 14px;border-radius:8px;font-size:.88rem;font-weight:500;transition:background .15s}.nav-dropdown a:hover{background:#f7f7f7}.dd-desc{display:block;font-size:.78rem;font-weight:400;color:var(--text-muted);margin-top:2px}.nav-spacer{flex:1}.nav-cta{padding:9px 22px;background:var(--brand-yellow);color:var(--brand-deep);border-radius:100px;font-size:.88rem;font-weight:600;transition:box-shadow .2s}.nav-cta:hover{box-shadow:0 0 20px rgba(255,249,62,.4)}
 .btn-yellow{display:inline-block;padding:14px 32px;background:var(--brand-yellow);color:var(--brand-deep);border-radius:100px;font-weight:600;font-size:.95rem;transition:box-shadow .2s;border:none;cursor:pointer}.btn-yellow:hover{box-shadow:0 0 24px rgba(255,249,62,.4)}.btn-outline{display:inline-block;padding:14px 32px;background:transparent;color:var(--text);border:1.5px solid var(--border);border-radius:100px;font-weight:600;font-size:.95rem;transition:border-color .2s;cursor:pointer}.btn-outline:hover{border-color:var(--text)}
 .highlight-bar{width:80px;height:3px;background:linear-gradient(90deg,var(--brand-yellow),var(--brand-orange),var(--brand-deep));border-radius:3px}
 .hero{padding:180px 32px 80px;background:#faf8f3;border-bottom:1px solid var(--border)}.hero-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:80px;align-items:start}.hero-left h1{font-family:var(--font-display);font-size:clamp(3rem,6vw,4.4rem);font-weight:700;line-height:1.05;color:var(--text);margin-bottom:20px}.hero-left .highlight-bar{width:64px;height:3px}.hero-right{padding-top:12px}.hero-right p{font-family:var(--font-serif);font-size:1.18rem;color:var(--text-light);line-height:1.75;margin-bottom:32px}.hero-links-label{font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:10px}.hero-links{display:flex;flex-wrap:wrap;gap:8px}.hero-links a{font-size:.85rem;font-weight:500;color:var(--brand-deep);background:rgba(36,31,60,.06);padding:5px 14px;border-radius:100px;transition:background .2s,color .2s;text-decoration:none}.hero-links a:hover{background:var(--brand-yellow);color:var(--brand-deep)}
@@ -24,7 +24,40 @@ footer{background:#fafafa;border-top:1px solid var(--border);padding:64px 32px 3
 </head>
 <body>
 
-<nav class="nav"><div class="nav-inner"><a href="/" class="nav-logo"><img src="/Swiftaw logomark black.png" alt="Swiftaw"></a><div class="nav-links"><div class="nav-dropdown-wrap"><span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span><div class="nav-dropdown"><a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a><a href="/tithonia">Try Tithonia<span class="dd-desc">Modern AI platform</span></a></div></div><a href="/research" class="nav-link">Research</a><a href="/blog" class="nav-link">Blog</a><div class="nav-dropdown-wrap"><span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span><div class="nav-dropdown"><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a></div></div><div class="nav-dropdown-wrap"><span class="nav-link has-dropdown">Company <span class="caret">&#9662;</span></span><div class="nav-dropdown"><a href="/company/about">About</a><a href="/company/goals">Goals for the World</a><a href="/company/commitments">Commitments</a></div></div></div><div class="nav-spacer"></div><a href="https://fortized.com" class="nav-cta">Try Fortized</a></div></nav>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="/Swiftaw logomark black.png" alt="Swiftaw"></a>
+    <div class="nav-links">
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
+          <a href="/tithonia">Try Tithonia<span class="dd-desc">Modern AI platform</span></a>
+        </div>
+      </div>
+      <a href="/documents" class="nav-link">Documents</a>
+      <a href="/blog" class="nav-link">Blog</a>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/departments/rd">R&amp;D</a>
+          <a href="/departments/safety">Safety</a>
+          <a href="/departments/communication">Communication</a>
+        </div>
+      </div>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Company <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/company/about">About</a>
+          <a href="/company/goals">Goals for the World</a>
+          <a href="/company/commitments">Commitments</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-spacer"></div>
+    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
+  </div>
+</nav>
 
 <section class="hero">
   <div class="hero-inner">
@@ -39,7 +72,7 @@ footer{background:#fafafa;border-top:1px solid var(--border);padding:64px 32px 3
         <a href="#">AutoMod</a>
         <a href="#">Raid Protection</a>
         <a href="#">Data Privacy</a>
-        <a href="#">Trust & Transparency</a>
+        <a href="#">Trust &amp; Transparency</a>
       </div>
     </div>
   </div>
@@ -53,7 +86,7 @@ footer{background:#fafafa;border-top:1px solid var(--border);padding:64px 32px 3
     <div class="feature-card"><div class="feature-icon">&#128737;</div><h3>AutoMod Engine</h3><p>Real-time content filtering powered by machine learning. Pattern detection, context-aware analysis, and configurable sensitivity levels that adapt to each community.</p></div>
     <div class="feature-card"><div class="feature-icon">&#128170;</div><h3>Raid Protection</h3><p>Automated detection and mitigation of coordinated attacks. Rate limiting, CAPTCHA gates, verification levels, and instant lockdown capabilities for community admins.</p></div>
     <div class="feature-card"><div class="feature-icon">&#128274;</div><h3>Data Privacy</h3><p>End-to-end encryption for direct messages. Minimal data collection, transparent retention policies, and full GDPR compliance. Your data stays yours.</p></div>
-    <div class="feature-card"><div class="feature-icon">&#128065;</div><h3>Trust & Transparency</h3><p>Public safety reports, clear community guidelines, and an open appeals process. Every moderation action is logged and reviewable.</p></div>
+    <div class="feature-card"><div class="feature-icon">&#128065;</div><h3>Trust &amp; Transparency</h3><p>Public safety reports, clear community guidelines, and an open appeals process. Every moderation action is logged and reviewable.</p></div>
     <div class="feature-card"><div class="feature-icon">&#9989;</div><h3>Age Verification</h3><p>Multi-layered age gating that goes beyond simple checkboxes. Identity verification options, age-restricted content channels, and parental controls.</p></div>
     <div class="feature-card"><div class="feature-icon">&#128220;</div><h3>Audit Logging</h3><p>Comprehensive activity logs for community administrators. Track moderation actions, permission changes, and member activity with granular filtering.</p></div>
   </div>
@@ -78,11 +111,30 @@ footer{background:#fafafa;border-top:1px solid var(--border);padding:64px 32px 3
   <p>Learn more about how we're building trust across the Swiftaw ecosystem, or report an issue directly.</p>
   <div class="cta-buttons">
     <a href="/company/commitments" class="btn-yellow">Our Commitments</a>
-    <a href="/research" class="btn-outline" style="color:#fff;border-color:rgba(255,255,255,.25);">Explore Research</a>
+    <a href="/documents" class="btn-outline" style="color:#fff;border-color:rgba(255,255,255,.25);">Explore Documents</a>
   </div>
 </section>
 
-<footer><div class="footer-inner"><div class="footer-top"><div class="footer-brand"><a href="/" class="nav-logo" style="margin-right:0;"><img src="/SwiftawLogo.png" alt="Swiftaw"></a><p>Building the ultimate digital ecosystem. Mastering human connection and machine intelligence.</p></div><div class="footer-col"><div class="footer-col-title">Products</div><a href="https://fortized.com">Fortized</a><a href="/tithonia">Tithonia</a></div><div class="footer-col"><div class="footer-col-title">Company</div><a href="/company/about">About</a><a href="/company/goals">Goals</a><a href="/company/commitments">Commitments</a><a href="/blog">Blog</a></div><div class="footer-col"><div class="footer-col-title">Departments</div><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a><a href="/research">Research</a></div></div><div class="footer-bottom"><p class="footer-copy">&copy; 2026 Swiftaw</p><div class="footer-socials"><a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a><a href="https://www.youtube.com/@swiftaw" target="_blank" rel="noopener" title="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a></div></div></div></footer>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo" style="margin-right:0;"><img src="/SwiftawLogo.png" alt="Swiftaw"></a>
+        <p>Building the ultimate digital ecosystem. Mastering human connection and machine intelligence.</p>
+      </div>
+      <div class="footer-col"><div class="footer-col-title">Products</div><a href="https://fortized.com">Fortized</a><a href="/tithonia">Tithonia</a></div>
+      <div class="footer-col"><div class="footer-col-title">Company</div><a href="/company/about">About</a><a href="/company/goals">Goals</a><a href="/company/commitments">Commitments</a><a href="/blog">Blog</a></div>
+      <div class="footer-col"><div class="footer-col-title">Departments</div><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a><a href="/documents">Documents</a></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Swiftaw</p>
+      <div class="footer-socials">
+        <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a href="https://www.youtube.com/@swiftaw" target="_blank" rel="noopener" title="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
 
 </body>
 </html>
