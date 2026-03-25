@@ -28,17 +28,37 @@
 body {
   background: var(--bg); color: var(--text);
   font-family: var(--font-sans); -webkit-font-smoothing: antialiased;
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; display: flex; flex-direction: column;
 }
 img { display: block; -webkit-user-drag: none; user-select: none; }
 a { text-decoration: none; color: inherit; }
-.container { text-align: center; max-width: 480px; padding: 40px 24px; }
-.logo {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  margin-bottom: 48px;
+
+/* NAV */
+.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
+.nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 32px; height: 64px; }
+.nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; margin-right: 36px; flex-shrink: 0; }
+.nav-logo img { height: 28px; width: auto; }
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nav-link { padding: 8px 14px; font-size: .9rem; font-weight: 500; color: var(--text-light); border-radius: 8px; transition: background .2s, color .2s; cursor: pointer; white-space: nowrap; }
+.nav-link:hover { background: #f5f5f5; color: var(--text); }
+.nav-link.has-dropdown { display: flex; align-items: center; gap: 4px; user-select: none; }
+.caret { font-size: .65em; opacity: .55; }
+.nav-dropdown-wrap { position: relative; }
+.nav-dropdown { display: none; position: absolute; top: calc(100% + 8px); left: 0; min-width: 220px; background: #fff; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.10); padding: 8px; z-index: 100; }
+.nav-dropdown-wrap:hover .nav-dropdown { display: block; }
+.nav-dropdown a { display: block; padding: 10px 14px; border-radius: 8px; font-size: .88rem; font-weight: 500; transition: background .15s; }
+.nav-dropdown a:hover { background: #f7f7f7; }
+.dd-desc { display: block; font-size: .78rem; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
+.nav-spacer { flex: 1; }
+.nav-cta { padding: 9px 22px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-size: .88rem; font-weight: 600; transition: box-shadow .2s; white-space: nowrap; }
+.nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); }
+@media (max-width: 768px) { .nav-links { display: none; } }
+
+.main {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 64px 24px 40px;
 }
-.logo img { height: 26px; }
-.logo span { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
+.container { text-align: center; max-width: 480px; }
 .code {
   font-family: var(--font-display);
   font-size: 96px; font-weight: 400;
@@ -67,14 +87,14 @@ a { text-decoration: none; color: inherit; }
 .btn-yellow:hover { box-shadow: 0 0 24px rgba(255,249,62,.4); transform: translateY(-1px); }
 .btn-ghost { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
 .btn-ghost:hover { border-color: #999; transform: translateY(-1px); }
-.footer-note { margin-top: 48px; font-size: 12px; color: var(--text-muted); }
-.footer-note a { color: var(--brand-orange); }
-.footer-note a:hover { text-decoration: underline; }
 .highlight-bar {
   height: 3px; max-width: 40px; margin: 0 auto 24px;
   background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
   border-radius: 2px;
 }
+.footer-note { margin-top: 48px; font-size: 12px; color: var(--text-muted); }
+.footer-note a { color: var(--brand-orange); }
+.footer-note a:hover { text-decoration: underline; }
 @media (max-width: 480px) {
   .code { font-size: 72px; }
   .actions { flex-direction: column; }
@@ -83,29 +103,65 @@ a { text-decoration: none; color: inherit; }
 </style>
 </head>
 <body>
-<div class="container">
-  <a href="/" class="logo">
-    <img src="/SwiftawLogo.png" alt="Swiftaw">
-  </a>
-  <div class="code">404</div>
-  <div class="highlight-bar"></div>
-  <h1 class="title">Page not found</h1>
-  <p class="desc">The page you're looking for doesn't exist or has been moved.</p>
-  <div class="path" id="path"></div>
-  <div class="actions">
-    <a href="/" class="btn btn-yellow">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Go home
-    </a>
-    <a href="javascript:history.back()" class="btn btn-ghost">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-      Go back
-    </a>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo"><img src="/Swiftaw logomark black.png" alt="Swiftaw"></a>
+    <div class="nav-links">
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
+          <a href="/tithonia">Try Tithonia<span class="dd-desc">Modern AI platform</span></a>
+        </div>
+      </div>
+      <a href="/documents" class="nav-link">Documents</a>
+      <a href="/blog" class="nav-link">Blog</a>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/departments/rd">R&amp;D</a>
+          <a href="/departments/safety">Safety</a>
+          <a href="/departments/communication">Communication</a>
+        </div>
+      </div>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Company <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/company/about">About</a>
+          <a href="/company/goals">Goals for the World</a>
+          <a href="/company/commitments">Commitments</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-spacer"></div>
+    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
   </div>
-  <div class="footer-note">
-    <p>&copy; 2026 <a href="/">Swiftaw</a></p>
+</nav>
+
+<main class="main">
+  <div class="container">
+    <div class="code">404</div>
+    <div class="highlight-bar"></div>
+    <h1 class="title">Page not found</h1>
+    <p class="desc">The page you're looking for doesn't exist or has been moved.</p>
+    <div class="path" id="path"></div>
+    <div class="actions">
+      <a href="/" class="btn btn-yellow">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Go home
+      </a>
+      <a href="javascript:history.back()" class="btn btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Go back
+      </a>
+    </div>
+    <div class="footer-note">
+      <p>&copy; 2026 <a href="/">Swiftaw</a></p>
+    </div>
   </div>
-</div>
+</main>
+
 <script>
   var p = document.getElementById('path');
   if (p) p.textContent = window.location.pathname;
