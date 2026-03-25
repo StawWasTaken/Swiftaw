@@ -12,15 +12,9 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Newsreader', Georgia, serif;
   --font-display: 'Afronaut Test', 'Newsreader', sans-serif;
-  --brand-deep: #241f3c;
-  --brand-yellow: #fff93e;
-  --brand-orange: #ff9c3c;
-  --bg: #ffffff;
-  --bg-dark: #0a0a0a;
-  --text: #0a0a0a;
-  --text-light: #555;
-  --text-muted: #888;
-  --border: #e5e5e5;
+  --brand-deep: #241f3c; --brand-yellow: #fff93e; --brand-orange: #ff9c3c;
+  --bg: #ffffff; --bg-dark: #0a0a0a; --text: #0a0a0a;
+  --text-light: #555; --text-muted: #888; --border: #e5e5e5;
 }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 ::selection { background: rgba(255,249,62,.25); }
@@ -28,8 +22,6 @@ html { scroll-behavior: smooth; }
 body { font-family: var(--font-sans); color: var(--text); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
-
-/* NAV */
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
 .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 32px; height: 64px; }
 .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; margin-right: 36px; flex-shrink: 0; }
@@ -48,19 +40,11 @@ a { color: inherit; text-decoration: none; }
 .nav-spacer { flex: 1; }
 .nav-cta { padding: 9px 22px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-size: .88rem; font-weight: 600; transition: box-shadow .2s; white-space: nowrap; }
 .nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); }
-
-/* BUTTONS */
 .btn-yellow { display: inline-block; padding: 14px 32px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-weight: 600; font-size: .95rem; transition: opacity .2s; border: none; cursor: pointer; }
 .btn-yellow:hover { opacity: .88; }
-.btn-dark { display: inline-block; padding: 14px 32px; background: var(--brand-deep); color: #fff; border-radius: 100px; font-weight: 600; font-size: .95rem; transition: opacity .2s; border: none; cursor: pointer; }
-.btn-dark:hover { opacity: .88; }
 .btn-outline { display: inline-block; padding: 14px 32px; background: transparent; color: var(--text); border: 1.5px solid var(--border); border-radius: 100px; font-weight: 600; font-size: .95rem; transition: border-color .2s, color .2s; cursor: pointer; }
 .btn-outline:hover { border-color: var(--text); }
-
-/* HIGHLIGHT BAR */
 .highlight-bar { width: 80px; height: 3px; background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); border-radius: 3px; }
-
-/* HERO */
 .hero { background: #faf8f3; padding: 180px 32px 80px; border-bottom: 1px solid var(--border); }
 .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: start; }
 .hero-left h1 { font-family: var(--font-display); font-size: clamp(3rem, 6vw, 4.4rem); font-weight: 700; line-height: 1.05; color: var(--text); margin-bottom: 20px; }
@@ -71,38 +55,27 @@ a { color: inherit; text-decoration: none; }
 .hero-focus { display: flex; flex-wrap: wrap; gap: 8px; }
 .hero-focus a { font-size: .85rem; font-weight: 500; color: var(--brand-deep); background: rgba(36,31,60,.06); padding: 5px 14px; border-radius: 100px; transition: background .2s, color .2s; text-decoration: none; }
 .hero-focus a:hover { background: var(--brand-yellow); color: var(--brand-deep); }
-
-/* SECTIONS */
 .section { padding: 100px 32px; max-width: 1100px; margin: 0 auto; }
 .section-alt { background: #fafafa; }
-.section-dark { background: var(--bg-dark); color: #fff; }
 .section h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; margin-bottom: 20px; line-height: 1.15; }
 .section p { font-size: 1.05rem; color: var(--text-light); line-height: 1.75; max-width: 720px; }
 .section p + p { margin-top: 16px; }
-
-/* FEATURE CARDS */
 .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-top: 48px; }
 .feature-card { padding: 40px 32px; border: 1px solid var(--border); border-radius: 16px; transition: box-shadow .2s, transform .2s; }
 .feature-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.06); transform: translateY(-2px); }
 .feature-card .card-icon { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 1.3rem; }
 .feature-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 12px; }
 .feature-card p { font-size: .95rem; color: var(--text-light); line-height: 1.65; max-width: none; }
-
-/* GOAL SECTIONS */
 .goal-block { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
 .goal-block + .goal-block { margin-top: 100px; }
 .goal-block.reverse { direction: rtl; }
 .goal-block.reverse > * { direction: ltr; }
 .goal-visual { background: linear-gradient(135deg, #f8f8f8, #f0f0f0); border-radius: 20px; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; }
 .goal-visual .visual-number { font-family: var(--font-display); font-size: 5rem; font-weight: 700; background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-
-/* CTA */
 .cta-section { padding: 100px 32px; text-align: center; background: var(--bg-dark); color: #fff; }
 .cta-section h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; margin-bottom: 16px; }
 .cta-section p { font-size: 1.05rem; color: #aaa; margin-bottom: 36px; max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.7; }
 .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-
-/* FOOTER */
 footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px 32px 32px; }
 .footer-inner { max-width: 1200px; margin: 0 auto; }
 .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
@@ -116,7 +89,6 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
 .footer-socials { display: flex; gap: 16px; }
 .footer-socials a { color: var(--text-muted); transition: color .2s; }
 .footer-socials a:hover { color: var(--text); }
-
 @media (max-width: 768px) {
   .nav-links { display: none; }
   .goal-block, .goal-block.reverse { grid-template-columns: 1fr; gap: 40px; direction: ltr; }
@@ -140,7 +112,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
           <a href="/tithonia">Try Tithonia<span class="dd-desc">Modern AI platform</span></a>
         </div>
       </div>
-      <a href="/research" class="nav-link">Research</a>
+      <a href="/documents" class="nav-link">Documents</a>
       <a href="/blog" class="nav-link">Blog</a>
       <div class="nav-dropdown-wrap">
         <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
@@ -190,11 +162,8 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
       <p>The internet promised to bring the world together, but too many communities remain fragmented across platforms that were never designed with them in mind.</p>
       <p>Swiftaw is building infrastructure that makes meaningful digital connection accessible to everyone, regardless of where they are or what language they speak. We are creating platforms that break down barriers and foster genuine cross-cultural dialogue.</p>
     </div>
-    <div class="goal-visual">
-      <span class="visual-number">01</span>
-    </div>
+    <div class="goal-visual"><span class="visual-number">01</span></div>
   </div>
-
   <div class="goal-block reverse">
     <div>
       <div class="highlight-bar" style="margin-bottom:24px;"></div>
@@ -202,11 +171,8 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
       <p>The future of work and creativity depends on tools that make collaboration feel effortless. Current solutions force people to adapt to rigid systems rather than adapting to how people naturally think and create.</p>
       <p>We are developing intelligent collaboration tools that understand context, anticipate needs, and get out of the way so teams can focus on what matters: doing great work together.</p>
     </div>
-    <div class="goal-visual">
-      <span class="visual-number">02</span>
-    </div>
+    <div class="goal-visual"><span class="visual-number">02</span></div>
   </div>
-
   <div class="goal-block">
     <div>
       <div class="highlight-bar" style="margin-bottom:24px;"></div>
@@ -214,9 +180,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
       <p>Communities are the foundation of everything we build. When communities thrive, people thrive. But too often, platforms extract value from communities without giving anything back.</p>
       <p>Our goal is to empower communities with ownership, tools, and autonomy. We want every community on our platforms to feel like they have a home they control, with the resources to grow on their own terms.</p>
     </div>
-    <div class="goal-visual">
-      <span class="visual-number">03</span>
-    </div>
+    <div class="goal-visual"><span class="visual-number">03</span></div>
   </div>
 </section>
 
@@ -228,36 +192,12 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
       <p style="margin:0 auto;">Every goal needs a plan. Here is how we are turning ambition into reality across our ecosystem.</p>
     </div>
     <div class="features-grid">
-      <div class="feature-card">
-        <div class="card-icon">&#9889;</div>
-        <h3>Platform-Native Intelligence</h3>
-        <p>We embed AI directly into our platforms to help communities moderate, organize, and grow without requiring technical expertise.</p>
-      </div>
-      <div class="feature-card">
-        <div class="card-icon">&#127760;</div>
-        <h3>Cross-Platform Bridges</h3>
-        <p>We are building interoperability into our ecosystem so communities can connect across different tools and platforms seamlessly.</p>
-      </div>
-      <div class="feature-card">
-        <div class="card-icon">&#128274;</div>
-        <h3>Open Standards</h3>
-        <p>We contribute to and adopt open standards that prevent vendor lock-in and ensure our users always own their data and content.</p>
-      </div>
-      <div class="feature-card">
-        <div class="card-icon">&#129309;</div>
-        <h3>Community Grants</h3>
-        <p>We invest directly in the communities that use our platforms, providing grants, tools, and mentorship to help them scale their impact.</p>
-      </div>
-      <div class="feature-card">
-        <div class="card-icon">&#128640;</div>
-        <h3>Developer Ecosystem</h3>
-        <p>We are building robust APIs and developer tools that let creators extend our platforms in ways we have not even imagined yet.</p>
-      </div>
-      <div class="feature-card">
-        <div class="card-icon">&#127891;</div>
-        <h3>Digital Literacy</h3>
-        <p>We partner with educators and nonprofits to promote digital literacy and help people use technology more intentionally and safely.</p>
-      </div>
+      <div class="feature-card"><div class="card-icon">&#9889;</div><h3>Platform-Native Intelligence</h3><p>We embed AI directly into our platforms to help communities moderate, organize, and grow without requiring technical expertise.</p></div>
+      <div class="feature-card"><div class="card-icon">&#127760;</div><h3>Cross-Platform Bridges</h3><p>We are building interoperability into our ecosystem so communities can connect across different tools and platforms seamlessly.</p></div>
+      <div class="feature-card"><div class="card-icon">&#128274;</div><h3>Open Standards</h3><p>We contribute to and adopt open standards that prevent vendor lock-in and ensure our users always own their data and content.</p></div>
+      <div class="feature-card"><div class="card-icon">&#129309;</div><h3>Community Grants</h3><p>We invest directly in the communities that use our platforms, providing grants, tools, and mentorship to help them scale their impact.</p></div>
+      <div class="feature-card"><div class="card-icon">&#128640;</div><h3>Developer Ecosystem</h3><p>We are building robust APIs and developer tools that let creators extend our platforms in ways we have not even imagined yet.</p></div>
+      <div class="feature-card"><div class="card-icon">&#127891;</div><h3>Digital Literacy</h3><p>We partner with educators and nonprofits to promote digital literacy and help people use technology more intentionally and safely.</p></div>
     </div>
   </section>
 </div>
@@ -280,7 +220,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
       </div>
       <div class="footer-col"><div class="footer-col-title">Products</div><a href="https://fortized.com">Fortized</a><a href="/tithonia">Tithonia</a></div>
       <div class="footer-col"><div class="footer-col-title">Company</div><a href="/company/about">About</a><a href="/company/goals">Goals</a><a href="/company/commitments">Commitments</a><a href="/blog">Blog</a></div>
-      <div class="footer-col"><div class="footer-col-title">Departments</div><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a><a href="/research">Research</a></div>
+      <div class="footer-col"><div class="footer-col-title">Departments</div><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a><a href="/documents">Documents</a></div>
     </div>
     <div class="footer-bottom">
       <p class="footer-copy">&copy; 2026 Swiftaw</p>
