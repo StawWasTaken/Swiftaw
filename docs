@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documents - Swiftaw</title>
+  <link rel="icon" type="image/png" href="/SwiftawFavicon.png">
+  <link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-display: 'Afronaut Test', 'Newsreader', sans-serif;
+      --brand-deep: #241f3c;
+      --brand-yellow: #fff93e;
+      --brand-orange: #ff9c3c;
+      --bg: #ffffff;
+      --text: #0a0a0a;
+      --text-light: #555;
+      --text-muted: #888;
+      --border: #e5e5e5;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); color: var(--text); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* NAV */
+    .nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: rgba(255,255,255,.72); backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 32px; height: 64px; gap: 8px; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-serif); font-weight: 600; font-size: 1.18rem; color: var(--text); margin-right: 32px; white-space: nowrap; }
+    .nav-logo img { height: 28px; width: auto; object-fit: contain; }
+    .nav-logo-text { font-family: var(--font-serif); font-weight: 600; font-size: 1.1rem; }
+    .nav-links { display: flex; align-items: center; gap: 4px; }
+    .nav-link { font-size: .9rem; font-weight: 500; color: var(--text-light); padding: 8px 14px; border-radius: 8px; transition: color .2s, background .2s; cursor: pointer; white-space: nowrap; user-select: none; }
+    .nav-link:hover { color: var(--text); background: rgba(0,0,0,.04); }
+    .has-dropdown { display: flex; align-items: center; gap: 4px; }
+    .caret { font-size: .55rem; opacity: .5; transition: transform .2s; }
+    .nav-dropdown-wrap { position: relative; }
+    .nav-dropdown-wrap:hover .nav-dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
+    .nav-dropdown-wrap:hover .caret { transform: rotate(180deg); }
+    .nav-dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.08); min-width: 220px; padding: 8px; opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity .2s, visibility .2s, transform .2s; }
+    .nav-dropdown a { display: block; padding: 10px 14px; border-radius: 8px; font-size: .88rem; font-weight: 500; color: var(--text); transition: background .15s; }
+    .nav-dropdown a:hover { background: rgba(0,0,0,.04); }
+    .dd-desc { display: block; font-size: .78rem; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
+    .nav-spacer { flex: 1; }
+    .nav-cta { background: var(--brand-yellow); color: var(--brand-deep); font-size: .88rem; font-weight: 600; padding: 9px 22px; border-radius: 100px; white-space: nowrap; transition: box-shadow .2s, transform .15s; }
+    .nav-cta:hover { box-shadow: 0 0 32px rgba(255,249,62,.4); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero { background: #faf8f3; padding: 180px 32px 80px; border-bottom: 1px solid var(--border); }
+    .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: start; }
+    .hero-left h1 { font-family: var(--font-display); font-size: clamp(3rem, 6vw, 4.4rem); font-weight: 700; line-height: 1.05; color: var(--text); margin: 0 0 20px; }
+    .highlight-bar { width: 64px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); }
+    .hero-right { padding-top: 12px; }
+    .hero-right p { font-family: var(--font-serif); font-size: 1.18rem; font-weight: 400; color: var(--text-light); line-height: 1.75; margin: 0 0 32px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* BUTTONS */
+    .btn-yellow { display: inline-flex; align-items: center; gap: 8px; background: var(--brand-yellow); color: var(--brand-deep); font-size: .95rem; font-weight: 600; padding: 14px 28px; border-radius: 100px; border: none; cursor: pointer; transition: box-shadow .2s, transform .15s; font-family: var(--font-sans); }
+    .btn-yellow:hover { box-shadow: 0 0 32px rgba(255,249,62,.4); transform: translateY(-1px); }
+    .btn-dark { display: inline-flex; align-items: center; gap: 8px; background: var(--brand-deep); color: #fff; font-size: .95rem; font-weight: 600; padding: 14px 28px; border-radius: 100px; border: none; cursor: pointer; transition: box-shadow .2s, transform .15s; font-family: var(--font-sans); }
+    .btn-dark:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(36,31,60,.25); }
+    .btn-outline { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--text); font-size: .95rem; font-weight: 600; padding: 14px 28px; border-radius: 100px; border: 1.5px solid var(--border); cursor: pointer; transition: border-color .2s, transform .15s; font-family: var(--font-sans); }
+    .btn-outline:hover { border-color: var(--text-muted); transform: translateY(-1px); }
+
+    /* SECTION */
+    .section { padding: 80px 32px; max-width: 1200px; margin: 0 auto; }
+    .divider { max-width: 1200px; margin: 0 auto; border: none; border-top: 1px solid var(--border); }
+
+    /* TABS */
+    .tabs-bar { display: flex; gap: 4px; margin-bottom: 40px; border-bottom: 1.5px solid var(--border); padding-bottom: 0; }
+    .tab-btn { font-size: .92rem; font-weight: 600; padding: 10px 20px; background: none; border: none; cursor: pointer; color: var(--text-muted); border-bottom: 2.5px solid transparent; margin-bottom: -1.5px; transition: color .2s, border-color .2s; font-family: var(--font-sans); }
+    .tab-btn.active { color: var(--brand-deep); border-bottom-color: var(--brand-deep); }
+    .tab-btn:hover:not(.active) { color: var(--text); }
+
+    /* BADGES */
+    .badge { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; }
+    .badge-public { background: #e8f5e9; color: #2e7d32; }
+    .badge-intern { background: #fff3e0; color: #bf5a00; }
+
+    /* DOCUMENT CARDS */
+    .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+    .doc-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 28px; transition: box-shadow .25s, transform .2s; cursor: pointer; position: relative; }
+    .doc-card:hover { box-shadow: 0 8px 40px rgba(0,0,0,.07); transform: translateY(-3px); }
+    .doc-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .doc-card-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--brand-deep); display: flex; align-items: center; justify-content: center; }
+    .doc-card-icon svg { width: 22px; height: 22px; stroke: var(--brand-yellow); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .doc-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+    .doc-card .doc-meta { font-size: .82rem; color: var(--text-muted); margin-bottom: 10px; }
+    .doc-card p { font-size: .9rem; color: var(--text-light); line-height: 1.6; }
+    .doc-card-footer { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .doc-card-author { font-size: .8rem; color: var(--text-muted); }
+    .locked-overlay { position: absolute; inset: 0; background: rgba(255,255,255,.8); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; backdrop-filter: blur(2px); }
+    .locked-overlay svg { width: 32px; height: 32px; stroke: var(--brand-deep); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .locked-overlay span { font-size: .88rem; font-weight: 600; color: var(--brand-deep); }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
+    .empty-state svg { width: 48px; height: 48px; stroke: var(--border); fill: none; stroke-width: 1.5; margin: 0 auto 16px; }
+    .empty-state p { font-size: .95rem; }
+
+    /* MODAL OVERLAY */
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(10,10,10,.45); z-index: 2000; align-items: center; justify-content: center; }
+    .modal-bg.open { display: flex; }
+    .modal { background: #fff; border-radius: 20px; padding: 44px 40px; max-width: 560px; width: calc(100% - 40px); box-shadow: 0 24px 80px rgba(0,0,0,.12); position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-close { position: absolute; top: 18px; right: 20px; background: none; border: none; cursor: pointer; font-size: 1.4rem; color: var(--text-muted); line-height: 1; padding: 4px; }
+    .modal-close:hover { color: var(--text); }
+    .modal h2 { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+    .modal p.modal-sub { font-family: var(--font-serif); color: var(--text-light); margin-bottom: 28px; font-size: .96rem; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--text-muted); margin-bottom: 7px; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 14px; font-size: .94rem; font-family: var(--font-sans); color: var(--text); background: #fff; outline: none; transition: border-color .2s; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--brand-deep); }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .error-msg { color: #c62828; font-size: .83rem; margin-top: 6px; display: none; }
+    .error-msg.show { display: block; }
+    .modal-actions { display: flex; gap: 12px; margin-top: 28px; }
+
+    /* DOCUMENT VIEWER */
+    .doc-viewer { display: none; position: fixed; inset: 0; background: rgba(10,10,10,.55); z-index: 3000; align-items: center; justify-content: center; }
+    .doc-viewer.open { display: flex; }
+    .doc-viewer-inner { background: #fff; border-radius: 20px; max-width: 680px; width: calc(100% - 40px); max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,.15); position: relative; }
+    .dv-close { position: absolute; top: 16px; right: 18px; background: none; border: none; cursor: pointer; font-size: 1.3rem; color: var(--text-muted); padding: 6px; z-index: 10; }
+    .dv-close:hover { color: var(--text); }
+
+    /* SWIFTAW DOCUMENT TEMPLATE */
+    .sw-doc { padding: 44px 44px 40px; }
+    .sw-doc-logo { width: 60px; margin-bottom: 32px; }
+    .sw-doc-logo-placeholder { width: 60px; height: 60px; background: var(--brand-deep); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 32px; }
+    .sw-doc-logo-placeholder span { color: var(--brand-yellow); font-weight: 700; font-size: .9rem; font-family: var(--font-display); }
+    .sw-doc h1 { font-family: var(--font-sans); font-size: 2.4rem; font-weight: 800; line-height: 1.1; margin-bottom: 12px; }
+    .sw-doc-subtitle { font-size: 1.05rem; color: var(--text-light); margin-bottom: 4px; }
+    .sw-doc-date { font-size: 1.05rem; color: var(--text-light); margin-bottom: 24px; }
+    .sw-doc-divider { border: none; border-top: 2px solid var(--text); margin-bottom: 28px; }
+    .sw-doc-body { font-size: 1rem; color: var(--text); line-height: 1.8; white-space: pre-wrap; word-break: break-word; margin-bottom: 40px; }
+    .sw-doc-footer { text-align: center; }
+    .sw-doc-footer .author { font-size: 1rem; font-weight: 500; color: var(--text); }
+    .sw-doc-footer .dept { font-size: .95rem; color: var(--text-light); }
+
+    /* DOC FRAME DECORATIONS (like screenshot) */
+    .sw-doc-outer { position: relative; overflow: hidden; }
+    .sw-deco-left { position: absolute; left: -22px; top: 50%; transform: translateY(-50%); width: 52px; height: 70%; background: var(--brand-orange); border-radius: 0 30px 30px 0; opacity: .9; }
+    .sw-deco-right { position: absolute; right: -22px; top: 50%; transform: translateY(-50%); width: 52px; height: 70%; background: var(--brand-orange); border-radius: 30px 0 0 30px; opacity: .9; }
+    .sw-deco-bottom { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); width: 120px; height: 44px; background: var(--brand-yellow); border-radius: 50% 50% 0 0; }
+    .sw-deco-tl { position: absolute; top: 0; left: 0; width: 12px; height: 100%; background: var(--brand-deep); }
+    .sw-deco-tr { position: absolute; top: 0; right: 0; width: 12px; height: 100%; background: var(--brand-deep); }
+
+    /* INTERN UNLOCK MODAL */
+    .intern-unlock { max-width: 400px; }
+
+    /* SECTION HEADER */
+    .section-eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--brand-orange); margin-bottom: 10px; }
+    .section-title { font-family: var(--font-display); font-size: clamp(1.7rem, 3vw, 2.3rem); font-weight: 700; margin-bottom: 12px; }
+    .section-lead { font-family: var(--font-serif); font-size: 1.05rem; color: var(--text-light); line-height: 1.7; margin-bottom: 32px; }
+
+    /* FOOTER */
+    footer { background: var(--bg); border-top: 1px solid var(--border); }
+    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 64px 32px 32px; }
+    .footer-top { display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 56px; }
+    .footer-brand p { font-size: .9rem; color: var(--text-muted); line-height: 1.65; margin-top: 16px; max-width: 280px; }
+    .footer-col { display: flex; flex-direction: column; gap: 10px; }
+    .footer-col-title { font-size: .78rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+    .footer-col a { font-size: .9rem; color: var(--text-light); transition: color .15s; }
+    .footer-col a:hover { color: var(--text); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 28px; border-top: 1px solid var(--border); }
+    .footer-copy { font-size: .82rem; color: var(--text-muted); }
+    .footer-socials { display: flex; gap: 16px; }
+    .footer-socials a { color: var(--text-muted); transition: color .15s; }
+    .footer-socials a:hover { color: var(--text); }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero { padding: 120px 20px 60px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 28px; }
+      .section { padding: 56px 20px; }
+      .doc-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .form-row { grid-template-columns: 1fr; }
+      .modal { padding: 32px 24px; }
+      .sw-doc { padding: 32px 28px 28px; }
+      .sw-doc h1 { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img src="/Swiftaw logomark black.png" alt="Swiftaw" onerror="this.style.display='none'">
+      <span class="nav-logo-text">Swiftaw</span>
+    </a>
+    <div class="nav-links">
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
+          <a href="/tithonia">Try Tithonia<span class="dd-desc">Modern AI platform</span></a>
+        </div>
+      </div>
+      <a href="/research" class="nav-link">Research</a>
+      <a href="/documents" class="nav-link" style="color:var(--text); font-weight:600;">Documents</a>
+      <a href="/blog" class="nav-link">Blog</a>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/departments/rd">R&amp;D</a>
+          <a href="/departments/safety">Safety</a>
+          <a href="/departments/communication">Communication</a>
+        </div>
+      </div>
+      <div class="nav-dropdown-wrap">
+        <span class="nav-link has-dropdown">Company <span class="caret">&#9662;</span></span>
+        <div class="nav-dropdown">
+          <a href="/company/about">About</a>
+          <a href="/company/goals">Goals for the World</a>
+          <a href="/company/commitments">Commitments</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-spacer"></div>
+    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <h1>Documents</h1>
+      <div class="highlight-bar"></div>
+    </div>
+    <div class="hero-right">
+      <p>Browse Swiftaw's official publications — from public announcements to internal memos. Documents are classified as <strong>Public</strong> or <strong>Intern</strong>. Team members with access can also create new documents.</p>
+      <div class="hero-actions">
+        <button class="btn-yellow" onclick="openCreateModal()">+ New Document</button>
+        <button class="btn-outline" onclick="openInternModal()">Unlock Intern Access</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- DOCUMENTS SECTION -->
+<section class="section">
+  <div class="section-eyebrow" id="tab-eyebrow">All Documents</div>
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('all', this)">All</button>
+    <button class="tab-btn" onclick="switchTab('public', this)">Public</button>
+    <button class="tab-btn" onclick="switchTab('intern', this)">Intern</button>
+  </div>
+
+  <div class="doc-grid" id="doc-grid">
+    <!-- populated by JS -->
+  </div>
+  <div class="empty-state" id="empty-state" style="display:none;">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <p>No documents in this category yet.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo" style="margin-right:0;">
+          <img src="/SwiftawLogo.png" alt="Swiftaw" onerror="this.style.display='none'">
+          <span class="nav-logo-text">Swiftaw</span>
+        </a>
+        <p>Building the ultimate digital ecosystem. Mastering human connection and machine intelligence.</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Products</div>
+        <a href="https://fortized.com">Fortized</a>
+        <a href="/tithonia">Tithonia</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Company</div>
+        <a href="/company/about">About</a>
+        <a href="/company/goals">Goals</a>
+        <a href="/company/commitments">Commitments</a>
+        <a href="/blog">Blog</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Departments</div>
+        <a href="/departments/rd">R&amp;D</a>
+        <a href="/departments/safety">Safety</a>
+        <a href="/departments/communication">Communication</a>
+        <a href="/documents">Documents</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">&copy; 2026 Swiftaw</p>
+      <div class="footer-socials">
+        <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@swiftaw" target="_blank" rel="noopener" title="YouTube">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- CREATE DOCUMENT MODAL -->
+<div class="modal-bg" id="create-modal-bg">
+  <div class="modal">
+    <button class="modal-close" onclick="closeCreateModal()">&times;</button>
+    <div id="create-step-pw">
+      <h2>Create Document</h2>
+      <p class="modal-sub">Enter the creation password to continue.</p>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="create-pw" placeholder="••••" onkeydown="if(event.key==='Enter')checkCreatePw()">
+        <div class="error-msg" id="create-pw-error">Incorrect password. Please try again.</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-dark" onclick="checkCreatePw()">Continue</button>
+        <button class="btn-outline" onclick="closeCreateModal()">Cancel</button>
+      </div>
+    </div>
+
+    <div id="create-step-form" style="display:none;">
+      <h2>New Document</h2>
+      <p class="modal-sub">Fill in the details below. The document will be published immediately.</p>
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="doc-title" placeholder="Document title">
+        <div class="error-msg" id="title-error">Please enter a title.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Project / Category</label>
+          <input type="text" id="doc-project" placeholder="Project or "General"">
+        </div>
+        <div class="form-group">
+          <label>Visibility</label>
+          <select id="doc-visibility">
+            <option value="public">Public</option>
+            <option value="intern">Intern</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Author</label>
+          <input type="text" id="doc-author" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label>Department</label>
+          <input type="text" id="doc-dept" placeholder="Department or "Swiftaw Leadership"">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <input type="text" id="doc-subject" placeholder="Brief subject line">
+      </div>
+      <div class="form-group">
+        <label>Body</label>
+        <textarea id="doc-body" placeholder="Write the document content here..."></textarea>
+        <div class="error-msg" id="body-error">Please write some content.</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-yellow" onclick="submitDocument()">Publish Document</button>
+        <button class="btn-outline" onclick="closeCreateModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INTERN UNLOCK MODAL -->
+<div class="modal-bg" id="intern-modal-bg">
+  <div class="modal intern-unlock">
+    <button class="modal-close" onclick="closeInternModal()">&times;</button>
+    <h2>Intern Access</h2>
+    <p class="modal-sub">Enter the intern password to unlock confidential documents.</p>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="intern-pw" placeholder="••••••" onkeydown="if(event.key==='Enter')checkInternPw()">
+      <div class="error-msg" id="intern-pw-error">Incorrect password. Please try again.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-dark" onclick="checkInternPw()">Unlock</button>
+      <button class="btn-outline" onclick="closeInternModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- DOCUMENT VIEWER -->
+<div class="doc-viewer" id="doc-viewer">
+  <div class="doc-viewer-inner sw-doc-outer">
+    <button class="dv-close" onclick="closeViewer()">&times;</button>
+    <div class="sw-deco-left"></div>
+    <div class="sw-deco-right"></div>
+    <div class="sw-deco-bottom"></div>
+    <div class="sw-deco-tl"></div>
+    <div class="sw-deco-tr"></div>
+    <div class="sw-doc" id="doc-content-inner">
+      <!-- populated by JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+  const CREATE_PW = '1478';
+  const INTERN_PW = 'SW1FT';
+  let internUnlocked = false;
+  let currentTab = 'all';
+
+  const defaultDocs = [
+    {
+      id: 1,
+      title: 'Fortized Platform Launch',
+      project: 'Fortized',
+      subject: 'Official public announcement of the Fortized gaming platform launch.',
+      body: 'We are thrilled to announce the official launch of Fortized, our flagship gaming community platform.\n\nFortized brings together gamers, streamers, and communities in one unified space. Built on our latest AI infrastructure, the platform offers real-time chat, community hubs, leaderboards, and intelligent matchmaking.\n\nThis launch marks a major milestone for Swiftaw as we deliver on our mission to empower people through technology and connection.\n\nAll users can sign up at fortized.com starting today. We look forward to growing this community with you.',
+      author: 'Swiftaw Leadership',
+      dept: 'Swiftaw Leadership',
+      date: 'March 2026',
+      visibility: 'public'
+    },
+    {
+      id: 2,
+      title: 'R&D Roadmap Q2 2026',
+      project: 'R&D',
+      subject: 'Internal research and development priorities for Q2.',
+      body: 'This document outlines the R&D department's strategic priorities for Q2 2026.\n\n1. Tithonia AI model improvements — focus on contextual memory and multi-turn reasoning.\n2. Social graph research — mapping connection patterns across Fortized communities.\n3. Safety systems — deployment of the next-generation content moderation pipeline.\n4. Infrastructure scaling — preparation for 10× user growth across all products.\n\nAll department leads are expected to review and confirm alignment by April 15. Budget allocations will follow in a separate memo.',
+      author: 'R&D Team',
+      dept: 'R&D',
+      date: 'March 2026',
+      visibility: 'intern'
+    },
+    {
+      id: 3,
+      title: 'Swiftaw Safety Commitments',
+      project: 'Safety',
+      subject: 'Public statement on Swiftaw's approach to platform safety.',
+      body: 'Swiftaw is committed to building safe, trustworthy digital spaces for all users.\n\nOur safety principles:\n\n— Every product we build is reviewed by our Safety department before launch.\n— We invest in AI moderation tools that scale with our communities.\n— We maintain transparent reporting on safety incidents.\n— User feedback is central to how we improve our systems.\n\nSafety is not an afterthought at Swiftaw — it is embedded in our engineering culture from day one.',
+      author: 'Safety Department',
+      dept: 'Safety',
+      date: 'February 2026',
+      visibility: 'public'
+    },
+    {
+      id: 4,
+      title: 'Tithonia Internal Architecture',
+      project: 'Tithonia',
+      subject: 'Technical overview of the Tithonia AI platform internals.',
+      body: 'This document is restricted to Swiftaw engineering and leadership.\n\nTithonia is built on a hybrid retrieval-augmented generation (RAG) architecture with a proprietary context window management layer. Key components:\n\n— Vector store: custom-built, optimized for sub-50ms retrieval at scale.\n— Model serving: multi-tenant inference cluster with dynamic load balancing.\n— Memory module: session-persistent and cross-session user preference graph.\n— Safety layer: real-time output filtering integrated at the token level.\n\nDetailed API documentation is available in the internal developer portal. Access requires two-factor authentication.',
+      author: 'Engineering Team',
+      dept: 'R&D',
+      date: 'January 2026',
+      visibility: 'intern'
+    },
+    {
+      id: 5,
+      title: 'Goals for the World — 2026 Edition',
+      project: 'General',
+      subject: 'Swiftaw's annual statement of mission and global objectives.',
+      body: 'At Swiftaw, we believe technology should serve humanity — not the other way around.\n\nOur 2026 goals:\n\n1. Reach 1 million active users across all products by year-end.\n2. Publish three research papers on responsible AI development.\n3. Reduce platform carbon footprint by 30% through infrastructure optimisation.\n4. Launch an educational initiative to bring AI literacy to underserved communities.\n5. Open-source two internal tools to benefit the wider developer ecosystem.\n\nWe are accountable to these goals. Progress updates will be shared publicly each quarter.',
+      author: 'Swiftaw Leadership',
+      dept: 'Swiftaw Leadership',
+      date: 'January 2026',
+      visibility: 'public'
+    }
+  ];
+
+  let documents = [...defaultDocs];
+
+  function formatDate() {
+    const now = new Date();
+    return now.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  }
+
+  function renderDocs() {
+    const grid = document.getElementById('doc-grid');
+    const empty = document.getElementById('empty-state');
+    const filtered = documents.filter(d => {
+      if (currentTab === 'public') return d.visibility === 'public';
+      if (currentTab === 'intern') return d.visibility === 'intern';
+      return true;
+    });
+
+    grid.innerHTML = '';
+    if (filtered.length === 0) { empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+
+    filtered.forEach(doc => {
+      const isLocked = doc.visibility === 'intern' && !internUnlocked;
+      const card = document.createElement('div');
+      card.className = 'doc-card';
+      card.innerHTML = `
+        <div class="doc-card-header">
+          <div class="doc-card-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <span class="badge badge-${doc.visibility}">${doc.visibility === 'intern' ? 'Intern' : 'Public'}</span>
+        </div>
+        <h3>${doc.title}</h3>
+        <div class="doc-meta">${doc.project} &middot; ${doc.date}</div>
+        <p>${doc.subject}</p>
+        <div class="doc-card-footer">
+          <span class="doc-card-author">${doc.author}</span>
+          <span style="font-size:.8rem;font-weight:600;color:var(--brand-deep);">Read &rarr;</span>
+        </div>
+        ${isLocked ? `<div class="locked-overlay">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Intern Access Required</span>
+          <button class="btn-dark" style="padding:8px 18px;font-size:.82rem;margin-top:4px;" onclick="openInternModal()">Unlock</button>
+        </div>` : ''}
+      `;
+      if (!isLocked) card.addEventListener('click', () => openViewer(doc.id));
+      grid.appendChild(card);
+    });
+  }
+
+  function switchTab(tab, btn) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const eyebrow = document.getElementById('tab-eyebrow');
+    eyebrow.textContent = tab === 'all' ? 'All Documents' : tab === 'public' ? 'Public Documents' : 'Intern Documents';
+    renderDocs();
+  }
+
+  function openViewer(id) {
+    const doc = documents.find(d => d.id === id);
+    if (!doc) return;
+    const inner = document.getElementById('doc-content-inner');
+    inner.innerHTML = `
+      <div class="sw-doc-logo-placeholder"><span>SW</span></div>
+      <h1>${doc.title}</h1>
+      <div class="sw-doc-subtitle">${doc.project}</div>
+      <div class="sw-doc-subtitle">${doc.subject}</div>
+      <div class="sw-doc-date">${doc.date}</div>
+      <hr class="sw-doc-divider">
+      <div class="sw-doc-body">${doc.body}</div>
+      <div class="sw-doc-footer">
+        <div class="author">${doc.author}</div>
+        <div class="dept">${doc.dept}</div>
+      </div>
+    `;
+    document.getElementById('doc-viewer').classList.add('open');
+  }
+
+  function closeViewer() {
+    document.getElementById('doc-viewer').classList.remove('open');
+  }
+
+  /* CREATE FLOW */
+  function openCreateModal() {
+    document.getElementById('create-step-pw').style.display = 'block';
+    document.getElementById('create-step-form').style.display = 'none';
+    document.getElementById('create-pw').value = '';
+    document.getElementById('create-pw-error').classList.remove('show');
+    document.getElementById('create-modal-bg').classList.add('open');
+    setTimeout(() => document.getElementById('create-pw').focus(), 100);
+  }
+
+  function closeCreateModal() {
+    document.getElementById('create-modal-bg').classList.remove('open');
+  }
+
+  function checkCreatePw() {
+    const val = document.getElementById('create-pw').value;
+    if (val === CREATE_PW) {
+      document.getElementById('create-step-pw').style.display = 'none';
+      document.getElementById('create-step-form').style.display = 'block';
+    } else {
+      document.getElementById('create-pw-error').classList.add('show');
+    }
+  }
+
+  function submitDocument() {
+    const title = document.getElementById('doc-title').value.trim();
+    const body = document.getElementById('doc-body').value.trim();
+    let valid = true;
+    if (!title) { document.getElementById('title-error').classList.add('show'); valid = false; }
+    else { document.getElementById('title-error').classList.remove('show'); }
+    if (!body) { document.getElementById('body-error').classList.add('show'); valid = false; }
+    else { document.getElementById('body-error').classList.remove('show'); }
+    if (!valid) return;
+
+    const newDoc = {
+      id: Date.now(),
+      title,
+      project: document.getElementById('doc-project').value.trim() || 'General',
+      subject: document.getElementById('doc-subject').value.trim() || '',
+      body,
+      author: document.getElementById('doc-author').value.trim() || 'Swiftaw Team',
+      dept: document.getElementById('doc-dept').value.trim() || 'Swiftaw',
+      date: formatDate(),
+      visibility: document.getElementById('doc-visibility').value
+    };
+    documents.unshift(newDoc);
+    closeCreateModal();
+    renderDocs();
+    ['doc-title','doc-project','doc-subject','doc-author','doc-dept','doc-body'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('doc-visibility').value = 'public';
+  }
+
+  /* INTERN UNLOCK */
+  function openInternModal() {
+    document.getElementById('intern-pw').value = '';
+    document.getElementById('intern-pw-error').classList.remove('show');
+    document.getElementById('intern-modal-bg').classList.add('open');
+    setTimeout(() => document.getElementById('intern-pw').focus(), 100);
+  }
+
+  function closeInternModal() {
+    document.getElementById('intern-modal-bg').classList.remove('open');
+  }
+
+  function checkInternPw() {
+    const val = document.getElementById('intern-pw').value;
+    if (val === INTERN_PW) {
+      internUnlocked = true;
+      closeInternModal();
+      renderDocs();
+    } else {
+      document.getElementById('intern-pw-error').classList.add('show');
+    }
+  }
+
+  /* Close on backdrop click */
+  document.getElementById('create-modal-bg').addEventListener('click', function(e) { if (e.target === this) closeCreateModal(); });
+  document.getElementById('intern-modal-bg').addEventListener('click', function(e) { if (e.target === this) closeInternModal(); });
+  document.getElementById('doc-viewer').addEventListener('click', function(e) { if (e.target === this) closeViewer(); });
+
+  renderDocs();
+</script>
+</body>
+</html>
