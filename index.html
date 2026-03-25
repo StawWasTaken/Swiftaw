@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swiftaw - Move Beyond the Ordinary</title>
+<title>Home - Swiftaw</title>
 <meta name="description" content="Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence to reshape how the world communicates, thinks, and solves problems.">
 <meta name="theme-color" content="#0a0a0a">
 <meta property="og:type" content="website">
@@ -52,9 +52,7 @@ body {
 img { display: block; -webkit-user-drag: none; user-select: none; }
 a { text-decoration: none; color: inherit; }
 
-/* ═══════════════════════════════════════════
-   NAV
-═══════════════════════════════════════════ */
+/* NAV */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   height: var(--nav-h);
@@ -121,8 +119,6 @@ a { text-decoration: none; color: inherit; }
   transition: box-shadow .2s, transform .15s;
 }
 .nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); transform: translateY(-1px); }
-
-/* Mobile nav toggle */
 .nav-hamburger {
   display: none; cursor: pointer; padding: 8px;
   border-radius: 8px; border: 1px solid var(--border);
@@ -134,9 +130,7 @@ a { text-decoration: none; color: inherit; }
   margin: 4px 0; transition: .2s;
 }
 
-/* ═══════════════════════════════════════════
-   HERO
-═══════════════════════════════════════════ */
+/* HERO */
 .hero {
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
@@ -230,9 +224,7 @@ a { text-decoration: none; color: inherit; }
 }
 .btn-dark:hover { opacity: .85; transform: translateY(-1px); }
 
-/* ═══════════════════════════════════════════
-   BANNER
-═══════════════════════════════════════════ */
+/* BANNER */
 .banner-section { padding: 0 var(--pad) 80px; }
 .banner-img {
   max-width: var(--max-w); margin: 0 auto;
@@ -242,9 +234,7 @@ a { text-decoration: none; color: inherit; }
 }
 .banner-img img { width: 100%; height: auto; }
 
-/* ═══════════════════════════════════════════
-   STATS BAR
-═══════════════════════════════════════════ */
+/* STATS BAR */
 .stats-bar {
   max-width: var(--max-w); margin: 0 auto;
   padding: 0 var(--pad) 100px;
@@ -280,16 +270,10 @@ a { text-decoration: none; color: inherit; }
   transition: opacity .6s ease, transform .6s ease;
 }
 .stat-item.visible .stat-number { opacity: 1; transform: translateY(0); }
-.stat-label {
-  font-size: 13px; font-weight: 600; color: var(--text-light); letter-spacing: .02em;
-}
-.stat-sub {
-  font-size: 11px; color: var(--text-muted); margin-top: 4px;
-}
+.stat-label { font-size: 13px; font-weight: 600; color: var(--text-light); letter-spacing: .02em; }
+.stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
 
-/* ═══════════════════════════════════════════
-   SCROLL REVEAL
-═══════════════════════════════════════════ */
+/* SCROLL REVEAL */
 .reveal {
   opacity: 0; transform: translateY(30px);
   transition: opacity .7s ease, transform .7s ease;
@@ -299,9 +283,7 @@ a { text-decoration: none; color: inherit; }
 .reveal-delay-2 { transition-delay: .2s; }
 .reveal-delay-3 { transition-delay: .3s; }
 
-/* ═══════════════════════════════════════════
-   INTERACTIVE PARTICLES (hero)
-═══════════════════════════════════════════ */
+/* PARTICLES */
 .hero-particles {
   position: absolute; inset: 0; pointer-events: none; z-index: 1;
   overflow: hidden;
@@ -326,9 +308,7 @@ a { text-decoration: none; color: inherit; }
   100% { opacity: 0; transform: translateY(-100px) scale(0); }
 }
 
-/* ═══════════════════════════════════════════
-   SECTION COMMONS
-═══════════════════════════════════════════ */
+/* SECTION COMMONS */
 .section {
   padding: 100px var(--pad);
   max-width: var(--max-w); margin: 0 auto;
@@ -347,10 +327,6 @@ a { text-decoration: none; color: inherit; }
   font-size: 16px; color: var(--text-light); line-height: 1.72;
   max-width: 540px; margin-bottom: 56px;
 }
-
-/* ═══════════════════════════════════════════
-   HIGHLIGHT BAR (yellow accent strip)
-═══════════════════════════════════════════ */
 .highlight-bar {
   height: 3px;
   background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
@@ -359,9 +335,7 @@ a { text-decoration: none; color: inherit; }
   max-width: 80px;
 }
 
-/* ═══════════════════════════════════════════
-   FEATURES GRID
-═══════════════════════════════════════════ */
+/* FEATURES GRID */
 .features-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 1px; background: var(--border);
@@ -382,9 +356,7 @@ a { text-decoration: none; color: inherit; }
 .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
 .feature-card p { font-size: 14px; color: var(--text-light); line-height: 1.65; }
 
-/* ═══════════════════════════════════════════
-   DARK SECTION
-═══════════════════════════════════════════ */
+/* DARK SECTION */
 .dark-section {
   background: var(--bg-dark); color: #fff;
   padding: 120px var(--pad);
@@ -422,9 +394,7 @@ a { text-decoration: none; color: inherit; }
 .dark-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
 .dark-card p { font-size: 14px; color: rgba(255,255,255,.5); line-height: 1.65; }
 
-/* ═══════════════════════════════════════════
-   DEPARTMENTS PREVIEW
-═══════════════════════════════════════════ */
+/* DEPARTMENTS */
 .dept-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
 }
@@ -451,9 +421,7 @@ a { text-decoration: none; color: inherit; }
 }
 .dept-card:hover .dept-link { gap: 8px; }
 
-/* ═══════════════════════════════════════════
-   ECOSYSTEM QUOTE
-═══════════════════════════════════════════ */
+/* QUOTE */
 .quote-section {
   padding: 100px var(--pad);
   text-align: center;
@@ -469,9 +437,7 @@ a { text-decoration: none; color: inherit; }
 }
 .quote-section blockquote em { font-style: normal; color: var(--brand-orange); }
 
-/* ═══════════════════════════════════════════
-   CTA
-═══════════════════════════════════════════ */
+/* CTA */
 .cta-section {
   padding: 120px var(--pad); text-align: center;
 }
@@ -487,16 +453,12 @@ a { text-decoration: none; color: inherit; }
   max-width: 480px; margin-left: auto; margin-right: auto;
 }
 
-/* ═══════════════════════════════════════════
-   FOOTER
-═══════════════════════════════════════════ */
+/* FOOTER */
 footer {
   border-top: 1px solid var(--border);
   padding: 48px var(--pad) 40px;
 }
-.footer-inner {
-  max-width: var(--max-w); margin: 0 auto;
-}
+.footer-inner { max-width: var(--max-w); margin: 0 auto; }
 .footer-top {
   display: grid;
   grid-template-columns: 1.5fr repeat(3, 1fr);
@@ -522,18 +484,14 @@ footer {
   border-top: 1px solid var(--border);
 }
 .footer-copy { font-size: 12px; color: var(--text-muted); }
-.footer-socials {
-  display: flex; gap: 12px;
-}
+.footer-socials { display: flex; gap: 12px; }
 .footer-socials a {
   color: var(--text-muted); transition: color .15s;
   display: flex; align-items: center;
 }
 .footer-socials a:hover { color: var(--text); }
 
-/* ═══════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════ */
+/* RESPONSIVE */
 @media (max-width: 900px) {
   .nav-links { display: none; }
   .nav-hamburger { display: flex; flex-direction: column; }
@@ -558,7 +516,7 @@ footer {
 </head>
 <body>
 
-<!-- ═══ NAV ═══ -->
+<!-- NAV -->
 <nav class="nav">
   <div class="nav-inner">
     <a href="/" class="nav-logo">
@@ -578,7 +536,7 @@ footer {
           </a>
         </div>
       </div>
-      <a href="/research" class="nav-link">Research</a>
+      <a href="/documents" class="nav-link">Documents</a>
       <a href="/blog" class="nav-link">Blog</a>
       <div class="nav-dropdown-wrap">
         <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
@@ -605,7 +563,7 @@ footer {
   </div>
 </nav>
 
-<!-- ═══ HERO ═══ -->
+<!-- HERO -->
 <section class="hero">
   <div class="hero-orb"></div>
   <div class="hero-particles">
@@ -629,25 +587,25 @@ footer {
   </div>
 </section>
 
-<!-- ═══ BANNER ═══ -->
+<!-- BANNER -->
 <div class="banner-section">
   <div class="banner-img">
     <img src="Swiftaw Theme Banner.png" alt="Swiftaw Ecosystem">
   </div>
 </div>
 
-<!-- ═══ STATS BAR ═══ -->
+<!-- STATS BAR -->
 <div class="stats-bar">
   <div class="stats-inner" id="statsBar">
     <div class="stat-item">
       <div class="stat-number" data-target="2">0</div>
       <div class="stat-label">Live Products</div>
-      <div class="stat-sub">Fortized & Tithonia</div>
+      <div class="stat-sub">Fortized &amp; Tithonia</div>
     </div>
     <div class="stat-item">
       <div class="stat-number" data-target="3">0</div>
       <div class="stat-label">Departments</div>
-      <div class="stat-sub">R&D, Safety, Communication</div>
+      <div class="stat-sub">R&amp;D, Safety, Communication</div>
     </div>
     <div class="stat-item">
       <div class="stat-number" data-target="50" data-suffix="ms">0</div>
@@ -662,7 +620,7 @@ footer {
   </div>
 </div>
 
-<!-- ═══ RESEARCH & INNOVATION ═══ -->
+<!-- RESEARCH & INNOVATION -->
 <div class="section" id="research">
   <div class="section-eyebrow reveal">Research &amp; Innovation</div>
   <div class="highlight-bar reveal reveal-delay-1"></div>
@@ -687,7 +645,7 @@ footer {
   </div>
 </div>
 
-<!-- ═══ DARK SECTION -PRODUCTS ═══ -->
+<!-- DARK SECTION - PRODUCTS -->
 <div class="dark-section">
   <div class="dark-glow"></div>
   <div class="section-inner">
@@ -708,7 +666,7 @@ footer {
   </div>
 </div>
 
-<!-- ═══ DEPARTMENTS ═══ -->
+<!-- DEPARTMENTS -->
 <div class="section" id="departments">
   <div class="section-eyebrow reveal">Swiftaw Departments</div>
   <div class="highlight-bar reveal reveal-delay-1"></div>
@@ -736,14 +694,14 @@ footer {
   </div>
 </div>
 
-<!-- ═══ QUOTE ═══ -->
+<!-- QUOTE -->
 <div class="quote-section">
   <blockquote>
     &ldquo;Swiftaw powers a digital ecosystem that <em>amplifies human connection</em> and intelligence -moving beyond the limitations of today's technology.&rdquo;
   </blockquote>
 </div>
 
-<!-- ═══ CTA ═══ -->
+<!-- CTA -->
 <div class="cta-section">
   <h2>The future of community<br>starts <em>here.</em></h2>
   <p>Join the ecosystem. Build with Fortized. Explore with Tithonia. Shape the future with Swiftaw.</p>
@@ -754,7 +712,7 @@ footer {
   </div>
 </div>
 
-<!-- ═══ FOOTER ═══ -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div class="footer-top">
@@ -781,7 +739,7 @@ footer {
         <a href="/departments/rd">R&amp;D</a>
         <a href="/departments/safety">Safety</a>
         <a href="/departments/communication">Communication</a>
-        <a href="/research">Research</a>
+        <a href="/documents">Documents</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -799,33 +757,28 @@ footer {
 </footer>
 
 <script>
-// ═══ Scroll Reveal ═══
+// Scroll Reveal
 (function () {
   var reveals = document.querySelectorAll('.reveal');
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
+      if (entry.isIntersecting) entry.target.classList.add('visible');
     });
   }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
   reveals.forEach(function (el) { observer.observe(el); });
 })();
 
-// ═══ Stats Counter Animation ═══
+// Stats Counter Animation
 (function () {
   var statsBar = document.getElementById('statsBar');
   if (!statsBar) return;
   var animated = false;
-
   function animateCounters() {
     if (animated) return;
     animated = true;
     var items = statsBar.querySelectorAll('.stat-item');
     items.forEach(function (item, i) {
-      setTimeout(function () {
-        item.classList.add('visible');
-      }, i * 150);
+      setTimeout(function () { item.classList.add('visible'); }, i * 150);
     });
     var numbers = statsBar.querySelectorAll('.stat-number');
     numbers.forEach(function (num) {
@@ -836,7 +789,7 @@ footer {
       function tick(now) {
         var elapsed = now - start;
         var progress = Math.min(elapsed / duration, 1);
-        var eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+        var eased = 1 - Math.pow(1 - progress, 3);
         var current = Math.round(eased * target);
         num.textContent = current + suffix;
         if (progress < 1) requestAnimationFrame(tick);
@@ -844,16 +797,13 @@ footer {
       setTimeout(function () { requestAnimationFrame(tick); }, 300);
     });
   }
-
   var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) animateCounters();
-    });
+    entries.forEach(function (entry) { if (entry.isIntersecting) animateCounters(); });
   }, { threshold: 0.3 });
   observer.observe(statsBar);
 })();
 
-// ═══ Feature card tilt effect ═══
+// Card tilt effect
 (function () {
   var cards = document.querySelectorAll('.feature-card, .dark-card, .dept-card');
   cards.forEach(function (card) {
@@ -863,9 +813,7 @@ footer {
       var y = (e.clientY - rect.top) / rect.height - 0.5;
       card.style.transform = 'perspective(600px) rotateY(' + (x * 5) + 'deg) rotateX(' + (-y * 5) + 'deg) translateY(-2px)';
     });
-    card.addEventListener('mouseleave', function () {
-      card.style.transform = '';
-    });
+    card.addEventListener('mouseleave', function () { card.style.transform = ''; });
   });
 })();
 </script>
@@ -923,9 +871,7 @@ footer {
       startAnim();
     });
 
-  function getRadius(){
-    return Math.min(width, height) * 0.48 * scale;
-  }
+  function getRadius(){ return Math.min(width, height) * 0.48 * scale; }
 
   function isVisible(coords){
     var r = proj.rotate();
@@ -939,16 +885,10 @@ footer {
   function draw(){
     ctx.clearRect(0, 0, width, height);
     proj.scale(getRadius()).translate([width / 2, height / 2]);
-
     var sphere = {type: 'Sphere'};
-
-    // Ocean fill
     ctx.beginPath(); pathGen(sphere);
     ctx.fillStyle = C_OCEAN; ctx.fill();
-
     if(!world) return;
-
-    // Countries — light fill with outline
     countries.features.forEach(function(f){
       ctx.beginPath(); pathGen(f);
       ctx.fillStyle = (+f.id === hoveredId) ? C_HOVER : C_LAND;
@@ -957,35 +897,21 @@ footer {
       ctx.lineWidth = 0.5;
       ctx.stroke();
     });
-
-    // Graticule
     ctx.beginPath(); pathGen(d3.geoGraticule10());
     ctx.strokeStyle = C_GRAT; ctx.lineWidth = 0.3; ctx.stroke();
-
-    // Globe outline
     ctx.beginPath(); pathGen(sphere);
     ctx.strokeStyle = C_RING; ctx.lineWidth = 1; ctx.stroke();
-
-    // Paris marker
     if(isVisible(PARIS)){
       var p = proj(PARIS);
       if(p){
         var px = p[0], py = p[1];
-
-        // Pulse ring
         ctx.beginPath(); ctx.arc(px, py, 10, 0, Math.PI * 2);
         ctx.strokeStyle = 'rgba(255,156,60,0.25)'; ctx.lineWidth = 1.5; ctx.stroke();
-
-        // Outer circle
         ctx.beginPath(); ctx.arc(px, py, 5.5, 0, Math.PI * 2);
         ctx.fillStyle = C_ORANGE; ctx.fill();
         ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
-
-        // Inner dot
         ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI * 2);
         ctx.fillStyle = '#fff'; ctx.fill();
-
-        // Label
         ctx.font = 'bold 11px Inter, sans-serif';
         ctx.fillStyle = 'rgba(0,0,0,0.6)';
         ctx.fillText('Paris', px + 14, py - 6);
@@ -1030,7 +956,6 @@ footer {
     var rect = canvas.getBoundingClientRect();
     var xy = getXY(e);
     var mx = xy[0] - rect.left, my = xy[1] - rect.top;
-
     if(dragging && lastPos){
       var dx = mx - lastPos[0], dy = my - lastPos[1];
       var s = 0.25;
@@ -1079,13 +1004,11 @@ footer {
   canvas.addEventListener('touchstart', pointerDown, {passive: false});
   canvas.addEventListener('touchmove', pointerMove, {passive: false});
   canvas.addEventListener('touchend', pointerUp);
-
   canvas.addEventListener('wheel', function(e){
     scale = Math.max(0.5, Math.min(3, scale - e.deltaY * 0.001));
     draw();
     e.preventDefault();
   }, {passive: false});
-
   window.addEventListener('resize', function(){
     resize();
     if(world) draw();
