@@ -12,15 +12,9 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Newsreader', Georgia, serif;
   --font-display: 'Afronaut Test', 'Newsreader', sans-serif;
-  --brand-deep: #241f3c;
-  --brand-yellow: #fff93e;
-  --brand-orange: #ff9c3c;
-  --bg: #ffffff;
-  --bg-dark: #0a0a0a;
-  --text: #0a0a0a;
-  --text-light: #555;
-  --text-muted: #888;
-  --border: #e5e5e5;
+  --brand-deep: #241f3c; --brand-yellow: #fff93e; --brand-orange: #ff9c3c;
+  --bg: #ffffff; --bg-dark: #0a0a0a; --text: #0a0a0a;
+  --text-light: #555; --text-muted: #888; --border: #e5e5e5;
 }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 ::selection { background: rgba(255,249,62,.25); }
@@ -28,8 +22,6 @@ html { scroll-behavior: smooth; }
 body { font-family: var(--font-sans); color: var(--text); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
-
-/* NAV */
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
 .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 32px; height: 64px; }
 .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; margin-right: 36px; flex-shrink: 0; }
@@ -48,19 +40,11 @@ a { color: inherit; text-decoration: none; }
 .nav-spacer { flex: 1; }
 .nav-cta { padding: 9px 22px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-size: .88rem; font-weight: 600; transition: box-shadow .2s; white-space: nowrap; }
 .nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); }
-
-/* BUTTONS */
 .btn-yellow { display: inline-block; padding: 14px 32px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-weight: 600; font-size: .95rem; transition: opacity .2s; border: none; cursor: pointer; }
 .btn-yellow:hover { opacity: .88; }
-.btn-dark { display: inline-block; padding: 14px 32px; background: var(--brand-deep); color: #fff; border-radius: 100px; font-weight: 600; font-size: .95rem; transition: opacity .2s; border: none; cursor: pointer; }
-.btn-dark:hover { opacity: .88; }
 .btn-outline { display: inline-block; padding: 14px 32px; background: transparent; color: var(--text); border: 1.5px solid var(--border); border-radius: 100px; font-weight: 600; font-size: .95rem; transition: border-color .2s, color .2s; cursor: pointer; }
 .btn-outline:hover { border-color: var(--text); }
-
-/* HIGHLIGHT BAR */
 .highlight-bar { width: 80px; height: 3px; background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); border-radius: 3px; }
-
-/* HERO */
 .hero { padding: 180px 32px 80px; background: #faf8f3; border-bottom: 1px solid var(--border); }
 .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: start; }
 .hero-left h1 { font-family: var(--font-display); font-size: clamp(3rem, 6vw, 4.4rem); font-weight: 700; line-height: 1.05; color: var(--text); margin-bottom: 20px; }
@@ -71,16 +55,11 @@ a { color: inherit; text-decoration: none; }
 .hero-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .hero-links a { font-size: .85rem; font-weight: 500; color: var(--brand-deep); background: rgba(36,31,60,.06); padding: 5px 14px; border-radius: 100px; transition: background .2s, color .2s; text-decoration: none; }
 .hero-links a:hover { background: var(--brand-yellow); color: var(--brand-deep); }
-
-/* SECTIONS */
 .section { padding: 100px 32px; max-width: 1100px; margin: 0 auto; }
 .section-alt { background: #fafafa; }
-.section-dark { background: var(--bg-dark); color: #fff; }
 .section h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; margin-bottom: 20px; line-height: 1.15; }
 .section p { font-size: 1.05rem; color: var(--text-light); line-height: 1.75; max-width: 720px; }
 .section p + p { margin-top: 16px; }
-
-/* COMMITMENT CARDS */
 .commitments-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; margin-top: 48px; }
 .commitment-card { padding: 40px 32px; border: 1px solid var(--border); border-radius: 16px; transition: box-shadow .2s, transform .2s; position: relative; overflow: hidden; }
 .commitment-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); }
@@ -88,25 +67,17 @@ a { color: inherit; text-decoration: none; }
 .commitment-card .card-number { font-family: var(--font-display); font-size: 2.4rem; font-weight: 700; background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 16px; display: block; }
 .commitment-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 12px; }
 .commitment-card p { font-size: .95rem; color: var(--text-light); line-height: 1.65; max-width: none; }
-
-/* DETAIL SECTIONS */
 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-
-/* FEATURE CARDS */
 .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-top: 48px; }
 .feature-card { padding: 40px 32px; border: 1px solid var(--border); border-radius: 16px; transition: box-shadow .2s, transform .2s; }
 .feature-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.06); transform: translateY(-2px); }
 .feature-card .card-icon { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 1.3rem; }
 .feature-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 12px; }
 .feature-card p { font-size: .95rem; color: var(--text-light); line-height: 1.65; max-width: none; }
-
-/* CTA */
 .cta-section { padding: 100px 32px; text-align: center; background: var(--bg-dark); color: #fff; }
 .cta-section h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; margin-bottom: 16px; }
 .cta-section p { font-size: 1.05rem; color: #aaa; margin-bottom: 36px; max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.7; }
 .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-
-/* FOOTER */
 footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px 32px 32px; }
 .footer-inner { max-width: 1200px; margin: 0 auto; }
 .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
@@ -120,7 +91,6 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
 .footer-socials { display: flex; gap: 16px; }
 .footer-socials a { color: var(--text-muted); transition: color .2s; }
 .footer-socials a:hover { color: var(--text); }
-
 @media (max-width: 768px) {
   .nav-links { display: none; }
   .commitments-grid { grid-template-columns: 1fr; }
@@ -145,7 +115,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
           <a href="/tithonia">Try Tithonia<span class="dd-desc">Modern AI platform</span></a>
         </div>
       </div>
-      <a href="/research" class="nav-link">Research</a>
+      <a href="/documents" class="nav-link">Documents</a>
       <a href="/blog" class="nav-link">Blog</a>
       <div class="nav-dropdown-wrap">
         <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
@@ -195,26 +165,10 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
     <p style="margin:0 auto;">Our commitments are not marketing language. They are operational principles embedded into how we build, ship, and grow.</p>
   </div>
   <div class="commitments-grid">
-    <div class="commitment-card">
-      <span class="card-number">01</span>
-      <h3>Ethical AI</h3>
-      <p>Every AI system we build is designed with fairness, transparency, and accountability at its core. We test for bias, publish our methodologies, and invite external audits of our models.</p>
-    </div>
-    <div class="commitment-card">
-      <span class="card-number">02</span>
-      <h3>User Privacy</h3>
-      <p>Your data belongs to you. We collect only what is necessary, encrypt everything in transit and at rest, and never sell personal information to third parties. Privacy is not a feature. It is a right.</p>
-    </div>
-    <div class="commitment-card">
-      <span class="card-number">03</span>
-      <h3>Open Innovation</h3>
-      <p>We believe progress accelerates when knowledge is shared. We open-source key tools, contribute to industry standards, and collaborate with researchers and developers worldwide.</p>
-    </div>
-    <div class="commitment-card">
-      <span class="card-number">04</span>
-      <h3>Community Safety</h3>
-      <p>We invest heavily in safety systems that protect our communities from harm. From advanced content moderation to proactive threat detection, user safety is never an afterthought.</p>
-    </div>
+    <div class="commitment-card"><span class="card-number">01</span><h3>Ethical AI</h3><p>Every AI system we build is designed with fairness, transparency, and accountability at its core. We test for bias, publish our methodologies, and invite external audits of our models.</p></div>
+    <div class="commitment-card"><span class="card-number">02</span><h3>User Privacy</h3><p>Your data belongs to you. We collect only what is necessary, encrypt everything in transit and at rest, and never sell personal information to third parties. Privacy is not a feature. It is a right.</p></div>
+    <div class="commitment-card"><span class="card-number">03</span><h3>Open Innovation</h3><p>We believe progress accelerates when knowledge is shared. We open-source key tools, contribute to industry standards, and collaborate with researchers and developers worldwide.</p></div>
+    <div class="commitment-card"><span class="card-number">04</span><h3>Community Safety</h3><p>We invest heavily in safety systems that protect our communities from harm. From advanced content moderation to proactive threat detection, user safety is never an afterthought.</p></div>
   </div>
 </section>
 
@@ -244,36 +198,12 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
     <p style="margin:0 auto;">Commitments mean nothing without action. Here are the concrete steps we take every day to uphold our principles.</p>
   </div>
   <div class="features-grid">
-    <div class="feature-card">
-      <div class="card-icon">&#128300;</div>
-      <h3>Regular Audits</h3>
-      <p>We conduct internal and external audits of our systems, security practices, and AI models on a quarterly basis to ensure ongoing compliance with our standards.</p>
-    </div>
-    <div class="feature-card">
-      <div class="card-icon">&#128220;</div>
-      <h3>Transparency Reports</h3>
-      <p>We publish detailed transparency reports covering content moderation actions, data requests, and AI performance metrics so the public can hold us accountable.</p>
-    </div>
-    <div class="feature-card">
-      <div class="card-icon">&#128101;</div>
-      <h3>Community Advisory Board</h3>
-      <p>We maintain an advisory board of community leaders, researchers, and advocates who provide independent guidance on our policies and practices.</p>
-    </div>
-    <div class="feature-card">
-      <div class="card-icon">&#128736;</div>
-      <h3>Open Source Contributions</h3>
-      <p>We release key tools and libraries as open source, enabling the broader developer community to benefit from and build upon our work.</p>
-    </div>
-    <div class="feature-card">
-      <div class="card-icon">&#128170;</div>
-      <h3>Safety Investment</h3>
-      <p>A significant portion of our engineering resources is dedicated to safety and trust systems, because protecting users is just as important as building features.</p>
-    </div>
-    <div class="feature-card">
-      <div class="card-icon">&#127793;</div>
-      <h3>Sustainable Practices</h3>
-      <p>We are committed to minimizing our environmental footprint through efficient infrastructure, renewable energy usage, and responsible hardware lifecycle management.</p>
-    </div>
+    <div class="feature-card"><div class="card-icon">&#128300;</div><h3>Regular Audits</h3><p>We conduct internal and external audits of our systems, security practices, and AI models on a quarterly basis to ensure ongoing compliance with our standards.</p></div>
+    <div class="feature-card"><div class="card-icon">&#128220;</div><h3>Transparency Reports</h3><p>We publish detailed transparency reports covering content moderation actions, data requests, and AI performance metrics so the public can hold us accountable.</p></div>
+    <div class="feature-card"><div class="card-icon">&#128101;</div><h3>Community Advisory Board</h3><p>We maintain an advisory board of community leaders, researchers, and advocates who provide independent guidance on our policies and practices.</p></div>
+    <div class="feature-card"><div class="card-icon">&#128736;</div><h3>Open Source Contributions</h3><p>We release key tools and libraries as open source, enabling the broader developer community to benefit from and build upon our work.</p></div>
+    <div class="feature-card"><div class="card-icon">&#128170;</div><h3>Safety Investment</h3><p>A significant portion of our engineering resources is dedicated to safety and trust systems, because protecting users is just as important as building features.</p></div>
+    <div class="feature-card"><div class="card-icon">&#127793;</div><h3>Sustainable Practices</h3><p>We are committed to minimizing our environmental footprint through efficient infrastructure, renewable energy usage, and responsible hardware lifecycle management.</p></div>
   </div>
 </section>
 
@@ -295,7 +225,7 @@ footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px
       </div>
       <div class="footer-col"><div class="footer-col-title">Products</div><a href="https://fortized.com">Fortized</a><a href="/tithonia">Tithonia</a></div>
       <div class="footer-col"><div class="footer-col-title">Company</div><a href="/company/about">About</a><a href="/company/goals">Goals</a><a href="/company/commitments">Commitments</a><a href="/blog">Blog</a></div>
-      <div class="footer-col"><div class="footer-col-title">Departments</div><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a><a href="/research">Research</a></div>
+      <div class="footer-col"><div class="footer-col-title">Departments</div><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a><a href="/documents">Documents</a></div>
     </div>
     <div class="footer-bottom">
       <p class="footer-copy">&copy; 2026 Swiftaw</p>
