@@ -620,14 +620,14 @@ class FloretEngine {
         executionTime: Date.now() - startTime
       });
 
-      // Log the task execution
-      await this.logTaskExecution({
+      // Log the task execution (non-blocking, fire and forget)
+      this.logTaskExecution({
         taskType,
         requirements,
         result,
         validation,
         executionTime: Date.now() - startTime
-      });
+      }).catch(e => console.warn('Floret task log failed:', e));
 
       this.executedTasks++;
       if (validation.syntaxValid) this.successfulTasks++;
@@ -732,4 +732,10 @@ class FloretEngine {
 // Export for use in applications
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { FloretEngine, FloretLogicEngine };
+}
+
+// Export to global scope for browser
+if (typeof window !== 'undefined') {
+  window.FloretEngine = FloretEngine;
+  window.FloretLogicEngine = FloretLogicEngine;
 }

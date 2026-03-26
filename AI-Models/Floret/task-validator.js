@@ -443,3 +443,8 @@ class FloretTaskValidator {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = FloretTaskValidator;
 }
+
+// Export to global scope for browser
+if (typeof window !== 'undefined') {
+  window.FloretTaskValidator = FloretTaskValidator;
+}

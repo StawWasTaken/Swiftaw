@@ -546,3 +546,8 @@ EXPLAIN ANALYZE SELECT [columns] FROM [your_table];
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = FloretCodeGenerator;
 }
+
+// Export to global scope for browser
+if (typeof window !== 'undefined') {
+  window.FloretCodeGenerator = FloretCodeGenerator;
+}

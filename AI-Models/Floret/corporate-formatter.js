@@ -534,3 +534,8 @@ Status: {status} | Reviewed: {reviewed}
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = FloretCorporateFormatter;
 }
+
+// Export to global scope for browser
+if (typeof window !== 'undefined') {
+  window.FloretCorporateFormatter = FloretCorporateFormatter;
+}
