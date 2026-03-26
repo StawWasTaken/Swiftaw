@@ -82,7 +82,7 @@ import { CodeAssistant } from './code-assistant.js';
   let searchQuery = '';
 
   // ── Sprout 1.4 Engine (AI Brain) ──
-  const db = createSupabaseClient();
+  const db = typeof window.SproutEngine !== 'undefined' ? tithoniaDb : null;
   const sprout = db ? new SproutEngine(db) : null;
 
   // ── Initialize from Supabase if logged in ──
