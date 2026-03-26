@@ -960,7 +960,7 @@ html, body {
   }
 }
 
-#loading-screen-main p {
+#loading-overlay p {
   font-size: 14px;
   color: var(--text-primary);
   text-transform: uppercase;
