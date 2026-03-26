@@ -1,56 +1,50 @@
 // ═══════════════════════════════════════════
 // SWIFTAWPLEX – AUTHENTICATION
+// Integrates with shared SwiftawAuth system
 // ═══════════════════════════════════════════
 
-// Employee accounts with roles and permissions
-const EMPLOYEES = {
-  staw: {
-    password: 'Elstar1125',
-    displayName: 'Staw',
-    role: 'CEO',
-    roleClass: 'role-ceo',
-    permissions: ['admin', 'build', 'moderate', 'manage_users', 'all'],
-    color: '#fff93e',
-    department: 'Executive'
-  },
-  tyrianum: {
-    password: 'TyrianumCRDO',
-    displayName: 'Tyrianum',
-    role: 'CRDO',
-    roleClass: 'role-crdo',
-    permissions: ['admin', 'build', 'moderate', 'research'],
-    color: '#ff9c3c',
-    department: 'R&D'
-  }
+// Role class mapping
+const ROLE_CLASSES = {
+  'CEO': 'role-ceo',
+  'CRDO': 'role-crdo',
+  'CSO': 'role-cso',
+  'CCO': 'role-cco',
+  'Employee': 'role-employee',
+  'User': 'role-employee'
 };
 
 // Session state
 let currentUser = null;
 
 /**
- * Attempt login with credentials
+ * Attempt login with credentials via SwiftawAuth
  * @returns {object|null} user object or null
  */
 function login(username, password) {
-  const key = username.toLowerCase().trim();
-  const employee = EMPLOYEES[key];
+  if (typeof SwiftawAuth === 'undefined') return null;
+  const result = SwiftawAuth.login(username, password);
+  if (!result.success) return null;
 
-  if (!employee) return null;
-  if (employee.password !== password) return null;
+  const user = result.user;
+  // Require level 1+ to enter swiftawplex
+  if (user.accessLevel < 1) {
+    SwiftawAuth.logout();
+    return null;
+  }
 
   currentUser = {
-    id: key,
-    username: key,
-    displayName: employee.displayName,
-    role: employee.role,
-    roleClass: employee.roleClass,
-    permissions: employee.permissions,
-    color: employee.color,
-    department: employee.department,
+    id: user.username,
+    username: user.username,
+    displayName: user.displayName,
+    role: user.role,
+    roleClass: ROLE_CLASSES[user.role] || 'role-employee',
+    accessLevel: user.accessLevel,
+    permissions: buildPermissions(user.accessLevel),
+    color: user.color,
+    department: user.department,
     loginTime: Date.now()
   };
 
-  // Persist session
   try {
     sessionStorage.setItem('swiftawplex_user', JSON.stringify(currentUser));
   } catch (e) { /* ignore */ }
@@ -59,9 +53,42 @@ function login(username, password) {
 }
 
 /**
- * Restore session from storage
+ * Build permissions array from access level
+ */
+function buildPermissions(level) {
+  const perms = [];
+  if (level >= 1) perms.push('enter');
+  if (level >= 1) perms.push('build');
+  if (level >= 3) perms.push('moderate');
+  if (level >= 4) perms.push('write_docs');
+  if (level >= 5) perms.push('admin', 'manage_users', 'all');
+  return perms;
+}
+
+/**
+ * Restore session from SwiftawAuth
  */
 function restoreSession() {
+  if (typeof SwiftawAuth !== 'undefined') {
+    const user = SwiftawAuth.restoreSession();
+    if (user && user.accessLevel >= 1) {
+      currentUser = {
+        id: user.username,
+        username: user.username,
+        displayName: user.displayName,
+        role: user.role,
+        roleClass: ROLE_CLASSES[user.role] || 'role-employee',
+        accessLevel: user.accessLevel,
+        permissions: buildPermissions(user.accessLevel),
+        color: user.color,
+        department: user.department,
+        loginTime: Date.now()
+      };
+      return currentUser;
+    }
+  }
+
+  // Fallback to session storage
   try {
     const stored = sessionStorage.getItem('swiftawplex_user');
     if (stored) {
@@ -77,6 +104,7 @@ function restoreSession() {
  */
 function logout() {
   currentUser = null;
+  if (typeof SwiftawAuth !== 'undefined') SwiftawAuth.logout();
   try { sessionStorage.removeItem('swiftawplex_user'); } catch (e) { /* ignore */ }
 }
 
@@ -92,7 +120,17 @@ function getUser() {
  */
 function hasPermission(perm) {
   if (!currentUser) return false;
-  return currentUser.permissions.includes('all') || currentUser.permissions.includes(perm);
+  if (currentUser.permissions && currentUser.permissions.includes('all')) return true;
+  if (currentUser.permissions && currentUser.permissions.includes(perm)) return true;
+  return false;
 }
 
-export { login, logout, getUser, restoreSession, hasPermission, EMPLOYEES };
+/**
+ * Check if user has minimum access level
+ */
+function hasAccess(level) {
+  if (!currentUser) return false;
+  return (currentUser.accessLevel || 0) >= level;
+}
+
+export { login, logout, getUser, restoreSession, hasPermission, hasAccess, buildPermissions };

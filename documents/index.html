@@ -389,10 +389,7 @@
     </div>
     <div class="hero-right">
       <p>Browse Swiftaw's official publications — from public announcements to internal memos. Documents are classified as <strong>Public</strong> or <strong>Intern</strong>. Team members with access can also create new documents.</p>
-      <div class="hero-actions">
-        <button class="btn-yellow" onclick="openCreateModal()">+ New Document</button>
-        <button class="btn-outline" onclick="openInternModal()">Unlock Intern Access</button>
-      </div>
+      <div class="hero-actions" id="hero-actions"></div>
     </div>
   </div>
 </section>
@@ -460,81 +457,48 @@
 <div class="modal-bg" id="create-modal-bg">
   <div class="modal">
     <button class="modal-close" onclick="closeCreateModal()">&times;</button>
-    <div id="create-step-pw">
-      <h2>Create Document</h2>
-      <p class="modal-sub">Enter the creation password to continue.</p>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="create-pw" placeholder="••••" onkeydown="if(event.key==='Enter')checkCreatePw()">
-        <div class="error-msg" id="create-pw-error">Incorrect password.</div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-dark" onclick="checkCreatePw()">Continue</button>
-        <button class="btn-outline" onclick="closeCreateModal()">Cancel</button>
-      </div>
-    </div>
-    <div id="create-step-form" style="display:none;">
-      <h2>New Document</h2>
-      <p class="modal-sub">Fill in the details below. Published immediately.</p>
-      <div class="form-group">
-        <label>Title</label>
-        <input type="text" id="doc-title" placeholder="Document title">
-        <div class="error-msg" id="title-error">Please enter a title.</div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Project</label>
-          <input type="text" id="doc-project" placeholder="Project or General">
-        </div>
-        <div class="form-group">
-          <label>Visibility</label>
-          <select id="doc-visibility">
-            <option value="public">Public</option>
-            <option value="intern">Intern</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Author</label>
-          <input type="text" id="doc-author" placeholder="Your name">
-        </div>
-        <div class="form-group">
-          <label>Department</label>
-          <input type="text" id="doc-dept" placeholder="Department">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Subject</label>
-        <input type="text" id="doc-subject" placeholder="Brief subject line">
-      </div>
-      <div class="form-group">
-        <label>Body</label>
-        <textarea id="doc-body" placeholder="Write the document content here..."></textarea>
-        <div class="error-msg" id="body-error">Please write some content.</div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-yellow" onclick="submitDocument()">Publish Document</button>
-        <button class="btn-outline" onclick="closeCreateModal()">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ INTERN MODAL ══ -->
-<div class="modal-bg" id="intern-modal-bg">
-  <div class="modal intern-unlock">
-    <button class="modal-close" onclick="closeInternModal()">&times;</button>
-    <h2>Intern Access</h2>
-    <p class="modal-sub">Enter the intern password to unlock confidential documents.</p>
+    <h2>New Document</h2>
+    <p class="modal-sub">Fill in the details below. Published immediately.</p>
     <div class="form-group">
-      <label>Password</label>
-      <input type="password" id="intern-pw" placeholder="••••••" onkeydown="if(event.key==='Enter')checkInternPw()">
-      <div class="error-msg" id="intern-pw-error">Incorrect password.</div>
+      <label>Title</label>
+      <input type="text" id="doc-title" placeholder="Document title">
+      <div class="error-msg" id="title-error">Please enter a title.</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Project</label>
+        <input type="text" id="doc-project" placeholder="Project or General">
+      </div>
+      <div class="form-group">
+        <label>Visibility</label>
+        <select id="doc-visibility">
+          <option value="public">Public</option>
+          <option value="intern">Intern</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Author</label>
+        <input type="text" id="doc-author" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label>Department</label>
+        <input type="text" id="doc-dept" placeholder="Department">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Subject</label>
+      <input type="text" id="doc-subject" placeholder="Brief subject line">
+    </div>
+    <div class="form-group">
+      <label>Body</label>
+      <textarea id="doc-body" placeholder="Write the document content here..."></textarea>
+      <div class="error-msg" id="body-error">Please write some content.</div>
     </div>
     <div class="modal-actions">
-      <button class="btn-dark" onclick="checkInternPw()">Unlock</button>
-      <button class="btn-outline" onclick="closeInternModal()">Cancel</button>
+      <button class="btn-yellow" onclick="submitDocument()">Publish Document</button>
+      <button class="btn-outline" onclick="closeCreateModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -550,9 +514,7 @@
 </div>
 
 <script>
-  const CREATE_PW = '1478';
-  const INTERN_PW = 'SW1FT';
-  let internUnlocked = false;
+  const DOCS_STORAGE_KEY = 'swiftaw_documents';
   let currentTab = 'all';
 
   const defaultDocs = [
@@ -587,13 +549,51 @@
       author:'Swiftaw Leadership', dept:'Swiftaw Leadership', date:'January 2026', visibility:'public'
     }
   ];
-  let documents = [...defaultDocs];
+
+  // Load saved documents or use defaults
+  function loadDocuments() {
+    try {
+      const stored = localStorage.getItem(DOCS_STORAGE_KEY);
+      if (stored) return JSON.parse(stored);
+    } catch(e) {}
+    return [...defaultDocs];
+  }
+  function saveDocuments() {
+    try { localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(documents)); } catch(e) {}
+  }
+  let documents = loadDocuments();
+
+  // Access helpers
+  function hasInternAccess() {
+    return typeof SwiftawAuth !== 'undefined' && SwiftawAuth.hasAccess(1);
+  }
+  function canWriteDocs() {
+    return typeof SwiftawAuth !== 'undefined' && SwiftawAuth.hasAccess(4);
+  }
 
   function esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
   function formatDate() {
     return new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  }
+
+  function updateHeroActions() {
+    const actions = document.getElementById('hero-actions');
+    actions.innerHTML = '';
+    if (canWriteDocs()) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-yellow';
+      btn.textContent = '+ New Document';
+      btn.addEventListener('click', openCreateModal);
+      actions.appendChild(btn);
+    }
+    if (!hasInternAccess()) {
+      const info = document.createElement('span');
+      info.style.cssText = 'font-size:.88rem;color:var(--text-muted);padding:14px 0;';
+      info.textContent = 'Log in with an employee account to view confidential documents.';
+      actions.appendChild(info);
+    }
   }
 
   function renderDocs() {
@@ -605,7 +605,7 @@
     empty.style.display = 'none';
 
     list.forEach(doc => {
-      const locked  = doc.visibility==='intern' && !internUnlocked;
+      const locked  = doc.visibility==='intern' && !hasInternAccess();
       const intern  = doc.visibility==='intern';
       const dotCls  = intern ? 'card-dot-intern'       : 'card-dot-public';
       const smpCls  = intern ? 'card-sig-stamp-intern' : 'card-sig-stamp-public';
@@ -646,13 +646,13 @@
         ov.className = 'locked-overlay';
         ov.innerHTML = `
           <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <span>Intern Access Required</span>
+          <span>Employee Access Required</span>
         `;
         const btn = document.createElement('button');
         btn.className = 'btn-dark';
         btn.style.cssText = 'padding:6px 14px;font-size:.72rem;margin-top:4px;';
-        btn.textContent = 'Unlock';
-        btn.addEventListener('click', e => { e.stopPropagation(); openInternModal(); });
+        btn.textContent = 'Log In';
+        btn.addEventListener('click', e => { e.stopPropagation(); if(window.SwiftawNav) SwiftawNav.openAuthModal('login'); });
         ov.appendChild(btn);
         card.appendChild(ov);
       } else {
@@ -707,21 +707,16 @@
   function closeViewer() { document.getElementById('doc-viewer').classList.remove('open'); }
 
   function openCreateModal() {
-    document.getElementById('create-step-pw').style.display='block';
-    document.getElementById('create-step-form').style.display='none';
-    document.getElementById('create-pw').value='';
-    document.getElementById('create-pw-error').classList.remove('show');
+    if (!canWriteDocs()) return;
+    const user = SwiftawAuth.getUser();
+    document.getElementById('doc-author').value = user ? user.displayName : '';
+    document.getElementById('doc-dept').value = user ? (user.department || '') : '';
     document.getElementById('create-modal-bg').classList.add('open');
-    setTimeout(()=>document.getElementById('create-pw').focus(),100);
   }
   function closeCreateModal() { document.getElementById('create-modal-bg').classList.remove('open'); }
-  function checkCreatePw() {
-    if (document.getElementById('create-pw').value===CREATE_PW) {
-      document.getElementById('create-step-pw').style.display='none';
-      document.getElementById('create-step-form').style.display='block';
-    } else { document.getElementById('create-pw-error').classList.add('show'); }
-  }
+
   function submitDocument() {
+    if (!canWriteDocs()) return;
     const title=document.getElementById('doc-title').value.trim();
     const body=document.getElementById('doc-body').value.trim();
     let ok=true;
@@ -740,30 +735,23 @@
       date:formatDate(),
       visibility:document.getElementById('doc-visibility').value
     });
+    saveDocuments();
     closeCreateModal(); renderDocs();
-    ['doc-title','doc-project','doc-subject','doc-author','doc-dept','doc-body'].forEach(id=>{document.getElementById(id).value='';});
+    ['doc-title','doc-project','doc-subject','doc-body'].forEach(id=>{document.getElementById(id).value='';});
     document.getElementById('doc-visibility').value='public';
   }
 
-  function openInternModal() {
-    document.getElementById('intern-pw').value='';
-    document.getElementById('intern-pw-error').classList.remove('show');
-    document.getElementById('intern-modal-bg').classList.add('open');
-    setTimeout(()=>document.getElementById('intern-pw').focus(),100);
-  }
-  function closeInternModal() { document.getElementById('intern-modal-bg').classList.remove('open'); }
-  function checkInternPw() {
-    if (document.getElementById('intern-pw').value===INTERN_PW) {
-      internUnlocked=true; closeInternModal(); renderDocs();
-    } else { document.getElementById('intern-pw-error').classList.add('show'); }
-  }
-
   document.getElementById('create-modal-bg').addEventListener('click',e=>{if(e.target===e.currentTarget)closeCreateModal();});
-  document.getElementById('intern-modal-bg').addEventListener('click',e=>{if(e.target===e.currentTarget)closeInternModal();});
   document.getElementById('doc-viewer').addEventListener('click',e=>{if(e.target===e.currentTarget)closeViewer();});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeViewer();closeCreateModal();closeInternModal();}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeViewer();closeCreateModal();}});
 
+  // Re-render when auth changes
+  window.addEventListener('swiftaw-auth-change', () => { updateHeroActions(); renderDocs(); });
+
+  updateHeroActions();
   renderDocs();
 </script>
+<script src="/js/swiftaw-auth.js"></script>
+<script src="/js/swiftaw-nav.js"></script>
 </body>
 </html>
