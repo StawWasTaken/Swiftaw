@@ -42,7 +42,7 @@ import { CodeAssistant } from './code-assistant.js';
   const selectedToolName = $('#selectedToolName');
   const pinnedSection = $('#pinnedSection');
   const pinnedList = $('#pinnedList');
-  const foldersContainer = $('#foldersContainer');
+  const foldersContainer = $('#foldersList');
   const btnNewFolder = $('#btnNewFolder');
   const tithoniaTools = $('#tithoniaTools');
   const archivedSection = $('#archivedSection');
