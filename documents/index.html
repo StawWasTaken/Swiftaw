@@ -238,10 +238,11 @@
       display: none; position: fixed; inset: 0;
       background: rgba(18,14,30,.82);
       z-index: 3000;
-      align-items: center; justify-content: center;
+      align-items: center; justify-content: flex-start;
       padding: 16px;
       flex-direction: column;
       gap: 8px;
+      overflow-y: auto;
     }
     .doc-viewer.open { display: flex; }
 
@@ -264,7 +265,7 @@
     .dv-paper {
       position: relative;
       width: min(460px, 90vw);
-      height: min(calc(min(460px, 90vw) * 1200 / 930), 78vh);
+      min-height: min(calc(min(460px, 90vw) * 1200 / 930), 78vh);
       background-image: url('/swftw_docsbackground.png');
       background-size: 100% 100%;
       background-repeat: no-repeat;
@@ -294,18 +295,11 @@
     }
 
     .dv-scroll {
-      position: absolute;
-      top: 10%; left: 7%; right: 7%; bottom: 9%;
+      position: relative;
       z-index: 5;
-      overflow-y: auto;
-      padding: 5% 6% 6%;
+      padding: 10% 13% 9%;
       display: flex; flex-direction: column; gap: 4px;
-      scrollbar-width: thin;
-      scrollbar-color: #ccc transparent;
     }
-    .dv-scroll::-webkit-scrollbar { width: 3px; }
-    .dv-scroll::-webkit-scrollbar-track { background: transparent; }
-    .dv-scroll::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
 
     .dv-stamp      { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .dv-dot        { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
@@ -492,10 +486,21 @@
         <div class="form-group">
           <label>Project</label>
           <select id="doc-project">
+            <option value="">None</option>
             <option value="Fortized">Fortized</option>
             <option value="Tithonia">Tithonia</option>
           </select>
         </div>
+        <div class="form-group">
+          <label>Initiative</label>
+          <select id="doc-initiative">
+            <option value="">None</option>
+            <option value="Vital Spark">Vital Spark</option>
+            <option value="Social Butterfly">Social Butterfly</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
         <div class="form-group">
           <label>Visibility</label>
           <select id="doc-visibility">
@@ -568,6 +573,9 @@
   function canWriteDocs() {
     return typeof SwiftawAuth !== 'undefined' && SwiftawAuth.hasAccess(4);
   }
+  function canDeleteDocs() {
+    return typeof SwiftawAuth !== 'undefined' && SwiftawAuth.hasAccess(4);
+  }
   let currentTab = 'all';
   let documents = [];
   let isLoading = true;
@@ -630,6 +638,7 @@
       id: row.id,
       title: row.title,
       project: row.project || 'General',
+      initiative: row.initiative || '',
       subject: row.subject || '',
       body: row.body,
       author: row.author || 'Swiftaw Team',
@@ -715,9 +724,9 @@
       const { data, error } = await sb
         .from('documents')
         .insert([{
-          title: doc.title, project: doc.project, subject: doc.subject,
-          body: doc.body, author: doc.author, dept: doc.dept,
-          date: doc.date, visibility: doc.visibility
+          title: doc.title, project: doc.project, initiative: doc.initiative,
+          subject: doc.subject, body: doc.body, author: doc.author,
+          dept: doc.dept, date: doc.date, visibility: doc.visibility
         }])
         .select();
       if (error) throw error;
@@ -853,7 +862,7 @@
         <span class="dv-sdate">${esc(doc.date)}</span>
       </div>
       <div class="dv-title">${esc(doc.title)}</div>
-      <div class="dv-project">${esc(doc.project)}</div>
+      ${doc.project || doc.initiative ? `<div class="dv-project">${doc.project ? esc(doc.project) : 'Swiftaw'}${doc.initiative ? ' · ' + esc(doc.initiative) : ''}</div>` : '<div class="dv-project">Swiftaw</div>'}
       <div class="dv-subject">${esc(doc.subject)}</div>
       <hr class="dv-rule">
       <div class="dv-body">${esc(doc.body)}</div>
@@ -869,11 +878,14 @@
     document.getElementById('doc-viewer').classList.add('open');
     // Store current doc id for delete
     document.getElementById('doc-viewer').dataset.docId = id;
+    // Only show delete button for level 4+ employees
+    document.querySelector('.dv-delete').style.display = canDeleteDocs() ? '' : 'none';
   }
 
   function closeViewer() { document.getElementById('doc-viewer').classList.remove('open'); }
 
   async function deleteFromViewer() {
+    if (!canDeleteDocs()) { showToast('Only level 4+ employees can delete documents.', 'error'); return; }
     const id = Number(document.getElementById('doc-viewer').dataset.docId);
     if (!id || !confirm('Are you sure you want to delete this document? This cannot be undone.')) return;
     const ok = await deleteDocument(id);
@@ -933,6 +945,7 @@
     const newDoc = {
       title,
       project: document.getElementById('doc-project').value,
+      initiative: document.getElementById('doc-initiative').value,
       subject: document.getElementById('doc-subject').value.trim()||'',
       body,
       author: document.getElementById('doc-author').value.trim()||'Swiftaw Team',
@@ -955,6 +968,7 @@
       showToast('Document published successfully!', 'success');
       ['doc-title','doc-subject','doc-author','doc-body'].forEach(id=>{document.getElementById(id).value='';});
       document.getElementById('doc-project').selectedIndex = 0;
+      document.getElementById('doc-initiative').selectedIndex = 0;
       document.getElementById('doc-dept').selectedIndex = 0;
       document.getElementById('doc-visibility').value='public';
     }
