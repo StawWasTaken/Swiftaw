@@ -21,7 +21,8 @@ import { CodeAssistant } from './code-assistant.js';
   const chatInput = $('#chatInput');
   const btnSend = $('#btnSend');
   const btnNewChat = $('#btnNewChat');
-  const chatList = $('#chatList');
+  const recentList = $('#recentList');
+  const yourChatsList = $('#yourChatsList');
   const topbarTitle = $('#topbarTitle');
   const sidebar = $('#sidebar');
   const sidebarToggle = $('#sidebarToggle');
@@ -40,19 +41,7 @@ import { CodeAssistant } from './code-assistant.js';
   const toolsSelectorBtn = $('#toolsSelectorBtn');
   const toolsDropdown = $('#toolsDropdown');
   const selectedToolName = $('#selectedToolName');
-  const pinnedSection = $('#pinnedSection');
-  const pinnedList = $('#pinnedList');
-  const foldersContainer = $('#foldersContainer');
-  const btnNewFolder = $('#btnNewFolder');
-  const tithoniaTools = $('#tithoniaTools');
-  const archivedSection = $('#archivedSection');
-  const archivedList = $('#archivedList');
   const chatSearch = $('#chatSearch');
-  const bulkActionsBar = $('#bulkActionsBar');
-  const bulkCount = $('#bulkCount');
-  const btnBulkArchive = $('#btnBulkArchive');
-  const btnBulkDelete = $('#btnBulkDelete');
-  const btnBulkCancel = $('#btnBulkCancel');
 
   // ── Module instances ──
   // Initialize Supabase client for Tithonia
@@ -581,23 +570,86 @@ import { CodeAssistant } from './code-assistant.js';
   }
 
   function renderRecentChats() {
-    const recentChats = chatManager.getRecentChats();
-    chatList.innerHTML = '';
+    const recentChats = chatManager.getRecentChats().slice(0, 5);
+    recentList.innerHTML = '';
     recentChats.forEach(convo => {
-      const item = createChatItem(convo);
-      if (item) chatList.appendChild(item);
+      const item = document.createElement('a');
+      item.href = '#';
+      item.className = 'chat-link' + (chatManager.activeConvoId === convo.id ? ' active' : '');
+      item.textContent = convo.title;
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        chatManager.activeConvoId = convo.id;
+        renderSidebar();
+        loadChat(convo.id);
+      });
+      recentList.appendChild(item);
+    });
+  }
+
+  function renderYourChats() {
+    const allChats = chatManager.conversations || [];
+    yourChatsList.innerHTML = '';
+    allChats.forEach(convo => {
+      const item = document.createElement('a');
+      item.href = '#';
+      item.className = 'chat-link' + (chatManager.activeConvoId === convo.id ? ' active' : '');
+      item.textContent = convo.title;
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        chatManager.activeConvoId = convo.id;
+        renderSidebar();
+        loadChat(convo.id);
+      });
+      yourChatsList.appendChild(item);
     });
   }
 
   function renderSidebar() {
-    renderPinnedChats();
-    renderFolders();
     renderRecentChats();
-    renderArchivedChats();
+    renderYourChats();
   }
 
   // Initial render
   renderSidebar();
+
+  // ── Sidebar Interactions ──
+  function initSidebarListeners() {
+    // Collapsible section headers
+    document.querySelectorAll('.section-header[data-section]').forEach(header => {
+      header.addEventListener('click', () => {
+        const section = header.dataset.section;
+        const content = document.getElementById(section + 'Content');
+        if (content) {
+          const isOpen = content.style.display !== 'none';
+          content.style.display = isOpen ? 'none' : 'block';
+          header.classList.toggle('open');
+        }
+      });
+    });
+  }
+
+  // ── Helper: Load a chat ──
+  function loadChat(chatId) {
+    const convo = chatManager.conversations?.find(c => c.id === chatId);
+    if (convo) {
+      landing.style.display = 'none';
+      messagesWrap.style.display = 'block';
+      topbarTitle.textContent = convo.title;
+      messagesEl.innerHTML = '';
+
+      // Render messages
+      if (convo.messages) {
+        convo.messages.forEach(msg => {
+          renderer.renderMessage(msg.role, msg.text);
+        });
+      }
+
+      renderer.scrollToBottom();
+    }
+  }
+
+  initSidebarListeners();
 
   // ── Send button state ──
   function updateSendButtonState() {
