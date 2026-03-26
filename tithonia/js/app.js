@@ -94,6 +94,241 @@ import { CodeAssistant } from './code-assistant.js';
     return sprout;
   }
 
+  // ── Detect programming language from user request ──
+  function detectCodeLanguage(message) {
+    const lower = message.toLowerCase();
+    const languages = {
+      'python': /\bpython\b/,
+      'javascript': /\bjavascript|js\b/,
+      'typescript': /\btypescript|ts\b/,
+      'html': /\bhtml\b/,
+      'css': /\bcss\b/,
+      'java': /\bjava\b/,
+      'cpp': /\bc\+\+|cpp\b/,
+      'csharp': /\bc#|csharp\b/,
+      'go': /\bgo\b/,
+      'rust': /\brust\b/,
+      'sql': /\bsql\b/,
+      'bash': /\bbash|shell|sh\b/,
+      'powershell': /\bpowershell\b/,
+      'ruby': /\bruby\b/,
+      'php': /\bphp\b/
+    };
+
+    for (const [lang, pattern] of Object.entries(languages)) {
+      if (pattern.test(lower)) {
+        return lang;
+      }
+    }
+
+    // Guess from context
+    if (/\bfunction|class|const|let|var|=>/.test(message)) return 'javascript';
+    if (/\bdef |import |print\(/.test(message)) return 'python';
+    if (/<html|<!doctype/.test(lower)) return 'html';
+
+    return null;
+  }
+
+  // ── Generate working code based on user request ──
+  function generateWorkingCode(request, language) {
+    const templates = {
+      'html': () => `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Hello, World!</h1>
+  <p>Your content here</p>
+</body>
+</html>`,
+
+      'css': () => `/* Stylesheet */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1, h2, h3 { margin-bottom: 0.5em; }`,
+
+      'javascript': () => `// JavaScript code
+function main() {
+  console.log('Hello, World!');
+
+  // Your code here
+  const data = {
+    message: 'Welcome',
+    timestamp: new Date()
+  };
+
+  return data;
+}
+
+// Run
+main();`,
+
+      'python': () => `#!/usr/bin/env python3
+"""Python script"""
+
+def main():
+    print("Hello, World!")
+
+    # Your code here
+    data = {
+        'message': 'Welcome',
+        'timestamp': str(__import__('datetime').datetime.now())
+    }
+
+    return data
+
+if __name__ == "__main__":
+    result = main()
+    print(result)`,
+
+      'sql': () => `-- SQL Query
+SELECT *
+FROM users
+WHERE status = 'active'
+ORDER BY created_at DESC
+LIMIT 10;
+
+-- INSERT example
+INSERT INTO users (name, email, status)
+VALUES ('John', 'john@example.com', 'active');
+
+-- UPDATE example
+UPDATE users
+SET status = 'inactive'
+WHERE id = 1;`,
+
+      'bash': () => `#!/bin/bash
+# Bash script
+
+echo "Hello, World!"
+
+# Variables
+name="User"
+echo "Welcome, $name"
+
+# Functions
+function greet() {
+  echo "Greeting: $1"
+}
+
+greet "Everyone"
+
+# Exit successfully
+exit 0`,
+
+      'java': () => `public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+
+        String message = "Welcome";
+        int count = 42;
+
+        processData(message, count);
+    }
+
+    static void processData(String msg, int num) {
+        System.out.println("Message: " + msg);
+        System.out.println("Number: " + num);
+    }
+}`,
+
+      'csharp': () => `using System;
+
+class Program {
+    static void Main() {
+        Console.WriteLine("Hello, World!");
+
+        string message = "Welcome";
+        int count = 42;
+
+        ProcessData(message, count);
+    }
+
+    static void ProcessData(string msg, int num) {
+        Console.WriteLine($"Message: {msg}");
+        Console.WriteLine($"Number: {num}");
+    }
+}`,
+
+      'ruby': () => `#!/usr/bin/env ruby
+
+def main
+  puts "Hello, World!"
+
+  message = "Welcome"
+  count = 42
+
+  process_data(message, count)
+end
+
+def process_data(msg, num)
+  puts "Message: #{msg}"
+  puts "Number: #{num}"
+end
+
+main if __FILE__ == $PROGRAM_NAME`,
+
+      'php': () => `<?php
+echo "Hello, World!";
+
+$message = "Welcome";
+$count = 42;
+
+function processData($msg, $num) {
+    echo "Message: " . $msg . "<br>";
+    echo "Number: " . $num . "<br>";
+}
+
+processData($message, $count);
+?>`,
+
+      'typescript': () => `// TypeScript code
+interface User {
+  name: string;
+  email: string;
+  age: number;
+}
+
+function main(): User {
+  const user: User = {
+    name: 'John',
+    email: 'john@example.com',
+    age: 30
+  };
+
+  console.log('User:', user);
+  return user;
+}
+
+main();`
+    };
+
+    const generator = templates[language] || templates['javascript'];
+    return generator();
+  }
+
   // ── Initialize from Supabase if logged in ──
   async function initializeChats() {
     if (chatManager.syncEnabled) {
@@ -704,22 +939,62 @@ import { CodeAssistant } from './code-assistant.js';
       try {
         let result;
 
-        // Handle different model types
-        if (activeModel.startsWith('floret')) {
-          // Floret: Process as corporate/code task
-          result = await floret.processTask(fullMessage, {
-            taskType: 'general-corporate',
-            language: 'en'
-          });
-          // Convert Floret response to Sprout-compatible format
-          result = {
-            answer: result.content?.output || result.answer || 'Task processed.',
-            emotion: 'neutral',
-            mode: 'corporate-task'
-          };
+        // Detect if user is asking for code/script
+        const codeLanguage = detectCodeLanguage(fullMessage);
+        const isCodeRequest = /\b(write|create|generate|make|build|implement|code|script)\b.*\b(code|script|function|class|html|css|javascript|python|sql|bash|script|program)\b/i.test(fullMessage);
+
+        if (isCodeRequest && codeLanguage) {
+          // CODE GENERATION PATH
+          let code = '';
+          let codeType = 'code';
+
+          if (activeModel.startsWith('floret')) {
+            // Floret: Use code generator
+            if (floret && floret.logicEngine) {
+              const codeGen = new FloretCodeGenerator(floret);
+              const generated = await codeGen.generateCode(fullMessage, codeLanguage);
+              code = generated.code || '';
+              codeType = 'code-generation';
+            }
+          } else {
+            // Sprout: Generate basic working code
+            code = generateWorkingCode(fullMessage, codeLanguage);
+            codeType = 'code-generation';
+          }
+
+          // If we got code, return it
+          if (code && code.length > 20) {
+            result = {
+              answer: code,
+              emotion: 'neutral',
+              mode: codeType,
+              isCode: true,
+              language: codeLanguage
+            };
+          } else {
+            // Fallback to normal response
+            result = activeModel.startsWith('floret')
+              ? { answer: 'I can help generate that code. Could you provide more details about what it should do?', emotion: 'neutral', mode: 'prompt-for-details' }
+              : await sprout.getResponse(fullMessage);
+          }
         } else {
-          // Sprout: Original conversational response
-          result = await sprout.getResponse(fullMessage);
+          // NORMAL RESPONSE PATH
+          if (activeModel.startsWith('floret')) {
+            // Floret: Process as corporate/code task
+            result = await floret.processTask(fullMessage, {
+              taskType: 'general-corporate',
+              language: 'en'
+            });
+            // Convert Floret response to Sprout-compatible format
+            result = {
+              answer: result.content?.output || result.answer || 'Task processed.',
+              emotion: 'neutral',
+              mode: 'corporate-task'
+            };
+          } else {
+            // Sprout: Original conversational response
+            result = await sprout.getResponse(fullMessage);
+          }
         }
 
         typingEl.remove();
@@ -728,8 +1003,28 @@ import { CodeAssistant } from './code-assistant.js';
         const msgEl = renderer.createStreamingMessage('assistant', result.emotion || 'neutral', result.mode);
         msgEl.classList.add('ai-response');
 
-        // Stream the text with typing animation
-        await renderer.streamText(msgEl, result.answer, 'assistant');
+        // If it's code, add code formatting
+        if (result.isCode && result.language) {
+          msgEl.classList.add('code-response');
+          // Add code block with syntax highlighting
+          const codeBlock = document.createElement('pre');
+          const codeEl = document.createElement('code');
+          codeEl.className = `language-${result.language}`;
+          codeEl.textContent = result.answer;
+          codeBlock.appendChild(codeEl);
+          msgEl.appendChild(codeBlock);
+
+          // Syntax highlight if available
+          if (typeof hljs !== 'undefined') {
+            hljs.highlightElement(codeEl);
+          }
+
+          messagesEl.appendChild(msgEl);
+          renderer.scrollToBottom();
+        } else {
+          // Stream the text with typing animation
+          await renderer.streamText(msgEl, result.answer, 'assistant');
+        }
 
         // Save to chat manager
         chatManager.addMessage(convo, 'assistant', result.answer, { emotion: result.emotion, mode: result.mode });
