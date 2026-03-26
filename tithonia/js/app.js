@@ -34,15 +34,35 @@ import { Renderer } from './renderer.js';
   const btnAttach = $('#btnAttach');
   const fileInput = $('#fileInput');
   const filePreviewArea = $('#filePreviewArea');
+  const toolsSelector = $('#toolsSelector');
+  const toolsSelectorBtn = $('#toolsSelectorBtn');
+  const toolsDropdown = $('#toolsDropdown');
+  const selectedToolName = $('#selectedToolName');
+  const pinnedSection = $('#pinnedSection');
+  const pinnedList = $('#pinnedList');
+  const foldersContainer = $('#foldersContainer');
+  const btnNewFolder = $('#btnNewFolder');
+  const tithoniaTools = $('#tithoniaTools');
+  const archivedSection = $('#archivedSection');
+  const archivedList = $('#archivedList');
 
   // ── Module instances ──
   const chatManager = new ChatManager();
   const fileHandler = new FileHandler();
   const renderer = new Renderer(messagesEl, messagesWrap);
 
+  // ── Helper functions ──
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
   // ── State ──
   let isGenerating = false;
   let activeModel = localStorage.getItem('tithonia_model') || 'sprout-1.3';
+  let selectedTool = null;
+  let expandedFolderId = null;
 
   // ── Tithonia 1.3 Engine ──
   const db = createSupabaseClient();
@@ -111,6 +131,299 @@ import { Renderer } from './renderer.js';
   }
   renderModelDropdown();
 
+  // ── Tools Selector ──
+  function toggleToolsSelector() {
+    toolsSelector.classList.toggle('open');
+  }
+
+  function closeToolsSelector() {
+    toolsSelector.classList.remove('open');
+  }
+
+  toolsSelectorBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleToolsSelector();
+  });
+
+  toolsDropdown.addEventListener('click', (e) => {
+    const toolBtn = e.target.closest('.tool-option');
+    if (toolBtn) {
+      const tool = toolBtn.dataset.tool;
+      selectedTool = tool;
+      selectedToolName.textContent = toolBtn.textContent.trim();
+      closeToolsSelector();
+      // Apply tool effect to input
+      if (selectedTool && chatInput.value) {
+        // This would integrate with the AI engine to apply the tool
+        console.log('Applying tool:', selectedTool);
+      }
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!toolsSelector.contains(e.target)) {
+      closeToolsSelector();
+    }
+  });
+
+  // ── Tithonia Tools Buttons ──
+  tithoniaTools.addEventListener('click', (e) => {
+    const toolBtn = e.target.closest('.tool-btn');
+    if (toolBtn) {
+      const tool = toolBtn.dataset.tool;
+      chatInput.focus();
+      // Set up tool-specific prompt
+      const prompts = {
+        'idea-generator': 'Help me generate creative ideas for: ',
+        'name-generator': 'Help me generate creative names for: ',
+        'startup-ideas': 'Give me startup ideas about: ',
+        'content-ideas': 'Give me content ideas about: ',
+        'problem-solver': 'Help me solve this problem: '
+      };
+      if (prompts[tool]) {
+        chatInput.value = (chatInput.value ? chatInput.value + '\n\n' : '') + prompts[tool];
+        chatInput.style.height = 'auto';
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 150) + 'px';
+        updateSendButtonState();
+      }
+    }
+  });
+
+  // ── Pinned Chats and Folders Rendering ──
+  function renderPinnedChats() {
+    const pinnedChats = chatManager.getPinnedChats();
+    pinnedList.innerHTML = '';
+    pinnedChats.forEach(convo => {
+      const item = createChatItem(convo);
+      pinnedList.appendChild(item);
+    });
+
+    // Show/hide pinned section
+    pinnedSection.style.display = pinnedChats.length > 0 || Object.keys(chatManager.folders).length > 0 ? 'block' : 'none';
+  }
+
+  function createChatItem(convo) {
+    const item = document.createElement('div');
+    item.className = 'chat-item' + (convo.id === chatManager.activeConvoId ? ' active' : '');
+    item.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      <span>${escapeHtml(convo.title)}</span>`;
+    item.addEventListener('click', () => loadConversation(convo.id));
+    item.addEventListener('contextmenu', (e) => showChatContextMenu(e, convo));
+    return item;
+  }
+
+  function renderFolders() {
+    foldersContainer.innerHTML = '';
+    Object.values(chatManager.folders).forEach(folder => {
+      const folderEl = document.createElement('div');
+      folderEl.className = 'folder-item' + (expandedFolderId === folder.id ? ' expanded' : '');
+      folderEl.innerHTML = `
+        <div class="folder-icon">${folder.icon}</div>
+        <div class="folder-name">${escapeHtml(folder.name)}</div>
+        <div class="folder-menu">
+          <button class="folder-menu-btn" data-action="options" title="Folder options">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px;">
+              <circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/>
+            </svg>
+          </button>
+        </div>`;
+
+      folderEl.addEventListener('click', () => {
+        expandedFolderId = expandedFolderId === folder.id ? null : folder.id;
+        renderFolders();
+      });
+
+      folderEl.querySelector('.folder-menu-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        showFolderContextMenu(e, folder);
+      });
+
+      foldersContainer.appendChild(folderEl);
+
+      // Add chats in folder
+      if (expandedFolderId === folder.id) {
+        const chatsInFolder = chatManager.getChatsByFolder(folder.id);
+        chatsInFolder.forEach(convo => {
+          const chatItem = createChatItem(convo);
+          chatItem.style.marginLeft = '20px';
+          foldersContainer.appendChild(chatItem);
+        });
+      }
+    });
+  }
+
+  function showChatContextMenu(e, convo) {
+    e.preventDefault();
+    const menu = document.createElement('div');
+    menu.className = 'context-menu';
+    menu.style.position = 'fixed';
+    menu.style.top = e.clientY + 'px';
+    menu.style.left = e.clientX + 'px';
+    menu.innerHTML = `
+      <button data-action="rename">Rename</button>
+      <button data-action="pin">${convo.isPinned ? 'Unpin' : 'Pin'}</button>
+      <button data-action="move">Move to folder</button>
+      <button data-action="archive">${convo.isArchived ? 'Restore' : 'Archive'}</button>
+      <button data-action="delete" style="color:#ff6b6b;">Delete</button>`;
+
+    menu.addEventListener('click', (me) => {
+      const action = me.target.dataset.action;
+      handleChatAction(action, convo);
+      menu.remove();
+      document.removeEventListener('click', closeContextMenu);
+    });
+
+    document.body.appendChild(menu);
+    const closeContextMenu = () => {
+      if (menu.parentElement) menu.remove();
+    };
+    document.addEventListener('click', closeContextMenu);
+  }
+
+  function showFolderContextMenu(e, folder) {
+    e.stopPropagation();
+    const menu = document.createElement('div');
+    menu.className = 'context-menu';
+    menu.style.position = 'fixed';
+    menu.style.top = e.clientY + 'px';
+    menu.style.left = e.clientX + 'px';
+    menu.innerHTML = `
+      <button data-action="rename-folder">Rename</button>
+      <button data-action="change-icon">Change icon</button>
+      <button data-action="delete-folder" style="color:#ff6b6b;">Delete</button>`;
+
+    menu.addEventListener('click', (me) => {
+      const action = me.target.dataset.action;
+      handleFolderAction(action, folder);
+      menu.remove();
+      document.removeEventListener('click', closeContextMenu);
+    });
+
+    document.body.appendChild(menu);
+    const closeContextMenu = () => {
+      if (menu.parentElement) menu.remove();
+    };
+    document.addEventListener('click', closeContextMenu);
+  }
+
+  function handleChatAction(action, convo) {
+    switch(action) {
+      case 'rename': {
+        const newTitle = prompt('New chat name:', convo.title);
+        if (newTitle && newTitle.trim()) {
+          chatManager.renameConversation(convo.id, newTitle);
+          renderPinnedChats();
+          chatManager.renderChatList(chatList, loadConversation);
+          if (chatManager.activeConvoId === convo.id) {
+            topbarTitle.textContent = chatManager.getActiveConvo().title;
+          }
+        }
+        break;
+      }
+      case 'pin': {
+        chatManager.pinConversation(convo.id, !convo.isPinned);
+        renderPinnedChats();
+        chatManager.renderChatList(chatList, loadConversation);
+        break;
+      }
+      case 'move': {
+        const folders = Object.values(chatManager.folders);
+        if (folders.length === 0) {
+          alert('No folders yet. Create one first!');
+          return;
+        }
+        const folderNames = folders.map(f => f.name).join('\n');
+        const selectedFolder = prompt('Move to folder:\n' + folderNames);
+        const folder = folders.find(f => f.name === selectedFolder);
+        if (folder) {
+          chatManager.moveToFolder(convo.id, folder.id);
+          renderPinnedChats();
+          chatManager.renderChatList(chatList, loadConversation);
+        }
+        break;
+      }
+      case 'archive': {
+        chatManager.archiveConversation(convo.id, !convo.isArchived);
+        if (chatManager.activeConvoId === convo.id) newChat();
+        renderPinnedChats();
+        chatManager.renderChatList(chatList, loadConversation);
+        break;
+      }
+      case 'delete': {
+        if (confirm('Delete this chat permanently?')) {
+          chatManager.deleteConversation(convo.id);
+          if (chatManager.activeConvoId === convo.id) newChat();
+          renderPinnedChats();
+          chatManager.renderChatList(chatList, loadConversation);
+        }
+        break;
+      }
+    }
+  }
+
+  function handleFolderAction(action, folder) {
+    switch(action) {
+      case 'rename-folder': {
+        const newName = prompt('New folder name:', folder.name);
+        if (newName && newName.trim()) {
+          chatManager.renameFolder(folder.id, newName);
+          renderFolders();
+        }
+        break;
+      }
+      case 'change-icon': {
+        const icons = '📁 📂 🗂️ 📋 📑 🔖 ⭐ 💼 🎯 🚀 ✨ 💡 📝';
+        const newIcon = prompt('Choose an icon:', icons);
+        if (newIcon) {
+          const icon = newIcon.trim().split(' ').find(i => i.length > 0);
+          if (icon) chatManager.changeFolderIcon(folder.id, icon);
+          renderFolders();
+        }
+        break;
+      }
+      case 'delete-folder': {
+        if (confirm('Delete this folder? Chats will be moved back to recent.')) {
+          chatManager.deleteFolder(folder.id);
+          expandedFolderId = null;
+          renderFolders();
+        }
+        break;
+      }
+    }
+  }
+
+  // New folder button
+  btnNewFolder.addEventListener('click', () => {
+    const name = prompt('Folder name:');
+    if (name && name.trim()) {
+      chatManager.createFolder(name, '📁');
+      renderFolders();
+      pinnedSection.style.display = 'block';
+    }
+  });
+
+  function renderArchivedChats() {
+    const archivedChats = chatManager.getArchivedChats();
+    archivedList.innerHTML = '';
+    archivedChats.forEach(convo => {
+      const item = createChatItem(convo);
+      archivedList.appendChild(item);
+    });
+    archivedSection.style.display = archivedChats.length > 0 ? 'block' : 'none';
+  }
+
+  function renderSidebar() {
+    renderPinnedChats();
+    renderFolders();
+    renderArchivedChats();
+  }
+
+  // Initial render
+  renderSidebar();
+
   // ── Send button state ──
   function updateSendButtonState() {
     const hasContent = chatInput.value.trim().length > 0 || fileHandler.hasPendingFiles();
@@ -173,6 +486,7 @@ import { Renderer } from './renderer.js';
       const title = displayText || filesToSend[0].file.name;
       chatManager.createConversation(title);
       chatManager.renderChatList(chatList, loadConversation);
+      renderSidebar();
     }
 
     const convo = chatManager.getActiveConvo();
@@ -265,6 +579,7 @@ import { Renderer } from './renderer.js';
     topbarTitle.textContent = convo.title;
     renderer.renderAllMessages(convo.messages);
     chatManager.renderChatList(chatList, loadConversation);
+    renderSidebar();
     closeSidebar();
   }
 
@@ -278,6 +593,7 @@ import { Renderer } from './renderer.js';
     fileHandler.clear();
     fileHandler.renderFilePreview(filePreviewArea, updateSendButtonState);
     chatManager.renderChatList(chatList, loadConversation);
+    renderSidebar();
     closeSidebar();
     chatInput.focus();
 
@@ -361,6 +677,7 @@ import { Renderer } from './renderer.js';
     // Reload chat manager data for logged-in user
     chatManager.reload();
     chatManager.renderChatList(chatList, loadConversation);
+    renderSidebar();
   }
 
   // Listen for auth changes from other pages/components
