@@ -4,7 +4,7 @@
 
 export const MODELS = {
   'sprout-1.3': {
-    name: 'Tithonia 1.3',
+    name: 'Sprout 1.3',
     desc: 'Best for everyday tasks. Fast and reliable.',
     engine: 'sprout'
   }

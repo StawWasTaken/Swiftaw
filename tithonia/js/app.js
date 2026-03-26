@@ -7,6 +7,8 @@ import { MODELS } from './config.js';
 import { ChatManager } from './chat-manager.js';
 import { FileHandler } from './file-handler.js';
 import { Renderer } from './renderer.js';
+import { DocumentAnalyzer } from './document-analyzer.js';
+import { CodeAssistant } from './code-assistant.js';
 
 (function() {
   'use strict';
@@ -45,11 +47,21 @@ import { Renderer } from './renderer.js';
   const tithoniaTools = $('#tithoniaTools');
   const archivedSection = $('#archivedSection');
   const archivedList = $('#archivedList');
+  const chatSearch = $('#chatSearch');
+  const bulkActionsBar = $('#bulkActionsBar');
+  const bulkCount = $('#bulkCount');
+  const btnBulkArchive = $('#btnBulkArchive');
+  const btnBulkDelete = $('#btnBulkDelete');
+  const btnBulkCancel = $('#btnBulkCancel');
 
   // ── Module instances ──
-  const chatManager = new ChatManager();
+  // Initialize Supabase client for Tithonia
+  const tithoniaDb = typeof createTithoniaSupabaseClient !== 'undefined' ? createTithoniaSupabaseClient() : null;
+  const chatManager = new ChatManager(tithoniaDb);
   const fileHandler = new FileHandler();
   const renderer = new Renderer(messagesEl, messagesWrap);
+  const docAnalyzer = new DocumentAnalyzer();
+  const codeAssistant = new CodeAssistant();
 
   // ── Helper functions ──
   function escapeHtml(text) {
@@ -63,10 +75,24 @@ import { Renderer } from './renderer.js';
   let activeModel = localStorage.getItem('tithonia_model') || 'sprout-1.3';
   let selectedTool = null;
   let expandedFolderId = null;
+  let bulkSelectMode = false;
+  let selectedChats = new Set();
+  let draggedChat = null;
+  let draggedFromFolder = null;
+  let searchQuery = '';
 
-  // ── Tithonia 1.3 Engine ──
+  // ── Sprout 1.3 Engine (AI Brain) ──
   const db = createSupabaseClient();
   const sprout = db ? new SproutEngine(db) : null;
+
+  // ── Initialize from Supabase if logged in ──
+  async function initializeChats() {
+    if (chatManager.syncEnabled) {
+      await chatManager.loadFromSupabase();
+      renderSidebar();
+    }
+  }
+  initializeChats();
 
   // ── Model Selector ──
   function renderModelDropdown() {
@@ -166,6 +192,76 @@ import { Renderer } from './renderer.js';
     }
   });
 
+  // ── Search Functionality ──
+  function filterChats(query) {
+    searchQuery = query.toLowerCase();
+    renderSidebar();
+  }
+
+  chatSearch.addEventListener('input', (e) => {
+    filterChats(e.target.value);
+  });
+
+  // ── Bulk Selection Mode ──
+  function toggleBulkSelectMode() {
+    bulkSelectMode = !bulkSelectMode;
+    selectedChats.clear();
+    renderSidebar();
+  }
+
+  function addToBulkSelection(chatId) {
+    if (selectedChats.has(chatId)) {
+      selectedChats.delete(chatId);
+    } else {
+      selectedChats.add(chatId);
+    }
+    updateBulkActionsBar();
+    renderSidebar();
+  }
+
+  function updateBulkActionsBar() {
+    const count = selectedChats.size;
+    if (count > 0) {
+      bulkActionsBar.style.display = 'flex';
+      bulkCount.textContent = count + ' selected';
+    } else {
+      bulkActionsBar.style.display = 'none';
+      selectedChats.clear();
+    }
+  }
+
+  btnBulkCancel.addEventListener('click', () => {
+    selectedChats.clear();
+    updateBulkActionsBar();
+    renderSidebar();
+  });
+
+  btnBulkArchive.addEventListener('click', () => {
+    selectedChats.forEach(chatId => {
+      chatManager.archiveConversation(chatId, true);
+    });
+    selectedChats.clear();
+    updateBulkActionsBar();
+    if (chatManager.activeConvoId && selectedChats.has(chatManager.activeConvoId)) {
+      newChat();
+    }
+    renderSidebar();
+  });
+
+  btnBulkDelete.addEventListener('click', () => {
+    if (confirm(`Delete ${selectedChats.size} chat(s) permanently?`)) {
+      selectedChats.forEach(chatId => {
+        chatManager.deleteConversation(chatId);
+      });
+      selectedChats.clear();
+      updateBulkActionsBar();
+      if (chatManager.activeConvoId && selectedChats.has(chatManager.activeConvoId)) {
+        newChat();
+      }
+      renderSidebar();
+    }
+  });
+
   // ── Tithonia Tools Buttons ──
   tithoniaTools.addEventListener('click', (e) => {
     const toolBtn = e.target.closest('.tool-btn');
@@ -195,7 +291,7 @@ import { Renderer } from './renderer.js';
     pinnedList.innerHTML = '';
     pinnedChats.forEach(convo => {
       const item = createChatItem(convo);
-      pinnedList.appendChild(item);
+      if (item) pinnedList.appendChild(item);
     });
 
     // Show/hide pinned section
@@ -203,15 +299,58 @@ import { Renderer } from './renderer.js';
   }
 
   function createChatItem(convo) {
+    // Skip if doesn't match search
+    if (searchQuery && !convo.title.toLowerCase().includes(searchQuery)) {
+      return null;
+    }
+
     const item = document.createElement('div');
-    item.className = 'chat-item' + (convo.id === chatManager.activeConvoId ? ' active' : '');
+    item.className = 'chat-item' + (convo.id === chatManager.activeConvoId ? ' active' : '') + (bulkSelectMode ? ' selectable' : '') + (selectedChats.has(convo.id) ? ' selected' : '');
+    item.draggable = true;
+    item.dataset.chatId = convo.id;
+
+    const checkbox = bulkSelectMode ? `<div class="checkbox"></div>` : '';
     item.innerHTML = `
+      ${checkbox}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
       <span>${escapeHtml(convo.title)}</span>`;
-    item.addEventListener('click', () => loadConversation(convo.id));
-    item.addEventListener('contextmenu', (e) => showChatContextMenu(e, convo));
+
+    if (bulkSelectMode) {
+      item.addEventListener('click', () => addToBulkSelection(convo.id));
+    } else {
+      item.addEventListener('click', () => loadConversation(convo.id));
+    }
+
+    item.addEventListener('contextmenu', (e) => {
+      if (!bulkSelectMode) showChatContextMenu(e, convo);
+    });
+
+    // Drag & Drop
+    item.addEventListener('dragstart', (e) => {
+      draggedChat = convo;
+      draggedFromFolder = convo.folderId;
+      item.style.opacity = '0.5';
+      e.dataTransfer.effectAllowed = 'move';
+    });
+
+    item.addEventListener('dragend', () => {
+      item.style.opacity = '1';
+      draggedChat = null;
+    });
+
+    item.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    });
+
+    item.addEventListener('drop', (e) => {
+      e.preventDefault();
+      // This handles dropping a chat onto another chat
+      // In practice, we'd move to same folder
+    });
+
     return item;
   }
 
@@ -220,6 +359,7 @@ import { Renderer } from './renderer.js';
     Object.values(chatManager.folders).forEach(folder => {
       const folderEl = document.createElement('div');
       folderEl.className = 'folder-item' + (expandedFolderId === folder.id ? ' expanded' : '');
+      folderEl.dataset.folderId = folder.id;
       folderEl.innerHTML = `
         <div class="folder-icon">${folder.icon}</div>
         <div class="folder-name">${escapeHtml(folder.name)}</div>
@@ -241,6 +381,28 @@ import { Renderer } from './renderer.js';
         showFolderContextMenu(e, folder);
       });
 
+      // Drag & Drop for folders
+      folderEl.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        folderEl.style.background = 'rgba(255,156,60,.1)';
+      });
+
+      folderEl.addEventListener('dragleave', () => {
+        folderEl.style.background = '';
+      });
+
+      folderEl.addEventListener('drop', (e) => {
+        e.preventDefault();
+        folderEl.style.background = '';
+        if (draggedChat) {
+          chatManager.moveToFolder(draggedChat.id, folder.id);
+          draggedChat = null;
+          draggedFromFolder = null;
+          renderSidebar();
+        }
+      });
+
       foldersContainer.appendChild(folderEl);
 
       // Add chats in folder
@@ -248,8 +410,10 @@ import { Renderer } from './renderer.js';
         const chatsInFolder = chatManager.getChatsByFolder(folder.id);
         chatsInFolder.forEach(convo => {
           const chatItem = createChatItem(convo);
-          chatItem.style.marginLeft = '20px';
-          foldersContainer.appendChild(chatItem);
+          if (chatItem) {
+            chatItem.style.marginLeft = '20px';
+            foldersContainer.appendChild(chatItem);
+          }
         });
       }
     });
@@ -316,7 +480,7 @@ import { Renderer } from './renderer.js';
         if (newTitle && newTitle.trim()) {
           chatManager.renameConversation(convo.id, newTitle);
           renderPinnedChats();
-          chatManager.renderChatList(chatList, loadConversation);
+          renderSidebar();
           if (chatManager.activeConvoId === convo.id) {
             topbarTitle.textContent = chatManager.getActiveConvo().title;
           }
@@ -326,7 +490,7 @@ import { Renderer } from './renderer.js';
       case 'pin': {
         chatManager.pinConversation(convo.id, !convo.isPinned);
         renderPinnedChats();
-        chatManager.renderChatList(chatList, loadConversation);
+        renderSidebar();
         break;
       }
       case 'move': {
@@ -341,7 +505,7 @@ import { Renderer } from './renderer.js';
         if (folder) {
           chatManager.moveToFolder(convo.id, folder.id);
           renderPinnedChats();
-          chatManager.renderChatList(chatList, loadConversation);
+          renderSidebar();
         }
         break;
       }
@@ -349,7 +513,7 @@ import { Renderer } from './renderer.js';
         chatManager.archiveConversation(convo.id, !convo.isArchived);
         if (chatManager.activeConvoId === convo.id) newChat();
         renderPinnedChats();
-        chatManager.renderChatList(chatList, loadConversation);
+        renderSidebar();
         break;
       }
       case 'delete': {
@@ -357,7 +521,7 @@ import { Renderer } from './renderer.js';
           chatManager.deleteConversation(convo.id);
           if (chatManager.activeConvoId === convo.id) newChat();
           renderPinnedChats();
-          chatManager.renderChatList(chatList, loadConversation);
+          renderSidebar();
         }
         break;
       }
@@ -410,14 +574,24 @@ import { Renderer } from './renderer.js';
     archivedList.innerHTML = '';
     archivedChats.forEach(convo => {
       const item = createChatItem(convo);
-      archivedList.appendChild(item);
+      if (item) archivedList.appendChild(item);
     });
     archivedSection.style.display = archivedChats.length > 0 ? 'block' : 'none';
+  }
+
+  function renderRecentChats() {
+    const recentChats = chatManager.getRecentChats();
+    chatList.innerHTML = '';
+    recentChats.forEach(convo => {
+      const item = createChatItem(convo);
+      if (item) chatList.appendChild(item);
+    });
   }
 
   function renderSidebar() {
     renderPinnedChats();
     renderFolders();
+    renderRecentChats();
     renderArchivedChats();
   }
 
@@ -485,7 +659,7 @@ import { Renderer } from './renderer.js';
     if (!chatManager.activeConvoId) {
       const title = displayText || filesToSend[0].file.name;
       chatManager.createConversation(title);
-      chatManager.renderChatList(chatList, loadConversation);
+      renderSidebar();
       renderSidebar();
     }
 
@@ -519,9 +693,16 @@ import { Renderer } from './renderer.js';
       try {
         const result = await sprout.getResponse(fullMessage);
         typingEl.remove();
+
+        // Create streaming message element
+        const msgEl = renderer.createStreamingMessage('assistant', result.emotion, result.mode);
+        msgEl.classList.add('ai-response');
+
+        // Stream the text with typing animation
+        await renderer.streamText(msgEl, result.answer, 'assistant');
+
+        // Save to chat manager
         chatManager.addMessage(convo, 'assistant', result.answer, { emotion: result.emotion, mode: result.mode });
-        renderer.renderMessage('assistant', result.answer, result.emotion, result.mode);
-        renderer.scrollToBottom();
 
         // Save conversation to Supabase for Cortex to learn from
         try {
@@ -533,24 +714,104 @@ import { Renderer } from './renderer.js';
       } catch (err) {
         typingEl.remove();
         const fallback = "I'm having trouble connecting right now. Please try again in a moment.";
+
+        // Stream fallback message
+        const msgEl = renderer.createStreamingMessage('assistant', 'neutral', null);
+        msgEl.classList.add('ai-response');
+        await renderer.streamText(msgEl, fallback, 'assistant');
+
         chatManager.addMessage(convo, 'assistant', fallback);
-        renderer.renderMessage('assistant', fallback);
-        renderer.scrollToBottom();
       }
     } else {
       const delay = 1000 + Math.random() * 1500;
-      setTimeout(() => {
+      setTimeout(async () => {
         typingEl.remove();
         const fallback = "Tithonia is still warming up. The AI engine isn't connected yet, but it will be soon!";
+
+        // Stream fallback message
+        const msgEl = renderer.createStreamingMessage('assistant', 'neutral', null);
+        msgEl.classList.add('ai-response');
+        await renderer.streamText(msgEl, fallback, 'assistant');
+
         chatManager.addMessage(convo, 'assistant', fallback);
-        renderer.renderMessage('assistant', fallback);
-        renderer.scrollToBottom();
         isGenerating = false;
       }, delay);
     }
 
     isGenerating = false;
   }
+
+  // ── Message Actions (Copy, Edit, Delete, Regenerate) ──
+  messagesEl.addEventListener('click', async (e) => {
+    const action = e.target.closest('.msg-action');
+    if (!action) return;
+
+    const messageDiv = action.closest('.message');
+    const messageIndex = Array.from(messagesEl.children).indexOf(messageDiv);
+    const convo = chatManager.getActiveConvo();
+    if (!convo || messageIndex < 0) return;
+
+    const isUserMessage = messageDiv.querySelector('.message-avatar.user-avatar');
+    const messageText = messageDiv.querySelector('.message-text')?.textContent || '';
+
+    if (action.classList.contains('msg-copy')) {
+      // Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(messageText);
+        action.classList.add('active');
+        setTimeout(() => action.classList.remove('active'), 2000);
+      } catch (err) {
+        alert('Failed to copy: ' + err.message);
+      }
+    } else if (action.classList.contains('msg-edit') && isUserMessage) {
+      // Edit user message
+      const newText = prompt('Edit your message:', messageText);
+      if (newText && newText.trim()) {
+        const msgIndex = convo.messages.findIndex((_, i) => {
+          const correspondingDiv = messagesEl.children[i * 2];
+          return correspondingDiv === messageDiv;
+        });
+        if (msgIndex !== -1) {
+          convo.messages[msgIndex].text = newText.trim();
+          chatManager.save();
+          renderer.renderAllMessages(convo.messages);
+        }
+      }
+    } else if (action.classList.contains('msg-delete')) {
+      // Delete message
+      const msgIndex = convo.messages.findIndex((_, i) => {
+        // Count only actual message elements, skip typing indicator
+        const msgDivs = Array.from(messagesEl.children).filter(el =>
+          el.id !== 'typingMsg' && el.classList.contains('message')
+        );
+        return msgDivs[i] === messageDiv;
+      });
+
+      if (msgIndex !== -1) {
+        if (confirm('Delete this message?')) {
+          convo.messages.splice(msgIndex, 1);
+          chatManager.save();
+          renderer.renderAllMessages(convo.messages);
+        }
+      }
+    } else if (action.classList.contains('msg-regenerate') && !isUserMessage) {
+      // Regenerate AI response
+      if (convo.messages.length > 0) {
+        const lastUserMsg = convo.messages.filter(m => m.role === 'user').pop();
+        if (lastUserMsg) {
+          // Remove the last AI response
+          const lastAiIndex = convo.messages.length - 1;
+          if (convo.messages[lastAiIndex].role === 'assistant') {
+            convo.messages.pop();
+            chatManager.save();
+            renderer.renderAllMessages(convo.messages);
+            // Regenerate
+            await sendMessage(lastUserMsg.text);
+          }
+        }
+      }
+    }
+  });
 
   // ── Load a conversation ──
   function loadConversation(id) {
@@ -578,7 +839,7 @@ import { Renderer } from './renderer.js';
     messagesWrap.style.display = 'block';
     topbarTitle.textContent = convo.title;
     renderer.renderAllMessages(convo.messages);
-    chatManager.renderChatList(chatList, loadConversation);
+    renderSidebar();
     renderSidebar();
     closeSidebar();
   }
@@ -592,7 +853,7 @@ import { Renderer } from './renderer.js';
     topbarTitle.textContent = 'New chat';
     fileHandler.clear();
     fileHandler.renderFilePreview(filePreviewArea, updateSendButtonState);
-    chatManager.renderChatList(chatList, loadConversation);
+    renderSidebar();
     renderSidebar();
     closeSidebar();
     chatInput.focus();
@@ -676,7 +937,7 @@ import { Renderer } from './renderer.js';
 
     // Reload chat manager data for logged-in user
     chatManager.reload();
-    chatManager.renderChatList(chatList, loadConversation);
+    renderSidebar();
     renderSidebar();
   }
 
