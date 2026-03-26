@@ -619,9 +619,68 @@ class SproutLogicEngine {
 
   generateCode(task, lang, originalMessage) {
     const lower = task.toLowerCase();
+    const origLower = originalMessage.toLowerCase();
 
-    // ── Common code patterns by task type ──
-
+    // ── HTML / webpage / landing page / website ──
+    if (/\b(html|web\s*page|web\s*site|landing\s*page|page|site)\b/i.test(origLower) && (lang === 'html' || !/\b(python|java\b|ruby|go|rust|php|swift|kotlin|c\+\+|cpp|csharp|c#)\b/i.test(origLower))) {
+      return this.codeTemplates.htmlPage(lang, task, origLower);
+    }
+    // React component
+    if (/\breact\b/i.test(origLower) || /\bcomponent\b/i.test(lower)) {
+      return this.codeTemplates.reactComponent(lang, task, origLower);
+    }
+    // Form / signup / login / contact
+    if (/\b(form|signup|sign-up|login|log-in|register|contact|subscribe)\b/i.test(lower)) {
+      return this.codeTemplates.form(lang, task, origLower);
+    }
+    // Navigation / navbar / menu / header
+    if (/\b(nav|navbar|navigation|menu|header)\b/i.test(lower)) {
+      return this.codeTemplates.navbar(lang, task, origLower);
+    }
+    // Modal / popup / dialog
+    if (/\b(modal|popup|dialog|overlay|lightbox)\b/i.test(lower)) {
+      return this.codeTemplates.modal(lang, task, origLower);
+    }
+    // Card / cards / grid / gallery
+    if (/\b(card|cards|grid|gallery|portfolio)\b/i.test(lower)) {
+      return this.codeTemplates.cardGrid(lang, task, origLower);
+    }
+    // Timer / countdown / stopwatch / clock
+    if (/\b(timer|countdown|stopwatch|clock|pomodoro)\b/i.test(lower)) {
+      return this.codeTemplates.timer(lang, task, origLower);
+    }
+    // Slider / carousel / slideshow
+    if (/\b(slider|carousel|slideshow|image\s*slider)\b/i.test(lower)) {
+      return this.codeTemplates.slider(lang, task, origLower);
+    }
+    // Quiz / trivia / questionnaire
+    if (/\b(quiz|trivia|questionnaire|survey)\b/i.test(lower)) {
+      return this.codeTemplates.quiz(lang, task, origLower);
+    }
+    // Chat / messaging UI
+    if (/\b(chat|messaging|messenger|chatbot)\b/i.test(lower)) {
+      return this.codeTemplates.chatUI(lang, task, origLower);
+    }
+    // Dashboard / admin / analytics
+    if (/\b(dashboard|admin|analytics|stats|panel)\b/i.test(lower)) {
+      return this.codeTemplates.dashboard(lang, task, origLower);
+    }
+    // Weather app
+    if (/\b(weather)\b/i.test(lower)) {
+      return this.codeTemplates.weatherApp(lang, task, origLower);
+    }
+    // Game / snake / tic-tac-toe / pong
+    if (/\b(game|snake|tic-?tac-?toe|pong|tetris|breakout|platformer)\b/i.test(lower)) {
+      return this.codeTemplates.game(lang, task, origLower);
+    }
+    // Animation / animated / CSS animation
+    if (/\b(animat|transition|parallax|effect|particle)\b/i.test(lower)) {
+      return this.codeTemplates.animation(lang, task, origLower);
+    }
+    // Table / data table / spreadsheet
+    if (/\b(table|spreadsheet|data\s*grid)\b/i.test(lower)) {
+      return this.codeTemplates.dataTable(lang, task, origLower);
+    }
     // Sorting
     if (/sort|order|arrange/i.test(lower)) {
       return this.codeTemplates.sort(lang, task);
@@ -670,9 +729,29 @@ class SproutLogicEngine {
     if (/search|filter|find/i.test(lower)) {
       return this.codeTemplates.search(lang, task);
     }
+    // Validation / validator / email / password
+    if (/\b(validat|email.*check|password.*check|password.*strength)\b/i.test(lower)) {
+      return this.codeTemplates.validator(lang, task, origLower);
+    }
+    // Array / list manipulation
+    if (/\b(array|list|map|reduce|flat|chunk|unique|duplicate|intersect|union|difference)\b/i.test(lower)) {
+      return this.codeTemplates.arrayUtils(lang, task, origLower);
+    }
+    // Date / time / format date
+    if (/\b(date|time|format.*date|date.*format|calendar)\b/i.test(lower)) {
+      return this.codeTemplates.dateUtils(lang, task, origLower);
+    }
+    // String / text manipulation
+    if (/\b(string|text|capitalize|truncat|slug|camel|snake.*case|kebab)\b/i.test(lower)) {
+      return this.codeTemplates.stringUtils(lang, task, origLower);
+    }
+    // Random / generate / uuid / color / password
+    if (/\b(random|uuid|generate.*password|password.*generat|random.*color|color.*generat)\b/i.test(lower)) {
+      return this.codeTemplates.generators(lang, task, origLower);
+    }
 
-    // ── Generic: explain what I'd build and provide a skeleton ──
-    return this.codeTemplates.generic(lang, task);
+    // ── Smart generic: generate real working code based on task analysis ──
+    return this.codeTemplates.generic(lang, task, origLower);
   }
 
   // Code template generators for each language
