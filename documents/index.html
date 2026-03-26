@@ -206,12 +206,6 @@
     .toast.success { background: #1b7a2e; }
     .toast.error { background: #c62828; }
 
-    .doc-count-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-    .doc-count-badge { font-size: .78rem; font-weight: 600; color: var(--text-muted); background: #f0f0f0; padding: 4px 12px; border-radius: 100px; }
-    .doc-sync-badge { font-size: .72rem; font-weight: 500; color: #2e7d32; background: rgba(46,125,50,.08); padding: 4px 12px; border-radius: 100px; display: inline-flex; align-items: center; gap: 5px; }
-    .doc-sync-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #2e7d32; flex-shrink: 0; }
-    .doc-sync-badge.offline { color: var(--text-muted); background: #f0f0f0; }
-    .doc-sync-badge.offline::before { background: #bbb; }
 
     .dv-delete { background: rgba(198,40,40,.15); border: 1px solid rgba(198,40,40,.3); border-radius: 5px; color: #e53935; font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 5px 12px; cursor: pointer; transition: background .15s, color .15s; margin-right: auto; }
     .dv-delete:hover { background: rgba(198,40,40,.25); color: #c62828; }
@@ -412,7 +406,6 @@
     </div>
     <div class="hero-right">
       <p>Browse Swiftaw's official publications — from public announcements to internal memos. Documents are classified as <strong>Public</strong> or <strong>Intern</strong>. Team members with access can also create new documents.</p>
-      <div class="doc-count-row"><span class="doc-count-badge" id="doc-count">0 documents</span><span class="doc-sync-badge" id="sync-badge">Synced with Swiftawplex</span></div>
       <div class="hero-actions">
         <button class="btn-yellow" onclick="openCreateModal()">+ New Document</button>
         <button class="btn-outline" onclick="openInternModal()">Unlock Intern Access</button>
@@ -650,11 +643,8 @@
   }
 
   /* ══════════════════════════════════════
-     PERSISTENCE — Supabase + localStorage
+     PERSISTENCE — Supabase Realtime
   ══════════════════════════════════════ */
-  const LS_KEY = 'swiftaw_documents';
-  let dbConnected = false;
-
   function mapRow(row) {
     return {
       id: row.id,
@@ -669,28 +659,6 @@
     };
   }
 
-  function saveToLocal(docs) {
-    try { localStorage.setItem(LS_KEY, JSON.stringify(docs)); } catch(e) {}
-  }
-  function loadFromLocal() {
-    try {
-      const raw = localStorage.getItem(LS_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch(e) { return null; }
-  }
-
-  function setSyncStatus(connected) {
-    dbConnected = connected;
-    const badge = document.getElementById('sync-badge');
-    if (connected) {
-      badge.textContent = 'Synced with Swiftawplex';
-      badge.className = 'doc-sync-badge';
-    } else {
-      badge.textContent = 'Local mode';
-      badge.className = 'doc-sync-badge offline';
-    }
-  }
-
   async function loadDocuments() {
     isLoading = true;
     renderDocs();
@@ -702,28 +670,45 @@
 
       if (error) throw error;
 
-      setSyncStatus(true);
-
       if (data && data.length > 0) {
         documents = data.map(mapRow);
       } else {
-        // Seed defaults into the database
         await seedDefaults();
       }
-      saveToLocal(documents);
     } catch (err) {
-      console.warn('Supabase load failed, using local storage:', err.message);
-      setSyncStatus(false);
-      const local = loadFromLocal();
-      if (local && local.length > 0) {
-        documents = local;
-      } else {
-        documents = defaultDocs.map((d, i) => ({ ...d, id: Date.now() + i }));
-        saveToLocal(documents);
-      }
+      console.warn('Supabase load failed:', err.message);
+      documents = defaultDocs.map((d, i) => ({ ...d, id: Date.now() + i }));
     }
     isLoading = false;
     renderDocs();
+  }
+
+  /* ══ Realtime — everyone sees changes instantly ══ */
+  function subscribeRealtime() {
+    sb.channel('documents-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'documents' }, payload => {
+        const newDoc = mapRow(payload.new);
+        if (!documents.find(d => d.id === newDoc.id)) {
+          documents.unshift(newDoc);
+          renderDocs();
+        }
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'documents' }, payload => {
+        const oldId = payload.old.id;
+        if (documents.find(d => d.id === oldId)) {
+          documents = documents.filter(d => d.id !== oldId);
+          renderDocs();
+        }
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'documents' }, payload => {
+        const updated = mapRow(payload.new);
+        const idx = documents.findIndex(d => d.id === updated.id);
+        if (idx !== -1) {
+          documents[idx] = updated;
+          renderDocs();
+        }
+      })
+      .subscribe();
   }
 
   async function seedDefaults() {
@@ -746,13 +731,6 @@
   }
 
   async function saveDocument(doc) {
-    if (!dbConnected) {
-      // Local-only save
-      const localDoc = { ...doc, id: Date.now() };
-      documents.unshift(localDoc);
-      saveToLocal(documents);
-      return localDoc;
-    }
     try {
       const { data, error } = await sb
         .from('documents')
@@ -763,31 +741,24 @@
         }])
         .select();
       if (error) throw error;
-      const saved = mapRow(data[0]);
-      documents.unshift(saved);
-      saveToLocal(documents);
-      return saved;
+      return mapRow(data[0]);
     } catch (err) {
-      console.error('Save to DB failed, saving locally:', err.message);
-      const localDoc = { ...doc, id: Date.now() };
-      documents.unshift(localDoc);
-      saveToLocal(documents);
-      return localDoc;
+      console.error('Save failed:', err.message);
+      showToast('Failed to save document. Please try again.', 'error');
+      return null;
     }
   }
 
   async function deleteDocument(id) {
-    if (dbConnected) {
-      try {
-        const { error } = await sb.from('documents').delete().eq('id', id);
-        if (error) throw error;
-      } catch (err) {
-        console.error('Delete from DB failed:', err.message);
-      }
+    try {
+      const { error } = await sb.from('documents').delete().eq('id', id);
+      if (error) throw error;
+      return true;
+    } catch (err) {
+      console.error('Delete failed:', err.message);
+      showToast('Failed to delete document.', 'error');
+      return false;
     }
-    documents = documents.filter(d => d.id !== id);
-    saveToLocal(documents);
-    return true;
   }
 
   /* ══════════════════════════════════════
@@ -870,9 +841,6 @@
       grid.appendChild(wrap);
     });
 
-    // Update document count
-    const countEl = document.getElementById('doc-count');
-    if (countEl) countEl.textContent = documents.length + ' document' + (documents.length !== 1 ? 's' : '');
   }
 
   /* ══════════════════════════════════════
@@ -928,10 +896,14 @@
   async function deleteFromViewer() {
     const id = Number(document.getElementById('doc-viewer').dataset.docId);
     if (!id || !confirm('Are you sure you want to delete this document? This cannot be undone.')) return;
-    await deleteDocument(id);
-    closeViewer();
-    renderDocs();
-    showToast('Document deleted.', 'success');
+    const ok = await deleteDocument(id);
+    if (ok) {
+      // Realtime will update the list for all users; update locally too
+      documents = documents.filter(d => d.id !== id);
+      closeViewer();
+      renderDocs();
+      showToast('Document deleted.', 'success');
+    }
   }
 
   /* ══════════════════════════════════════
@@ -978,15 +950,21 @@
       visibility: document.getElementById('doc-visibility').value
     };
 
-    await saveDocument(newDoc);
+    const saved = await saveDocument(newDoc);
     publishBtn.disabled = false;
     publishBtn.textContent = 'Publish Document';
 
-    closeCreateModal();
-    renderDocs();
-    showToast('Document published successfully!', 'success');
-    ['doc-title','doc-project','doc-subject','doc-author','doc-dept','doc-body'].forEach(id=>{document.getElementById(id).value='';});
-    document.getElementById('doc-visibility').value='public';
+    if (saved) {
+      // Add locally for immediate feedback; realtime handles other users
+      if (!documents.find(d => d.id === saved.id)) {
+        documents.unshift(saved);
+      }
+      closeCreateModal();
+      renderDocs();
+      showToast('Document published successfully!', 'success');
+      ['doc-title','doc-project','doc-subject','doc-author','doc-dept','doc-body'].forEach(id=>{document.getElementById(id).value='';});
+      document.getElementById('doc-visibility').value='public';
+    }
   }
 
   /* ══════════════════════════════════════
@@ -1014,9 +992,10 @@
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeViewer();closeCreateModal();closeInternModal();}});
 
   /* ══════════════════════════════════════
-     INIT — load from Supabase
+     INIT — load from Supabase + realtime
   ══════════════════════════════════════ */
   loadDocuments();
+  subscribeRealtime();
 </script>
 </body>
 </html>

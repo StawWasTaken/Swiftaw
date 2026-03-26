@@ -39,3 +39,6 @@ CREATE POLICY "Allow public delete"
 CREATE POLICY "Allow public update"
   ON public.documents FOR UPDATE
   USING (true);
+
+-- Enable Realtime for live sync across all users
+ALTER PUBLICATION supabase_realtime ADD TABLE public.documents;
