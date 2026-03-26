@@ -72,7 +72,7 @@ import { CodeAssistant } from './code-assistant.js';
 
   // ── State ──
   let isGenerating = false;
-  let activeModel = localStorage.getItem('tithonia_model') || 'sprout-1.3';
+  let activeModel = localStorage.getItem('tithonia_model') || 'sprout-1.4';
   let selectedTool = null;
   let expandedFolderId = null;
   let bulkSelectMode = false;
@@ -81,9 +81,8 @@ import { CodeAssistant } from './code-assistant.js';
   let draggedFromFolder = null;
   let searchQuery = '';
 
-  // ── Sprout 1.3 Engine (AI Brain) ──
-  const db = createSupabaseClient();
-  const sprout = db ? new SproutEngine(db) : null;
+  // ── Sprout 1.4 Engine (AI Brain) ──
+  const sprout = typeof SproutEngine !== 'undefined' && tithoniaDb ? new SproutEngine(tithoniaDb) : null;
 
   // ── Initialize from Supabase if logged in ──
   async function initializeChats() {
@@ -689,7 +688,7 @@ import { CodeAssistant } from './code-assistant.js';
     const typingEl = renderer.renderTypingIndicator();
     renderer.scrollToBottom();
 
-    // Get response from Sprout 1.3 engine
+    // Get response from Sprout 1.4 engine
     if (sprout) {
       try {
         const result = await sprout.getResponse(fullMessage);
