@@ -166,4 +166,130 @@ export class Renderer {
   clearMessages() {
     this.messagesEl.innerHTML = '';
   }
+
+  /**
+   * Create a streaming message element for real-time text rendering
+   */
+  createStreamingMessage(role, emotion, mode) {
+    const div = document.createElement('div');
+    div.className = 'message';
+    div.id = `msg-${Date.now()}`;
+
+    if (role === 'user') {
+      div.innerHTML = `
+        <div class="message-avatar user-avatar">Y</div>
+        <div class="message-content">
+          <div class="message-sender">You</div>
+          <div class="message-text"></div>
+          <div class="message-actions"></div>
+        </div>`;
+    } else {
+      const moodClass = emotion ? `mood-${emotion}` : 'mood-neutral';
+      const moodText = emotion ? (moodLabels[emotion] || 'listening') : 'listening';
+      const modeText = mode ? (modeLabels[mode] || '') : '';
+      const modeHtml = modeText ? ` <span class="mode-indicator">${modeText}</span>` : '';
+      div.innerHTML = `
+        <div class="message-avatar ai-avatar">
+          <img src="/product-logos/Tithonia icon.png" alt="Tithonia">
+        </div>
+        <div class="message-content">
+          <div class="message-sender">Tithonia <span class="mood-indicator ${moodClass}">${moodText}</span>${modeHtml}</div>
+          <div class="message-text"></div>
+          <div class="message-actions"></div>
+        </div>`;
+    }
+
+    this.messagesEl.appendChild(div);
+    this.scrollToBottom();
+    return div;
+  }
+
+  /**
+   * Stream text into a message with typing animation
+   * Renders markdown as it streams
+   */
+  async streamText(messageEl, text, role = 'assistant', chunkSize = 2) {
+    const textEl = messageEl.querySelector('.message-text');
+    let currentText = '';
+    let lastRenderTime = Date.now();
+    const renderInterval = 50; // Render every 50ms
+
+    for (let i = 0; i < text.length; i += chunkSize) {
+      const chunk = text.substring(i, i + chunkSize);
+      currentText += chunk;
+
+      // Render every interval or at end
+      const now = Date.now();
+      if (now - lastRenderTime > renderInterval || i + chunkSize >= text.length) {
+        if (role === 'assistant') {
+          // Render markdown for AI messages
+          textEl.innerHTML = this.renderMarkdown(currentText);
+        } else {
+          // Simple escape for user messages
+          textEl.textContent = currentText;
+        }
+        lastRenderTime = now;
+        this.scrollToBottom();
+      }
+
+      // Small delay between chunks for natural typing feel
+      await new Promise(resolve => setTimeout(resolve, 10));
+    }
+
+    // Final render and code block processing
+    if (role === 'assistant') {
+      textEl.innerHTML = this.renderMarkdown(currentText);
+      this.processCodeBlocks(messageEl);
+      await this.addMessageActions(messageEl, role);
+    } else {
+      textEl.textContent = currentText;
+      await this.addMessageActions(messageEl, role);
+    }
+
+    this.scrollToBottom();
+  }
+
+  /**
+   * Add action buttons to a message after streaming completes
+   */
+  async addMessageActions(messageEl, role) {
+    const actionsEl = messageEl.querySelector('.message-actions');
+    if (!actionsEl) return;
+
+    if (role === 'user') {
+      actionsEl.innerHTML = `
+        <button class="msg-action msg-edit" title="Edit message">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+        </button>
+        <button class="msg-action msg-copy" title="Copy message">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+          </svg>
+        </button>
+        <button class="msg-action msg-delete" title="Delete message">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
+          </svg>
+        </button>`;
+    } else {
+      actionsEl.innerHTML = `
+        <button class="msg-action msg-copy" title="Copy response">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+          </svg>
+        </button>
+        <button class="msg-action msg-regenerate" title="Regenerate response">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36M20.49 15a9 9 0 0 1-14.85 3.36"/>
+          </svg>
+        </button>
+        <button class="msg-action msg-delete" title="Delete message">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
+          </svg>
+        </button>`;
+    }
+  }
 }

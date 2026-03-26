@@ -693,9 +693,16 @@ import { CodeAssistant } from './code-assistant.js';
       try {
         const result = await sprout.getResponse(fullMessage);
         typingEl.remove();
+
+        // Create streaming message element
+        const msgEl = renderer.createStreamingMessage('assistant', result.emotion, result.mode);
+        msgEl.classList.add('ai-response');
+
+        // Stream the text with typing animation
+        await renderer.streamText(msgEl, result.answer, 'assistant');
+
+        // Save to chat manager
         chatManager.addMessage(convo, 'assistant', result.answer, { emotion: result.emotion, mode: result.mode });
-        renderer.renderMessage('assistant', result.answer, result.emotion, result.mode);
-        renderer.scrollToBottom();
 
         // Save conversation to Supabase for Cortex to learn from
         try {
@@ -707,18 +714,26 @@ import { CodeAssistant } from './code-assistant.js';
       } catch (err) {
         typingEl.remove();
         const fallback = "I'm having trouble connecting right now. Please try again in a moment.";
+
+        // Stream fallback message
+        const msgEl = renderer.createStreamingMessage('assistant', 'neutral', null);
+        msgEl.classList.add('ai-response');
+        await renderer.streamText(msgEl, fallback, 'assistant');
+
         chatManager.addMessage(convo, 'assistant', fallback);
-        renderer.renderMessage('assistant', fallback);
-        renderer.scrollToBottom();
       }
     } else {
       const delay = 1000 + Math.random() * 1500;
-      setTimeout(() => {
+      setTimeout(async () => {
         typingEl.remove();
         const fallback = "Tithonia is still warming up. The AI engine isn't connected yet, but it will be soon!";
+
+        // Stream fallback message
+        const msgEl = renderer.createStreamingMessage('assistant', 'neutral', null);
+        msgEl.classList.add('ai-response');
+        await renderer.streamText(msgEl, fallback, 'assistant');
+
         chatManager.addMessage(convo, 'assistant', fallback);
-        renderer.renderMessage('assistant', fallback);
-        renderer.scrollToBottom();
         isGenerating = false;
       }, delay);
     }
