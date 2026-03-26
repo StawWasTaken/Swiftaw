@@ -28,9 +28,10 @@ class SproutSmartSearch {
 
   /**
    * Main entry point — search the web for an answer
-   * Returns a synthesized answer or null if nothing found
+   * SPROUT 1.4: Now with context awareness & local-first querying
+   * Only searches web if local knowledge confidence is low
    */
-  async search(query, keywords, language = 'en') {
+  async search(query, keywords, language = 'en', localConfidence = 0) {
     if (!query || query.trim().length < 2) return null;
 
     // ── Block self-knowledge queries from hitting Wikipedia ──
@@ -38,6 +39,12 @@ class SproutSmartSearch {
     const lower = query.toLowerCase();
     const selfTerms = /\b(sprout|tithonia|swiftaw)\b/i;
     if (selfTerms.test(lower)) return null;
+
+    // ── SPROUT 1.4: Context-aware search threshold ──
+    // If we already have decent local knowledge, don't search the web
+    if (localConfidence > 0.6) {
+      return null; // Trust local knowledge, don't web search
+    }
 
     // Check cache first
     const cacheKey = `${language}:${query.toLowerCase().trim()}`;
@@ -71,7 +78,8 @@ class SproutSmartSearch {
         source: summary.title,
         sourceUrl: summary.url,
         language,
-        confidence: this.calculateConfidence(facts, keywords)
+        confidence: this.calculateConfidence(facts, keywords),
+        model: 'sprout-1.4'
       };
 
       // Cache the result
@@ -384,6 +392,7 @@ class SproutSmartSearch {
 
   /**
    * Store learned knowledge in Supabase for future queries
+   * SPROUT 1.4: Updated model version
    */
   async storeLearnedKnowledge(question, answer, source, category = 'web-learned') {
     if (!this.db) return;
@@ -392,7 +401,7 @@ class SproutSmartSearch {
       await this.db
         .from('sprout_training_data')
         .insert({
-          model: 'sprout-1.2',
+          model: 'sprout-1.4',
           question,
           answer,
           category,

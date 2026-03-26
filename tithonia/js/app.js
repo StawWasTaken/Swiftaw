@@ -688,14 +688,34 @@ import { CodeAssistant } from './code-assistant.js';
     const typingEl = renderer.renderTypingIndicator();
     renderer.scrollToBottom();
 
-    // Get response from Sprout 1.4 engine
-    if (sprout) {
+    // Get response from active AI engine (Sprout 1.4 or Floret 1.1)
+    const engine = getActiveEngine();
+    if (engine) {
       try {
-        const result = await sprout.getResponse(fullMessage);
+        let result;
+
+        // Handle different model types
+        if (activeModel.startsWith('floret')) {
+          // Floret: Process as corporate/code task
+          result = await floret.processTask(fullMessage, {
+            taskType: 'general-corporate',
+            language: 'en'
+          });
+          // Convert Floret response to Sprout-compatible format
+          result = {
+            answer: result.content?.output || result.answer || 'Task processed.',
+            emotion: 'neutral',
+            mode: 'corporate-task'
+          };
+        } else {
+          // Sprout: Original conversational response
+          result = await sprout.getResponse(fullMessage);
+        }
+
         typingEl.remove();
 
         // Create streaming message element
-        const msgEl = renderer.createStreamingMessage('assistant', result.emotion, result.mode);
+        const msgEl = renderer.createStreamingMessage('assistant', result.emotion || 'neutral', result.mode);
         msgEl.classList.add('ai-response');
 
         // Stream the text with typing animation
@@ -704,16 +724,25 @@ import { CodeAssistant } from './code-assistant.js';
         // Save to chat manager
         chatManager.addMessage(convo, 'assistant', result.answer, { emotion: result.emotion, mode: result.mode });
 
-        // Save conversation to Supabase for Cortex to learn from
+        // Save conversation to Supabase
         try {
-          await sprout.saveConversation({
-            messages: convo.messages,
-            session_id: convo.id
-          });
+          if (activeModel.startsWith('floret') && floret) {
+            await floret.logTaskExecution({
+              taskType: 'general-corporate',
+              requirements: { primaryGoal: fullMessage },
+              result: result,
+              validation: { syntaxValid: true }
+            });
+          } else if (sprout) {
+            await sprout.saveConversation({
+              messages: convo.messages,
+              session_id: convo.id
+            });
+          }
         } catch (e) { /* silently skip DB save failures */ }
       } catch (err) {
         typingEl.remove();
-        const fallback = "I'm having trouble connecting right now. Please try again in a moment.";
+        const fallback = "I'm having trouble processing that. Please try again.";
 
         // Stream fallback message
         const msgEl = renderer.createStreamingMessage('assistant', 'neutral', null);

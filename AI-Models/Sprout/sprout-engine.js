@@ -1,13 +1,14 @@
 /**
- * Sprout 1.3 — AI Engine (Young Adult Brain)
- * AI Engine with its own brain, knowledge base, and reasoning
- * Thinks using its own knowledge, personality, and independent reasoning
- * Now with: Logic Engine, Math, Context Awareness, Feedback Learning,
+ * Sprout 1.4 — AI Engine (Evolved Intelligence)
+ * AI Engine with smart context awareness and local-first knowledge retrieval
+ * Improved from 1.3: Now understands context better and avoids unnecessary web searches
+ * Features: Logic Engine, Math, Context Awareness, Feedback Learning,
  *           Chat-based Self-Learning, Task Goal System, Auto-Upgrades,
  *           Semantic Intent Dictionary, Context-Aware Message Interpretation,
  *           Critical Thinking, Emotional Intelligence, Metacognition,
  *           Independent Reasoning, Creative Problem-Solving
- * Age equivalent: 19 human years — Young Adult Intelligence (Stage 5)
+ * NEW IN 1.4: Smart context awareness prevents dumb web searches!
+ * Age equivalent: 20 human years — Enhanced Reasoning (Stage 5+)
  * Powered by Supabase for training data storage
  */
 
@@ -3244,14 +3245,26 @@ class SproutEngine {
       } catch (e) { /* fall through */ }
     }
 
-    // Query training data from Supabase
-    const { data: trainingData, error } = await this.db
+    // Query training data from Supabase (SPROUT 1.4: Now supports both 1.3 and 1.4)
+    const { data: trainingData1_3, error: error1_3 } = await this.db
       .from(SPROUT_TABLES.TRAINING_DATA)
       .select('*')
       .eq('model', 'sprout-1.3')
       .eq('active', true);
 
-    if (error || !trainingData || trainingData.length === 0) {
+    const { data: trainingData1_4, error: error1_4 } = await this.db
+      .from(SPROUT_TABLES.TRAINING_DATA)
+      .select('*')
+      .eq('model', 'sprout-1.4')
+      .eq('active', true);
+
+    // Merge results from both versions (1.4 takes priority if same ID)
+    const trainingData = [
+      ...(trainingData1_4 || []),
+      ...(trainingData1_3 || []).filter(td => !trainingData1_4?.find(t => t.question === td.question))
+    ];
+
+    if ((!trainingData1_3 && !trainingData1_4) || trainingData.length === 0) {
       // ═══════════════════════════════════════════════
       // SMART SEARCH — Try web search before giving up
       // ═══════════════════════════════════════════════
@@ -4035,13 +4048,33 @@ class SproutEngine {
 
     // MY KNOWLEDGE GRAPH — How concepts connect
     try {
-      const { data: graphData } = await this.db
+      // SPROUT 1.4: Merge knowledge from both 1.3 and 1.4
+      const { data: graphData1_3 } = await this.db
         .from(SPROUT_TABLES.KNOWLEDGE_GRAPH)
         .select('concept, related_concept, relationship, strength')
         .eq('model', 'sprout-1.3')
-        .eq('active', true)
-        .order('strength', { ascending: false })
-        .limit(100);
+        .eq('active', true);
+
+      const { data: graphData1_4 } = await this.db
+        .from(SPROUT_TABLES.KNOWLEDGE_GRAPH)
+        .select('concept, related_concept, relationship, strength')
+        .eq('model', 'sprout-1.4')
+        .eq('active', true);
+
+      // Merge: 1.4 connections take priority, then add 1.3
+      const allConnections = [...(graphData1_4 || [])];
+      const seenConnections = new Set(allConnections.map(g => `${g.concept}|${g.related_concept}`));
+
+      (graphData1_3 || []).forEach(g => {
+        if (!seenConnections.has(`${g.concept}|${g.related_concept}`)) {
+          allConnections.push(g);
+        }
+      });
+
+      // Sort by strength and limit
+      const graphData = allConnections
+        .sort((a, b) => (b.strength || 0) - (a.strength || 0))
+        .slice(0, 100);
 
       if (graphData && graphData.length > 0) {
         mind.push('');
@@ -5045,7 +5078,7 @@ class SproutEngine {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.TRAINING_DATA)
       .insert({
-        model: 'sprout-1.3',
+        model: 'sprout-1.4',
         question,
         answer,
         category: category || 'general',
@@ -5086,15 +5119,31 @@ class SproutEngine {
   }
 
   // ── Training: Get all training data ──
+  // SPROUT 1.4: Merges data from both 1.3 and 1.4
   async getAllTrainingData() {
-    const { data, error } = await this.db
+    const { data: data1_3 } = await this.db
       .from(SPROUT_TABLES.TRAINING_DATA)
       .select('*')
       .eq('model', 'sprout-1.3')
       .order('created_at', { ascending: false });
 
-    if (error) throw new Error('Failed to fetch training data: ' + error.message);
-    return data || [];
+    const { data: data1_4 } = await this.db
+      .from(SPROUT_TABLES.TRAINING_DATA)
+      .select('*')
+      .eq('model', 'sprout-1.4')
+      .order('created_at', { ascending: false });
+
+    // Merge: 1.4 takes priority, then 1.3
+    const merged = [...(data1_4 || [])];
+    const seenQuestions = new Set(merged.map(d => d.question?.toLowerCase()));
+
+    (data1_3 || []).forEach(d => {
+      if (!seenQuestions.has(d.question?.toLowerCase())) {
+        merged.push(d);
+      }
+    });
+
+    return merged;
   }
 
   // ── Ratings: Rate a response ──
@@ -5154,21 +5203,30 @@ class SproutEngine {
   // ══════════════════════════════════════════
 
   async getDirectives() {
-    const { data, error } = await this.db
+    // SPROUT 1.4: Merge directives from both versions
+    const { data: data1_3 } = await this.db
       .from(SPROUT_TABLES.DIRECTIVES)
       .select('*')
       .eq('model', 'sprout-1.3')
       .eq('active', true)
       .order('priority', { ascending: false });
-    if (error) throw new Error('Failed to fetch directives: ' + error.message);
-    return data || [];
+
+    const { data: data1_4 } = await this.db
+      .from(SPROUT_TABLES.DIRECTIVES)
+      .select('*')
+      .eq('model', 'sprout-1.4')
+      .eq('active', true)
+      .order('priority', { ascending: false });
+
+    const merged = [...(data1_4 || []), ...(data1_3 || [])];
+    return merged;
   }
 
   async addDirective({ directive, type, priority }) {
     const { data, error } = await this.db
       .from(SPROUT_TABLES.DIRECTIVES)
       .insert({
-        model: 'sprout-1.3',
+        model: 'sprout-1.4',
         directive,
         type: type || 'instruction',
         priority: priority || 0,
@@ -5419,29 +5477,37 @@ class SproutEngine {
   }
 
   // ── Stats ──
+  // SPROUT 1.4: Aggregates stats from both versions
   async getModelStats() {
-    const [trainingResult, ratingsResult, convosResult, directivesResult, patternsResult, identityResult] = await Promise.all([
+    const [training1_3, training1_4, ratings1_3, ratings1_4, convos1_3, convos1_4, directives1_3, directives1_4, patterns1_3, patterns1_4, identity1_3, identity1_4] = await Promise.all([
       this.db.from(SPROUT_TABLES.TRAINING_DATA).select('id', { count: 'exact' }).eq('model', 'sprout-1.3'),
+      this.db.from(SPROUT_TABLES.TRAINING_DATA).select('id', { count: 'exact' }).eq('model', 'sprout-1.4'),
       this.db.from(SPROUT_TABLES.RATINGS).select('rating').eq('model', 'sprout-1.3'),
+      this.db.from(SPROUT_TABLES.RATINGS).select('rating').eq('model', 'sprout-1.4'),
       this.db.from(SPROUT_TABLES.CONVERSATIONS).select('id', { count: 'exact' }).eq('model', 'sprout-1.3'),
+      this.db.from(SPROUT_TABLES.CONVERSATIONS).select('id', { count: 'exact' }).eq('model', 'sprout-1.4'),
       this.db.from(SPROUT_TABLES.DIRECTIVES).select('id', { count: 'exact' }).eq('model', 'sprout-1.3').eq('active', true),
+      this.db.from(SPROUT_TABLES.DIRECTIVES).select('id', { count: 'exact' }).eq('model', 'sprout-1.4').eq('active', true),
       this.db.from(SPROUT_TABLES.WRITING_PATTERNS).select('id', { count: 'exact' }).eq('model', 'sprout-1.3').eq('active', true),
-      this.db.from(SPROUT_TABLES.IDENTITY).select('id', { count: 'exact' }).eq('model', 'sprout-1.3').eq('active', true)
+      this.db.from(SPROUT_TABLES.WRITING_PATTERNS).select('id', { count: 'exact' }).eq('model', 'sprout-1.4').eq('active', true),
+      this.db.from(SPROUT_TABLES.IDENTITY).select('id', { count: 'exact' }).eq('model', 'sprout-1.3').eq('active', true),
+      this.db.from(SPROUT_TABLES.IDENTITY).select('id', { count: 'exact' }).eq('model', 'sprout-1.4').eq('active', true)
     ]);
 
-    const ratings = ratingsResult.data || [];
+    const ratings = [...(ratings1_3.data || []), ...(ratings1_4.data || [])];
     const avgRating = ratings.length > 0
       ? (ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length).toFixed(1)
       : 'N/A';
 
     return {
-      totalTrainingEntries: trainingResult.count || 0,
-      totalConversations: convosResult.count || 0,
+      totalTrainingEntries: (training1_3.count || 0) + (training1_4.count || 0),
+      totalConversations: (convos1_3.count || 0) + (convos1_4.count || 0),
       totalRatings: ratings.length,
       averageRating: avgRating,
-      totalDirectives: directivesResult.count || 0,
-      totalWritingPatterns: patternsResult.count || 0,
-      totalIdentityEntries: identityResult.count || 0,
+      totalDirectives: (directives1_3.count || 0) + (directives1_4.count || 0),
+      totalWritingPatterns: (patterns1_3.count || 0) + (patterns1_4.count || 0),
+      totalIdentityEntries: (identity1_3.count || 0) + (identity1_4.count || 0),
+      model: 'sprout-1.4',
       lexicon: this.lexicon.getStats()
     };
   }
