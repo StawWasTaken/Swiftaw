@@ -505,7 +505,10 @@
       <div class="form-row">
         <div class="form-group">
           <label>Project</label>
-          <input type="text" id="doc-project" placeholder="Project or General">
+          <select id="doc-project">
+            <option value="Fortized">Fortized</option>
+            <option value="Tithonia">Tithonia</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Visibility</label>
@@ -522,7 +525,11 @@
         </div>
         <div class="form-group">
           <label>Department</label>
-          <input type="text" id="doc-dept" placeholder="Department">
+          <select id="doc-dept">
+            <option value="R&D">R&D</option>
+            <option value="Safety">Safety</option>
+            <option value="Communication">Communication</option>
+          </select>
         </div>
       </div>
       <div class="form-group">
@@ -941,11 +948,11 @@
 
     const newDoc = {
       title,
-      project: document.getElementById('doc-project').value.trim()||'General',
+      project: document.getElementById('doc-project').value,
       subject: document.getElementById('doc-subject').value.trim()||'',
       body,
       author: document.getElementById('doc-author').value.trim()||'Swiftaw Team',
-      dept: document.getElementById('doc-dept').value.trim()||'Swiftaw',
+      dept: document.getElementById('doc-dept').value,
       date: formatDate(),
       visibility: document.getElementById('doc-visibility').value
     };
@@ -962,7 +969,9 @@
       closeCreateModal();
       renderDocs();
       showToast('Document published successfully!', 'success');
-      ['doc-title','doc-project','doc-subject','doc-author','doc-dept','doc-body'].forEach(id=>{document.getElementById(id).value='';});
+      ['doc-title','doc-subject','doc-author','doc-body'].forEach(id=>{document.getElementById(id).value='';});
+      document.getElementById('doc-project').selectedIndex = 0;
+      document.getElementById('doc-dept').selectedIndex = 0;
       document.getElementById('doc-visibility').value='public';
     }
   }
