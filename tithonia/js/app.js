@@ -72,7 +72,7 @@ import { CodeAssistant } from './code-assistant.js';
 
   // ── State ──
   let isGenerating = false;
-  let activeModel = localStorage.getItem('tithonia_model') || 'sprout-1.3';
+  let activeModel = localStorage.getItem('tithonia_model') || 'sprout-1.4';
   let selectedTool = null;
   let expandedFolderId = null;
   let bulkSelectMode = false;
