@@ -58,7 +58,7 @@ async function initializeTithoniaTables(db) {
     // tithonia_user_preferences:
     // - id (uuid, primary key)
     // - user_id (uuid, foreign key to auth.users, unique)
-    // - active_model (text, default 'sprout-1.3')
+    // - active_model (text, default 'sprout-1.4')
     // - selected_tool (text, nullable)
     // - updated_at (timestamp)
 

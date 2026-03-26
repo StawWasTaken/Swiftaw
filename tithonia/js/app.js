@@ -81,8 +81,8 @@ import { CodeAssistant } from './code-assistant.js';
   let draggedFromFolder = null;
   let searchQuery = '';
 
-  // ── Sprout 1.3 Engine (AI Brain) ──
-  const db = createSupabaseClient();
+  // ── Sprout 1.4 Engine (AI Brain) ──
+  const db = typeof window.SproutEngine !== 'undefined' ? tithoniaDb : null;
   const sprout = db ? new SproutEngine(db) : null;
 
   // ── Initialize from Supabase if logged in ──
@@ -153,7 +153,8 @@ import { CodeAssistant } from './code-assistant.js';
   // Init model display
   if (MODELS[activeModel]) {
     selectedModelName.textContent = MODELS[activeModel].name;
-    inputDisclaimer.textContent = `Tithonia is powered by ${MODELS[activeModel].name}. It can make mistakes. Verify important information.`;
+    inputDisclaimer.textContent = `${MODELS[activeModel].name} can make mistakes. Verify important information.`;
+    landingDesc.textContent = `A modern AI assistant powered by ${MODELS[activeModel].name} — built for daily help, smart project planning, quick answers, and specialized insights.`;
   }
   renderModelDropdown();
 
@@ -688,7 +689,7 @@ import { CodeAssistant } from './code-assistant.js';
     const typingEl = renderer.renderTypingIndicator();
     renderer.scrollToBottom();
 
-    // Get response from Sprout 1.3 engine
+    // Get response from Sprout 1.4 engine
     if (sprout) {
       try {
         const result = await sprout.getResponse(fullMessage);
