@@ -486,6 +486,7 @@
         <div class="form-group">
           <label>Project</label>
           <select id="doc-project">
+            <option value="">None</option>
             <option value="Fortized">Fortized</option>
             <option value="Tithonia">Tithonia</option>
           </select>
@@ -861,7 +862,7 @@
         <span class="dv-sdate">${esc(doc.date)}</span>
       </div>
       <div class="dv-title">${esc(doc.title)}</div>
-      <div class="dv-project">${esc(doc.project)}${doc.initiative ? ' · ' + esc(doc.initiative) : ''}</div>
+      ${doc.project || doc.initiative ? `<div class="dv-project">${doc.project ? esc(doc.project) : 'Swiftaw'}${doc.initiative ? ' · ' + esc(doc.initiative) : ''}</div>` : '<div class="dv-project">Swiftaw</div>'}
       <div class="dv-subject">${esc(doc.subject)}</div>
       <hr class="dv-rule">
       <div class="dv-body">${esc(doc.body)}</div>
