@@ -6,14 +6,39 @@ import { genId, truncate, escapeHtml } from './utils.js';
 
 const STORAGE_KEY = 'tithonia_convos';
 
+function isLoggedIn() {
+  return typeof SwiftawAuth !== 'undefined' && SwiftawAuth.isLoggedIn();
+}
+
+function getUserKey() {
+  if (!isLoggedIn()) return null;
+  return SwiftawAuth.getUser().username;
+}
+
 export class ChatManager {
   constructor() {
-    this.conversations = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    this.conversations = this._load();
+    this.activeConvoId = null;
+  }
+
+  _storageKey() {
+    const user = getUserKey();
+    return user ? STORAGE_KEY + '_' + user : STORAGE_KEY;
+  }
+
+  _load() {
+    if (!isLoggedIn()) return [];
+    try { return JSON.parse(localStorage.getItem(this._storageKey()) || '[]'); } catch(e) { return []; }
+  }
+
+  reload() {
+    this.conversations = this._load();
     this.activeConvoId = null;
   }
 
   save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.conversations));
+    if (!isLoggedIn()) return;
+    localStorage.setItem(this._storageKey(), JSON.stringify(this.conversations));
   }
 
   getActiveConvo() {

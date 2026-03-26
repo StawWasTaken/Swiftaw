@@ -2,7 +2,7 @@
 // SWIFTAWPLEX – MAIN APPLICATION
 // ═══════════════════════════════════════════
 
-import { login, logout, getUser, restoreSession, hasPermission } from './auth.js';
+import { login, logout, getUser, restoreSession, hasPermission, hasAccess } from './auth.js';
 import { initWorld, updateWorld, renderWorld, getPlayerZone, placeObject, removeObject, getInteractables, getPlacedObjects, ZONES } from './world.js';
 import { initPlayerControls, updatePlayer, getPlayerPosition, getPlayerRotation, setSensitivity, isKeyDown, unlockPointer, updateRemotePlayer, removeRemotePlayer, getRemotePlayers, getInteractionTarget, getPlacementPosition } from './player.js';
 import { initChat, sendMessage, updatePresence, switchChannel, destroyChat, sendSystemMessage } from './chat.js';
@@ -38,7 +38,18 @@ loginForm.addEventListener('submit', (e) => {
     errorEl.textContent = '';
     startApp();
   } else {
-    errorEl.textContent = 'Invalid credentials. Access denied.';
+    // Check if user exists but doesn't have employee access
+    if (typeof SwiftawAuth !== 'undefined') {
+      const result = SwiftawAuth.login(username, password);
+      if (result.success && result.user.accessLevel < 1) {
+        errorEl.textContent = 'Your account does not have employee access (Level 1+). Contact a CEO to request access.';
+        SwiftawAuth.logout();
+      } else {
+        errorEl.textContent = result.error || 'Invalid credentials. Access denied.';
+      }
+    } else {
+      errorEl.textContent = 'Invalid credentials. Access denied.';
+    }
     document.getElementById('login-pass').value = '';
   }
 });
@@ -53,6 +64,9 @@ function startApp() {
   // Init 3D world
   const canvas = document.getElementById('world-canvas');
   initWorld(canvas);
+
+  // Restore saved placed objects
+  restorePlacedObjects();
 
   // Init player controls
   initPlayerControls();
@@ -323,14 +337,47 @@ function handleInteraction(obj) {
     case 'trophy_case':
       addChatMessage({ type: 'system', text: '🏆 Trophy Case: Swiftaw achievements - Fortized Launch, Tithonia Development, Vital Spark Initiative founding.', timestamp: Date.now() });
       break;
+    case 'teleport_pad': {
+      const destination = obj.userData.destination;
+      const cam = document.getElementById('world-canvas').__camera;
+      cam.position.set(destination.x, 3, destination.z + 5);
+      addChatMessage({ type: 'system', text: `✨ Teleported to ${obj.userData.label}`, timestamp: Date.now() });
+      break;
+    }
     default:
       addChatMessage({ type: 'system', text: `Interacted with ${type || 'object'}.`, timestamp: Date.now() });
   }
 }
 
-// ═══ BROADCAST OBJECT ACTIONS ═══
+// ═══ SAVE/RESTORE PLACED OBJECTS ═══
+const PLACED_OBJECTS_KEY = 'swiftawplex_objects';
+
+function savePlacedObjects() {
+  const objects = getPlacedObjects();
+  const data = objects.map(obj => ({
+    type: obj.userData.type,
+    x: obj.position.x,
+    y: obj.position.y,
+    z: obj.position.z,
+    color: '#' + (obj.material?.color?.getHexString() || 'ffffff'),
+    scale: obj.scale?.x || 1
+  }));
+  try { localStorage.setItem(PLACED_OBJECTS_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function restorePlacedObjects() {
+  try {
+    const stored = localStorage.getItem(PLACED_OBJECTS_KEY);
+    if (!stored) return;
+    const data = JSON.parse(stored);
+    data.forEach(item => {
+      const pos = new THREE.Vector3(item.x, 0, item.z);
+      placeObject(item.type, pos, item.color, item.scale);
+    });
+  } catch(e) {}
+}
 
 function broadcastObjectAction(action, obj) {
-  // Object placement/deletion is broadcast via chat channel for simplicity
-  // In a full implementation, this would use a dedicated Supabase table
+  // Save after every place/delete
+  savePlacedObjects();
 }

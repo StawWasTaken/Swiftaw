@@ -326,7 +326,47 @@ import { Renderer } from './renderer.js';
     }
   });
 
+  // ── Account integration ──
+  function updateAccountUI() {
+    const trainLink = document.getElementById('trainLink');
+    const accountArea = document.getElementById('tithonia-account-area');
+    const loggedIn = typeof SwiftawAuth !== 'undefined' && SwiftawAuth.isLoggedIn();
+    const user = loggedIn ? SwiftawAuth.getUser() : null;
+
+    // Training lab: level 2+
+    if (trainLink) {
+      trainLink.style.display = (user && user.accessLevel >= 2) ? 'flex' : 'none';
+    }
+
+    // Account area in sidebar
+    if (accountArea) {
+      if (loggedIn && user) {
+        accountArea.innerHTML = `
+          <div style="display:flex;align-items:center;gap:8px;padding:4px 0;">
+            <div style="width:24px;height:24px;border-radius:50%;background:${user.color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#0a0a0a;">${user.displayName.charAt(0).toUpperCase()}</div>
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--text-primary);">${user.displayName}</div>
+              <div style="font-size:10px;color:var(--text-muted);">Chats are saved</div>
+            </div>
+          </div>`;
+      } else {
+        accountArea.innerHTML = `
+          <div style="font-size:11px;color:var(--text-muted);line-height:1.4;">
+            Chatting as guest &mdash; chats won't be saved.<br>
+            <a href="/" style="color:var(--brand-orange);text-decoration:underline;font-weight:500;">Log in</a> to save your conversations.
+          </div>`;
+      }
+    }
+
+    // Reload chat manager data for logged-in user
+    chatManager.reload();
+    chatManager.renderChatList(chatList, loadConversation);
+  }
+
+  // Listen for auth changes from other pages/components
+  window.addEventListener('swiftaw-auth-change', updateAccountUI);
+
   // ── Init ──
-  chatManager.renderChatList(chatList, loadConversation);
+  updateAccountUI();
   chatInput.focus();
 })();
