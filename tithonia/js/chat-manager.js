@@ -1,10 +1,18 @@
 /**
- * Tithonia — Conversation State Management
+ * Tithonia — Conversation State Management with Supabase Sync
  */
 
 import { genId, truncate, escapeHtml } from './utils.js';
 
 const STORAGE_KEY = 'tithonia_convos';
+
+// Table names must match those in supabase-config.js
+const TITHONIA_TABLES = {
+  CHATS: 'tithonia_chats',
+  CHAT_FOLDERS: 'tithonia_chat_folders',
+  CHAT_MESSAGES: 'tithonia_chat_messages',
+  USER_PREFERENCES: 'tithonia_user_preferences'
+};
 
 function isLoggedIn() {
   return typeof SwiftawAuth !== 'undefined' && SwiftawAuth.isLoggedIn();
@@ -15,11 +23,19 @@ function getUserKey() {
   return SwiftawAuth.getUser().username;
 }
 
+function getUserId() {
+  if (!isLoggedIn()) return null;
+  return SwiftawAuth.getUser().id;
+}
+
 export class ChatManager {
-  constructor() {
+  constructor(supabaseDb = null) {
+    this.db = supabaseDb;
     this.conversations = this._load();
     this.folders = this._loadFolders();
     this.activeConvoId = null;
+    this.syncEnabled = isLoggedIn() && this.db !== null;
+    this.syncing = false;
   }
 
   _storageKey() {
@@ -51,11 +67,200 @@ export class ChatManager {
   save() {
     if (!isLoggedIn()) return;
     localStorage.setItem(this._storageKey(), JSON.stringify(this.conversations));
+    if (this.syncEnabled) this._syncToSupabase();
   }
 
   saveFolders() {
     if (!isLoggedIn()) return;
     localStorage.setItem(this._foldersStorageKey(), JSON.stringify(this.folders));
+    if (this.syncEnabled) this._syncFoldersToSupabase();
+  }
+
+  async _syncToSupabase() {
+    if (!this.db || this.syncing) return;
+    this.syncing = true;
+
+    try {
+      const userId = getUserId();
+      if (!userId) return;
+
+      // Sync each conversation
+      for (const convo of this.conversations) {
+        const { data: existing } = await this.db
+          .from(TITHONIA_TABLES.CHATS)
+          .select('id')
+          .eq('id', convo.id)
+          .single();
+
+        if (existing) {
+          // Update existing
+          await this.db
+            .from(TITHONIA_TABLES.CHATS)
+            .update({
+              title: convo.title,
+              folder_id: convo.folderId || null,
+              is_pinned: convo.isPinned,
+              is_archived: convo.isArchived,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', convo.id);
+        } else {
+          // Insert new
+          await this.db
+            .from(TITHONIA_TABLES.CHATS)
+            .insert({
+              id: convo.id,
+              user_id: userId,
+              title: convo.title,
+              folder_id: convo.folderId || null,
+              is_pinned: convo.isPinned,
+              is_archived: convo.isArchived,
+              created_at: new Date(convo.created).toISOString(),
+              updated_at: new Date().toISOString()
+            });
+        }
+
+        // Sync messages
+        if (convo.messages && convo.messages.length > 0) {
+          for (const msg of convo.messages) {
+            const msgId = msg.id || genId();
+            const { data: existingMsg } = await this.db
+              .from(TITHONIA_TABLES.CHAT_MESSAGES)
+              .select('id')
+              .eq('id', msgId)
+              .single();
+
+            if (!existingMsg) {
+              await this.db
+                .from(TITHONIA_TABLES.CHAT_MESSAGES)
+                .insert({
+                  id: msgId,
+                  chat_id: convo.id,
+                  role: msg.role,
+                  text: msg.text,
+                  metadata: msg.hasFiles ? { hasFiles: true } : null,
+                  created_at: new Date().toISOString()
+                });
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error syncing chats to Supabase:', error);
+    } finally {
+      this.syncing = false;
+    }
+  }
+
+  async _syncFoldersToSupabase() {
+    if (!this.db || this.syncing) return;
+    this.syncing = true;
+
+    try {
+      const userId = getUserId();
+      if (!userId) return;
+
+      for (const folder of Object.values(this.folders)) {
+        const { data: existing } = await this.db
+          .from(TITHONIA_TABLES.CHAT_FOLDERS)
+          .select('id')
+          .eq('id', folder.id)
+          .single();
+
+        if (existing) {
+          await this.db
+            .from(TITHONIA_TABLES.CHAT_FOLDERS)
+            .update({
+              name: folder.name,
+              icon: folder.icon
+            })
+            .eq('id', folder.id);
+        } else {
+          await this.db
+            .from(TITHONIA_TABLES.CHAT_FOLDERS)
+            .insert({
+              id: folder.id,
+              user_id: userId,
+              name: folder.name,
+              icon: folder.icon,
+              created_at: new Date(folder.created).toISOString()
+            });
+        }
+      }
+    } catch (error) {
+      console.error('Error syncing folders to Supabase:', error);
+    } finally {
+      this.syncing = false;
+    }
+  }
+
+  async loadFromSupabase() {
+    if (!this.db) return;
+
+    try {
+      const userId = getUserId();
+      if (!userId) return;
+
+      // Load chats
+      const { data: chats } = await this.db
+        .from(TITHONIA_TABLES.CHATS)
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (chats) {
+        this.conversations = chats.map(chat => ({
+          id: chat.id,
+          title: chat.title,
+          messages: [],
+          created: new Date(chat.created_at).getTime(),
+          isPinned: chat.is_pinned,
+          isArchived: chat.is_archived,
+          folderId: chat.folder_id
+        }));
+
+        // Load messages for each chat
+        for (const chat of chats) {
+          const { data: messages } = await this.db
+            .from(TITHONIA_TABLES.CHAT_MESSAGES)
+            .select('*')
+            .eq('chat_id', chat.id)
+            .order('created_at', { ascending: true });
+
+          const convo = this.conversations.find(c => c.id === chat.id);
+          if (convo && messages) {
+            convo.messages = messages.map(msg => ({
+              role: msg.role,
+              text: msg.text,
+              ...msg.metadata
+            }));
+          }
+        }
+
+        this.save();
+      }
+
+      // Load folders
+      const { data: folders } = await this.db
+        .from(TITHONIA_TABLES.CHAT_FOLDERS)
+        .select('*')
+        .eq('user_id', userId);
+
+      if (folders) {
+        this.folders = {};
+        folders.forEach(folder => {
+          this.folders[folder.id] = {
+            id: folder.id,
+            name: folder.name,
+            icon: folder.icon,
+            created: new Date(folder.created_at).getTime()
+          };
+        });
+        this.saveFolders();
+      }
+    } catch (error) {
+      console.error('Error loading from Supabase:', error);
+    }
   }
 
   getActiveConvo() {
