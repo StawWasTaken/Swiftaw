@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swiftawplex – Virtual HQ</title>
-<meta name="robots" content="noindex, nofollow">
-<link rel="icon" type="image/png" href="/SwiftawFavicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="/js/swiftaw-auth.js"></script>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiftawplex – The Ultimate Virtual HQ</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="/SwiftawFavicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="/js/swiftaw-auth.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -19,186 +19,259 @@
   <div class="login-bg"></div>
   <div class="login-card">
     <div class="login-logo">
-      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-        <rect width="48" height="48" rx="12" fill="#241f3c"/>
-        <text x="24" y="32" text-anchor="middle" fill="#fff93e" font-family="Inter" font-weight="800" font-size="20">S</text>
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <rect width="56" height="56" rx="14" fill="#241f3c"/>
+        <text x="28" y="40" text-anchor="middle" fill="#fff93e" font-family="Inter" font-weight="800" font-size="28">S</text>
       </svg>
-      <h1>Swiftawplex</h1>
-      <p class="login-subtitle">Employee Virtual HQ</p>
+      <h1>SWIFTAWPLEX</h1>
+      <p class="login-subtitle">The Ultimate Virtual HQ of Swiftaw</p>
     </div>
     <form id="login-form" autocomplete="off">
       <div class="input-group">
-        <label for="login-user">Username</label>
-        <input type="text" id="login-user" placeholder="Enter your username" required>
+        <label for="login-user">Employee ID</label>
+        <input type="text" id="login-user" placeholder="username" required>
       </div>
       <div class="input-group">
-        <label for="login-pass">Password</label>
-        <input type="password" id="login-pass" placeholder="Enter your password" required>
+        <label for="login-pass">Credential</label>
+        <input type="password" id="login-pass" placeholder="••••••••" required>
       </div>
       <p id="login-error" class="login-error"></p>
-      <button type="submit" class="btn-primary" id="login-btn">Enter Swiftawplex</button>
+      <button type="submit" class="btn-primary" id="login-btn">ENTER THE COMPLEX</button>
     </form>
-    <p class="login-footer">Authorized Swiftaw employees only</p>
+    <p class="login-footer">Authorized Swiftaw Employees Only • CONFIDENTIAL</p>
   </div>
 </div>
 
 <!-- ════════════ MAIN APP ════════════ -->
 <div id="app" class="hidden">
 
-  <!-- Top Bar -->
+  <!-- Top Navigation Bar -->
   <div id="top-bar">
     <div class="top-left">
       <div class="logo-mark">S</div>
-      <span class="top-title">Swiftawplex</span>
-      <span id="current-zone" class="zone-badge">Lobby</span>
+      <span class="top-title">SWIFTAWPLEX</span>
+      <div class="zone-badge" id="current-zone">LOBBY</div>
     </div>
     <div class="top-center">
-      <span id="online-count" class="online-badge">1 online</span>
+      <div class="server-info">
+        <span class="online-count" id="online-count">● 1 Online</span>
+        <span class="ping-badge" id="ping-badge">Ping: --ms</span>
+      </div>
     </div>
     <div class="top-right">
-      <span id="user-display" class="user-badge"></span>
-      <button id="btn-minimap" class="top-btn" title="Toggle Minimap">🗺</button>
-      <button id="btn-inventory" class="top-btn" title="Inventory">🎒</button>
+      <button id="btn-nav" class="top-btn" title="Navigation">🗺</button>
+      <button id="btn-inventory" class="top-btn" title="Inventory">📦</button>
+      <button id="btn-tithonia" class="top-btn" title="Tithonia AI">🤖</button>
       <button id="btn-settings" class="top-btn" title="Settings">⚙</button>
-      <button id="btn-logout" class="top-btn" title="Logout">⏻</button>
+      <span class="user-badge" id="user-display"></span>
+      <button id="btn-logout" class="top-btn logout" title="Logout">⏻</button>
     </div>
   </div>
 
-  <!-- 3D Canvas -->
+  <!-- 3D Canvas (Main Game View) -->
   <canvas id="world-canvas"></canvas>
 
-  <!-- Zone Indicators -->
-  <div id="zone-labels"></div>
+  <!-- HUD Elements -->
+  <div id="hud">
+    <!-- Crosshair -->
+    <div id="crosshair">+</div>
 
-  <!-- Minimap -->
-  <div id="minimap" class="panel hidden">
-    <div class="panel-header">
-      <span>Map</span>
-      <button class="panel-close" data-close="minimap">×</button>
+    <!-- Location Display -->
+    <div id="location-hud">
+      <div id="location-name">LOBBY</div>
+      <div id="location-desc">Grand Futuristic Atrium</div>
     </div>
-    <canvas id="minimap-canvas" width="240" height="240"></canvas>
+
+    <!-- Minimap -->
+    <div id="minimap-container">
+      <canvas id="minimap" width="200" height="200"></canvas>
+      <div class="minimap-label">MAP</div>
+    </div>
+
+    <!-- Interaction Prompt -->
+    <div id="interact-prompt" class="hidden">
+      <div class="interact-key">E</div>
+      <span id="interact-text">Interact</span>
+    </div>
+
+    <!-- Glitch Effect (Visible Bug) -->
+    <div id="glitch-overlay" class="glitch-effect"></div>
   </div>
 
   <!-- Chat Panel -->
   <div id="chat-panel" class="panel">
     <div class="panel-header">
-      <span>Chat</span>
-      <div class="chat-tabs">
-        <button class="chat-tab active" data-channel="global">Global</button>
-        <button class="chat-tab" data-channel="zone">Zone</button>
-        <button class="chat-tab" data-channel="team">Team</button>
+      <div class="panel-title">
+        <span class="chat-icon">💬</span>
+        <span>GLOBAL CHAT</span>
+        <span class="glitch-text" style="color: #ff4444;">ERR</span>
       </div>
-      <button class="panel-toggle" id="chat-toggle">▼</button>
+      <button class="panel-collapse" id="chat-collapse">−</button>
+      <button class="panel-close" id="chat-close">×</button>
+    </div>
+    <div id="chat-tabs" class="chat-tabs">
+      <button class="chat-tab active" data-channel="global">GLOBAL</button>
+      <button class="chat-tab" data-channel="zone">ZONE</button>
+      <button class="chat-tab" data-channel="team">TEAM</button>
     </div>
     <div id="chat-messages" class="chat-messages"></div>
     <form id="chat-form" class="chat-input-wrap">
-      <input type="text" id="chat-input" placeholder="Type a message..." maxlength="500" autocomplete="off">
-      <button type="submit" class="chat-send">➤</button>
+      <input type="text" id="chat-input" placeholder="Type message..." maxlength="500" autocomplete="off">
+      <button type="submit" class="chat-send">→</button>
     </form>
   </div>
 
-  <!-- Player List -->
-  <div id="player-list" class="panel right-panel">
+  <!-- Online Players Panel -->
+  <div id="players-panel" class="panel right-panel">
     <div class="panel-header">
-      <span>Employees Online</span>
+      <span class="panel-title">
+        <span class="online-icon">👥</span>
+        EMPLOYEES ONLINE
+      </span>
+      <button class="panel-close" id="players-close">×</button>
     </div>
-    <div id="player-list-items"></div>
+    <div id="player-list-items" class="player-list"></div>
   </div>
 
-  <!-- Creation Panel -->
-  <div id="creation-panel" class="panel right-panel hidden">
+  <!-- Navigation/Map Panel -->
+  <div id="nav-panel" class="panel right-panel hidden">
     <div class="panel-header">
-      <span>Create</span>
-      <button class="panel-close" data-close="creation-panel">×</button>
+      <span class="panel-title">
+        <span>🏗️</span>
+        NAVIGATION
+      </span>
+      <button class="panel-close" id="nav-close">×</button>
     </div>
-    <div class="creation-tools">
-      <button class="create-btn" data-type="cube" title="Place Cube">
-        <span class="create-icon">◻</span>
-        <span>Cube</span>
+    <div class="nav-zones">
+      <button class="zone-btn" data-zone="lobby" data-desc="Grand futuristic atrium with holographic logo">
+        <div class="zone-icon">🏛️</div>
+        <div class="zone-info">
+          <div class="zone-name">LOBBY</div>
+          <div class="zone-players">--</div>
+        </div>
       </button>
-      <button class="create-btn" data-type="sphere" title="Place Sphere">
-        <span class="create-icon">●</span>
-        <span>Sphere</span>
+      <button class="zone-btn" data-zone="rd" data-desc="Research & Development labs">
+        <div class="zone-icon">🔬</div>
+        <div class="zone-info">
+          <div class="zone-name">R&D WING</div>
+          <div class="zone-players">--</div>
+        </div>
       </button>
-      <button class="create-btn" data-type="cylinder" title="Place Cylinder">
-        <span class="create-icon">▮</span>
-        <span>Pillar</span>
+      <button class="zone-btn" data-zone="comms" data-desc="Communications & Media hub">
+        <div class="zone-icon">📡</div>
+        <div class="zone-info">
+          <div class="zone-name">COMMUNICATIONS</div>
+          <div class="zone-players">--</div>
+        </div>
       </button>
-      <button class="create-btn" data-type="wall" title="Place Wall">
-        <span class="create-icon">▬</span>
-        <span>Wall</span>
+      <button class="zone-btn" data-zone="safety" data-desc="Safety & Operations center">
+        <div class="zone-icon">🛡️</div>
+        <div class="zone-info">
+          <div class="zone-name">OPERATIONS</div>
+          <div class="zone-players">--</div>
+        </div>
       </button>
-      <button class="create-btn" data-type="light" title="Place Light">
-        <span class="create-icon">☀</span>
-        <span>Light</span>
+      <button class="zone-btn" data-zone="innovation" data-desc="Innovation Hub & Brainstorming">
+        <div class="zone-icon">💡</div>
+        <div class="zone-info">
+          <div class="zone-name">INNOVATION</div>
+          <div class="zone-players">--</div>
+        </div>
       </button>
-      <button class="create-btn" data-type="sign" title="Place Sign">
-        <span class="create-icon">🪧</span>
-        <span>Sign</span>
+      <button class="zone-btn" data-zone="recreation" data-desc="Cafeterias, lounges & game rooms">
+        <div class="zone-icon">🎮</div>
+        <div class="zone-info">
+          <div class="zone-name">RECREATION</div>
+          <div class="zone-players">--</div>
+        </div>
       </button>
     </div>
-    <div class="creation-options">
-      <label>Color</label>
-      <input type="color" id="create-color" value="#fff93e">
-      <label>Scale</label>
-      <input type="range" id="create-scale" min="0.5" max="5" step="0.5" value="1">
-      <span id="create-scale-val">1x</span>
+  </div>
+
+  <!-- Inventory Panel -->
+  <div id="inventory-panel" class="panel right-panel hidden">
+    <div class="panel-header">
+      <span class="panel-title">📦 INVENTORY</span>
+      <button class="panel-close" id="inventory-close">×</button>
     </div>
-    <button id="delete-mode-btn" class="btn-danger">Delete Mode: OFF</button>
+    <div id="inventory-items" class="inventory-grid">
+      <div class="inventory-slot empty">--</div>
+    </div>
   </div>
 
-  <!-- Build Mode Toolbar -->
-  <div id="build-toolbar" class="hidden">
-    <button id="btn-build" class="toolbar-btn" title="Toggle Build Mode">🔨 Build</button>
+  <!-- Tithonia AI Panel -->
+  <div id="tithonia-panel" class="panel right-panel hidden">
+    <div class="panel-header">
+      <span class="panel-title">
+        <span class="ai-icon">🤖</span>
+        TITHONIA AI
+      </span>
+      <select id="ai-model" class="ai-model-select">
+        <option value="sprout">Sprout (Daily Assistant)</option>
+        <option value="floret">Floret (Code & Dev)</option>
+      </select>
+      <button class="panel-close" id="tithonia-close">×</button>
+    </div>
+    <div id="ai-chat" class="ai-chat"></div>
+    <form id="ai-form" class="ai-input-wrap">
+      <input type="text" id="ai-input" placeholder="Ask Tithonia..." maxlength="500">
+      <button type="submit" class="ai-send">→</button>
+    </form>
   </div>
 
-  <!-- Controls Help -->
-  <div id="controls-help">
-    <span>WASD</span> Move &nbsp;
-    <span>Mouse</span> Look &nbsp;
-    <span>Space</span> Jump &nbsp;
-    <span>E</span> Interact &nbsp;
-    <span>B</span> Build &nbsp;
-    <span>Enter</span> Chat &nbsp;
-    <span>M</span> Map &nbsp;
-    <span>Click</span> Lock cursor
+  <!-- Controls Overlay -->
+  <div id="controls-hint">
+    <div class="controls-text">
+      <span class="key">W/A/S/D</span> Move
+      <span class="key">SPACE</span> Jump
+      <span class="key">E</span> Interact
+      <span class="key">M</span> Minimap
+      <span class="key">P</span> Chat
+      <span class="key">ESC</span> Menu
+    </div>
   </div>
 
-  <!-- Interaction Prompt -->
-  <div id="interact-prompt" class="hidden">
-    <span>Press <kbd>E</kbd> to interact</span>
-  </div>
-
-  <!-- Loading Overlay -->
-  <div id="loading-overlay">
-    <div class="loader"></div>
-    <p>Entering Swiftawplex...</p>
+  <!-- Loading Screen -->
+  <div id="loading-screen-main" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p>LOADING SWIFTAWPLEX</p>
+    <p class="loading-tip">Initializing departments and connecting employees...</p>
   </div>
 
   <!-- Settings Modal -->
   <div id="settings-modal" class="modal hidden">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Settings</h2>
-        <button class="modal-close" data-modal="settings-modal">×</button>
+        <h2>⚙️ SETTINGS</h2>
+        <button class="modal-close" id="settings-close">×</button>
       </div>
       <div class="modal-body">
-        <div class="setting-row">
-          <label>Render Distance</label>
-          <input type="range" id="render-distance" min="50" max="500" value="200">
+        <div class="setting-section">
+          <h3>Graphics</h3>
+          <div class="setting-row">
+            <label>Render Distance</label>
+            <input type="range" id="render-distance" min="50" max="500" value="250">
+          </div>
+          <div class="setting-row">
+            <label>Master Volume</label>
+            <input type="range" id="volume" min="0" max="100" value="50">
+          </div>
         </div>
-        <div class="setting-row">
-          <label>Mouse Sensitivity</label>
-          <input type="range" id="mouse-sensitivity" min="1" max="20" value="8">
+        <div class="setting-section">
+          <h3>Controls</h3>
+          <div class="setting-row">
+            <label>Mouse Sensitivity</label>
+            <input type="range" id="mouse-sensitivity" min="1" max="20" value="8">
+          </div>
+          <div class="setting-row">
+            <label>Show Nametags</label>
+            <input type="checkbox" id="show-nametags" checked>
+          </div>
         </div>
-        <div class="setting-row">
-          <label>Show Name Tags</label>
-          <input type="checkbox" id="show-nametags" checked>
-        </div>
-        <div class="setting-row">
-          <label>Sound Effects</label>
-          <input type="checkbox" id="sound-effects" checked>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="settings-save" class="btn-primary">APPLY</button>
+        <button id="settings-cancel" class="btn-secondary">CANCEL</button>
       </div>
     </div>
   </div>
@@ -212,5 +285,6 @@
 <script type="module" src="js/chat.js"></script>
 <script type="module" src="js/ui.js"></script>
 <script type="module" src="js/app.js"></script>
+
 </body>
 </html>
