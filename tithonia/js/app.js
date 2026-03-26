@@ -56,7 +56,7 @@ import { CodeAssistant } from './code-assistant.js';
 
   // ── Module instances ──
   // Initialize Supabase client for Tithonia
-  const tithoniaDb = typeof createTithoniaSupabaseClient !== 'undefined' ? createTithoniaSupabaseClient() : null;
+  const tithoniaDb = typeof window.createTithoniaSupabaseClient !== 'undefined' ? window.createTithoniaSupabaseClient() : null;
   const chatManager = new ChatManager(tithoniaDb);
   const fileHandler = new FileHandler();
   const renderer = new Renderer(messagesEl, messagesWrap);
@@ -82,7 +82,7 @@ import { CodeAssistant } from './code-assistant.js';
   let searchQuery = '';
 
   // ── Sprout 1.4 Engine (AI Brain) ──
-  const sprout = typeof SproutEngine !== 'undefined' && tithoniaDb ? new SproutEngine(tithoniaDb) : null;
+  const sprout = typeof window.SproutEngine !== 'undefined' && tithoniaDb ? new window.SproutEngine(tithoniaDb) : null;
 
   // ── Initialize from Supabase if logged in ──
   async function initializeChats() {
