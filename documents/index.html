@@ -724,7 +724,7 @@
       const { data, error } = await sb
         .from('documents')
         .insert([{
-          title: doc.title, project: doc.project, initiative: doc.initiative,
+          title: doc.title, project: doc.project,
           subject: doc.subject, body: doc.body, author: doc.author,
           dept: doc.dept, date: doc.date, visibility: doc.visibility
         }])
