@@ -81,7 +81,7 @@ import { CodeAssistant } from './code-assistant.js';
   let draggedFromFolder = null;
   let searchQuery = '';
 
-  // ── Tithonia 1.3 Engine ──
+  // ── Sprout 1.3 Engine (AI Brain) ──
   const db = createSupabaseClient();
   const sprout = db ? new SproutEngine(db) : null;
 
