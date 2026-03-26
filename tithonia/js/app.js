@@ -138,16 +138,18 @@ import { CodeAssistant } from './code-assistant.js';
     modelSelector.classList.remove('open');
   }
 
-  modelSelectorBtn.addEventListener('click', (e) => {
+  modelSelectorBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     toggleModelSelector();
   });
 
-  document.addEventListener('click', (e) => {
-    if (!modelSelector.contains(e.target)) {
-      closeModelSelector();
-    }
-  });
+  if (modelSelector) {
+    document.addEventListener('click', (e) => {
+      if (!modelSelector.contains(e.target)) {
+        closeModelSelector();
+      }
+    });
+  }
 
   // Init model display
   if (MODELS[activeModel]) {
@@ -166,12 +168,12 @@ import { CodeAssistant } from './code-assistant.js';
     toolsSelector.classList.remove('open');
   }
 
-  toolsSelectorBtn.addEventListener('click', (e) => {
+  toolsSelectorBtn?.addEventListener('click', (e) => {
     e.stopPropagation();
     toggleToolsSelector();
   });
 
-  toolsDropdown.addEventListener('click', (e) => {
+  toolsDropdown?.addEventListener('click', (e) => {
     const toolBtn = e.target.closest('.tool-option');
     if (toolBtn) {
       const tool = toolBtn.dataset.tool;
@@ -198,7 +200,7 @@ import { CodeAssistant } from './code-assistant.js';
     renderSidebar();
   }
 
-  chatSearch.addEventListener('input', (e) => {
+  chatSearch?.addEventListener('input', (e) => {
     filterChats(e.target.value);
   });
 
@@ -230,13 +232,13 @@ import { CodeAssistant } from './code-assistant.js';
     }
   }
 
-  btnBulkCancel.addEventListener('click', () => {
+  btnBulkCancel?.addEventListener('click', () => {
     selectedChats.clear();
     updateBulkActionsBar();
     renderSidebar();
   });
 
-  btnBulkArchive.addEventListener('click', () => {
+  btnBulkArchive?.addEventListener('click', () => {
     selectedChats.forEach(chatId => {
       chatManager.archiveConversation(chatId, true);
     });
@@ -248,7 +250,7 @@ import { CodeAssistant } from './code-assistant.js';
     renderSidebar();
   });
 
-  btnBulkDelete.addEventListener('click', () => {
+  btnBulkDelete?.addEventListener('click', () => {
     if (confirm(`Delete ${selectedChats.size} chat(s) permanently?`)) {
       selectedChats.forEach(chatId => {
         chatManager.deleteConversation(chatId);
@@ -263,7 +265,7 @@ import { CodeAssistant } from './code-assistant.js';
   });
 
   // ── Tithonia Tools Buttons ──
-  tithoniaTools.addEventListener('click', (e) => {
+  tithoniaTools?.addEventListener('click', (e) => {
     const toolBtn = e.target.closest('.tool-btn');
     if (toolBtn) {
       const tool = toolBtn.dataset.tool;
@@ -560,7 +562,7 @@ import { CodeAssistant } from './code-assistant.js';
   }
 
   // New folder button
-  btnNewFolder.addEventListener('click', () => {
+  btnNewFolder?.addEventListener('click', () => {
     const name = prompt('Folder name:');
     if (name && name.trim()) {
       chatManager.createFolder(name, '📁');
@@ -605,11 +607,11 @@ import { CodeAssistant } from './code-assistant.js';
   }
 
   // ── File handling ──
-  btnAttach.addEventListener('click', () => {
-    fileInput.click();
+  btnAttach?.addEventListener('click', () => {
+    fileInput?.click();
   });
 
-  fileInput.addEventListener('change', async (e) => {
+  fileInput?.addEventListener('change', async (e) => {
     if (e.target.files.length > 0) {
       await fileHandler.processFiles(Array.from(e.target.files));
       fileHandler.renderFilePreview(filePreviewArea, updateSendButtonState);
@@ -909,25 +911,25 @@ import { CodeAssistant } from './code-assistant.js';
   }
 
   // ── Event listeners ──
-  btnSend.addEventListener('click', () => sendMessage(chatInput.value));
+  btnSend?.addEventListener('click', () => sendMessage(chatInput.value));
 
-  chatInput.addEventListener('keydown', (e) => {
+  chatInput?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage(chatInput.value);
     }
   });
 
-  btnNewChat.addEventListener('click', newChat);
-  sidebarToggle.addEventListener('click', openSidebar);
-  sidebarOverlay.addEventListener('click', closeSidebar);
+  btnNewChat?.addEventListener('click', newChat);
+  sidebarToggle?.addEventListener('click', openSidebar);
+  sidebarOverlay?.addEventListener('click', closeSidebar);
 
   // Suggestion cards
-  suggestionsEl.addEventListener('click', (e) => {
+  suggestionsEl?.addEventListener('click', (e) => {
     const card = e.target.closest('.suggestion-card');
     if (card) {
       const prompt = card.dataset.prompt;
-      chatInput.value = prompt;
+      if (chatInput) chatInput.value = prompt;
       sendMessage(prompt);
     }
   });
