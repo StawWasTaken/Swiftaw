@@ -7,6 +7,8 @@ import { MODELS } from './config.js';
 import { ChatManager } from './chat-manager.js';
 import { FileHandler } from './file-handler.js';
 import { Renderer } from './renderer.js';
+import { DocumentAnalyzer } from './document-analyzer.js';
+import { CodeAssistant } from './code-assistant.js';
 
 (function() {
   'use strict';
@@ -58,6 +60,8 @@ import { Renderer } from './renderer.js';
   const chatManager = new ChatManager(tithoniaDb);
   const fileHandler = new FileHandler();
   const renderer = new Renderer(messagesEl, messagesWrap);
+  const docAnalyzer = new DocumentAnalyzer();
+  const codeAssistant = new CodeAssistant();
 
   // ── Helper functions ──
   function escapeHtml(text) {
@@ -721,6 +725,78 @@ import { Renderer } from './renderer.js';
 
     isGenerating = false;
   }
+
+  // ── Message Actions (Copy, Edit, Delete, Regenerate) ──
+  messagesEl.addEventListener('click', async (e) => {
+    const action = e.target.closest('.msg-action');
+    if (!action) return;
+
+    const messageDiv = action.closest('.message');
+    const messageIndex = Array.from(messagesEl.children).indexOf(messageDiv);
+    const convo = chatManager.getActiveConvo();
+    if (!convo || messageIndex < 0) return;
+
+    const isUserMessage = messageDiv.querySelector('.message-avatar.user-avatar');
+    const messageText = messageDiv.querySelector('.message-text')?.textContent || '';
+
+    if (action.classList.contains('msg-copy')) {
+      // Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(messageText);
+        action.classList.add('active');
+        setTimeout(() => action.classList.remove('active'), 2000);
+      } catch (err) {
+        alert('Failed to copy: ' + err.message);
+      }
+    } else if (action.classList.contains('msg-edit') && isUserMessage) {
+      // Edit user message
+      const newText = prompt('Edit your message:', messageText);
+      if (newText && newText.trim()) {
+        const msgIndex = convo.messages.findIndex((_, i) => {
+          const correspondingDiv = messagesEl.children[i * 2];
+          return correspondingDiv === messageDiv;
+        });
+        if (msgIndex !== -1) {
+          convo.messages[msgIndex].text = newText.trim();
+          chatManager.save();
+          renderer.renderAllMessages(convo.messages);
+        }
+      }
+    } else if (action.classList.contains('msg-delete')) {
+      // Delete message
+      const msgIndex = convo.messages.findIndex((_, i) => {
+        // Count only actual message elements, skip typing indicator
+        const msgDivs = Array.from(messagesEl.children).filter(el =>
+          el.id !== 'typingMsg' && el.classList.contains('message')
+        );
+        return msgDivs[i] === messageDiv;
+      });
+
+      if (msgIndex !== -1) {
+        if (confirm('Delete this message?')) {
+          convo.messages.splice(msgIndex, 1);
+          chatManager.save();
+          renderer.renderAllMessages(convo.messages);
+        }
+      }
+    } else if (action.classList.contains('msg-regenerate') && !isUserMessage) {
+      // Regenerate AI response
+      if (convo.messages.length > 0) {
+        const lastUserMsg = convo.messages.filter(m => m.role === 'user').pop();
+        if (lastUserMsg) {
+          // Remove the last AI response
+          const lastAiIndex = convo.messages.length - 1;
+          if (convo.messages[lastAiIndex].role === 'assistant') {
+            convo.messages.pop();
+            chatManager.save();
+            renderer.renderAllMessages(convo.messages);
+            // Regenerate
+            await sendMessage(lastUserMsg.text);
+          }
+        }
+      }
+    }
+  });
 
   // ── Load a conversation ──
   function loadConversation(id) {
