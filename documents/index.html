@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" href="/SwiftawFavicon.png">
   <link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -192,6 +193,22 @@
 
     .empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
     .empty-state svg { width: 48px; height: 48px; stroke: var(--border); fill: none; stroke-width: 1.5; margin: 0 auto 16px; display: block; }
+
+    /* ══════════════════════════════════════
+       LOADER & TOAST & BADGES
+    ══════════════════════════════════════ */
+    .doc-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 20px; gap: 16px; color: var(--text-muted); }
+    .loader-spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--brand-deep); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--brand-deep); color: #fff; padding: 12px 28px; border-radius: 100px; font-size: .88rem; font-weight: 600; z-index: 5000; opacity: 0; transition: transform .35s, opacity .35s; pointer-events: none; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.success { background: #1b7a2e; }
+    .toast.error { background: #c62828; }
+
+
+    .dv-delete { background: rgba(198,40,40,.15); border: 1px solid rgba(198,40,40,.3); border-radius: 5px; color: #e53935; font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 5px 12px; cursor: pointer; transition: background .15s, color .15s; margin-right: auto; }
+    .dv-delete:hover { background: rgba(198,40,40,.25); color: #c62828; }
 
     /* ══════════════════════════════════════
        MODALS
@@ -389,7 +406,9 @@
     </div>
     <div class="hero-right">
       <p>Browse Swiftaw's official publications — from public announcements to internal memos. Documents are classified as <strong>Public</strong> or <strong>Intern</strong>. Team members with access can also create new documents.</p>
-      <div class="hero-actions" id="hero-actions"></div>
+      <div class="hero-actions" id="hero-actions">
+        <!-- Dynamically rendered based on auth level -->
+      </div>
     </div>
   </div>
 </section>
@@ -401,6 +420,10 @@
     <button class="tab-btn active" onclick="switchTab('all',this)">All</button>
     <button class="tab-btn" onclick="switchTab('public',this)">Public</button>
     <button class="tab-btn" onclick="switchTab('intern',this)">Intern</button>
+  </div>
+  <div id="doc-loader" class="doc-loader" style="display:none;">
+    <div class="loader-spinner"></div>
+    <p>Loading documents...</p>
   </div>
   <div class="doc-grid" id="doc-grid"></div>
   <div class="empty-state" id="empty-state" style="display:none;">
@@ -457,55 +480,70 @@
 <div class="modal-bg" id="create-modal-bg">
   <div class="modal">
     <button class="modal-close" onclick="closeCreateModal()">&times;</button>
-    <h2>New Document</h2>
-    <p class="modal-sub">Fill in the details below. Published immediately.</p>
-    <div class="form-group">
-      <label>Title</label>
-      <input type="text" id="doc-title" placeholder="Document title">
-      <div class="error-msg" id="title-error">Please enter a title.</div>
-    </div>
-    <div class="form-row">
+    <div id="create-step-form">
+      <h2>New Document</h2>
+      <p class="modal-sub">Fill in the details below. Published immediately.</p>
       <div class="form-group">
-        <label>Project</label>
-        <input type="text" id="doc-project" placeholder="Project or General">
+        <label>Title</label>
+        <input type="text" id="doc-title" placeholder="Document title">
+        <div class="error-msg" id="title-error">Please enter a title.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Project</label>
+          <select id="doc-project">
+            <option value="Fortized">Fortized</option>
+            <option value="Tithonia">Tithonia</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Visibility</label>
+          <select id="doc-visibility">
+            <option value="public">Public</option>
+            <option value="intern">Intern</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Author</label>
+          <input type="text" id="doc-author" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label>Department</label>
+          <select id="doc-dept">
+            <option value="R&D">R&D</option>
+            <option value="Safety">Safety</option>
+            <option value="Communication">Communication</option>
+          </select>
+        </div>
       </div>
       <div class="form-group">
-        <label>Visibility</label>
-        <select id="doc-visibility">
-          <option value="public">Public</option>
-          <option value="intern">Intern</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Author</label>
-        <input type="text" id="doc-author" placeholder="Your name">
+        <label>Subject</label>
+        <input type="text" id="doc-subject" placeholder="Brief subject line">
       </div>
       <div class="form-group">
-        <label>Department</label>
-        <input type="text" id="doc-dept" placeholder="Department">
+        <label>Body</label>
+        <textarea id="doc-body" placeholder="Write the document content here..."></textarea>
+        <div class="error-msg" id="body-error">Please write some content.</div>
       </div>
-    </div>
-    <div class="form-group">
-      <label>Subject</label>
-      <input type="text" id="doc-subject" placeholder="Brief subject line">
-    </div>
-    <div class="form-group">
-      <label>Body</label>
-      <textarea id="doc-body" placeholder="Write the document content here..."></textarea>
-      <div class="error-msg" id="body-error">Please write some content.</div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-yellow" onclick="submitDocument()">Publish Document</button>
-      <button class="btn-outline" onclick="closeCreateModal()">Cancel</button>
+      <div class="modal-actions">
+        <button class="btn-yellow" onclick="submitDocument()">Publish Document</button>
+        <button class="btn-outline" onclick="closeCreateModal()">Cancel</button>
+      </div>
     </div>
   </div>
 </div>
 
+<!-- Intern modal removed: access is now account-based via SwiftawAuth -->
+
+<!-- ══ TOAST ══ -->
+<div class="toast" id="toast"></div>
+
 <!-- ══ DOCUMENT VIEWER ══ -->
 <div class="doc-viewer" id="doc-viewer">
   <div class="dv-close-row">
+    <button class="dv-delete" onclick="deleteFromViewer()">Delete</button>
     <button class="dv-close" onclick="closeViewer()">✕ Close</button>
   </div>
   <div class="dv-paper">
@@ -514,92 +552,212 @@
 </div>
 
 <script>
-  const DOCS_STORAGE_KEY = 'swiftaw_documents';
-  let currentTab = 'all';
+  /* ══════════════════════════════════════
+     SUPABASE INIT
+  ══════════════════════════════════════ */
+  const SUPABASE_URL  = 'https://cnlhwcsmptsbmowhmioj.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNubGh3Y3NtcHRzYm1vd2htaW9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzNjY0MTcsImV4cCI6MjA4OTk0MjQxN30.fFNqdjz0A8s8kyvlfWdEKhhiaPeKVcjxvgJje2n-Lo8';
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-  const defaultDocs = [
-    {
-      id:1, title:'Fortized Platform Launch', project:'Fortized',
-      subject:'Official public announcement of the Fortized gaming platform launch.',
-      body:'We are thrilled to announce the official launch of Fortized, our flagship gaming community platform.\n\nFortized brings together gamers, streamers, and communities in one unified space. Built on our latest AI infrastructure, the platform offers real-time chat, community hubs, leaderboards, and intelligent matchmaking.\n\nThis launch marks a major milestone for Swiftaw as we deliver on our mission to empower people through technology and connection.\n\nAll users can sign up at fortized.com starting today. We look forward to growing this community with you.',
-      author:'Swiftaw Leadership', dept:'Swiftaw Leadership', date:'March 2026', visibility:'public'
-    },
-    {
-      id:2, title:'R&D Roadmap Q2 2026', project:'R&D',
-      subject:'Internal research and development priorities for Q2.',
-      body:"This document outlines the R&D department's strategic priorities for Q2 2026.\n\n1. Tithonia AI model improvements — focus on contextual memory and multi-turn reasoning.\n2. Social graph research — mapping connection patterns across Fortized communities.\n3. Safety systems — deployment of the next-generation content moderation pipeline.\n4. Infrastructure scaling — preparation for 10× user growth across all products.\n\nAll department leads are expected to review and confirm alignment by April 15. Budget allocations will follow in a separate memo.",
-      author:'R&D Team', dept:'R&D', date:'March 2026', visibility:'intern'
-    },
-    {
-      id:3, title:'Swiftaw Safety Commitments', project:'Safety',
-      subject:"Public statement on Swiftaw's approach to platform safety.",
-      body:"Swiftaw is committed to building safe, trustworthy digital spaces for all users.\n\nOur safety principles:\n\n— Every product we build is reviewed by our Safety department before launch.\n— We invest in AI moderation tools that scale with our communities.\n— We maintain transparent reporting on safety incidents.\n— User feedback is central to how we improve our systems.\n\nSafety is not an afterthought at Swiftaw — it is embedded in our engineering culture from day one.",
-      author:'Safety Department', dept:'Safety', date:'February 2026', visibility:'public'
-    },
-    {
-      id:4, title:'Tithonia Internal Architecture', project:'Tithonia',
-      subject:'Technical overview of the Tithonia AI platform internals.',
-      body:'This document is restricted to Swiftaw engineering and leadership.\n\nTithonia is built on a hybrid retrieval-augmented generation (RAG) architecture with a proprietary context window management layer. Key components:\n\n— Vector store: custom-built, optimized for sub-50ms retrieval at scale.\n— Model serving: multi-tenant inference cluster with dynamic load balancing.\n— Memory module: session-persistent and cross-session user preference graph.\n— Safety layer: real-time output filtering integrated at the token level.\n\nDetailed API documentation is available in the internal developer portal.',
-      author:'Engineering Team', dept:'R&D', date:'January 2026', visibility:'intern'
-    },
-    {
-      id:5, title:'Goals for the World — 2026 Edition', project:'General',
-      subject:"Swiftaw's annual statement of mission and global objectives.",
-      body:"At Swiftaw, we believe technology should serve humanity — not the other way around.\n\nOur 2026 goals:\n\n1. Reach 1 million active users across all products by year-end.\n2. Publish three research papers on responsible AI development.\n3. Reduce platform carbon footprint by 30% through infrastructure optimisation.\n4. Launch an educational initiative to bring AI literacy to underserved communities.\n5. Open-source two internal tools to benefit the wider developer ecosystem.\n\nWe are accountable to these goals. Progress updates will be shared publicly each quarter.",
-      author:'Swiftaw Leadership', dept:'Swiftaw Leadership', date:'January 2026', visibility:'public'
-    }
-  ];
-
-  // Load saved documents or use defaults
-  function loadDocuments() {
-    try {
-      const stored = localStorage.getItem(DOCS_STORAGE_KEY);
-      if (stored) return JSON.parse(stored);
-    } catch(e) {}
-    return [...defaultDocs];
-  }
-  function saveDocuments() {
-    try { localStorage.setItem(DOCS_STORAGE_KEY, JSON.stringify(documents)); } catch(e) {}
-  }
-  let documents = loadDocuments();
-
-  // Access helpers
+  /* ══════════════════════════════════════
+     STATE
+  ══════════════════════════════════════ */
   function hasInternAccess() {
     return typeof SwiftawAuth !== 'undefined' && SwiftawAuth.hasAccess(1);
   }
   function canWriteDocs() {
     return typeof SwiftawAuth !== 'undefined' && SwiftawAuth.hasAccess(4);
   }
+  let currentTab = 'all';
+  let documents = [];
+  let isLoading = true;
 
+  const defaultDocs = [
+    {
+      title:'Fortized Platform Launch', project:'Fortized',
+      subject:'Official public announcement of the Fortized gaming platform launch.',
+      body:'We are thrilled to announce the official launch of Fortized, our flagship gaming community platform.\n\nFortized brings together gamers, streamers, and communities in one unified space. Built on our latest AI infrastructure, the platform offers real-time chat, community hubs, leaderboards, and intelligent matchmaking.\n\nThis launch marks a major milestone for Swiftaw as we deliver on our mission to empower people through technology and connection.\n\nAll users can sign up at fortized.com starting today. We look forward to growing this community with you.',
+      author:'Swiftaw Leadership', dept:'Swiftaw Leadership', date:'March 2026', visibility:'public'
+    },
+    {
+      title:'R&D Roadmap Q2 2026', project:'R&D',
+      subject:'Internal research and development priorities for Q2.',
+      body:"This document outlines the R&D department's strategic priorities for Q2 2026.\n\n1. Tithonia AI model improvements — focus on contextual memory and multi-turn reasoning.\n2. Social graph research — mapping connection patterns across Fortized communities.\n3. Safety systems — deployment of the next-generation content moderation pipeline.\n4. Infrastructure scaling — preparation for 10× user growth across all products.\n\nAll department leads are expected to review and confirm alignment by April 15. Budget allocations will follow in a separate memo.",
+      author:'R&D Team', dept:'R&D', date:'March 2026', visibility:'intern'
+    },
+    {
+      title:'Swiftaw Safety Commitments', project:'Safety',
+      subject:"Public statement on Swiftaw's approach to platform safety.",
+      body:"Swiftaw is committed to building safe, trustworthy digital spaces for all users.\n\nOur safety principles:\n\n— Every product we build is reviewed by our Safety department before launch.\n— We invest in AI moderation tools that scale with our communities.\n— We maintain transparent reporting on safety incidents.\n— User feedback is central to how we improve our systems.\n\nSafety is not an afterthought at Swiftaw — it is embedded in our engineering culture from day one.",
+      author:'Safety Department', dept:'Safety', date:'February 2026', visibility:'public'
+    },
+    {
+      title:'Tithonia Internal Architecture', project:'Tithonia',
+      subject:'Technical overview of the Tithonia AI platform internals.',
+      body:'This document is restricted to Swiftaw engineering and leadership.\n\nTithonia is built on a hybrid retrieval-augmented generation (RAG) architecture with a proprietary context window management layer. Key components:\n\n— Vector store: custom-built, optimized for sub-50ms retrieval at scale.\n— Model serving: multi-tenant inference cluster with dynamic load balancing.\n— Memory module: session-persistent and cross-session user preference graph.\n— Safety layer: real-time output filtering integrated at the token level.\n\nDetailed API documentation is available in the internal developer portal.',
+      author:'Engineering Team', dept:'R&D', date:'January 2026', visibility:'intern'
+    },
+    {
+      title:'Goals for the World — 2026 Edition', project:'General',
+      subject:"Swiftaw's annual statement of mission and global objectives.",
+      body:"At Swiftaw, we believe technology should serve humanity — not the other way around.\n\nOur 2026 goals:\n\n1. Reach 1 million active users across all products by year-end.\n2. Publish three research papers on responsible AI development.\n3. Reduce platform carbon footprint by 30% through infrastructure optimisation.\n4. Launch an educational initiative to bring AI literacy to underserved communities.\n5. Open-source two internal tools to benefit the wider developer ecosystem.\n\nWe are accountable to these goals. Progress updates will be shared publicly each quarter.",
+      author:'Swiftaw Leadership', dept:'Swiftaw Leadership', date:'January 2026', visibility:'public'
+    }
+  ];
+
+  /* ══════════════════════════════════════
+     HELPERS
+  ══════════════════════════════════════ */
   function esc(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
   function formatDate() {
     return new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'});
   }
+  function showToast(msg, type) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + (type || '');
+    clearTimeout(t._tid);
+    t._tid = setTimeout(() => t.className = 'toast', 3500);
+  }
 
-  function updateHeroActions() {
-    const actions = document.getElementById('hero-actions');
-    actions.innerHTML = '';
-    if (canWriteDocs()) {
-      const btn = document.createElement('button');
-      btn.className = 'btn-yellow';
-      btn.textContent = '+ New Document';
-      btn.addEventListener('click', openCreateModal);
-      actions.appendChild(btn);
+  /* ══════════════════════════════════════
+     PERSISTENCE — Supabase Realtime
+  ══════════════════════════════════════ */
+  function mapRow(row) {
+    return {
+      id: row.id,
+      title: row.title,
+      project: row.project || 'General',
+      subject: row.subject || '',
+      body: row.body,
+      author: row.author || 'Swiftaw Team',
+      dept: row.dept || 'Swiftaw',
+      date: row.date || formatDate(),
+      visibility: row.visibility || 'public'
+    };
+  }
+
+  async function loadDocuments() {
+    isLoading = true;
+    renderDocs();
+    try {
+      const { data, error } = await sb
+        .from('documents')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        documents = data.map(mapRow);
+      } else {
+        await seedDefaults();
+      }
+    } catch (err) {
+      console.warn('Supabase load failed:', err.message);
+      documents = defaultDocs.map((d, i) => ({ ...d, id: Date.now() + i }));
     }
-    if (!hasInternAccess()) {
-      const info = document.createElement('span');
-      info.style.cssText = 'font-size:.88rem;color:var(--text-muted);padding:14px 0;';
-      info.textContent = 'Log in with an employee account to view confidential documents.';
-      actions.appendChild(info);
+    isLoading = false;
+    renderDocs();
+  }
+
+  /* ══ Realtime — everyone sees changes instantly ══ */
+  function subscribeRealtime() {
+    sb.channel('documents-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'documents' }, payload => {
+        const newDoc = mapRow(payload.new);
+        if (!documents.find(d => d.id === newDoc.id)) {
+          documents.unshift(newDoc);
+          renderDocs();
+        }
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'documents' }, payload => {
+        const oldId = payload.old.id;
+        if (documents.find(d => d.id === oldId)) {
+          documents = documents.filter(d => d.id !== oldId);
+          renderDocs();
+        }
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'documents' }, payload => {
+        const updated = mapRow(payload.new);
+        const idx = documents.findIndex(d => d.id === updated.id);
+        if (idx !== -1) {
+          documents[idx] = updated;
+          renderDocs();
+        }
+      })
+      .subscribe();
+  }
+
+  async function seedDefaults() {
+    const rows = defaultDocs.map(d => ({
+      title: d.title, project: d.project, subject: d.subject,
+      body: d.body, author: d.author, dept: d.dept,
+      date: d.date, visibility: d.visibility
+    }));
+    try {
+      const { data, error } = await sb
+        .from('documents')
+        .insert(rows)
+        .select();
+      if (error) throw error;
+      documents = (data || []).map(mapRow);
+    } catch (err) {
+      console.warn('Seed failed:', err.message);
+      documents = defaultDocs.map((d, i) => ({ ...d, id: Date.now() + i }));
     }
   }
 
+  async function saveDocument(doc) {
+    try {
+      const { data, error } = await sb
+        .from('documents')
+        .insert([{
+          title: doc.title, project: doc.project, subject: doc.subject,
+          body: doc.body, author: doc.author, dept: doc.dept,
+          date: doc.date, visibility: doc.visibility
+        }])
+        .select();
+      if (error) throw error;
+      return mapRow(data[0]);
+    } catch (err) {
+      console.error('Save failed:', err.message);
+      showToast('Failed to save document. Please try again.', 'error');
+      return null;
+    }
+  }
+
+  async function deleteDocument(id) {
+    try {
+      const { error } = await sb.from('documents').delete().eq('id', id);
+      if (error) throw error;
+      return true;
+    } catch (err) {
+      console.error('Delete failed:', err.message);
+      showToast('Failed to delete document.', 'error');
+      return false;
+    }
+  }
+
+  /* ══════════════════════════════════════
+     RENDER
+  ══════════════════════════════════════ */
   function renderDocs() {
     const grid  = document.getElementById('doc-grid');
     const empty = document.getElementById('empty-state');
-    const list  = documents.filter(d => currentTab==='all' || d.visibility===currentTab);
+    const loader = document.getElementById('doc-loader');
+
+    if (isLoading) {
+      grid.innerHTML = '';
+      empty.style.display = 'none';
+      loader.style.display = 'flex';
+      return;
+    }
+    loader.style.display = 'none';
+
+    const list = documents.filter(d => currentTab==='all' || d.visibility===currentTab);
     grid.innerHTML = '';
     if (!list.length) { empty.style.display='block'; return; }
     empty.style.display = 'none';
@@ -662,8 +820,12 @@
       wrap.appendChild(card);
       grid.appendChild(wrap);
     });
+
   }
 
+  /* ══════════════════════════════════════
+     TABS
+  ══════════════════════════════════════ */
   function switchTab(tab, btn) {
     currentTab = tab;
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -673,6 +835,9 @@
     renderDocs();
   }
 
+  /* ══════════════════════════════════════
+     VIEWER
+  ══════════════════════════════════════ */
   function openViewer(id) {
     const doc = documents.find(d=>d.id===id);
     if (!doc) return;
@@ -702,20 +867,55 @@
     `;
     inner.scrollTop = 0;
     document.getElementById('doc-viewer').classList.add('open');
+    // Store current doc id for delete
+    document.getElementById('doc-viewer').dataset.docId = id;
   }
 
   function closeViewer() { document.getElementById('doc-viewer').classList.remove('open'); }
 
+  async function deleteFromViewer() {
+    const id = Number(document.getElementById('doc-viewer').dataset.docId);
+    if (!id || !confirm('Are you sure you want to delete this document? This cannot be undone.')) return;
+    const ok = await deleteDocument(id);
+    if (ok) {
+      // Realtime will update the list for all users; update locally too
+      documents = documents.filter(d => d.id !== id);
+      closeViewer();
+      renderDocs();
+      showToast('Document deleted.', 'success');
+    }
+  }
+
+  /* ══════════════════════════════════════
+     CREATE MODAL
+  ══════════════════════════════════════ */
   function openCreateModal() {
     if (!canWriteDocs()) return;
-    const user = SwiftawAuth.getUser();
+    const user = typeof SwiftawAuth !== 'undefined' ? SwiftawAuth.getUser() : null;
     document.getElementById('doc-author').value = user ? user.displayName : '';
-    document.getElementById('doc-dept').value = user ? (user.department || '') : '';
     document.getElementById('create-modal-bg').classList.add('open');
   }
   function closeCreateModal() { document.getElementById('create-modal-bg').classList.remove('open'); }
 
-  function submitDocument() {
+  function updateHeroActions() {
+    const actions = document.getElementById('hero-actions');
+    actions.innerHTML = '';
+    if (canWriteDocs()) {
+      const btn = document.createElement('button');
+      btn.className = 'btn-yellow';
+      btn.textContent = '+ New Document';
+      btn.addEventListener('click', openCreateModal);
+      actions.appendChild(btn);
+    }
+    if (!hasInternAccess()) {
+      const info = document.createElement('span');
+      info.style.cssText = 'font-size:.88rem;color:var(--text-muted);padding:14px 0;';
+      info.textContent = 'Log in with an employee account to view confidential documents.';
+      actions.appendChild(info);
+    }
+  }
+
+  async function submitDocument() {
     if (!canWriteDocs()) return;
     const title=document.getElementById('doc-title').value.trim();
     const body=document.getElementById('doc-body').value.trim();
@@ -725,22 +925,44 @@
     if(!body){document.getElementById('body-error').classList.add('show');ok=false;}
     else document.getElementById('body-error').classList.remove('show');
     if(!ok) return;
-    documents.unshift({
-      id:Date.now(), title,
-      project:document.getElementById('doc-project').value.trim()||'General',
-      subject:document.getElementById('doc-subject').value.trim()||'',
+
+    const publishBtn = document.querySelector('#create-step-form .btn-yellow');
+    publishBtn.disabled = true;
+    publishBtn.textContent = 'Publishing...';
+
+    const newDoc = {
+      title,
+      project: document.getElementById('doc-project').value,
+      subject: document.getElementById('doc-subject').value.trim()||'',
       body,
-      author:document.getElementById('doc-author').value.trim()||'Swiftaw Team',
-      dept:document.getElementById('doc-dept').value.trim()||'Swiftaw',
-      date:formatDate(),
-      visibility:document.getElementById('doc-visibility').value
-    });
-    saveDocuments();
-    closeCreateModal(); renderDocs();
-    ['doc-title','doc-project','doc-subject','doc-body'].forEach(id=>{document.getElementById(id).value='';});
-    document.getElementById('doc-visibility').value='public';
+      author: document.getElementById('doc-author').value.trim()||'Swiftaw Team',
+      dept: document.getElementById('doc-dept').value,
+      date: formatDate(),
+      visibility: document.getElementById('doc-visibility').value
+    };
+
+    const saved = await saveDocument(newDoc);
+    publishBtn.disabled = false;
+    publishBtn.textContent = 'Publish Document';
+
+    if (saved) {
+      // Add locally for immediate feedback; realtime handles other users
+      if (!documents.find(d => d.id === saved.id)) {
+        documents.unshift(saved);
+      }
+      closeCreateModal();
+      renderDocs();
+      showToast('Document published successfully!', 'success');
+      ['doc-title','doc-subject','doc-author','doc-body'].forEach(id=>{document.getElementById(id).value='';});
+      document.getElementById('doc-project').selectedIndex = 0;
+      document.getElementById('doc-dept').selectedIndex = 0;
+      document.getElementById('doc-visibility').value='public';
+    }
   }
 
+  /* ══════════════════════════════════════
+     EVENT LISTENERS
+  ══════════════════════════════════════ */
   document.getElementById('create-modal-bg').addEventListener('click',e=>{if(e.target===e.currentTarget)closeCreateModal();});
   document.getElementById('doc-viewer').addEventListener('click',e=>{if(e.target===e.currentTarget)closeViewer();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeViewer();closeCreateModal();}});
@@ -748,8 +970,12 @@
   // Re-render when auth changes
   window.addEventListener('swiftaw-auth-change', () => { updateHeroActions(); renderDocs(); });
 
+  /* ══════════════════════════════════════
+     INIT — load from Supabase + realtime
+  ══════════════════════════════════════ */
+  loadDocuments();
+  subscribeRealtime();
   updateHeroActions();
-  renderDocs();
 </script>
 <script src="/js/swiftaw-auth.js"></script>
 <script src="/js/swiftaw-nav.js"></script>
