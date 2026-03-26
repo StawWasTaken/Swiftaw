@@ -620,14 +620,14 @@ class FloretEngine {
         executionTime: Date.now() - startTime
       });
 
-      // Log the task execution
-      await this.logTaskExecution({
+      // Log the task execution (non-blocking, fire and forget)
+      this.logTaskExecution({
         taskType,
         requirements,
         result,
         validation,
         executionTime: Date.now() - startTime
-      });
+      }).catch(e => console.warn('Floret task log failed:', e));
 
       this.executedTasks++;
       if (validation.syntaxValid) this.successfulTasks++;

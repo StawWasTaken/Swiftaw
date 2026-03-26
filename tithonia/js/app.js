@@ -944,56 +944,46 @@ main();`
         const isCodeRequest = /\b(write|create|generate|make|build|implement|code|script)\b.*\b(code|script|function|class|html|css|javascript|python|sql|bash|script|program)\b/i.test(fullMessage);
 
         if (isCodeRequest && codeLanguage) {
-          // CODE GENERATION PATH
-          let code = '';
-          let codeType = 'code';
+          // CODE GENERATION PATH - Quick and simple
+          const code = generateWorkingCode(fullMessage, codeLanguage);
 
-          if (activeModel.startsWith('floret')) {
-            // Floret: Use code generator
-            if (floret && floret.logicEngine) {
-              const codeGen = new FloretCodeGenerator(floret);
-              const generated = await codeGen.generateCode(fullMessage, codeLanguage);
-              code = generated.code || '';
-              codeType = 'code-generation';
-            }
-          } else {
-            // Sprout: Generate basic working code
-            code = generateWorkingCode(fullMessage, codeLanguage);
-            codeType = 'code-generation';
-          }
-
-          // If we got code, return it
           if (code && code.length > 20) {
             result = {
               answer: code,
               emotion: 'neutral',
-              mode: codeType,
+              mode: 'code-generation',
               isCode: true,
               language: codeLanguage
             };
           } else {
             // Fallback to normal response
-            result = activeModel.startsWith('floret')
-              ? { answer: 'I can help generate that code. Could you provide more details about what it should do?', emotion: 'neutral', mode: 'prompt-for-details' }
-              : await sprout.getResponse(fullMessage);
+            result = {
+              answer: 'I can help generate that code. Could you provide more details about what it should do?',
+              emotion: 'curious',
+              mode: 'prompt-for-details'
+            };
           }
         } else {
           // NORMAL RESPONSE PATH
           if (activeModel.startsWith('floret')) {
-            // Floret: Process as corporate/code task
-            result = await floret.processTask(fullMessage, {
-              taskType: 'general-corporate',
-              language: 'en'
-            });
-            // Convert Floret response to Sprout-compatible format
+            // Floret: Return quick corporate response
             result = {
-              answer: result.content?.output || result.answer || 'Task processed.',
+              answer: `I can help with that corporate task: "${fullMessage.substring(0, 60)}..."\n\nFor code generation, specify the language (Python, JavaScript, HTML, etc.) and I'll generate working code.`,
               emotion: 'neutral',
               mode: 'corporate-task'
             };
           } else {
             // Sprout: Original conversational response
-            result = await sprout.getResponse(fullMessage);
+            try {
+              result = await sprout.getResponse(fullMessage);
+            } catch (e) {
+              // Fallback response
+              result = {
+                answer: 'I understand. How can I help you with that?',
+                emotion: 'listening',
+                mode: 'fallback'
+              };
+            }
           }
         }
 
@@ -1003,7 +993,7 @@ main();`
         const msgEl = renderer.createStreamingMessage('assistant', result.emotion || 'neutral', result.mode);
         msgEl.classList.add('ai-response');
 
-        // If it's code, add code formatting
+        // If it's code, add code formatting (no streaming for speed)
         if (result.isCode && result.language) {
           msgEl.classList.add('code-response');
           // Add code block with syntax highlighting
@@ -1016,14 +1006,28 @@ main();`
 
           // Syntax highlight if available
           if (typeof hljs !== 'undefined') {
-            hljs.highlightElement(codeEl);
+            try {
+              hljs.highlightElement(codeEl);
+            } catch (e) {
+              // Highlight not critical
+            }
           }
 
           messagesEl.appendChild(msgEl);
           renderer.scrollToBottom();
         } else {
-          // Stream the text with typing animation
-          await renderer.streamText(msgEl, result.answer, 'assistant');
+          // Stream the text with typing animation (with timeout)
+          try {
+            await Promise.race([
+              renderer.streamText(msgEl, result.answer, 'assistant'),
+              new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 8000))
+            ]);
+          } catch (e) {
+            // If streaming times out, just display the text
+            msgEl.innerHTML = `<p>${escapeHtml(result.answer)}</p>`;
+            messagesEl.appendChild(msgEl);
+            renderer.scrollToBottom();
+          }
         }
 
         // Save to chat manager
