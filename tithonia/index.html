@@ -132,7 +132,189 @@ input, textarea { font-family: inherit; }
   text-transform: uppercase;
   letter-spacing: .08em;
   color: var(--text-muted);
-  padding: 20px 16px 8px;
+  padding: 16px 16px 8px;
+  margin-top: 4px;
+}
+
+.btn-new-folder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: calc(100% - 16px);
+  padding: 10px 12px;
+  margin: 4px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border: 1px solid rgba(255,255,255,.06);
+  transition: background .15s, border-color .15s, color .15s;
+  cursor: pointer;
+}
+
+.btn-new-folder:hover {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.12);
+  color: var(--text-secondary);
+}
+
+.btn-new-folder svg {
+  width: 16px;
+  height: 16px;
+  opacity: .6;
+}
+
+.folders-container {
+  padding: 0 8px;
+}
+
+.folder-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background .12s, color .12s;
+  position: relative;
+}
+
+.folder-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.folder-item .folder-icon {
+  font-size: 16px;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.folder-item .folder-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.folder-item .folder-menu {
+  opacity: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: opacity .15s;
+}
+
+.folder-item:hover .folder-menu {
+  opacity: 1;
+}
+
+.folder-menu button {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.folder-menu button:hover {
+  color: var(--text-secondary);
+}
+
+.tithonia-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 8px 12px;
+}
+
+.tool-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+  text-align: left;
+}
+
+.tool-btn:hover {
+  background: rgba(255,156,60,.15);
+  color: var(--brand-orange);
+}
+
+.tool-btn svg {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  opacity: .7;
+}
+
+.tool-btn span {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Context Menu ── */
+.context-menu {
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px;
+  padding: 6px;
+  min-width: 160px;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  animation: contextIn .15s ease;
+}
+
+@keyframes contextIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.context-menu button {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  border-radius: 6px;
+  transition: background .12s, color .12s;
+}
+
+.context-menu button:hover {
+  background: rgba(255,255,255,.08);
+  color: var(--text-primary);
+}
+
+.context-menu button:first-child {
+  margin-top: 0;
+}
+
+.context-menu button:last-child {
+  margin-bottom: 0;
 }
 
 .chat-list {
@@ -802,6 +984,111 @@ input, textarea { font-family: inherit; }
   gap: 4px;
 }
 
+/* ── Tools Selector ── */
+.tools-selector {
+  position: relative;
+}
+
+.input-tools-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  user-select: none;
+  border: none;
+  background: transparent;
+}
+
+.input-tools-btn:hover {
+  background: rgba(255,255,255,.06);
+  color: var(--text-secondary);
+}
+
+.input-tools-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.input-tools-btn .chevron {
+  width: 12px;
+  height: 12px;
+  opacity: .4;
+  transition: transform .2s;
+}
+
+.tools-selector.open .input-tools-btn .chevron {
+  transform: rotate(180deg);
+}
+
+.tools-dropdown {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  padding: 8px;
+  z-index: 500;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity .15s, visibility .15s, transform .15s;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+
+.tools-selector.open .tools-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.tools-dropdown-group {
+  padding: 6px 0;
+}
+
+.tools-group-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-muted);
+  padding: 6px 12px;
+  margin: 4px 0 2px;
+}
+
+.tool-option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+  text-align: left;
+}
+
+.tool-option:hover {
+  background: rgba(255,255,255,.08);
+  color: var(--text-primary);
+}
+
+.tools-dropdown-divider {
+  height: 1px;
+  background: rgba(255,255,255,.06);
+  margin: 4px 0;
+}
+
 /* ── Model Selector ── */
 .model-selector {
   position: relative;
@@ -1000,10 +1287,71 @@ input, textarea { font-family: inherit; }
       New chat
     </button>
 
-    <div class="sidebar-section-label">Recent</div>
+    <!-- Pinned Chats Section -->
+    <div id="pinnedSection" style="display:none;">
+      <div class="sidebar-section-label">Pinned</div>
+      <div class="chat-list" id="pinnedList">
+        <!-- Populated by JS -->
+      </div>
+      <div class="folders-container" id="foldersContainer">
+        <!-- Folders populated by JS -->
+      </div>
+      <button class="btn-new-folder" id="btnNewFolder" title="Create a new folder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+          <line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/>
+        </svg>
+        New folder
+      </button>
+    </div>
 
+    <!-- Recent Chats Section -->
+    <div class="sidebar-section-label">Recent</div>
     <div class="chat-list" id="chatList">
       <!-- Populated by JS -->
+    </div>
+
+    <!-- Archived Chats Section -->
+    <div id="archivedSection" style="display:none;">
+      <div class="sidebar-section-label">Archived</div>
+      <div class="chat-list" id="archivedList">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Tithonia Tools Section -->
+    <div class="sidebar-section-label">Tithonia Tools</div>
+    <div class="tithonia-tools" id="tithoniaTools">
+      <button class="tool-btn" data-tool="idea-generator" title="Generate creative ideas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="1"/><path d="M12 1v6m8.66-2.34-4.24 4.24M23 12h-6m2.34 8.66-4.24-4.24M12 23v-6m-8.66 2.34l4.24-4.24M1 12h6m-2.34-8.66l4.24 4.24"/>
+        </svg>
+        <span>Idea Generator</span>
+      </button>
+      <button class="tool-btn" data-tool="name-generator" title="Generate creative names">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        <span>Name Generator</span>
+      </button>
+      <button class="tool-btn" data-tool="startup-ideas" title="Generate startup ideas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+        <span>Startup Ideas</span>
+      </button>
+      <button class="tool-btn" data-tool="content-ideas" title="Generate content ideas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+        <span>Content Ideas</span>
+      </button>
+      <button class="tool-btn" data-tool="problem-solver" title="Problem solving assistant">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <span>Problem Solver</span>
+      </button>
     </div>
 
     <a class="btn-train" id="trainLink" href="/AI-Models/Sprout/training.html" title="Level 2+ access required" style="display:none;">
@@ -1078,6 +1426,33 @@ input, textarea { font-family: inherit; }
             <input type="file" id="fileInput" hidden accept="image/*,.txt,.pdf,.md,.csv,.json,.xml,.html,.log,.py,.js,.ts,.css" multiple>
           </div>
           <div class="input-toolbar-right">
+            <!-- Precise Creation Tools -->
+            <div class="tools-selector" id="toolsSelector">
+              <button class="input-tools-btn" id="toolsSelectorBtn" title="Select creation tools">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                  <path d="M11.4 14.7l1.4 2.3 3.2-3.2m-6-6A4 4 0 1 0 4 8m16 0a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
+                </svg>
+                <span id="selectedToolName">Tools</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="tools-dropdown" id="toolsDropdown">
+                <div class="tools-dropdown-group">
+                  <div class="tools-group-label">Format & Style</div>
+                  <button class="tool-option" data-tool="novel" title="Write a novel or story">Novel</button>
+                  <button class="tool-option" data-tool="email" title="Write professional emails">University</button>
+                  <button class="tool-option" data-tool="email" title="Write emails">Emails</button>
+                  <button class="tool-option" data-tool="influencer" title="Write influencer content">Influencer</button>
+                </div>
+                <div class="tools-dropdown-divider"></div>
+                <div class="tools-dropdown-group">
+                  <div class="tools-group-label">Enhancement</div>
+                  <button class="tool-option" data-tool="change-tone" title="Change writing tone">Change tone</button>
+                  <button class="tool-option" data-tool="enhance" title="Enhance text">Enhance</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Model Selector -->
             <div class="model-selector" id="modelSelector">
               <button class="input-model-btn" id="modelSelectorBtn">
                 <span class="dot"></span>
