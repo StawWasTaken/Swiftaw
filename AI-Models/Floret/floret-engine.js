@@ -733,3 +733,9 @@ class FloretEngine {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { FloretEngine, FloretLogicEngine };
 }
+
+// Export to global scope for browser
+if (typeof window !== 'undefined') {
+  window.FloretEngine = FloretEngine;
+  window.FloretLogicEngine = FloretLogicEngine;
+}
