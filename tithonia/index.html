@@ -73,6 +73,270 @@ input, textarea { font-family: inherit; }
   flex-direction: column;
   transition: transform .25s cubic-bezier(.4,0,.2,1), opacity .25s;
   z-index: 100;
+  overflow: hidden;
+}
+
+.sidebar-top {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.08);
+  border-radius: 4px;
+}
+
+.sidebar-bottom {
+  padding: 12px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Sidebar Buttons ── */
+.sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .12s ease;
+}
+
+.sidebar-btn:hover {
+  background: rgba(255,156,60,.1);
+  border-color: rgba(255,156,60,.2);
+  color: var(--text-primary);
+}
+
+.sidebar-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.sidebar-btn.more-btn {
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ── Search ── */
+.sidebar-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-search input {
+  width: 100%;
+  padding: 8px 10px 8px 30px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  transition: all .12s;
+}
+
+.sidebar-search input:focus {
+  outline: none;
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,156,60,.4);
+}
+
+.sidebar-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.sidebar-search .search-icon {
+  position: absolute;
+  left: 10px;
+  width: 14px;
+  height: 14px;
+  opacity: .5;
+  pointer-events: none;
+}
+
+/* ── Divider ── */
+.sidebar-divider {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  opacity: .5;
+  padding: 4px 0;
+}
+
+/* ── Sections ── */
+.sidebar-section {
+  margin-bottom: 8px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color .12s;
+}
+
+.section-header:hover {
+  color: var(--text-primary);
+}
+
+.section-header .chevron {
+  width: 16px;
+  height: 16px;
+  transition: transform .2s;
+}
+
+.section-header .section-action {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color .12s;
+  flex-shrink: 0;
+}
+
+.section-header .section-action:hover {
+  color: var(--brand-orange);
+}
+
+.section-header .section-action svg {
+  width: 16px;
+  height: 16px;
+}
+
+.section-label {
+  padding: 10px 12px 6px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.section-content {
+  padding: 0 8px;
+}
+
+.section-item {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  margin: 2px 0;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: all .12s;
+  text-decoration: none;
+}
+
+.section-item:hover {
+  background: rgba(255,156,60,.1);
+  color: var(--text-primary);
+}
+
+/* ── Collections ── */
+.collections-list {
+  padding: 0 8px;
+}
+
+.collection-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin: 2px 0;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .12s;
+  text-decoration: none;
+}
+
+.collection-item:hover {
+  background: rgba(255,156,60,.1);
+  color: var(--text-primary);
+}
+
+.collection-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ── Chats List ── */
+.chats-list {
+  padding: 0 8px;
+}
+
+.chats-list .chat-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin: 2px 0;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .12s;
+  text-decoration: none;
+  text-align: left;
+  width: 100%;
+}
+
+.chats-list .chat-link:hover {
+  background: rgba(255,156,60,.1);
+  color: var(--text-primary);
+}
+
+.chats-list .chat-link.active {
+  background: rgba(255,156,60,.15);
+  color: var(--brand-orange);
+  font-weight: 600;
 }
 
 .sidebar-header {
@@ -1853,133 +2117,96 @@ input, textarea { font-family: inherit; }
 
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
-    <!-- Header -->
-    <div class="sidebar-header">
-      <div class="sidebar-brand">
-        <img src="/product-logos/Tithonia icon.png" alt="Tithonia">
-        <span>Tithonia</span>
+    <!-- Top Actions -->
+    <div class="sidebar-top">
+      <!-- New Chat Button -->
+      <button class="sidebar-btn" id="btnNewChat" title="New chat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        <span>New chat</span>
+      </button>
+
+      <!-- Search Bar -->
+      <div class="sidebar-search">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" id="chatSearch" placeholder="Search chats" autocomplete="off">
       </div>
+
+      <!-- Divider -->
+      <div class="sidebar-divider">~</div>
     </div>
 
-    <!-- New Chat Button -->
-    <button class="btn-new-chat" id="btnNewChat">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-      </svg>
-      New chat
-    </button>
+    <!-- Scrollable Content -->
+    <div class="sidebar-scroll">
+      <!-- GPTs Section -->
+      <div class="sidebar-section">
+        <button class="section-header" data-section="gpts">
+          <span>GPTs</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+        <div class="section-content" id="gptsContent" style="display:none;">
+          <a href="#" class="section-item">ChatGPT</a>
+          <a href="#" class="section-item">Code Interpreter</a>
+        </div>
+      </div>
 
-    <!-- Search Bar -->
-    <div class="search-container">
-      <input type="text" id="chatSearch" class="chat-search" placeholder="Search chats..." autocomplete="off">
-      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-    </div>
-
-    <!-- Main Sidebar Content -->
-    <div class="sidebar-content">
-      <!-- Folders Section -->
-      <div class="sidebar-section" id="foldersSection">
-        <div class="section-header">
-          <div class="sidebar-section-label">Folders</div>
-          <button class="btn-section-action" id="btnNewFolder" title="Create a new folder">
+      <!-- Projects Section -->
+      <div class="sidebar-section">
+        <button class="section-header" data-section="projects">
+          <span>Projects</span>
+          <button class="section-action" title="New project">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
           </button>
-        </div>
-        <div class="folders-list" id="foldersList">
-          <!-- Folders populated by JS -->
+        </button>
+        <div class="section-content" id="projectsContent">
+          <a href="#" class="section-item">New project</a>
         </div>
       </div>
 
-      <!-- Recent Chats Section -->
+      <!-- Swiftaw Collections -->
       <div class="sidebar-section">
-        <div class="section-header">
-          <div class="sidebar-section-label">Recent</div>
-          <span class="section-count" id="recentCount"></span>
+        <div class="section-label">Swiftaw</div>
+        <div class="collections-list" id="collectionsList">
+          <a href="#" class="collection-item">
+            <span class="collection-icon">❤️</span>
+            <span>Les 3 Glorieuses</span>
+          </a>
         </div>
-        <div class="chat-list" id="chatList">
+      </div>
+
+      <!-- Recent Section -->
+      <div class="sidebar-section">
+        <div class="section-label">Recent</div>
+        <div class="chats-list" id="recentList">
           <!-- Populated by JS -->
         </div>
       </div>
 
-      <!-- Pinned Chats Section -->
-      <div class="sidebar-section" id="pinnedSection" style="display:none;">
-        <div class="section-header">
-          <div class="sidebar-section-label">Pinned</div>
-          <span class="section-count" id="pinnedCount"></span>
-        </div>
-        <div class="chat-list" id="pinnedList">
-          <!-- Populated by JS -->
-        </div>
-      </div>
-
-      <!-- Archived Section -->
-      <div class="sidebar-section" id="archivedSection" style="display:none;">
-        <div class="section-header">
-          <div class="sidebar-section-label">Archived</div>
-          <span class="section-count" id="archivedCount"></span>
-        </div>
-        <div class="chat-list" id="archivedList">
+      <!-- Your Chats Section -->
+      <div class="sidebar-section">
+        <div class="section-label">Your chats</div>
+        <div class="chats-list" id="yourChatsList">
           <!-- Populated by JS -->
         </div>
       </div>
     </div>
 
-    <!-- Tools Section -->
-    <div class="sidebar-tools-section">
-      <div class="sidebar-section-label">Tools</div>
-      <div class="tithonia-tools" id="tithoniaTools">
-        <button class="tool-btn" data-tool="idea-generator" title="Generate creative ideas">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <circle cx="12" cy="12" r="1"/><path d="M12 1v6m8.66-2.34-4.24 4.24M23 12h-6m2.34 8.66-4.24-4.24M12 23v-6m-8.66 2.34l4.24-4.24M1 12h6m-2.34-8.66l4.24 4.24"/>
-          </svg>
-          <span>Idea Generator</span>
-        </button>
-        <button class="tool-btn" data-tool="name-generator" title="Generate names">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-          </svg>
-          <span>Name Generator</span>
-        </button>
-        <button class="tool-btn" data-tool="startup-ideas" title="Startup ideas">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-          </svg>
-          <span>Startup Ideas</span>
-        </button>
-        <button class="tool-btn" data-tool="content-ideas" title="Content ideas">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-          </svg>
-          <span>Content Ideas</span>
-        </button>
-        <button class="tool-btn" data-tool="problem-solver" title="Problem solving">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-          </svg>
-          <span>Problem Solver</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="sidebar-footer">
-      <a class="btn-train" id="trainLink" href="/AI-Models/Sprout/training.html" title="Train Tithonia (Level 2+ required)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+    <!-- Bottom Actions -->
+    <div class="sidebar-bottom">
+      <button class="sidebar-btn more-btn" title="More options">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/>
         </svg>
-        Train Tithonia
-      </a>
+        <span>More</span>
+      </button>
       <div id="tithonia-account-area"></div>
-      <a href="/" class="back-link">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
-        Back to Swiftaw
-      </a>
     </div>
   </aside>
 
