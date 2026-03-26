@@ -3,8 +3,8 @@
  */
 
 export const MODELS = {
-  'sprout-1.3': {
-    name: 'Sprout 1.3',
+  'sprout-1.4': {
+    name: 'Sprout 1.4',
     desc: 'Best for everyday tasks. Fast and reliable.',
     engine: 'sprout'
   }
