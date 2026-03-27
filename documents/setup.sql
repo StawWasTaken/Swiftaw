@@ -7,7 +7,8 @@
 CREATE TABLE IF NOT EXISTS public.documents (
   id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   title       text NOT NULL,
-  project     text DEFAULT 'General',
+  project     text DEFAULT 'None',
+  initiative  text DEFAULT 'None',
   subject     text DEFAULT '',
   body        text NOT NULL,
   author      text DEFAULT 'Swiftaw Team',
