@@ -582,31 +582,31 @@
 
   const defaultDocs = [
     {
-      title:'Fortized Platform Launch', project:'Fortized',
+      title:'Fortized Platform Launch', project:'Fortized', initiative:'None',
       subject:'Official public announcement of the Fortized gaming platform launch.',
       body:'We are thrilled to announce the official launch of Fortized, our flagship gaming community platform.\n\nFortized brings together gamers, streamers, and communities in one unified space. Built on our latest AI infrastructure, the platform offers real-time chat, community hubs, leaderboards, and intelligent matchmaking.\n\nThis launch marks a major milestone for Swiftaw as we deliver on our mission to empower people through technology and connection.\n\nAll users can sign up at fortized.com starting today. We look forward to growing this community with you.',
       author:'Swiftaw Leadership', dept:'Swiftaw Leadership', date:'March 2026', visibility:'public'
     },
     {
-      title:'R&D Roadmap Q2 2026', project:'R&D',
+      title:'R&D Roadmap Q2 2026', project:'R&D', initiative:'None',
       subject:'Internal research and development priorities for Q2.',
       body:"This document outlines the R&D department's strategic priorities for Q2 2026.\n\n1. Tithonia AI model improvements — focus on contextual memory and multi-turn reasoning.\n2. Social graph research — mapping connection patterns across Fortized communities.\n3. Safety systems — deployment of the next-generation content moderation pipeline.\n4. Infrastructure scaling — preparation for 10× user growth across all products.\n\nAll department leads are expected to review and confirm alignment by April 15. Budget allocations will follow in a separate memo.",
       author:'R&D Team', dept:'R&D', date:'March 2026', visibility:'intern'
     },
     {
-      title:'Swiftaw Safety Commitments', project:'Safety',
+      title:'Swiftaw Safety Commitments', project:'Safety', initiative:'None',
       subject:"Public statement on Swiftaw's approach to platform safety.",
       body:"Swiftaw is committed to building safe, trustworthy digital spaces for all users.\n\nOur safety principles:\n\n— Every product we build is reviewed by our Safety department before launch.\n— We invest in AI moderation tools that scale with our communities.\n— We maintain transparent reporting on safety incidents.\n— User feedback is central to how we improve our systems.\n\nSafety is not an afterthought at Swiftaw — it is embedded in our engineering culture from day one.",
       author:'Safety Department', dept:'Safety', date:'February 2026', visibility:'public'
     },
     {
-      title:'Tithonia Internal Architecture', project:'Tithonia',
+      title:'Tithonia Internal Architecture', project:'Tithonia', initiative:'None',
       subject:'Technical overview of the Tithonia AI platform internals.',
       body:'This document is restricted to Swiftaw engineering and leadership.\n\nTithonia is built on a hybrid retrieval-augmented generation (RAG) architecture with a proprietary context window management layer. Key components:\n\n— Vector store: custom-built, optimized for sub-50ms retrieval at scale.\n— Model serving: multi-tenant inference cluster with dynamic load balancing.\n— Memory module: session-persistent and cross-session user preference graph.\n— Safety layer: real-time output filtering integrated at the token level.\n\nDetailed API documentation is available in the internal developer portal.',
       author:'Engineering Team', dept:'R&D', date:'January 2026', visibility:'intern'
     },
     {
-      title:'Goals for the World — 2026 Edition', project:'General',
+      title:'Goals for the World — 2026 Edition', project:'General', initiative:'None',
       subject:"Swiftaw's annual statement of mission and global objectives.",
       body:"At Swiftaw, we believe technology should serve humanity — not the other way around.\n\nOur 2026 goals:\n\n1. Reach 1 million active users across all products by year-end.\n2. Publish three research papers on responsible AI development.\n3. Reduce platform carbon footprint by 30% through infrastructure optimisation.\n4. Launch an educational initiative to bring AI literacy to underserved communities.\n5. Open-source two internal tools to benefit the wider developer ecosystem.\n\nWe are accountable to these goals. Progress updates will be shared publicly each quarter.",
       author:'Swiftaw Leadership', dept:'Swiftaw Leadership', date:'January 2026', visibility:'public'
@@ -794,7 +794,7 @@
           <span class="card-stamp-date">${esc(doc.date)}</span>
         </div>
         <div class="card-title">${esc(doc.title)}</div>
-        <div class="card-project">${esc(doc.project)}</div>
+        <div class="card-project">${esc(doc.project)}${doc.initiative && doc.initiative !== 'None' ? ' · ' + esc(doc.initiative) : ''}</div>
         <div class="card-subject">${esc(doc.subject)}</div>
         <hr class="card-rule">
         <div class="card-body">${esc(preview)}</div>
@@ -862,7 +862,7 @@
         <span class="dv-sdate">${esc(doc.date)}</span>
       </div>
       <div class="dv-title">${esc(doc.title)}</div>
-      ${doc.project || doc.initiative ? `<div class="dv-project">${doc.project ? esc(doc.project) : 'Swiftaw'}${doc.initiative ? ' · ' + esc(doc.initiative) : ''}</div>` : '<div class="dv-project">Swiftaw</div>'}
+      ${doc.project && doc.project !== 'None' ? `<div class="dv-project">${esc(doc.project)}${doc.initiative && doc.initiative !== 'None' ? ' · ' + esc(doc.initiative) : ''}</div>` : doc.initiative && doc.initiative !== 'None' ? `<div class="dv-project">${esc(doc.initiative)}</div>` : '<div class="dv-project">Swiftaw</div>'}
       <div class="dv-subject">${esc(doc.subject)}</div>
       <hr class="dv-rule">
       <div class="dv-body">${esc(doc.body)}</div>
