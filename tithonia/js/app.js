@@ -933,49 +933,55 @@ main();`
 
         // Detect if user is asking for code/script
         const codeLanguage = detectCodeLanguage(fullMessage);
-        const isCodeRequest = /\b(write|create|generate|make|build|implement|code|script)\b.*\b(code|script|function|class|html|css|javascript|python|sql|bash|script|program)\b/i.test(fullMessage);
+        const lower = fullMessage.toLowerCase().trim();
+
+        // Match explicit code requests OR bare language names like "html", "python", "css"
+        const isExplicitCodeRequest = /\b(write|create|generate|make|build|implement|code|script)\b/i.test(lower) && codeLanguage;
+        const isBareLanguageRequest = codeLanguage && lower.split(/\s+/).length <= 3;
+        const isCodeRequest = isExplicitCodeRequest || isBareLanguageRequest;
 
         if (isCodeRequest && codeLanguage) {
-          // CODE GENERATION PATH - Quick and simple
+          // CODE GENERATION PATH - Instant, no database calls
           const code = generateWorkingCode(fullMessage, codeLanguage);
 
-          if (code && code.length > 20) {
-            result = {
-              answer: code,
-              emotion: 'neutral',
-              mode: 'code-generation',
-              isCode: true,
-              language: codeLanguage
-            };
-          } else {
-            // Fallback to normal response
-            result = {
-              answer: 'I can help generate that code. Could you provide more details about what it should do?',
-              emotion: 'curious',
-              mode: 'prompt-for-details'
-            };
-          }
+          result = {
+            answer: code,
+            emotion: 'neutral',
+            mode: 'code-generation',
+            isCode: true,
+            language: codeLanguage
+          };
         } else {
-          // NORMAL RESPONSE PATH
+          // NORMAL RESPONSE PATH — with timeout protection
           if (activeModel.startsWith('floret')) {
             // Floret: Return quick corporate response
             result = {
-              answer: `I can help with that corporate task: "${fullMessage.substring(0, 60)}..."\n\nFor code generation, specify the language (Python, JavaScript, HTML, etc.) and I'll generate working code.`,
+              answer: `I can help with that. For code generation, specify the language (e.g. "python", "javascript", "html") and I'll generate working code for you.`,
               emotion: 'neutral',
               mode: 'corporate-task'
             };
-          } else {
-            // Sprout: Original conversational response
+          } else if (sprout) {
+            // Sprout: Conversational response WITH 6-second timeout
             try {
-              result = await sprout.getResponse(fullMessage);
+              result = await Promise.race([
+                sprout.getResponse(fullMessage),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 6000))
+              ]);
             } catch (e) {
-              // Fallback response
+              // Timeout or error — give a fast fallback instead of hanging
               result = {
-                answer: 'I understand. How can I help you with that?',
-                emotion: 'listening',
+                answer: "I understand you're asking about \"" + fullMessage.substring(0, 40) + "\". Could you tell me a bit more so I can help?",
+                emotion: 'curious',
                 mode: 'fallback'
               };
             }
+          } else {
+            // No engine available
+            result = {
+              answer: 'How can I help you today?',
+              emotion: 'neutral',
+              mode: 'fallback'
+            };
           }
         }
 
