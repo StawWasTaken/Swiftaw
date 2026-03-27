@@ -961,20 +961,8 @@ main();`
               mode: 'corporate-task'
             };
           } else if (sprout) {
-            // Sprout: Conversational response WITH 6-second timeout
-            try {
-              result = await Promise.race([
-                sprout.getResponse(fullMessage),
-                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 6000))
-              ]);
-            } catch (e) {
-              // Timeout or error — give a fast fallback instead of hanging
-              result = {
-                answer: "I understand you're asking about \"" + fullMessage.substring(0, 40) + "\". Could you tell me a bit more so I can help?",
-                emotion: 'curious',
-                mode: 'fallback'
-              };
-            }
+            // Sprout: Conversational response
+            result = await sprout.getResponse(fullMessage);
           } else {
             // No engine available
             result = {

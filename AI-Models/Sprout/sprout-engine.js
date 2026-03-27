@@ -3030,14 +3030,11 @@ class SproutEngine {
       this.currentLanguage = detectedLanguage;
     }
 
-    // Load personality context on first interaction (with timeout)
+    // Load personality context on first interaction
     if (!this.personalityLoaded) {
       try {
-        await Promise.race([
-          this.loadPersonality(),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('personality-timeout')), 3000))
-        ]);
-      } catch (e) { this.personalityLoaded = true; /* skip on timeout, don't retry */ }
+        await this.loadPersonality();
+      } catch (e) { /* continue without personality */ }
     }
 
     // Start chat learning processor if not running
@@ -3191,13 +3188,10 @@ class SproutEngine {
 
     // ═══════════════════════════════════════════════
     // STEP 2: SPROUT'S OWN BRAIN — Think, synthesize, respond
-    // Now with full context awareness (with 4s timeout to prevent hangs)
+    // Now with full context awareness
     // ═══════════════════════════════════════════════
     try {
-      const synthesized = await Promise.race([
-        this.think(userMessage, userEmotion, keywords),
-        new Promise((resolve) => setTimeout(() => resolve(null), 4000))
-      ]);
+      const synthesized = await this.think(userMessage, userEmotion, keywords);
 
       if (synthesized) {
         this.taskGoal.isComplete = true;
@@ -3251,48 +3245,37 @@ class SproutEngine {
       } catch (e) { /* fall through */ }
     }
 
-    // Query training data from Supabase (SPROUT 1.4: with timeout protection)
-    let trainingData = [];
-    try {
-      const dbTimeout = (promise) => Promise.race([
-        promise,
-        new Promise((resolve) => setTimeout(() => resolve({ data: null, error: 'timeout' }), 4000))
-      ]);
+    // Query training data from Supabase (SPROUT 1.4: Now supports both 1.3 and 1.4)
+    const { data: trainingData1_3 } = await this.db
+      .from(SPROUT_TABLES.TRAINING_DATA)
+      .select('*')
+      .eq('model', 'sprout-1.3')
+      .eq('active', true);
 
-      const [res1_3, res1_4] = await Promise.all([
-        dbTimeout(this.db.from(SPROUT_TABLES.TRAINING_DATA).select('*').eq('model', 'sprout-1.3').eq('active', true)),
-        dbTimeout(this.db.from(SPROUT_TABLES.TRAINING_DATA).select('*').eq('model', 'sprout-1.4').eq('active', true))
-      ]);
+    const { data: trainingData1_4 } = await this.db
+      .from(SPROUT_TABLES.TRAINING_DATA)
+      .select('*')
+      .eq('model', 'sprout-1.4')
+      .eq('active', true);
 
-      const trainingData1_3 = res1_3.data;
-      const trainingData1_4 = res1_4.data;
+    // Merge results from both versions (1.4 takes priority if same ID)
+    const trainingData = [
+      ...(trainingData1_4 || []),
+      ...(trainingData1_3 || []).filter(td => !trainingData1_4?.find(t => t.question === td.question))
+    ];
 
-      // Merge results from both versions (1.4 takes priority)
-      trainingData = [
-        ...(trainingData1_4 || []),
-        ...(trainingData1_3 || []).filter(td => !trainingData1_4?.find(t => t.question === td.question))
-      ];
-    } catch (e) {
-      console.warn('Training data fetch failed or timed out:', e);
-    }
-
-    if (trainingData.length === 0) {
+    if ((!trainingData1_3 && !trainingData1_4) || trainingData.length === 0) {
       // ═══════════════════════════════════════════════
-      // SMART SEARCH — Try web search before giving up (with timeout)
+      // SMART SEARCH — Try web search before giving up
       // ═══════════════════════════════════════════════
-      try {
-        const smartResult = await Promise.race([
-          this.trySmartSearch(userMessage, keywords, userEmotion, this.currentLanguage),
-          new Promise((resolve) => setTimeout(() => resolve(null), 5000))
-        ]);
-        if (smartResult) {
-          this.taskGoal.isComplete = true;
-          this.taskGoal.successCount++;
-          this.recordConversation(userMessage, smartResult.answer);
-          this.bufferForLearning(userMessage, smartResult.answer, 'smart-search');
-          return smartResult;
-        }
-      } catch (e) { /* search failed or timed out */ }
+      const smartResult = await this.trySmartSearch(userMessage, keywords, userEmotion, this.currentLanguage);
+      if (smartResult) {
+        this.taskGoal.isComplete = true;
+        this.taskGoal.successCount++;
+        this.recordConversation(userMessage, smartResult.answer);
+        this.bufferForLearning(userMessage, smartResult.answer, 'smart-search');
+        return smartResult;
+      }
       this.taskGoal.failCount++;
       return this.getFallbackResponse(userEmotion);
     }
