@@ -47,13 +47,6 @@
     .nav-user-dropdown .dropdown-divider { height: 1px; background: var(--border, #e5e5e5); margin: 4px 8px; }
     .nav-user-dropdown .dropdown-label { padding: 8px 14px 4px; font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted, #888); }
     .nav-user-dropdown .logout-btn { color: #c62828; }
-    .nav-swiftawplex-link {
-      display: flex; align-items: center; gap: 5px;
-      padding: 7px 16px; border-radius: 100px; font-size: .82rem; font-weight: 600;
-      background: linear-gradient(135deg, #241f3c, #3a2f6a); color: #fff93e;
-      transition: box-shadow .2s, transform .15s; text-decoration: none; white-space: nowrap;
-    }
-    .nav-swiftawplex-link:hover { box-shadow: 0 0 20px rgba(255,249,62,.3); transform: translateY(-1px); }
 
     /* Auth Modal */
     .swiftaw-auth-modal {
@@ -154,28 +147,11 @@
     const existing = navInner.querySelector('.nav-auth-area');
     if (existing) existing.remove();
 
-    // Remove existing swiftawplex link
-    const existingPlex = navInner.querySelector('.nav-swiftawplex-link');
-    if (existingPlex) existingPlex.remove();
-
     const user = SwiftawAuth.getUser();
     const area = document.createElement('div');
     area.className = 'nav-auth-area';
 
     if (user) {
-      // Swiftawplex link for employees (level 1+)
-      if (user.accessLevel >= 1) {
-        const plexLink = document.createElement('a');
-        plexLink.href = '/swiftawplex';
-        plexLink.className = 'nav-swiftawplex-link';
-        plexLink.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Swiftawplex';
-        // Insert before nav-spacer
-        const spacer = navInner.querySelector('.nav-spacer');
-        if (spacer) {
-          navInner.insertBefore(plexLink, spacer);
-        }
-      }
-
       // User pill
       const pill = document.createElement('div');
       pill.className = 'nav-user-pill';

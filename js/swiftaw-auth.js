@@ -6,8 +6,8 @@
 /**
  * Access Levels:
  * 0 - No access (non-employee account)
- * 1 - Basic employee (swiftawplex, confidential docs)
- * 2 - Level 1 + Tithonia training lab
+ * 1 - Basic employee (confidential docs)
+ * 2 - Level 1 + advanced access
  * 3 - Level 2 + moderation (timeout/ban users)
  * 4 - Level 3 + write documents
  * 5 - CEO (Level 4 + admin dashboard, manage accounts)
