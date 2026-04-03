@@ -224,22 +224,6 @@ a { text-decoration: none; color: inherit; }
 }
 .btn-dark:hover { opacity: .85; transform: translateY(-1px); }
 
-/* PRODUCTS HEADLINE */
-.products-headline { padding: 60px var(--pad) 80px; background: var(--bg); }
-.products-headline-inner {
-  max-width: var(--max-w); margin: 0 auto;
-}
-.products-headline .section-eyebrow {
-  font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--brand-orange); margin-bottom: 14px;
-}
-.products-headline .highlight-bar {
-  height: 3px;
-  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
-  border-radius: 2px;
-  margin-bottom: 40px;
-  max-width: 80px;
-}
 
 /* STATS BAR */
 .stats-bar {
@@ -594,13 +578,30 @@ footer {
   </div>
 </section>
 
-<!-- PRODUCTS HEADLINE -->
-<div class="products-headline">
-  <div class="products-headline-inner">
-    <div class="section-eyebrow">Our Products</div>
-    <div class="highlight-bar"></div>
-    <h2 style="font-family: 'Inter', sans-serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em;">Platforms that amplify<br>human connection.</h2>
-    <p style="font-size: 16px; color: #555; line-height: 1.7; max-width: 540px;">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence -moving beyond the limitations of today's technology.</p>
+<!-- DARK SECTION - PRODUCTS -->
+<div class="dark-section" style="padding: 80px var(--pad) 60px;">
+  <div class="dark-glow"></div>
+  <div class="section-inner">
+    <div class="section-eyebrow reveal">Our Products</div>
+    <div class="highlight-bar reveal reveal-delay-1"></div>
+    <div class="section-heading reveal reveal-delay-1">Platforms that amplify<br>human connection.</div>
+    <div class="section-desc reveal reveal-delay-2">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence -moving beyond the limitations of today's technology.</div>
+    <div class="dark-grid">
+      <a href="https://fortized.com" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
+        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); overflow: hidden; margin: -36px -36px 24px -36px;">
+          <img src="/Fortized banner6.png" alt="Fortized" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <h3>Fortized</h3>
+        <p>The modern community platform built for gamers and all kinds of people. Organize your ranks, rally your allies, and conquer together.</p>
+      </a>
+      <a href="#cloud" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
+        <div style="width: 100%; height: 200px; overflow: hidden; margin: -36px -36px 24px -36px;">
+          <img src="/SwiftawCloudBanner.png" alt="Swiftaw Cloud" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <h3>Swiftaw Cloud</h3>
+        <p>Intelligent services and infrastructure powering the future. APIs, data services, and intelligent systems for seamless integration.</p>
+      </a>
+    </div>
   </div>
 </div>
 
@@ -651,33 +652,6 @@ footer {
       <div class="feature-icon">&#129309;</div>
       <h3>AI Assistance</h3>
       <p>Developing intelligent assistants that help people with everyday tasks, learning, and creativity — making AI accessible and useful for everyone.</p>
-    </div>
-  </div>
-</div>
-
-<!-- DARK SECTION - PRODUCTS -->
-<div class="dark-section">
-  <div class="dark-glow"></div>
-  <div class="section-inner">
-    <div class="section-eyebrow reveal">Our Products</div>
-    <div class="highlight-bar reveal reveal-delay-1"></div>
-    <div class="section-heading reveal reveal-delay-1">Platforms that amplify<br>human connection.</div>
-    <div class="section-desc reveal reveal-delay-2">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence -moving beyond the limitations of today's technology.</div>
-    <div class="dark-grid">
-      <a href="https://fortized.com" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
-        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); overflow: hidden; margin: -36px -36px 24px -36px;">
-          <img src="/Fortized banner6.png" alt="Fortized" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        <h3>Fortized</h3>
-        <p>The modern community platform built for gamers and all kinds of people. Organize your ranks, rally your allies, and conquer together.</p>
-      </a>
-      <a href="#cloud" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
-        <div style="width: 100%; height: 200px; overflow: hidden; margin: -36px -36px 24px -36px;">
-          <img src="/SwiftawCloudBanner.png" alt="Swiftaw Cloud" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        <h3>Swiftaw Cloud</h3>
-        <p>Intelligent services and infrastructure powering the future. APIs, data services, and intelligent systems for seamless integration.</p>
-      </a>
     </div>
   </div>
 </div>
