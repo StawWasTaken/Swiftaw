@@ -224,15 +224,22 @@ a { text-decoration: none; color: inherit; }
 }
 .btn-dark:hover { opacity: .85; transform: translateY(-1px); }
 
-/* BANNER */
-.banner-section { padding: 0 var(--pad) 80px; }
-.banner-img {
+/* PRODUCTS HEADLINE */
+.products-headline { padding: 60px var(--pad) 80px; background: var(--bg); }
+.products-headline-inner {
   max-width: var(--max-w); margin: 0 auto;
-  border-radius: 20px; overflow: hidden;
-  border: 1px solid var(--border);
-  box-shadow: 0 24px 64px rgba(0,0,0,.06);
 }
-.banner-img img { width: 100%; height: auto; }
+.products-headline .section-eyebrow {
+  font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--brand-orange); margin-bottom: 14px;
+}
+.products-headline .highlight-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
+  border-radius: 2px;
+  margin-bottom: 40px;
+  max-width: 80px;
+}
 
 /* STATS BAR */
 .stats-bar {
@@ -587,10 +594,13 @@ footer {
   </div>
 </section>
 
-<!-- BANNER -->
-<div class="banner-section">
-  <div class="banner-img">
-    <img src="Swiftaw Theme Banner.png" alt="Swiftaw Ecosystem">
+<!-- PRODUCTS HEADLINE -->
+<div class="products-headline">
+  <div class="products-headline-inner">
+    <div class="section-eyebrow">Our Products</div>
+    <div class="highlight-bar"></div>
+    <h2 style="font-family: 'Inter', sans-serif; font-size: 2.5rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em;">Platforms that amplify<br>human connection.</h2>
+    <p style="font-size: 16px; color: #555; line-height: 1.7; max-width: 540px;">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence -moving beyond the limitations of today's technology.</p>
   </div>
 </div>
 
@@ -656,7 +666,7 @@ footer {
     <div class="dark-grid">
       <a href="https://fortized.com" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
         <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); overflow: hidden; margin: -36px -36px 24px -36px;">
-          <img src="/Swiftaw Theme Banner.png" alt="Fortized" style="width: 100%; height: 100%; object-fit: cover;">
+          <img src="/Fortized banner6.png" alt="Fortized" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
         <h3>Fortized</h3>
         <p>The modern community platform built for gamers and all kinds of people. Organize your ranks, rally your allies, and conquer together.</p>
