@@ -401,8 +401,9 @@ a { text-decoration: none; color: inherit; }
   width: 48px; height: 48px; border-radius: 14px;
   background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px; font-size: 22px;
+  margin-bottom: 20px; font-size: 22px; color: white;
 }
+.dept-card-icon svg { width: 24px; height: 24px; color: white; }
 .dept-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
 .dept-card p { font-size: 14px; color: var(--text-light); line-height: 1.65; }
 .dept-card .dept-link {
@@ -585,17 +586,16 @@ footer {
     <div class="section-eyebrow reveal">Our Products</div>
     <div class="highlight-bar reveal reveal-delay-1"></div>
     <div class="section-heading reveal reveal-delay-1">Platforms that amplify<br>human connection.</div>
-    <div class="section-desc reveal reveal-delay-2">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence -moving beyond the limitations of today's technology.</div>
     <div class="dark-grid">
       <a href="https://fortized.com" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
-        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); overflow: hidden; margin: -36px -36px 24px -36px;">
+        <div style="width: calc(100% + 72px); height: 200px; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); overflow: hidden; margin: -36px -36px 24px -36px; margin-left: -36px; margin-right: -36px;">
           <img src="/Fortized banner6.png" alt="Fortized" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
         <h3>Fortized</h3>
         <p>Fortized is the modern community platform built for gamers. Organize your ranks, rally your allies, and conquer together.</p>
       </a>
       <a href="#cloud" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
-        <div style="width: 100%; height: 200px; overflow: hidden; margin: -36px -36px 24px -36px;">
+        <div style="width: calc(100% + 72px); height: 200px; overflow: hidden; margin: -36px -36px 24px -36px;">
           <img src="/SwiftawCloudBanner.png" alt="Swiftaw Cloud" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
         <h3>Swiftaw Cloud</h3>
@@ -631,27 +631,27 @@ footer {
   </div>
 </div>
 
-<!-- RESEARCH & INNOVATION -->
-<div class="section" id="research">
-  <div class="section-eyebrow reveal">Research &amp; Innovation</div>
+<!-- VISION -->
+<div class="section" id="vision">
+  <div class="section-eyebrow reveal">Our Vision</div>
   <div class="highlight-bar reveal reveal-delay-1"></div>
-  <div class="section-heading reveal reveal-delay-1">Building better AI and<br>better social platforms.</div>
-  <div class="section-desc reveal reveal-delay-2">We research how to create smarter AI and more connected social platforms — helping people through chatting, interacting, connecting, and intelligent assistance.</div>
+  <div class="section-heading reveal reveal-delay-1">Building platforms that<br>connect people.</div>
+  <div class="section-desc reveal reveal-delay-2">We're committed to creating experiences where people can connect, communicate, and grow together through communities designed for real human interaction.</div>
   <div class="features-grid">
     <div class="feature-card">
-      <div class="feature-icon">&#129504;</div>
-      <h3>Better AI</h3>
-      <p>Researching how to build AI that truly understands people — enabling natural conversations, smart assistance, and more helpful interactions.</p>
+      <div class="feature-icon">💬</div>
+      <h3>Communication</h3>
+      <p>Fast, reliable messaging with sub-50ms latency, end-to-end encryption, and features built around real conversation.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">&#128172;</div>
-      <h3>Social Platforms</h3>
-      <p>Exploring new ways for people to chat, interact, and form meaningful connections through platforms designed for real human connection.</p>
+      <div class="feature-icon">🤝</div>
+      <h3>Community</h3>
+      <p>Tools to organize, connect, and empower communities of any size. From gaming guilds to professional teams.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">&#129309;</div>
-      <h3>AI Assistance</h3>
-      <p>Developing intelligent assistants that help people with everyday tasks, learning, and creativity — making AI accessible and useful for everyone.</p>
+      <div class="feature-icon">🔐</div>
+      <h3>Trust &amp; Safety</h3>
+      <p>Privacy and security by default. Your data, your control. We prioritize user safety across every platform.</p>
     </div>
   </div>
 </div>
@@ -664,19 +664,19 @@ footer {
   <div class="section-desc reveal reveal-delay-2">Each department drives a critical piece of the Swiftaw ecosystem -from research to safety to how we communicate with the world.</div>
   <div class="dept-grid">
     <a href="/departments/rd" class="dept-card">
-      <div class="dept-card-icon">&#128300;</div>
+      <div class="dept-card-icon"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="20" stroke="currentColor" stroke-width="2"/><path d="M22 8v28M8 22h28M16.5 22a5.5 5.5 0 1 1 11 0 5.5 5.5 0 0 1-11 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
       <h3>R&amp;D</h3>
       <p>Innovative digital platforms, chat engines, and intelligent systems. The engineering heart of Swiftaw.</p>
       <span class="dept-link">Learn more &rarr;</span>
     </a>
     <a href="/departments/safety" class="dept-card">
-      <div class="dept-card-icon">&#128737;</div>
+      <div class="dept-card-icon"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M22 2l12 5v8c0 9-12 16-12 16s-12-7-12-16v-8l12-5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M16 22l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <h3>Safety</h3>
       <p>Protecting communities with advanced moderation, encryption, and responsible technology practices.</p>
       <span class="dept-link">Learn more &rarr;</span>
     </a>
     <a href="/departments/communication" class="dept-card">
-      <div class="dept-card-icon">&#128172;</div>
+      <div class="dept-card-icon"><svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 14c0-2.2 1.8-4 4-4h28c2.2 0 4 1.8 4 4v16c0 2.2-1.8 4-4 4H8c-2.2 0-4-1.8-4-4V14Z" stroke="currentColor" stroke-width="2"/><path d="M8 14l14 10 14-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <h3>Communication</h3>
       <p>Improving connectivity, user engagement, and the digital experience across every touchpoint.</p>
       <span class="dept-link">Learn more &rarr;</span>
@@ -693,8 +693,8 @@ footer {
 
 <!-- CTA -->
 <div class="cta-section">
-  <h2>The future of community<br>starts <em>here.</em></h2>
-  <p>Join the ecosystem. Build with Fortized. Shape the future with Swiftaw.</p>
+  <h2>Move Beyond the <em>Ordinary.</em></h2>
+  <p>Join the Swiftaw ecosystem.</p>
   <div class="hero-actions">
     <a href="https://fortized.com/signup" class="btn-yellow">Try Fortized</a>
     <a href="/blog" class="btn-outline">Read our blog</a>
