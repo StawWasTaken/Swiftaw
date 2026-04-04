@@ -306,21 +306,13 @@ button:disabled {
         <div class="error-message" id="error-message"></div>
 
         <div class="form-group">
-          <label for="email">Email Address</label>
-          <input type="email" id="email" name="email" placeholder="you@example.com" required>
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="your_username" required>
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
           <input type="password" id="password" name="password" placeholder="••••••••" required>
-        </div>
-
-        <div class="form-options">
-          <label style="display: flex; align-items: center; gap: 6px; font-weight: 500; cursor: pointer;">
-            <input type="checkbox" id="remember" style="width: auto; padding: 0;">
-            <span>Remember me</span>
-          </label>
-          <a href="/cloud/forgot-password">Forgot password?</a>
         </div>
 
         <button type="submit">Sign In</button>
@@ -344,51 +336,65 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 document.getElementById('login-form').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById('email').value.trim();
+  const username = document.getElementById('username').value.trim();
   const password = document.getElementById('password').value;
-  const remember = document.getElementById('remember').checked;
   const errorDiv = document.getElementById('error-message');
 
   errorDiv.classList.remove('show');
 
+  if (!username || !password) {
+    errorDiv.textContent = 'Please enter username and password';
+    errorDiv.classList.add('show');
+    return;
+  }
+
   try {
-    const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_KEY
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
-    });
+    // Query cloud_users by username
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/cloud_users?username=eq.${encodeURIComponent(username)}&select=id,username,email`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Accept': 'application/json'
+        }
+      }
+    );
 
-    const data = await response.json();
+    const users = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.error_description || 'Login failed');
+    if (!users || users.length === 0) {
+      throw new Error('Invalid username or password');
+    }
+
+    const user = users[0];
+
+    // Query to verify password
+    const passwordCheck = await fetch(
+      `${SUPABASE_URL}/rest/v1/cloud_users?id=eq.${encodeURIComponent(user.id)}&password=eq.${encodeURIComponent(password)}&select=id`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Accept': 'application/json'
+        }
+      }
+    );
+
+    const passwordResult = await passwordCheck.json();
+
+    if (!passwordResult || passwordResult.length === 0) {
+      throw new Error('Invalid username or password');
     }
 
     // Store session
-    localStorage.setItem('cloud_session', JSON.stringify(data));
-    localStorage.setItem('cloud_user_email', email);
+    localStorage.setItem('cloud_user_id', user.id);
+    localStorage.setItem('cloud_user_username', user.username);
+    localStorage.setItem('cloud_session', JSON.stringify({
+      user: { id: user.id, username: user.username, email: user.email },
+      logged_in_at: Date.now()
+    }));
 
-    if (remember) {
-      localStorage.setItem('remember_me', 'true');
-    }
-
-    // Check for redirect_to parameter (for Fortized OAuth flow)
-    const params = new URLSearchParams(window.location.search);
-    const redirectTo = params.get('redirect_to');
-
-    if (redirectTo) {
-      // Redirect to Fortized with auth info
-      window.location.href = redirectTo + '?cloud_token=' + data.access_token;
-    } else {
-      // Redirect to dashboard
-      window.location.href = '/cloud/dashboard';
-    }
+    // Redirect to dashboard
+    window.location.href = '/cloud/dashboard';
 
   } catch (error) {
     errorDiv.textContent = error.message || 'Failed to sign in. Please check your credentials.';
@@ -398,19 +404,10 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
 // Check if user is already logged in
 function checkAuth() {
-  const session = localStorage.getItem('cloud_session');
-  if (session) {
-    const data = JSON.parse(session);
-    // Verify token is still valid (simple check)
-    if (data.access_token) {
-      // Redirect to dashboard if already authenticated
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('redirect_to')) {
-        // Don't redirect if coming from Fortized
-        return;
-      }
-      window.location.href = '/cloud/dashboard';
-    }
+  const userId = localStorage.getItem('cloud_user_id');
+  if (userId) {
+    // User is already logged in, redirect to dashboard
+    window.location.href = '/cloud/dashboard';
   }
 }
 
