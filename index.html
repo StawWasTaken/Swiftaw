@@ -410,8 +410,9 @@ a { text-decoration: none; color: inherit; }
   width: 48px; height: 48px; border-radius: 14px;
   background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px; font-size: 22px;
+  margin-bottom: 20px; font-size: 22px; color: white;
 }
+.dept-card-icon svg { width: 24px; height: 24px; color: white; }
 .dept-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
 .dept-card p { font-size: 14px; color: var(--text-light); line-height: 1.65; }
 .dept-card .dept-link {
@@ -587,13 +588,6 @@ footer {
   </div>
 </section>
 
-<!-- BANNER -->
-<div class="banner-section">
-  <div class="banner-img">
-    <img src="Swiftaw Theme Banner.png" alt="Swiftaw Ecosystem">
-  </div>
-</div>
-
 <!-- STATS BAR -->
 <div class="stats-bar">
   <div class="stats-inner" id="statsBar">
@@ -618,6 +612,14 @@ footer {
       <div class="stat-sub">End-to-end by default</div>
     </div>
   </div>
+</div>
+
+<!-- PRODUCTS SECTION -->
+<div class="section" id="products">
+  <div class="section-eyebrow reveal">Our Products</div>
+  <div class="highlight-bar reveal reveal-delay-1"></div>
+  <div class="section-heading reveal reveal-delay-1">Platforms that amplify<br>human connection.</div>
+  <div class="section-desc reveal reveal-delay-2">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence - moving beyond the limitations of today's technology.</div>
 </div>
 
 <!-- RESEARCH & INNOVATION -->
@@ -645,33 +647,6 @@ footer {
   </div>
 </div>
 
-<!-- DARK SECTION - PRODUCTS -->
-<div class="dark-section">
-  <div class="dark-glow"></div>
-  <div class="section-inner">
-    <div class="section-eyebrow reveal">Our Products</div>
-    <div class="highlight-bar reveal reveal-delay-1"></div>
-    <div class="section-heading reveal reveal-delay-1">Platforms that amplify<br>human connection.</div>
-    <div class="section-desc reveal reveal-delay-2">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence -moving beyond the limitations of today's technology.</div>
-    <div class="dark-grid">
-      <a href="https://fortized.com" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
-        <div style="width: calc(100% + 72px); height: 200px; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); overflow: hidden; margin: -36px -36px 24px -36px; margin-left: -36px; margin-right: -36px;">
-          <img src="/Fortized banner6.png" alt="Fortized" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        <h3>Fortized</h3>
-        <p>Fortized is the modern community platform built for gamers. Organize your ranks, rally your allies, and conquer together.</p>
-      </a>
-      <a href="/cloud" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
-        <div style="width: calc(100% + 72px); height: 200px; overflow: hidden; margin: -36px -36px 24px -36px; margin-left: -36px; margin-right: -36px;">
-          <img src="/SwiftawCloudBanner.png?v=2" alt="Swiftaw Cloud" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        <h3>Swiftaw Cloud</h3>
-        <p>The unified platform powering identity and access across Swiftaw. One account. Seamless connections.</p>
-      </a>
-    </div>
-  </div>
-</div>
-
 <!-- DEPARTMENTS -->
 <div class="section" id="departments">
   <div class="section-eyebrow reveal">Swiftaw Departments</div>
@@ -680,19 +655,25 @@ footer {
   <div class="section-desc reveal reveal-delay-2">Each department drives a critical piece of the Swiftaw ecosystem -from research to safety to how we communicate with the world.</div>
   <div class="dept-grid">
     <a href="/departments/rd" class="dept-card">
-      <div class="dept-card-icon">&#128300;</div>
+      <div class="dept-card-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><path d="M12 1v6m0 6v6"></path><path d="M4.22 4.22l4.24 4.24m5.08 5.08l4.24 4.24"></path><path d="M1 12h6m6 0h6"></path><path d="M4.22 19.78l4.24-4.24m5.08-5.08l4.24-4.24"></path></svg>
+      </div>
       <h3>R&amp;D</h3>
       <p>Innovative digital platforms, chat engines, and intelligent systems. The engineering heart of Swiftaw.</p>
       <span class="dept-link">Learn more &rarr;</span>
     </a>
     <a href="/departments/safety" class="dept-card">
-      <div class="dept-card-icon">&#128737;</div>
+      <div class="dept-card-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="M10 17l2 2 4-4"></path></svg>
+      </div>
       <h3>Safety</h3>
       <p>Protecting communities with advanced moderation, encryption, and responsible technology practices.</p>
       <span class="dept-link">Learn more &rarr;</span>
     </a>
     <a href="/departments/communication" class="dept-card">
-      <div class="dept-card-icon">&#128172;</div>
+      <div class="dept-card-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><circle cx="9" cy="10" r="1"></circle><circle cx="12" cy="10" r="1"></circle><circle cx="15" cy="10" r="1"></circle></svg>
+      </div>
       <h3>Communication</h3>
       <p>Improving connectivity, user engagement, and the digital experience across every touchpoint.</p>
       <span class="dept-link">Learn more &rarr;</span>
