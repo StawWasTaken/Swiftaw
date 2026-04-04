@@ -6,9 +6,466 @@
 <title>Create Swiftaw Cloud Account</title>
 <meta name="description" content="Create your unified Swiftaw Cloud account to manage all your identities across products.">
 <meta name="theme-color" content="#ffffff">
-<link rel="icon" type="image/png" href="/SwiftawFavicon.png">
+<link rel="icon" type="image/png" href="/SwiftawCloudFavicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+::selection { background: rgba(255,249,62,.25); }
+
+:root {
+  --brand-deep: #241f3c;
+  --brand-yellow: #fff93e;
+  --brand-orange: #ff9c3c;
+  --bg: #ffffff;
+  --text: #0a0a0a;
+  --text-light: #555;
+  --text-muted: #888;
+  --border: #e5e5e5;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --max-w: 1200px;
+  --pad: clamp(1.5rem, 4vw, 5rem);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  min-height: 100vh;
+}
+img { display: block; -webkit-user-drag: none; user-select: none; }
+a { text-decoration: none; color: inherit; }
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+}
+
+/* ═══ LEFT SIDE - HERO ═══ */
+.hero {
+  background: linear-gradient(135deg, var(--brand-deep) 0%, #1a1530 50%, #0d0b1a 100%);
+  color: #fff;
+  padding: var(--pad);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.hero-content {
+  max-width: 400px;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  letter-spacing: -.01em;
+}
+
+.hero p {
+  font-size: 16px;
+  color: rgba(255,255,255,.7);
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.hero-features {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feature {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.feature-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.feature-text {
+  font-size: 13px;
+  color: rgba(255,255,255,.8);
+  line-height: 1.5;
+}
+
+/* ═══ RIGHT SIDE - FORM ═══ */
+.form-section {
+  padding: var(--pad);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-inner {
+  max-width: 380px;
+}
+
+.form-header {
+  margin-bottom: 40px;
+}
+
+.form-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 32px;
+}
+
+.form-logo img {
+  height: 24px;
+  width: auto;
+}
+
+.form-logo span {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.form-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.form-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+input {
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font-sans);
+  transition: border-color .2s, box-shadow .2s;
+  background: #fafafa;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--brand-orange);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(255,156,60,.1);
+}
+
+input::placeholder {
+  color: var(--text-muted);
+}
+
+.password-requirements {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+button {
+  padding: 12px 16px;
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-deep));
+  color: var(--brand-yellow);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .2s, transform .2s;
+  margin-top: 8px;
+}
+
+button:hover {
+  opacity: .9;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.form-footer {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.form-footer a {
+  color: var(--brand-orange);
+  font-weight: 600;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}
+
+.message {
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.message.error {
+  background: rgba(211, 47, 47, .1);
+  border: 1px solid rgba(211, 47, 47, .3);
+  color: #d32f2f;
+  display: block;
+}
+
+.message.success {
+  background: rgba(76, 175, 80, .1);
+  border: 1px solid rgba(76, 175, 80, .3);
+  color: #388e3c;
+  display: block;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  padding: 16px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  animation: slideIn .3s ease-out;
+  z-index: 1000;
+}
+
+.toast.success {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+}
+
+.toast.error {
+  background: linear-gradient(135deg, #f44336, #da190b);
+  color: white;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    min-height: 200px;
+    justify-content: flex-end;
+  }
+
+  .form-section {
+    min-height: auto;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- ═══ LEFT: HERO ═══ -->
+  <div class="hero">
+    <div class="hero-content">
+      <h1>One Identity.<br>Many Possibilities.</h1>
+      <p>Create a unified Swiftaw Cloud account to manage all your identities across every product we build.</p>
+      <div class="hero-features">
+        <div class="feature">
+          <div class="feature-icon">☁️</div>
+          <div class="feature-text">One account for all Swiftaw products</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔗</div>
+          <div class="feature-text">Link up to 10 accounts per product</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🛡️</div>
+          <div class="feature-text">Unified security and access control</div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-text">Switch between identities instantly</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ RIGHT: SIGNUP FORM ═══ -->
+  <div class="form-section">
+    <div class="form-inner">
+      <div class="form-header">
+        <div class="form-logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>CLOUD</span>
+        </div>
+        <h2 class="form-title">Create Account</h2>
+        <p class="form-subtitle">Get started with Swiftaw Cloud in seconds</p>
+      </div>
+
+      <form id="signup-form">
+        <div id="message-container"></div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="••••••••" required>
+          <div class="password-requirements">At least 8 characters, mix of letters and numbers</div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <input type="password" id="confirm-password" name="confirm-password" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit">Create Cloud Account</button>
+      </form>
+
+      <div class="form-footer">
+        Already have an account? <a href="/cloud/login">Sign in</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://eujglvqqhrkyhyuqagse.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1amdsdnFxaHJreWh5dXFhZ3NlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjQ4NjUsImV4cCI6MjA5MDgwMDg2NX0.HjsPbBICvRnM1OTqafdP90grjw9lj1RfR_G_YHicMGY';
+
+function showMessage(type, text) {
+  const container = document.getElementById('message-container');
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${type}`;
+  messageDiv.textContent = text;
+  container.innerHTML = '';
+  container.appendChild(messageDiv);
+}
+
+function showToast(type, text) {
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = text;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = 'slideOut .3s ease-out';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+function validatePassword(password) {
+  return password.length >= 8 && /[a-zA-Z]/.test(password) && /[0-9]/.test(password);
+}
+
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+document.getElementById('signup-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const confirmPassword = document.getElementById('confirm-password').value;
+
+  if (!validateEmail(email)) {
+    showMessage('error', 'Please enter a valid email address');
+    return;
+  }
+
+  if (!validatePassword(password)) {
+    showMessage('error', 'Password must be at least 8 characters with letters and numbers');
+    return;
+  }
+
+  if (password !== confirmPassword)) {
+    showMessage('error', 'Passwords do not match');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Signup failed');
+    }
+
+    showToast('success', '✓ Account created! Redirecting...');
+    localStorage.setItem('cloud_session', JSON.stringify(data));
+    localStorage.setItem('cloud_user_email', email);
+
+    setTimeout(() => {
+      window.location.href = '/cloud/dashboard';
+    }, 1500);
+
+  } catch (error) {
+    showMessage('error', error.message || 'Failed to create account. Please try again.');
+  }
+});
+</script>
+</body>
+</html>
 ::selection { background: rgba(255,249,62,.25); }
 
 :root {
