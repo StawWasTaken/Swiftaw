@@ -761,24 +761,24 @@ const PRODUCTS = {
 };
 
 function checkAuth() {
-  const session = localStorage.getItem('cloud_session');
-  if (!session) {
+  const userId = localStorage.getItem('cloud_user_id');
+  const username = localStorage.getItem('cloud_user_username');
+  if (!userId || !username) {
     window.location.href = '/cloud/login';
     return false;
   }
-  return JSON.parse(session);
+  return { user: { id: userId, username: username } };
 }
 
 function initPage() {
-  const email = localStorage.getItem('cloud_user_email') || 'user@example.com';
-  const name = email.split('@')[0];
-  const initial = name.charAt(0).toUpperCase();
+  const username = localStorage.getItem('cloud_user_username') || 'user';
+  const initial = username.charAt(0).toUpperCase();
 
   document.getElementById('user-avatar').textContent = initial;
   document.getElementById('welcome-avatar').textContent = initial;
-  document.getElementById('welcome-email').textContent = email;
-  document.getElementById('display-name-value').textContent = name;
-  document.getElementById('display-name-input').value = name;
+  document.getElementById('welcome-email').textContent = '@' + username;
+  document.getElementById('display-name-value').textContent = username;
+  document.getElementById('display-name-input').value = username;
 
   renderProducts();
   updateStats();
@@ -858,7 +858,17 @@ function toggle2FA(el) {
 }
 
 function toggleUserMenu() {
-  showToast('success', 'User menu coming soon');
+  showToast('info', 'Logging out...');
+  setTimeout(() => {
+    logout();
+  }, 500);
+}
+
+function logout() {
+  localStorage.removeItem('cloud_user_id');
+  localStorage.removeItem('cloud_user_username');
+  localStorage.removeItem('cloud_session');
+  window.location.href = '/cloud/login';
 }
 
 function showToast(type, text) {
