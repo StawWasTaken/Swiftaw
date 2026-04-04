@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connect to Swiftaw Cloud</title>
+  <meta name="description" content="Connect your Swiftaw Cloud account to access all products.">
+  <link rel="icon" type="image/png" href="/SwiftawCloudFavicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --brand-deep: #241f3c;
+      --brand-yellow: #fff93e;
+      --brand-orange: #ff9c3c;
+      --bg: #ffffff;
+      --text: #0a0a0a;
+      --text-light: #555;
+      --text-muted: #888;
+      --border: #e5e5e5;
+      --error: #d32f2f;
+      --success: #388e3c;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      min-height: 100vh;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .content {
+      display: none;
+    }
+
+    .content.active {
+      display: block;
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--brand-yellow);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: var(--font-sans);
+      background: var(--brand-yellow);
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 3px rgba(255, 156, 60, 0.2);
+    }
+
+    input::placeholder {
+      color: rgba(10, 10, 10, 0.5);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--brand-deep);
+      color: var(--brand-yellow);
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    button:hover:not(:disabled) {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    button:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .message {
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .message.error {
+      background: rgba(211, 47, 47, 0.1);
+      border: 1px solid rgba(211, 47, 47, 0.3);
+      color: var(--error);
+      display: block;
+    }
+
+    .message.success {
+      background: rgba(76, 175, 80, 0.1);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      color: var(--success);
+      display: block;
+    }
+
+    .message.info {
+      background: rgba(25, 118, 210, 0.1);
+      border: 1px solid rgba(25, 118, 210, 0.3);
+      color: #1976d2;
+      display: block;
+    }
+
+    .continue-as {
+      padding: 16px;
+      background: rgba(255, 249, 62, 0.1);
+      border: 1px solid var(--brand-yellow);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .continue-as-user {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .continue-as-text {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-bottom: 12px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .subaccount-list {
+      margin-bottom: 24px;
+    }
+
+    .subaccount-item {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .subaccount-item:hover {
+      background: rgba(255, 249, 62, 0.05);
+      border-color: var(--brand-yellow);
+    }
+
+    .subaccount-item.selected {
+      background: rgba(255, 249, 62, 0.1);
+      border-color: var(--brand-yellow);
+    }
+
+    .subaccount-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .subaccount-username {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 249, 62, 0.3);
+      border-top: 2px solid var(--brand-yellow);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    <div class="logo">
+      <img src="/Cloud logo.png" alt="Swiftaw Cloud">
+    </div>
+    <h1>Connect Account</h1>
+    <p class="subtitle">Connect your Swiftaw Cloud account to continue</p>
+
+    <div class="message" id="message"></div>
+
+    <!-- LOGIN FORM -->
+    <div class="content active" id="login-content">
+      <div class="section">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="your_username" required>
+      </div>
+
+      <div class="section">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••" required>
+      </div>
+
+      <button id="login-btn">Sign In to Cloud</button>
+    </div>
+
+    <!-- CONTINUE AS EXISTING USER -->
+    <div class="content" id="continue-content">
+      <div class="continue-as">
+        <div class="continue-as-user" id="continue-username"></div>
+        <div class="continue-as-text">Already logged in to Cloud</div>
+      </div>
+
+      <div id="subaccount-section" style="display: none;">
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Select your Fortized account:</p>
+        <div class="subaccount-list" id="subaccount-list"></div>
+      </div>
+
+      <button id="continue-btn">Continue</button>
+      <div class="divider">or</div>
+      <button id="sign-in-different" style="background: transparent; color: var(--brand-orange); border: 1px solid var(--brand-orange);">Sign in with different account</button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="content" id="success-content">
+      <div class="message success">
+        <span class="spinner"></span>
+        Redirecting you back...
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://eujglvqqhrkyhyuqagse.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1amdsdnFxaHJreWh5dXFhZ3NlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjQ4NjUsImV4cCI6MjA5MDgwMDg2NX0.HjsPbBICvRnM1OTqafdP90grjw9lj1RfR_G_YHicMGY';
+
+// Get query parameters
+function getQueryParam(name) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
+
+const product = getQueryParam('product') || 'fortized';
+const redirectUri = getQueryParam('redirect_uri');
+const stateParam = getQueryParam('state');
+
+// Show error and return to product
+function showError(code, message) {
+  const messageDiv = document.getElementById('message');
+  messageDiv.textContent = message;
+  messageDiv.classList.add('error');
+
+  setTimeout(() => {
+    if (redirectUri && stateParam) {
+      const errorUrl = new URL(redirectUri);
+      errorUrl.searchParams.set('error', code);
+      errorUrl.searchParams.set('error_message', message);
+      errorUrl.searchParams.set('state', stateParam);
+      window.location.href = errorUrl.toString();
+    }
+  }, 2000);
+}
+
+// Check for required parameters
+if (!redirectUri || !stateParam) {
+  showError('invalid_params', 'Missing redirect_uri or state parameter');
+}
+
+// Generate authorization code
+function generateAuthCode() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let code = '';
+  for (let i = 0; i < 32; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
+
+// Store auth code in session (expires in 5 minutes)
+function storeAuthCode(code, cloudUserId) {
+  const expiry = Date.now() + (5 * 60 * 1000); // 5 minutes
+  localStorage.setItem(`auth_code_${code}`, JSON.stringify({
+    cloud_user_id: cloudUserId,
+    state: stateParam,
+    product: product,
+    created_at: Date.now(),
+    expires_at: expiry
+  }));
+}
+
+// Verify auth code
+function verifyAuthCode(code) {
+  const data = localStorage.getItem(`auth_code_${code}`);
+  if (!data) return null;
+
+  const authData = JSON.parse(data);
+  if (authData.expires_at < Date.now()) {
+    localStorage.removeItem(`auth_code_${code}`);
+    return null;
+  }
+
+  return authData;
+}
+
+// Login handler
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const messageDiv = document.getElementById('message');
+
+  messageDiv.classList.remove('error', 'success', 'info');
+
+  if (!username || !password) {
+    messageDiv.textContent = 'Please enter username and password';
+    messageDiv.classList.add('error');
+    return;
+  }
+
+  try {
+    document.getElementById('login-btn').disabled = true;
+    document.getElementById('login-btn').textContent = 'Signing in...';
+
+    // Query cloud_users by username
+    const response = await fetch(
+      `${SUPABASE_URL}/rest/v1/cloud_users?username=eq.${encodeURIComponent(username)}&select=id,username,password`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Accept': 'application/json'
+        }
+      }
+    );
+
+    const users = await response.json();
+
+    if (!users || users.length === 0) {
+      throw new Error('Invalid username or password');
+    }
+
+    const user = users[0];
+
+    // Simple password check (in production, use proper hashing)
+    if (user.password !== password) {
+      throw new Error('Invalid username or password');
+    }
+
+    // Store session
+    localStorage.setItem('cloud_user_id', user.id);
+    localStorage.setItem('cloud_user_username', user.username);
+    localStorage.setItem('cloud_session', JSON.stringify({
+      user: { id: user.id, username: user.username },
+      logged_in_at: Date.now()
+    }));
+
+    // Generate and store auth code
+    const authCode = generateAuthCode();
+    storeAuthCode(authCode, user.id);
+
+    // Redirect back
+    redirectToProdct(authCode, user.id, user.username);
+
+  } catch (error) {
+    messageDiv.textContent = error.message || 'Login failed';
+    messageDiv.classList.add('error');
+    document.getElementById('login-btn').disabled = false;
+    document.getElementById('login-btn').textContent = 'Sign In to Cloud';
+  }
+});
+
+// Continue as logged-in user
+document.getElementById('continue-btn').addEventListener('click', async () => {
+  const userId = localStorage.getItem('cloud_user_id');
+  const username = localStorage.getItem('cloud_user_username');
+
+  if (!userId || !username) {
+    showError('session_expired', 'Your session has expired. Please sign in again.');
+    return;
+  }
+
+  try {
+    document.getElementById('continue-btn').disabled = true;
+
+    // Generate and store auth code
+    const authCode = generateAuthCode();
+    storeAuthCode(authCode, userId);
+
+    // Redirect back
+    redirectToProdct(authCode, userId, username);
+
+  } catch (error) {
+    const messageDiv = document.getElementById('message');
+    messageDiv.textContent = error.message || 'Error generating authorization code';
+    messageDiv.classList.add('error');
+    document.getElementById('continue-btn').disabled = false;
+  }
+});
+
+// Sign in with different account
+document.getElementById('sign-in-different').addEventListener('click', () => {
+  localStorage.removeItem('cloud_user_id');
+  localStorage.removeItem('cloud_user_username');
+  localStorage.removeItem('cloud_session');
+  document.getElementById('continue-content').classList.remove('active');
+  document.getElementById('login-content').classList.add('active');
+  document.getElementById('message').classList.remove('error', 'success', 'info');
+  document.getElementById('message').textContent = '';
+});
+
+// Redirect to product with auth code
+function redirectToProdct(authCode, userId, username) {
+  const redirectUrl = new URL(redirectUri);
+  redirectUrl.searchParams.set('code', authCode);
+  redirectUrl.searchParams.set('state', stateParam);
+  redirectUrl.searchParams.set('cloud_user_id', userId);
+  redirectUrl.searchParams.set('cloud_username', username);
+
+  // Show success message briefly before redirecting
+  document.getElementById('login-content').classList.remove('active');
+  document.getElementById('continue-content').classList.remove('active');
+  document.getElementById('success-content').classList.add('active');
+
+  setTimeout(() => {
+    window.location.href = redirectUrl.toString();
+  }, 1500);
+}
+
+// Check if user is already logged in
+function checkExistingSession() {
+  const userId = localStorage.getItem('cloud_user_id');
+  const username = localStorage.getItem('cloud_user_username');
+
+  if (userId && username) {
+    document.getElementById('continue-content').classList.add('active');
+    document.getElementById('login-content').classList.remove('active');
+    document.getElementById('continue-username').textContent = `@${username}`;
+  } else {
+    document.getElementById('login-content').classList.add('active');
+    document.getElementById('continue-content').classList.remove('active');
+  }
+}
+
+// Initialize
+checkExistingSession();
+</script>
+
+</body>
+</html>
