@@ -119,6 +119,42 @@ a { text-decoration: none; color: inherit; }
   transition: box-shadow .2s, transform .15s;
 }
 .nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); transform: translateY(-1px); }
+
+/* Products Dropdown */
+.products-dropdown-wrap { position: relative; }
+.products-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.12);
+  z-index: 300;
+}
+.products-dropdown-wrap:hover .products-dropdown,
+.products-dropdown-wrap.active .products-dropdown {
+  display: block;
+}
+.product-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .2s;
+  text-decoration: none;
+  color: inherit;
+}
+.product-option:hover { background: rgba(0,0,0,.03); }
+.product-option-icon { font-size: 18px; }
+.product-option-text strong { display: block; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.product-option-text span { display: block; font-size: 11px; color: var(--text-muted); }
+
 .nav-hamburger {
   display: none; cursor: pointer; padding: 8px;
   border-radius: 8px; border: 1px solid var(--border);
@@ -548,7 +584,28 @@ footer {
       </div>
     </div>
     <div class="nav-spacer"></div>
-    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
+    <div class="products-dropdown-wrap">
+      <button class="nav-cta">
+        Products
+        <span style="font-size: 10px;">▼</span>
+      </button>
+      <div class="products-dropdown">
+        <a href="https://fortized.com" class="product-option">
+          <div class="product-option-icon">🎮</div>
+          <div class="product-option-text">
+            <strong>Fortized</strong>
+            <span>Gaming platform</span>
+          </div>
+        </a>
+        <a href="/cloud" class="product-option">
+          <div class="product-option-icon">☁️</div>
+          <div class="product-option-text">
+            <strong>Swiftaw Cloud</strong>
+            <span>Unified identity</span>
+          </div>
+        </a>
+      </div>
+    </div>
     <div class="nav-auth-area"></div>
     <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -573,7 +630,28 @@ footer {
     <h1>Move Beyond<br>the <em>Ordinary.</em></h1>
     <p class="hero-sub">Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence to reshape how the world communicates, thinks, and solves problems.</p>
     <div class="hero-actions">
-      <a href="https://fortized.com" class="btn-yellow">Try Fortized</a>
+      <div class="products-dropdown-wrap" style="position: relative;">
+        <button class="btn-yellow" style="border: none; cursor: pointer;">
+          Get Started
+          <span style="font-size: 10px; margin-left: 4px;">▼</span>
+        </button>
+        <div class="products-dropdown" style="position: absolute; top: calc(100% + 8px); left: 0;">
+          <a href="https://fortized.com" class="product-option">
+            <div class="product-option-icon">🎮</div>
+            <div class="product-option-text">
+              <strong>Fortized</strong>
+              <span>Gaming platform</span>
+            </div>
+          </a>
+          <a href="/cloud/signup" class="product-option">
+            <div class="product-option-icon">☁️</div>
+            <div class="product-option-text">
+              <strong>Swiftaw Cloud</strong>
+              <span>Create your account</span>
+            </div>
+          </a>
+        </div>
+      </div>
       <a href="#research" class="btn-outline">Learn More</a>
     </div>
   </div>
