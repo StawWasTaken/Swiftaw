@@ -370,34 +370,9 @@ footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; bac
   <div class="blog-filters">
     <button class="filter-tab active" data-category="all">All</button>
     <button class="filter-tab" data-category="fortized">Fortized</button>
-    <button class="filter-tab" data-category="cloud">Cloud</button>
     <button class="filter-tab" data-category="company">Company</button>
   </div>
 
-  <!-- ═══ FEATURED POST ═══ -->
-  <div class="blog-featured">
-    <div class="featured-post" id="featured-post" style="cursor: pointer;">
-      <div class="featured-post-image">
-        <img src="/Swiftaw Banner.png" alt="Featured" style="width: 100%; height: 100%; object-fit: cover;">
-      </div>
-      <div class="featured-post-body">
-        <div class="post-category">Swiftaw Cloud</div>
-        <h2>Unified Identity Across Swiftaw Products</h2>
-        <p>We're simplifying how subaccounts work. One identity, unified across everything you build with Swiftaw.</p>
-        <div class="post-meta">
-          <div class="post-author">
-            <div class="post-author-avatar">D</div>
-            <span>David Park</span>
-          </div>
-          <div class="post-meta-dot"></div>
-          <span>Mar 2026</span>
-          <div class="post-meta-dot"></div>
-          <span>7 min</span>
-        </div>
-        <div class="read-more">Read article →</div>
-      </div>
-    </div>
-  </div>
 
   <!-- ═══ POSTS GRID ═══ -->
   <div class="blog-grid-section">
@@ -619,69 +594,6 @@ const ARTICLES = {
     `
   },
 
-  'unified-identity-cloud': {
-    title: 'Unified Identity Across Swiftaw Products: Simpler Subaccounts, One Connected Experience',
-    category: 'cloud',
-    date: 'Mar 2026',
-    readTime: 7,
-    author: 'David Park',
-    role: 'Cloud Platform Lead',
-    avatar: 'D',
-    avatarColor: '#fff93e',
-    description: 'We\'re simplifying how subaccounts work across Swiftaw products. One identity, unified across everything.',
-    content: `
-<h2>The Subaccount Problem</h2>
-<p>If you use multiple Swiftaw products—Fortized, Swiftaw Cloud, and future products we're building—you historically had to manage separate accounts and identities. Different usernames. Different permission systems. Different profiles.</p>
-
-<p>This wasn't just inconvenient for users. It was architecturally fragmented. We were maintaining separate auth systems, separate user databases, separate permission models. This created security risks, consistency problems, and made building new products harder.</p>
-
-<h2>A Unified Identity Layer</h2>
-<p>We've built a new unified identity system that connects all Swiftaw accounts under one umbrella. One primary account. Subaccounts that are linked, not separate.</p>
-
-<p>Here's what changed:</p>
-
-<h3>One Account, Multiple Identities</h3>
-<p>You now have a primary Swiftaw account. Within that account, you can create subaccounts for specific purposes—a gaming account in Fortized, a work account in Swiftaw Cloud, future accounts in upcoming products.</p>
-
-<p>These subaccounts are connected. Permissions, billing, recovery options—all managed from your primary account. But each subaccount maintains its own identity and can have completely different permissions, roles, and settings.</p>
-
-<h3>Simpler Onboarding</h3>
-<p>New users create one Swiftaw account. They choose which products to use. Subaccounts are created automatically. No more signing up separately for each product.</p>
-
-<h3>Cross-Product Presence</h3>
-<p>Your profile in Fortized can link to your profile in Swiftaw Cloud. Your achievements in one product can inform your presence in another. You decide what to share and how much.</p>
-
-<h2>Technical Architecture</h2>
-<p>We've built this on top of OAuth 2.0 and OpenID Connect standards, with a custom identity resolver that understands Swiftaw-specific needs.</p>
-
-<p>Each product still maintains its own user database and permission model. The unified identity layer acts as the source of truth for account relationships and cross-product metadata. This means we can migrate products independently—updating Fortized's auth system doesn't require coordinating changes across everything.</p>
-
-<h2>Security and Privacy Implications</h2>
-<p>Unifying identity means we need to be extra careful about security. We've implemented:</p>
-
-<ul>
-<li><strong>Mandatory 2FA</strong> for primary accounts with sensitive subaccounts</li>
-<li><strong>Granular permissions</strong> - you can grant a subaccount access to specific resources without sharing your entire account</li>
-<li><strong>Audit logging</strong> - every cross-product action is logged and auditable</li>
-<li><strong>Encryption</strong> - sensitive links between accounts are encrypted at rest</li>
-</ul>
-
-<h2>What This Means for Developers</h2>
-<p>Building new Swiftaw products just got simpler. You get authentication and user management for free. We provide SDKs and APIs for querying user relationships, managing subaccounts, and implementing role-based access control.</p>
-
-<p>This is just the beginning. As we build more products, this unified identity layer will become increasingly powerful—enabling features that only work across multiple products, better personalization, and seamless experiences.</p>
-
-<h2>Rollout Timeline</h2>
-<p>We're rolling this out gradually. Existing Fortized users can opt into the unified system now. By Q2 2026, it will be the default for new accounts. Legacy support continues indefinitely—we're not forcing migrations.</p>
-
-<p>Swiftaw Cloud uses the unified identity system by default. If you have a Fortized account, you can link it to your Cloud account in settings.</p>
-
-<h2>Future Vision</h2>
-<p>This is foundation work. We're building the infrastructure for products we haven't launched yet. Imagine: you create one Swiftaw account, and you have seamless access to a growing ecosystem of products, each specialized for different needs, all connected under one identity.</p>
-
-<p>That's what unified identity makes possible.</p>
-    `
-  }
 };
 
 function getArticleThemeClass(category) {
@@ -698,8 +610,7 @@ function getArticleEmoji(id) {
     'bastion-community-structure': '⚡',
     'onyx-earned-rewards': '🎪',
     'realtime-chat-scale': '🌐',
-    'safety-automod-encryption': '🛡️',
-    'unified-identity-cloud': '🔐'
+    'safety-automod-encryption': '🛡️'
   };
   return emojis[id] || '📝';
 }
@@ -792,11 +703,6 @@ window.addEventListener('popstate', () => {
   }
 });
 
-// Featured post click
-const featuredPost = document.getElementById('featured-post');
-if (featuredPost) {
-  featuredPost.addEventListener('click', () => openArticle('unified-identity-cloud'));
-}
 
 // Check if we should open an article on page load
 const params = new URLSearchParams(window.location.search);
