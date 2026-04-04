@@ -512,6 +512,94 @@ footer {
   .stats-inner { grid-template-columns: 1fr 1fr; }
   .stat-item { padding: 28px 20px; }
 }
+
+/* PRODUCTS DROPDOWN */
+.products-dropdown-wrap { position: relative; }
+.products-dropdown-wrap:hover .nav-link .caret { transform: rotate(180deg); }
+.products-dropdown {
+  position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  min-width: 260px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.08);
+  opacity: 0; visibility: hidden;
+  transition: opacity .18s, visibility .18s, transform .18s;
+  transform: translateX(-50%) translateY(4px);
+  z-index: 300;
+}
+.products-dropdown-wrap:hover .products-dropdown {
+  opacity: 1; visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+.product-option {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 14px; border-radius: 8px;
+  text-decoration: none; color: var(--text-light);
+  transition: background .12s, color .12s;
+}
+.product-option:hover { background: rgba(0,0,0,.03); color: var(--text); }
+.product-option-icon { font-size: 18px; min-width: 24px; text-align: center; margin-top: 2px; }
+.product-option-info { flex: 1; }
+.product-option-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.product-option-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+/* CLOUD AUTH WIDGETS */
+.cloud-profile-widget {
+  display: flex; align-items: center; gap: 12px;
+  padding: 6px 8px; border-radius: 8px; background: #f5f5f5;
+}
+.profile-avatar {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--brand-orange), var(--brand-yellow));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 600; font-size: 13px;
+}
+.profile-info { display: flex; flex-direction: column; gap: 2px; }
+.profile-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.profile-email { font-size: 11px; color: var(--text-muted); }
+.profile-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange));
+  color: var(--brand-deep);
+  padding: 3px 8px; border-radius: 4px;
+  font-size: 10px; font-weight: 700;
+  margin-top: 4px;
+}
+.profile-logout {
+  padding: 4px 12px; font-size: 12px; font-weight: 600;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: 6px; cursor: pointer;
+  color: var(--text-light); transition: all .2s;
+}
+.profile-logout:hover { background: #fff; color: var(--text); }
+
+.cloud-login-prompt {
+  background: linear-gradient(135deg, rgba(255,249,62,.08) 0%, rgba(255,156,60,.04) 100%);
+  border: 1px solid rgba(255,249,62,.2);
+  border-radius: 12px; padding: 24px 28px;
+  text-align: center;
+}
+.prompt-content { max-width: 300px; margin: 0 auto; }
+.prompt-icon { font-size: 32px; margin-bottom: 12px; }
+.cloud-login-prompt h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+.cloud-login-prompt p { font-size: 13px; color: var(--text-light); margin-bottom: 20px; line-height: 1.6; }
+.prompt-actions { display: flex; gap: 8px; flex-direction: column; }
+.prompt-btn {
+  padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  text-decoration: none; transition: all .2s;
+}
+.prompt-btn.primary {
+  background: var(--brand-deep); color: var(--brand-yellow);
+}
+.prompt-btn.primary:hover { opacity: .9; }
+.prompt-btn.secondary {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border);
+}
+.prompt-btn.secondary:hover { background: #f5f5f5; }
 </style>
 </head>
 <body>
@@ -556,7 +644,25 @@ footer {
       </div>
     </div>
     <div class="nav-spacer"></div>
-    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
+    <div class="products-dropdown-wrap">
+      <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
+      <div class="products-dropdown">
+        <a href="https://fortized.com" class="product-option">
+          <div class="product-option-icon">🎮</div>
+          <div class="product-option-info">
+            <div class="product-option-name">Fortized</div>
+            <div class="product-option-desc">Communication & collaboration</div>
+          </div>
+        </a>
+        <a href="/cloud/login" class="product-option">
+          <div class="product-option-icon">☁️</div>
+          <div class="product-option-info">
+            <div class="product-option-name">Swiftaw Cloud</div>
+            <div class="product-option-desc">Unified identity platform</div>
+          </div>
+        </a>
+      </div>
+    </div>
     <div class="nav-auth-area"></div>
     <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -1020,6 +1126,7 @@ footer {
 })();
 </script>
 
+<script src="/js/cloud-auth.js"></script>
 <script src="/js/swiftaw-auth.js"></script>
 <script src="/js/swiftaw-nav.js"></script>
 </body>
