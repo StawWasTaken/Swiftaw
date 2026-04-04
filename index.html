@@ -15,7 +15,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Swiftaw - Move Beyond the Ordinary">
 <meta name="twitter:image" content="https://swiftaw.com/Swiftaw Banner2.png">
-<link rel="icon" type="image/png" href="SwiftawFavicon.png">
+<link rel="icon" type="image/png" href="SwiftawFavicon.png?v=2">
 <link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
 <style>
@@ -119,6 +119,42 @@ a { text-decoration: none; color: inherit; }
   transition: box-shadow .2s, transform .15s;
 }
 .nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); transform: translateY(-1px); }
+
+/* Products Dropdown */
+.products-dropdown-wrap { position: relative; }
+.products-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.12);
+  z-index: 300;
+}
+.products-dropdown-wrap:hover .products-dropdown,
+.products-dropdown-wrap.active .products-dropdown {
+  display: block;
+}
+.product-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .2s;
+  text-decoration: none;
+  color: inherit;
+}
+.product-option:hover { background: rgba(0,0,0,.03); }
+.product-option-icon { font-size: 18px; }
+.product-option-text strong { display: block; font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.product-option-text span { display: block; font-size: 11px; color: var(--text-muted); }
+
 .nav-hamburger {
   display: none; cursor: pointer; padding: 8px;
   border-radius: 8px; border: 1px solid var(--border);
@@ -224,15 +260,6 @@ a { text-decoration: none; color: inherit; }
 }
 .btn-dark:hover { opacity: .85; transform: translateY(-1px); }
 
-/* BANNER */
-.banner-section { padding: 0 var(--pad) 80px; }
-.banner-img {
-  max-width: var(--max-w); margin: 0 auto;
-  border-radius: 20px; overflow: hidden;
-  border: 1px solid var(--border);
-  box-shadow: 0 24px 64px rgba(0,0,0,.06);
-}
-.banner-img img { width: 100%; height: auto; }
 
 /* STATS BAR */
 .stats-bar {
@@ -410,8 +437,9 @@ a { text-decoration: none; color: inherit; }
   width: 48px; height: 48px; border-radius: 14px;
   background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px; font-size: 22px;
+  margin-bottom: 20px; font-size: 22px; color: white;
 }
+.dept-card-icon svg { width: 24px; height: 24px; color: white; }
 .dept-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
 .dept-card p { font-size: 14px; color: var(--text-light); line-height: 1.65; }
 .dept-card .dept-link {
@@ -687,16 +715,56 @@ footer {
     <h1>Move Beyond<br>the <em>Ordinary.</em></h1>
     <p class="hero-sub">Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence to reshape how the world communicates, thinks, and solves problems.</p>
     <div class="hero-actions">
-      <a href="https://fortized.com" class="btn-yellow">Try Fortized</a>
+      <div class="products-dropdown-wrap" style="position: relative;">
+        <button class="btn-yellow" style="border: none; cursor: pointer;">
+          Get Started
+          <span style="font-size: 10px; margin-left: 4px;">▼</span>
+        </button>
+        <div class="products-dropdown" style="position: absolute; top: calc(100% + 8px); left: 0;">
+          <a href="https://fortized.com" class="product-option">
+            <div class="product-option-icon">🎮</div>
+            <div class="product-option-text">
+              <strong>Fortized</strong>
+              <span>Gaming platform</span>
+            </div>
+          </a>
+          <a href="/cloud/signup" class="product-option">
+            <div class="product-option-icon">☁️</div>
+            <div class="product-option-text">
+              <strong>Swiftaw Cloud</strong>
+              <span>Create your account</span>
+            </div>
+          </a>
+        </div>
+      </div>
       <a href="#research" class="btn-outline">Learn More</a>
     </div>
   </div>
 </section>
 
-<!-- BANNER -->
-<div class="banner-section">
-  <div class="banner-img">
-    <img src="Swiftaw Theme Banner.png" alt="Swiftaw Ecosystem">
+<!-- DARK SECTION - PRODUCTS -->
+<div class="dark-section" style="padding: 80px var(--pad) 60px;">
+  <div class="dark-glow"></div>
+  <div class="section-inner">
+    <div class="section-eyebrow reveal">Our Products</div>
+    <div class="highlight-bar reveal reveal-delay-1"></div>
+    <div class="section-heading reveal reveal-delay-1">Platforms that amplify<br>human connection.</div>
+    <div class="dark-grid">
+      <a href="https://fortized.com" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
+        <div style="width: calc(100% + 72px); height: 200px; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); overflow: hidden; margin: -36px -36px 24px -36px; margin-left: -36px; margin-right: -36px;">
+          <img src="/Fortized banner6.png" alt="Fortized" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <h3>Fortized</h3>
+        <p>Fortized is the modern community platform built for gamers. Organize your ranks, rally your allies, and conquer together.</p>
+      </a>
+      <a href="#cloud" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
+        <div style="width: calc(100% + 72px); height: 200px; overflow: hidden; margin: -36px -36px 24px -36px;">
+          <img src="/SwiftawCloudBanner.png?v=2" alt="Swiftaw Cloud" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <h3>Swiftaw Cloud</h3>
+        <p>The unified platform powering identity and access across Swiftaw. One account. Seamless connections.</p>
+      </a>
+    </div>
   </div>
 </div>
 
@@ -726,54 +794,27 @@ footer {
   </div>
 </div>
 
-<!-- RESEARCH & INNOVATION -->
-<div class="section" id="research">
-  <div class="section-eyebrow reveal">Research &amp; Innovation</div>
+<!-- VISION -->
+<div class="section" id="vision">
+  <div class="section-eyebrow reveal">Our Vision</div>
   <div class="highlight-bar reveal reveal-delay-1"></div>
-  <div class="section-heading reveal reveal-delay-1">Building better AI and<br>better social platforms.</div>
-  <div class="section-desc reveal reveal-delay-2">We research how to create smarter AI and more connected social platforms — helping people through chatting, interacting, connecting, and intelligent assistance.</div>
+  <div class="section-heading reveal reveal-delay-1">Building platforms that<br>connect people.</div>
+  <div class="section-desc reveal reveal-delay-2">We're committed to creating experiences where people can connect, communicate, and grow together through communities designed for real human interaction.</div>
   <div class="features-grid">
     <div class="feature-card">
-      <div class="feature-icon">&#129504;</div>
-      <h3>Better AI</h3>
-      <p>Researching how to build AI that truly understands people — enabling natural conversations, smart assistance, and more helpful interactions.</p>
+      <div class="feature-icon">💬</div>
+      <h3>Communication</h3>
+      <p>Fast, reliable messaging with sub-50ms latency, end-to-end encryption, and features built around real conversation.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">&#128172;</div>
-      <h3>Social Platforms</h3>
-      <p>Exploring new ways for people to chat, interact, and form meaningful connections through platforms designed for real human connection.</p>
+      <div class="feature-icon">🤝</div>
+      <h3>Community</h3>
+      <p>Tools to organize, connect, and empower communities of any size. From gaming guilds to professional teams.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon">&#129309;</div>
-      <h3>AI Assistance</h3>
-      <p>Developing intelligent assistants that help people with everyday tasks, learning, and creativity — making AI accessible and useful for everyone.</p>
-    </div>
-  </div>
-</div>
-
-<!-- DARK SECTION - PRODUCTS -->
-<div class="dark-section">
-  <div class="dark-glow"></div>
-  <div class="section-inner">
-    <div class="section-eyebrow reveal">Our Products</div>
-    <div class="highlight-bar reveal reveal-delay-1"></div>
-    <div class="section-heading reveal reveal-delay-1">Platforms that amplify<br>human connection.</div>
-    <div class="section-desc reveal reveal-delay-2">Swiftaw powers a digital ecosystem that amplifies human connection and intelligence -moving beyond the limitations of today's technology.</div>
-    <div class="dark-grid">
-      <a href="https://fortized.com" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
-        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); overflow: hidden; margin: -36px -36px 24px -36px;">
-          <img src="/Swiftaw Theme Banner.png" alt="Fortized" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        <h3>Fortized</h3>
-        <p>The modern community platform built for gamers and all kinds of people. Organize your ranks, rally your allies, and conquer together.</p>
-      </a>
-      <a href="#cloud" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
-        <div style="width: 100%; height: 200px; overflow: hidden; margin: -36px -36px 24px -36px;">
-          <img src="/SwiftawCloudBanner.png" alt="Swiftaw Cloud" style="width: 100%; height: 100%; object-fit: cover;">
-        </div>
-        <h3>Swiftaw Cloud</h3>
-        <p>Intelligent services and infrastructure powering the future. APIs, data services, and intelligent systems for seamless integration.</p>
-      </a>
+      <div class="feature-icon">🔐</div>
+      <h3>Trust &amp; Safety</h3>
+      <p>Privacy and security by default. Your data, your control. We prioritize user safety across every platform.</p>
     </div>
   </div>
 </div>
@@ -786,19 +827,19 @@ footer {
   <div class="section-desc reveal reveal-delay-2">Each department drives a critical piece of the Swiftaw ecosystem -from research to safety to how we communicate with the world.</div>
   <div class="dept-grid">
     <a href="/departments/rd" class="dept-card">
-      <div class="dept-card-icon">&#128300;</div>
+      <div class="dept-card-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="1.5" fill="currentColor"/><circle cx="17" cy="7" r="1.5" fill="currentColor"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/><path d="M7 8.5v3M17 8.5v3M12 8v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 4h18v16c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
       <h3>R&amp;D</h3>
       <p>Innovative digital platforms, chat engines, and intelligent systems. The engineering heart of Swiftaw.</p>
       <span class="dept-link">Learn more &rarr;</span>
     </a>
     <a href="/departments/safety" class="dept-card">
-      <div class="dept-card-icon">&#128737;</div>
+      <div class="dept-card-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L3 6v5.5c0 7 9 10 9 10s9-3 9-10V6l-9-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2.5 2.5 4-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <h3>Safety</h3>
       <p>Protecting communities with advanced moderation, encryption, and responsible technology practices.</p>
       <span class="dept-link">Learn more &rarr;</span>
     </a>
     <a href="/departments/communication" class="dept-card">
-      <div class="dept-card-icon">&#128172;</div>
+      <div class="dept-card-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 10l9-7 9 7v10c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12h6v8H9z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 12v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
       <h3>Communication</h3>
       <p>Improving connectivity, user engagement, and the digital experience across every touchpoint.</p>
       <span class="dept-link">Learn more &rarr;</span>
@@ -815,8 +856,8 @@ footer {
 
 <!-- CTA -->
 <div class="cta-section">
-  <h2>The future of community<br>starts <em>here.</em></h2>
-  <p>Join the ecosystem. Build with Fortized. Shape the future with Swiftaw.</p>
+  <h2>Move Beyond the <em>Ordinary.</em></h2>
+  <p>Join the Swiftaw ecosystem.</p>
   <div class="hero-actions">
     <a href="https://fortized.com/signup" class="btn-yellow">Try Fortized</a>
     <a href="/blog" class="btn-outline">Read our blog</a>
@@ -831,7 +872,7 @@ footer {
         <a href="/" class="nav-logo" style="margin-right:0;">
           <img src="/SwiftawLogo.png" alt="Swiftaw">
         </a>
-        <p>Building the ultimate digital ecosystem. Mastering human connection and machine intelligence.</p>
+        <p>Building platforms for creativity, connection, and community.</p>
       </div>
       <div class="footer-col">
         <div class="footer-col-title">Products</div>
