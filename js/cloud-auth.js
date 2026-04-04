@@ -1,6 +1,7 @@
 /**
  * Swiftaw Cloud Authentication System
  * Unified identity system for all Swiftaw products
+ * Persistent user data stored in Supabase
  */
 
 const SUPABASE_URL = 'https://eujglvqqhrkyhyuqagse.supabase.co';
@@ -10,27 +11,71 @@ class SwiftawCloudAuth {
   constructor() {
     this.user = null;
     this.session = null;
+    this.profile = null;
     this.loadSession();
   }
 
   /**
-   * Load session from localStorage
+   * Load session from localStorage and fetch profile from Supabase
    */
-  loadSession() {
+  async loadSession() {
     const session = localStorage.getItem('cloud_session');
     const email = localStorage.getItem('cloud_user_email');
+    const userId = localStorage.getItem('cloud_user_id');
 
     if (session && email) {
       this.session = JSON.parse(session);
+
+      // Basic user data
       this.user = {
+        id: userId,
         email: email,
         displayName: email.split('@')[0],
         avatar: email.charAt(0).toUpperCase(),
         accessLevel: this.getAccessLevel(email)
       };
+
+      // Try to load full profile from Supabase
+      if (userId) {
+        await this.loadUserProfile(userId);
+      }
+
       return true;
     }
     return false;
+  }
+
+  /**
+   * Load user profile from Supabase database
+   */
+  async loadUserProfile(userId) {
+    try {
+      if (!this.session || !this.session.access_token) return;
+
+      const response = await fetch(
+        `${SUPABASE_URL}/rest/v1/profiles?user_id=eq.${userId}&select=*`,
+        {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${this.session.access_token}`
+          }
+        }
+      );
+
+      if (response.ok) {
+        const profiles = await response.json();
+        if (profiles && profiles.length > 0) {
+          this.profile = profiles[0];
+          // Update display name from profile
+          if (this.profile.display_name) {
+            this.user.displayName = this.profile.display_name;
+            this.user.avatar = this.profile.display_name.charAt(0).toUpperCase();
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user profile:', error);
+    }
   }
 
   /**
@@ -72,16 +117,19 @@ class SwiftawCloudAuth {
   logout() {
     localStorage.removeItem('cloud_session');
     localStorage.removeItem('cloud_user_email');
+    localStorage.removeItem('cloud_user_id');
     this.user = null;
     this.session = null;
+    this.profile = null;
     window.location.href = '/cloud/login';
   }
 
   /**
    * Sign up (create new account)
    */
-  async signup(email, password) {
+  async signup(email, password, displayName = '') {
     try {
+      // Create auth user
       const response = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
         method: 'POST',
         headers: {
@@ -94,16 +142,52 @@ class SwiftawCloudAuth {
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Signup failed');
 
+      const userId = data.user.id;
+
+      // Create user record in database
+      await fetch(`${SUPABASE_URL}/rest/v1/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${data.access_token}`
+        },
+        body: JSON.stringify({
+          id: userId,
+          email: email,
+          access_level: this.getAccessLevel(email),
+          is_active: true
+        })
+      });
+
+      // Create profile record
+      await fetch(`${SUPABASE_URL}/rest/v1/profiles`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${data.access_token}`
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          display_name: displayName || email.split('@')[0],
+          username: email.split('@')[0]
+        })
+      });
+
+      // Store session
       this.session = data;
       this.user = {
+        id: userId,
         email: email,
-        displayName: email.split('@')[0],
-        avatar: email.charAt(0).toUpperCase(),
+        displayName: displayName || email.split('@')[0],
+        avatar: (displayName || email.split('@')[0]).charAt(0).toUpperCase(),
         accessLevel: this.getAccessLevel(email)
       };
 
       localStorage.setItem('cloud_session', JSON.stringify(data));
       localStorage.setItem('cloud_user_email', email);
+      localStorage.setItem('cloud_user_id', userId);
 
       return { success: true, user: this.user };
     } catch (error) {
@@ -128,8 +212,12 @@ class SwiftawCloudAuth {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error_description || 'Login failed');
 
+      const userId = data.user.id;
+
+      // Store session
       this.session = data;
       this.user = {
+        id: userId,
         email: email,
         displayName: email.split('@')[0],
         avatar: email.charAt(0).toUpperCase(),
@@ -138,6 +226,10 @@ class SwiftawCloudAuth {
 
       localStorage.setItem('cloud_session', JSON.stringify(data));
       localStorage.setItem('cloud_user_email', email);
+      localStorage.setItem('cloud_user_id', userId);
+
+      // Load full profile
+      await this.loadUserProfile(userId);
 
       return { success: true, user: this.user };
     } catch (error) {
@@ -190,7 +282,7 @@ class SwiftawCloudAuth {
 const cloudAuth = new SwiftawCloudAuth();
 
 // Auto-inject profile widget to nav if authenticated
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   if (cloudAuth.isAuthenticated()) {
     const navAuthArea = document.querySelector('.nav-auth-area');
     if (navAuthArea) {
