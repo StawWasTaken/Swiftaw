@@ -1,2 +1,2 @@
-# Fortized
-Fortized is a modern gaming chat-app.
+# Swiftaw
+Swiftaw SAS is a french & european company, est. 2025
