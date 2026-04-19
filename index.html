@@ -3,997 +3,470 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home - Swiftaw</title>
-<meta name="description" content="Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence to reshape how the world communicates, thinks, and solves problems.">
-<meta name="theme-color" content="#0a0a0a">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Swiftaw">
-<meta property="og:title" content="Swiftaw - Move Beyond the Ordinary">
-<meta property="og:description" content="Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence.">
-<meta property="og:image" content="https://swiftaw.com/Swiftaw Banner2.png">
-<meta property="og:url" content="https://swiftaw.com/">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Swiftaw - Move Beyond the Ordinary">
-<meta name="twitter:image" content="https://swiftaw.com/Swiftaw Banner2.png">
-<link rel="icon" type="image/png" href="SwiftawFavicon.png?v=2">
-<link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<title>Swiftaw — Engineering a safer, more useful future</title>
+<meta name="description" content="Swiftaw builds trustworthy products, tools and research across cybersecurity, infrastructure and design. Meet Fortized and the rest of our ecosystem.">
+<link rel="icon" type="image/png" href="/SwiftawFavicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-::selection { background: rgba(255,249,62,.25); }
-
-:root {
-  --brand-deep: #241f3c;
-  --brand-yellow: #fff93e;
-  --brand-orange: #ff9c3c;
-  --bg: #ffffff;
-  --bg-dark: #0a0a0a;
-  --text: #0a0a0a;
-  --text-light: #555;
-  --text-muted: #888;
-  --border: #e5e5e5;
-  --border-light: #f0f0f0;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-serif: 'Newsreader', Georgia, serif;
-  --font-display: 'Afronaut Test', 'Newsreader', sans-serif;
-  --nav-h: 64px;
-  --max-w: 1200px;
-  --pad: clamp(1.5rem, 4vw, 5rem);
-}
-
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
-img { display: block; -webkit-user-drag: none; user-select: none; }
-a { text-decoration: none; color: inherit; }
-
-/* NAV */
-.nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  height: var(--nav-h);
-  display: flex; align-items: center;
-  padding: 0 var(--pad);
-  background: rgba(255,255,255,.88);
-  backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid var(--border);
-}
-.nav-inner {
-  max-width: var(--max-w); width: 100%; margin: 0 auto;
-  display: flex; align-items: center;
-}
-.nav-logo { display: flex; align-items: center; margin-right: 36px; }
-.nav-logo img { height: 28px; }
-.nav-links { display: flex; align-items: center; gap: 4px; }
-.nav-link {
-  font-size: 14px; font-weight: 500; color: var(--text-light);
-  padding: 8px 14px; border-radius: 8px;
-  transition: color .15s, background .15s;
-  position: relative;
-}
-.nav-link:hover { color: var(--text); background: rgba(0,0,0,.03); }
-.nav-link.has-dropdown { cursor: default; }
-.nav-link .caret {
-  display: inline-block; margin-left: 3px;
-  font-size: 10px; opacity: .5; transition: transform .2s;
-}
-.nav-dropdown-wrap { position: relative; }
-.nav-dropdown-wrap:hover .nav-link .caret { transform: rotate(180deg); }
-.nav-dropdown {
-  position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-  min-width: 200px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 6px;
-  box-shadow: 0 12px 40px rgba(0,0,0,.08);
-  opacity: 0; visibility: hidden;
-  transition: opacity .18s, visibility .18s, transform .18s;
-  transform: translateX(-50%) translateY(4px);
-  z-index: 300;
-}
-.nav-dropdown-wrap:hover .nav-dropdown {
-  opacity: 1; visibility: visible;
-  transform: translateX(-50%) translateY(0);
-}
-.nav-dropdown a {
-  display: block; padding: 10px 14px; border-radius: 8px;
-  font-size: 14px; font-weight: 500; color: var(--text-light);
-  transition: background .12s, color .12s;
-}
-.nav-dropdown a:hover { background: rgba(0,0,0,.03); color: var(--text); }
-.nav-dropdown a .dd-desc {
-  display: block; font-size: 12px; color: var(--text-muted);
-  font-weight: 400; margin-top: 2px;
-}
-.nav-spacer { flex: 1; }
-.nav-cta {
-  font-size: 13px; font-weight: 600;
-  color: var(--brand-deep);
-  background: var(--brand-yellow);
-  padding: 8px 20px; border-radius: 100px;
-  transition: box-shadow .2s, transform .15s;
-}
-.nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); transform: translateY(-1px); }
-.nav-hamburger {
-  display: none; cursor: pointer; padding: 8px;
-  border-radius: 8px; border: 1px solid var(--border);
-  background: transparent;
-}
-.nav-hamburger span {
-  display: block; width: 18px; height: 1.5px;
-  background: var(--text); border-radius: 2px;
-  margin: 4px 0; transition: .2s;
-}
-
-/* HERO */
-.hero {
-  min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
-  padding: calc(var(--nav-h) + 80px) var(--pad) 100px;
-  position: relative; overflow: hidden;
-}
-.globe-wrap {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -48%);
-  width: 680px; height: 680px;
-  z-index: 1;
-}
-.globe-wrap canvas {
-  display: block;
-  width: 100%; height: 100%;
-  cursor: grab;
-}
-.globe-wrap canvas:active { cursor: grabbing; }
-.globe-tooltip {
-  position: absolute;
-  pointer-events: none;
-  background: var(--brand-deep);
-  color: var(--brand-yellow);
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  opacity: 0;
-  transition: opacity .2s;
-  border: 1px solid var(--brand-orange);
-  white-space: nowrap;
-  z-index: 10;
-}
+/* Page-specific */
 .hero-orb {
   position: absolute;
-  width: 800px; height: 800px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,249,62,.1) 0%, rgba(255,156,60,.05) 40%, transparent 70%);
-  top: 5%; left: 50%; transform: translateX(-50%);
-  pointer-events: none; z-index: 0;
-  animation: orbFloat 14s ease-in-out infinite;
-}
-@keyframes orbFloat {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-25px); }
-}
-.hero-content {
-  max-width: 780px; text-align: center;
-  position: relative; z-index: 2;
-}
-.hero-eyebrow {
-  font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--brand-orange); margin-bottom: 24px;
-}
-.hero h1 {
-  font-family: var(--font-display);
-  font-size: clamp(2.8rem, 5.5vw, 4.5rem);
-  font-weight: 400; line-height: 1.08; letter-spacing: -.02em;
-  margin-bottom: 28px;
-}
-.hero h1 em { font-style: italic; color: var(--brand-orange); }
-.hero-sub {
-  font-size: 17px; color: var(--text-light);
-  line-height: 1.72; max-width: 620px;
-  margin: 0 auto 44px;
-}
-.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.btn-yellow {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 15px; font-weight: 600;
-  color: var(--brand-deep); background: var(--brand-yellow);
-  padding: 14px 32px; border-radius: 100px;
-  transition: box-shadow .2s, transform .15s;
-}
-.btn-yellow:hover { box-shadow: 0 0 32px rgba(255,249,62,.4); transform: translateY(-1px); }
-.btn-outline {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 15px; font-weight: 600;
-  color: var(--text); background: transparent;
-  padding: 14px 32px; border-radius: 100px;
-  border: 1.5px solid var(--border);
-  transition: border-color .15s, transform .15s;
-}
-.btn-outline:hover { border-color: #999; transform: translateY(-1px); }
-.btn-dark {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 15px; font-weight: 600;
-  color: #fff; background: var(--brand-deep);
-  padding: 14px 32px; border-radius: 100px;
-  transition: opacity .15s, transform .15s;
-}
-.btn-dark:hover { opacity: .85; transform: translateY(-1px); }
-
-
-/* STATS BAR */
-.stats-bar {
-  max-width: var(--max-w); margin: 0 auto;
-  padding: 0 var(--pad) 100px;
-}
-.stats-inner {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-  border: 1px solid var(--border); border-radius: 20px;
-  overflow: hidden; background: #fff;
-}
-.stat-item {
-  padding: 40px 32px; text-align: center;
-  border-right: 1px solid var(--border);
-  position: relative; overflow: hidden;
-  transition: background .2s;
-}
-.stat-item:last-child { border-right: none; }
-.stat-item:hover { background: #fafafa; }
-.stat-item::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-  height: 3px; background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
-  transform: scaleX(0); transition: transform .4s ease;
-}
-.stat-item:hover::after { transform: scaleX(1); }
-.stat-number {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 3vw, 2.8rem);
-  font-weight: 400; line-height: 1;
-  background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  margin-bottom: 8px;
-  opacity: 0; transform: translateY(20px);
-  transition: opacity .6s ease, transform .6s ease;
-}
-.stat-item.visible .stat-number { opacity: 1; transform: translateY(0); }
-.stat-label { font-size: 13px; font-weight: 600; color: var(--text-light); letter-spacing: .02em; }
-.stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-
-/* SCROLL REVEAL */
-.reveal {
-  opacity: 0; transform: translateY(30px);
-  transition: opacity .7s ease, transform .7s ease;
-}
-.reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: .1s; }
-.reveal-delay-2 { transition-delay: .2s; }
-.reveal-delay-3 { transition-delay: .3s; }
-
-/* PARTICLES */
-.hero-particles {
-  position: absolute; inset: 0; pointer-events: none; z-index: 1;
-  overflow: hidden;
-}
-.particle {
-  position: absolute; width: 4px; height: 4px; border-radius: 50%;
-  background: var(--brand-yellow); opacity: 0;
-  animation: particleFloat 8s ease-in-out infinite;
-}
-.particle:nth-child(1) { left: 15%; top: 30%; animation-delay: 0s; animation-duration: 7s; }
-.particle:nth-child(2) { left: 85%; top: 20%; animation-delay: 1.5s; animation-duration: 9s; width: 3px; height: 3px; }
-.particle:nth-child(3) { left: 25%; top: 70%; animation-delay: 3s; animation-duration: 6s; background: var(--brand-orange); }
-.particle:nth-child(4) { left: 75%; top: 60%; animation-delay: 2s; animation-duration: 10s; width: 5px; height: 5px; }
-.particle:nth-child(5) { left: 50%; top: 15%; animation-delay: 4s; animation-duration: 8s; width: 3px; height: 3px; background: var(--brand-orange); }
-.particle:nth-child(6) { left: 10%; top: 55%; animation-delay: 5s; animation-duration: 7.5s; }
-.particle:nth-child(7) { left: 90%; top: 45%; animation-delay: 1s; animation-duration: 8.5s; width: 3px; height: 3px; }
-.particle:nth-child(8) { left: 40%; top: 80%; animation-delay: 3.5s; animation-duration: 9.5s; background: var(--brand-orange); width: 3px; height: 3px; }
-@keyframes particleFloat {
-  0% { opacity: 0; transform: translateY(0) scale(0); }
-  15% { opacity: .4; transform: translateY(-20px) scale(1); }
-  85% { opacity: .4; transform: translateY(-80px) scale(1); }
-  100% { opacity: 0; transform: translateY(-100px) scale(0); }
-}
-
-/* SECTION COMMONS */
-.section {
-  padding: 100px var(--pad);
-  max-width: var(--max-w); margin: 0 auto;
-}
-.section-eyebrow {
-  font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--brand-orange); margin-bottom: 14px;
-}
-.section-heading {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 3.5vw, 3rem);
-  font-weight: 400; line-height: 1.12; letter-spacing: -.015em;
-  margin-bottom: 16px;
-}
-.section-desc {
-  font-size: 16px; color: var(--text-light); line-height: 1.72;
-  max-width: 540px; margin-bottom: 56px;
-}
-.highlight-bar {
-  height: 3px;
-  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
-  border-radius: 2px;
-  margin-bottom: 40px;
-  max-width: 80px;
-}
-
-/* FEATURES GRID */
-.features-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1px; background: var(--border);
-  border: 1px solid var(--border); border-radius: 16px;
-  overflow: hidden;
-}
-.feature-card {
-  background: var(--bg); padding: 40px 36px;
-  transition: background .2s;
-}
-.feature-card:hover { background: #fafafa; }
-.feature-icon {
-  width: 44px; height: 44px; border-radius: 12px;
-  background: var(--brand-deep);
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px; font-size: 20px; color: var(--brand-yellow);
-}
-.feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-.feature-card p { font-size: 14px; color: var(--text-light); line-height: 1.65; }
-
-/* DARK SECTION */
-.dark-section {
-  background: var(--bg-dark); color: #fff;
-  padding: 120px var(--pad);
-  position: relative; overflow: hidden;
-}
-.dark-section .section-inner {
-  max-width: var(--max-w); margin: 0 auto;
-  position: relative; z-index: 2;
-}
-.dark-section .section-eyebrow { color: var(--brand-yellow); }
-.dark-section .section-heading { color: #fff; }
-.dark-section .section-desc { color: rgba(255,255,255,.5); }
-.dark-section .highlight-bar {
-  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
-}
-.dark-glow {
-  position: absolute; top: -200px; right: -200px;
-  width: 600px; height: 600px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,249,62,.06) 0%, transparent 70%);
+  width: 720px; height: 720px;
+  left: 50%; top: -220px;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(255,249,62,.14), rgba(255,156,60,.06) 45%, transparent 70%);
+  filter: blur(10px);
   pointer-events: none; z-index: 0;
 }
-.dark-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-}
-.dark-card {
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 16px; padding: 36px;
-  transition: border-color .2s, background .2s;
-}
-.dark-card:hover {
-  border-color: rgba(255,249,62,.2);
-  background: rgba(255,255,255,.06);
-}
-.dark-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-.dark-card p { font-size: 14px; color: rgba(255,255,255,.5); line-height: 1.65; }
 
-/* DEPARTMENTS */
-.dept-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-}
-.dept-card {
-  border: 1px solid var(--border); border-radius: 16px;
-  padding: 36px; transition: border-color .2s, box-shadow .2s;
-}
-.dept-card:hover {
-  border-color: rgba(255,249,62,.4);
-  box-shadow: 0 12px 40px rgba(0,0,0,.06);
-}
-.dept-card-icon {
-  width: 48px; height: 48px; border-radius: 14px;
-  background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 20px; font-size: 22px; color: white;
-}
-.dept-card-icon svg { width: 24px; height: 24px; color: white; }
-.dept-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; }
-.dept-card p { font-size: 14px; color: var(--text-light); line-height: 1.65; }
-.dept-card .dept-link {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 13px; font-weight: 600; color: var(--brand-orange);
-  margin-top: 16px; transition: gap .15s;
-}
-.dept-card:hover .dept-link { gap: 8px; }
-
-/* QUOTE */
-.quote-section {
-  padding: 100px var(--pad);
-  text-align: center;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.quote-section blockquote {
-  max-width: 720px; margin: 0 auto;
-  font-family: var(--font-display);
-  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
-  font-weight: 400; font-style: italic;
-  line-height: 1.5; color: var(--text-light);
-}
-.quote-section blockquote em { font-style: normal; color: var(--brand-orange); }
-
-/* CTA */
-.cta-section {
-  padding: 120px var(--pad); text-align: center;
-}
-.cta-section h2 {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3.2rem);
-  font-weight: 400; line-height: 1.12;
-  margin-bottom: 20px;
-}
-.cta-section h2 em { font-style: italic; color: var(--brand-orange); }
-.cta-section p {
-  font-size: 16px; color: var(--text-light); margin-bottom: 36px;
-  max-width: 480px; margin-left: auto; margin-right: auto;
-}
-
-/* FOOTER */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 48px var(--pad) 40px;
-}
-.footer-inner { max-width: var(--max-w); margin: 0 auto; }
-.footer-top {
+.product-grid {
   display: grid;
-  grid-template-columns: 1.5fr repeat(3, 1fr);
-  gap: 40px;
-  margin-bottom: 40px;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 20px;
 }
-.footer-brand p {
-  font-size: 13px; color: var(--text-muted);
-  line-height: 1.65; max-width: 260px; margin-top: 12px;
-}
-.footer-col-title {
-  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--text-muted); margin-bottom: 14px;
-}
-.footer-col a {
-  display: block; font-size: 13px; color: var(--text-light);
-  padding: 4px 0; transition: color .15s;
-}
-.footer-col a:hover { color: var(--text); }
-.footer-bottom {
-  display: flex; align-items: center; justify-content: space-between;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-}
-.footer-copy { font-size: 12px; color: var(--text-muted); }
-.footer-socials { display: flex; gap: 12px; }
-.footer-socials a {
-  color: var(--text-muted); transition: color .15s;
-  display: flex; align-items: center;
-}
-.footer-socials a:hover { color: var(--text); }
+@media (max-width: 980px) { .product-grid { grid-template-columns: 1fr 1fr; } .product-grid .tile.lead { grid-column: 1 / -1; } }
+@media (max-width: 640px)  { .product-grid { grid-template-columns: 1fr; } .product-grid .tile.lead { grid-column: auto; } }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .nav-links { display: none; }
-  .nav-hamburger { display: flex; flex-direction: column; }
-  .features-grid, .dept-grid { grid-template-columns: 1fr; }
-  .dark-grid { grid-template-columns: 1fr; }
-  .footer-top { grid-template-columns: 1fr 1fr; }
-  .globe-wrap { width: 480px; height: 480px; pointer-events: none; }
-  .stats-inner { grid-template-columns: repeat(2, 1fr); }
-  .stat-item:nth-child(2) { border-right: none; }
-  .stat-item:nth-child(1), .stat-item:nth-child(2) { border-bottom: 1px solid var(--border); }
+.tile {
+  position: relative;
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: transform .25s, border-color .25s;
+  min-height: 220px;
+  display: flex; flex-direction: column; justify-content: space-between;
 }
-@media (max-width: 600px) {
-  .hero h1 { font-size: 2.2rem; }
-  .hero-actions { flex-direction: column; align-items: center; }
-  .footer-top { grid-template-columns: 1fr; }
-  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
-  .globe-wrap { width: 320px; height: 320px; opacity: .6; pointer-events: none; }
-  .stats-inner { grid-template-columns: 1fr 1fr; }
-  .stat-item { padding: 28px 20px; }
+.tile:hover { transform: translateY(-4px); border-color: var(--border-glow); }
+.tile.lead {
+  grid-row: span 2;
+  min-height: 460px;
+  background:
+    radial-gradient(ellipse 500px 400px at 100% 0%, rgba(255,156,60,.18), transparent 60%),
+    radial-gradient(ellipse 500px 400px at 0% 100%, rgba(255,249,62,.12), transparent 60%),
+    var(--bg-card);
+  border-color: rgba(255,249,62,.2);
 }
+.tile .tile-top { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.tile .tile-top img { height: 28px; width: auto; }
+.tile .tile-tag {
+  font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 100px;
+  background: rgba(255,249,62,.12); color: var(--primary);
+  border: 1px solid rgba(255,249,62,.25);
+}
+.tile h3 { font-size: 1.35rem; margin-bottom: 10px; }
+.tile.lead h3 { font-size: 2rem; line-height: 1.1; font-family: var(--font-display); font-weight: 400; letter-spacing: -.01em; }
+.tile p { color: var(--text-muted); font-size: .94rem; }
+.tile-cta { margin-top: 18px; font-size: .86rem; font-weight: 600; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; }
+.tile-cta::after { content: '→'; transition: transform .15s; }
+.tile:hover .tile-cta::after { transform: translateX(4px); }
+
+.ecosystem-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+}
+@media (max-width: 980px) { .ecosystem-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 520px)  { .ecosystem-grid { grid-template-columns: repeat(2, 1fr); } }
+.eco-item {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 22px 16px;
+  text-align: center;
+  transition: all .2s;
+}
+.eco-item:hover { border-color: var(--primary); background: var(--bg-card-hover); transform: translateY(-2px); }
+.eco-emoji { font-size: 1.6rem; margin-bottom: 10px; display: block; }
+.eco-name { font-size: .86rem; font-weight: 600; color: var(--text); }
+.eco-desc { font-size: .72rem; color: var(--text-muted); margin-top: 4px; }
+
+.story-rail { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; margin: 0 -28px; padding-left: 28px; padding-right: 28px; scrollbar-width: thin; }
+.story-rail::-webkit-scrollbar { height: 6px; }
+.story-rail::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 3px; }
+.story-card {
+  flex: 0 0 340px; scroll-snap-align: start;
+  padding: 26px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 14px;
+  transition: all .2s;
+}
+.story-card:hover { border-color: var(--border-glow); }
+.story-quote { font-size: 1rem; color: var(--text); line-height: 1.55; }
+.story-person { display: flex; align-items: center; gap: 10px; margin-top: auto; }
+.story-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--grad); display: flex; align-items: center; justify-content: center; color: #0a0d10; font-weight: 700; }
+.story-meta { display: flex; flex-direction: column; }
+.story-name { font-size: .9rem; font-weight: 600; }
+.story-role { font-size: .78rem; color: var(--text-muted); }
+
+.cta-block {
+  position: relative;
+  overflow: hidden;
+  padding: 72px 48px;
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(255,249,62,.2), transparent 60%),
+    radial-gradient(ellipse at 100% 100%, rgba(255,156,60,.18), transparent 55%),
+    linear-gradient(180deg, #14171f, #0c0f16);
+  border: 1px solid var(--border-strong);
+  text-align: center;
+}
+.cta-block h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.05; margin-bottom: 16px; }
+.cta-block p { color: var(--text-muted); max-width: 560px; margin: 0 auto 28px; }
+.cta-block .hero-actions { justify-content: center; }
+
+.dept-card {
+  padding: 32px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all .25s;
+  height: 100%;
+  display: flex; flex-direction: column;
+}
+.dept-card:hover { border-color: var(--border-glow); transform: translateY(-4px); box-shadow: var(--shadow-glow); }
+.dept-tag { font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--secondary); margin-bottom: 14px; }
+.dept-card h3 { font-size: 1.35rem; margin-bottom: 10px; }
+.dept-card p { color: var(--text-muted); font-size: .94rem; flex: 1; }
+.dept-card .dept-link { margin-top: 22px; font-size: .88rem; font-weight: 600; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; }
+.dept-card .dept-link::after { content: '→'; transition: transform .15s; }
+.dept-card:hover .dept-link::after { transform: translateX(4px); }
+
+.news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+@media (max-width: 980px) { .news-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px)  { .news-grid { grid-template-columns: 1fr; } }
+.news-card {
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: all .2s;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.news-card:hover { border-color: var(--border-glow); transform: translateY(-3px); }
+.news-date { font-size: .74rem; font-weight: 600; color: var(--secondary); text-transform: uppercase; letter-spacing: .1em; }
+.news-card h3 { font-size: 1.1rem; line-height: 1.3; }
+.news-card p { color: var(--text-muted); font-size: .92rem; }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav">
+<nav class="site-nav">
   <div class="nav-inner">
-    <a href="/" class="nav-logo">
-      <img src="/Swiftaw logomark black.png" alt="Swiftaw">
+    <a href="/" class="nav-brand">
+      <img src="/Swiftaw logomark.png" alt="">
+      <span>Swiftaw</span>
     </a>
-    <div class="nav-links">
+    <div class="nav-links" id="nav-links">
       <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
+        <a class="nav-link has-menu">Products</a>
         <div class="nav-dropdown">
-          <a href="https://fortized.com">
-            Try Fortized
-            <span class="dd-desc">Gaming community platform</span>
-          </a>
+          <a href="https://fortized.swiftaw.com"><strong>Fortized</strong><span>Comprehensive security platform</span></a>
+          <a href="#ecosystem"><strong>See all products</strong><span>Explore the Swiftaw ecosystem</span></a>
         </div>
       </div>
-      <a href="/documents" class="nav-link">Documents</a>
+      <div class="nav-dropdown-wrap">
+        <a class="nav-link has-menu">Company</a>
+        <div class="nav-dropdown">
+          <a href="/company/about"><strong>About</strong><span>Who we are and what we build</span></a>
+          <a href="/company/goals"><strong>Goals</strong><span>Where we're headed</span></a>
+          <a href="/company/commitments"><strong>Commitments</strong><span>The promises we keep</span></a>
+        </div>
+      </div>
+      <div class="nav-dropdown-wrap">
+        <a class="nav-link has-menu">Departments</a>
+        <div class="nav-dropdown">
+          <a href="/departments/rd"><strong>Research &amp; Development</strong><span>Engineering what's next</span></a>
+          <a href="/departments/safety"><strong>Safety</strong><span>Responsible by default</span></a>
+          <a href="/departments/communication"><strong>Communication</strong><span>Clear and transparent</span></a>
+        </div>
+      </div>
       <a href="/blog" class="nav-link">Blog</a>
-      <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
-        <div class="nav-dropdown">
-          <a href="/departments/rd">R&amp;D</a>
-          <a href="/departments/safety">Safety</a>
-          <a href="/departments/communication">Communication</a>
-        </div>
-      </div>
-      <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Company <span class="caret">&#9662;</span></span>
-        <div class="nav-dropdown">
-          <a href="/company/about">About</a>
-          <a href="/company/goals">Goals for the World</a>
-          <a href="/company/commitments">Commitments</a>
-        </div>
-      </div>
+      <a href="/documents" class="nav-link">Documents</a>
     </div>
-    <div class="nav-spacer"></div>
-    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
-    <div class="nav-auth-area"></div>
-    <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
-      <span></span><span></span><span></span>
+    <a href="https://fortized.swiftaw.com" class="nav-cta">Try Fortized</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
+  <div class="hero-grid-bg"></div>
   <div class="hero-orb"></div>
-  <div class="hero-particles">
-    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-    <div class="particle"></div><div class="particle"></div>
-  </div>
-  <div class="globe-wrap" id="globeContainer">
-    <canvas id="globeCanvas"></canvas>
-    <div class="globe-tooltip" id="globeTooltip"></div>
-  </div>
-  <div class="hero-content">
-    <div class="hero-eyebrow">Swiftaw</div>
-    <h1>Move Beyond<br>the <em>Ordinary.</em></h1>
-    <p class="hero-sub">Swiftaw is building the ultimate digital ecosystem; mastering human connection through chat and perfecting machine intelligence to reshape how the world communicates, thinks, and solves problems.</p>
+  <div class="container hero-inner">
+    <span class="pill">Building the Swiftaw ecosystem</span>
+    <h1 class="hero-title">Engineering a <span class="accent">safer,<br>more useful</span> future</h1>
+    <p class="hero-sub">Swiftaw is a research-led technology company shipping trustworthy tools across security, infrastructure and design — all connected by a single ecosystem.</p>
     <div class="hero-actions">
-      <a href="https://fortized.com" class="btn-yellow">Try Fortized</a>
-      <a href="#research" class="btn-outline">Learn More</a>
+      <a href="#ecosystem" class="btn btn-primary">Explore our work <span class="arrow">→</span></a>
+      <a href="/company/about" class="btn btn-ghost">About Swiftaw</a>
     </div>
   </div>
 </section>
 
-<!-- DARK SECTION - PRODUCTS -->
-<div class="dark-section" style="padding: 80px var(--pad) 60px;">
-  <div class="dark-glow"></div>
-  <div class="section-inner">
-    <div class="section-eyebrow reveal">Our Products</div>
-    <div class="highlight-bar reveal reveal-delay-1"></div>
-    <div class="section-heading reveal reveal-delay-1">Platforms that amplify<br>human connection.</div>
-    <div class="dark-grid">
-      <a href="https://fortized.com" class="dark-card" style="background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.1); overflow: hidden; display: flex; flex-direction: column;">
-        <div style="width: calc(100% + 72px); height: 200px; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); overflow: hidden; margin: -36px -36px 24px -36px; margin-left: -36px; margin-right: -36px;">
-          <img src="/Fortized banner6.png" alt="Fortized" style="width: 100%; height: 100%; object-fit: cover;">
+<section id="ecosystem">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Our ecosystem</span>
+      <h2 class="section-title">Products built on the Swiftaw stack</h2>
+      <p class="section-sub">Every Swiftaw product shares a common backbone — secure by default, open in design, and engineered to work together.</p>
+    </div>
+
+    <div class="product-grid">
+      <a href="https://fortized.swiftaw.com" class="tile lead reveal">
+        <div>
+          <div class="tile-top">
+            <img src="/product-logos/Fortized logomark.png" alt="">
+            <span class="tile-tag">Flagship</span>
+          </div>
+          <h3>Fortized — the complete security suite</h3>
+          <p>Unify identity, monitoring and remediation in one platform. Fortized is engineered from the ground up to give small teams enterprise-grade protection — without the complexity.</p>
         </div>
-        <h3>Fortized</h3>
-        <p>Fortized is the modern community platform built for gamers. Organize your ranks, rally your allies, and conquer together.</p>
+        <span class="tile-cta">Open Fortized</span>
+      </a>
+
+      <a class="tile reveal">
+        <div class="tile-top"><span class="tile-tag">In development</span></div>
+        <h3>Swiftaw Cloud</h3>
+        <p>Durable, geo-replicated storage primitives for modern teams.</p>
+        <span class="tile-cta">Coming 2026</span>
+      </a>
+
+      <a class="tile reveal">
+        <div class="tile-top"><span class="tile-tag">In development</span></div>
+        <h3>Swiftaw ID</h3>
+        <p>A single, privacy-first identity across the ecosystem.</p>
+        <span class="tile-cta">Coming 2026</span>
+      </a>
+
+      <a class="tile reveal">
+        <div class="tile-top"><span class="tile-tag">Beta</span></div>
+        <h3>Swiftaw Build</h3>
+        <p>CI/CD with reproducible artifacts and supply-chain checks baked in.</p>
+        <span class="tile-cta">Request access</span>
+      </a>
+
+      <a class="tile reveal">
+        <div class="tile-top"><span class="tile-tag">Research</span></div>
+        <h3>Swiftaw Research</h3>
+        <p>Open papers, benchmarks and tooling from our R&amp;D team.</p>
+        <span class="tile-cta">Read papers</span>
       </a>
     </div>
   </div>
-</div>
+</section>
 
-<!-- STATS BAR -->
-<div class="stats-bar">
-  <div class="stats-inner" id="statsBar">
-    <div class="stat-item">
-      <div class="stat-number" data-target="1">0</div>
-      <div class="stat-label">Live Products</div>
-      <div class="stat-sub">Fortized</div>
+<section>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Everything we make</span>
+      <h2 class="section-title">One ecosystem. Many surfaces.</h2>
+      <p class="section-sub">A clean set of products that do one thing well and plug into each other.</p>
     </div>
-    <div class="stat-item">
-      <div class="stat-number" data-target="3">0</div>
-      <div class="stat-label">Departments</div>
-      <div class="stat-sub">R&amp;D, Safety, Communication</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number" data-target="50" data-suffix="ms">0</div>
-      <div class="stat-label">Message Latency</div>
-      <div class="stat-sub">Sub-50ms delivery</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-number" data-target="100" data-suffix="%">0</div>
-      <div class="stat-label">Encrypted</div>
-      <div class="stat-sub">End-to-end by default</div>
+
+    <div class="ecosystem-grid">
+      <a href="https://fortized.swiftaw.com" class="eco-item"><span class="eco-emoji">🛡️</span><div class="eco-name">Fortized</div><div class="eco-desc">Security suite</div></a>
+      <a class="eco-item"><span class="eco-emoji">🆔</span><div class="eco-name">Swiftaw ID</div><div class="eco-desc">Identity</div></a>
+      <a class="eco-item"><span class="eco-emoji">☁️</span><div class="eco-name">Cloud</div><div class="eco-desc">Storage</div></a>
+      <a class="eco-item"><span class="eco-emoji">🧱</span><div class="eco-name">Build</div><div class="eco-desc">CI/CD</div></a>
+      <a href="/departments/rd" class="eco-item"><span class="eco-emoji">🧪</span><div class="eco-name">Research</div><div class="eco-desc">Open science</div></a>
+      <a href="/blog" class="eco-item"><span class="eco-emoji">📰</span><div class="eco-name">Journal</div><div class="eco-desc">Our writing</div></a>
+      <a href="/documents" class="eco-item"><span class="eco-emoji">📚</span><div class="eco-name">Docs</div><div class="eco-desc">Guides &amp; refs</div></a>
+      <a href="/company/about" class="eco-item"><span class="eco-emoji">🏛️</span><div class="eco-name">Company</div><div class="eco-desc">Who we are</div></a>
+      <a href="/departments/safety" class="eco-item"><span class="eco-emoji">🧯</span><div class="eco-name">Safety</div><div class="eco-desc">Trust &amp; integrity</div></a>
+      <a href="/departments/communication" class="eco-item"><span class="eco-emoji">📣</span><div class="eco-name">Comms</div><div class="eco-desc">Outreach</div></a>
+      <a href="/company/goals" class="eco-item"><span class="eco-emoji">🎯</span><div class="eco-name">Goals</div><div class="eco-desc">Roadmap</div></a>
+      <a href="/company/commitments" class="eco-item"><span class="eco-emoji">🤝</span><div class="eco-name">Commitments</div><div class="eco-desc">Our promises</div></a>
     </div>
   </div>
-</div>
+</section>
 
-<!-- VISION -->
-<div class="section" id="vision">
-  <div class="section-eyebrow reveal">Our Vision</div>
-  <div class="highlight-bar reveal reveal-delay-1"></div>
-  <div class="section-heading reveal reveal-delay-1">Building platforms that<br>connect people.</div>
-  <div class="section-desc reveal reveal-delay-2">We're committed to creating experiences where people can connect, communicate, and grow together through communities designed for real human interaction.</div>
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">💬</div>
-      <h3>Communication</h3>
-      <p>Fast, reliable messaging with sub-50ms latency, end-to-end encryption, and features built around real conversation.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🤝</div>
-      <h3>Community</h3>
-      <p>Tools to organize, connect, and empower communities of any size. From gaming guilds to professional teams.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🔐</div>
-      <h3>Trust &amp; Safety</h3>
-      <p>Privacy and security by default. Your data, your control. We prioritize user safety across every platform.</p>
+<section>
+  <div class="container">
+    <div class="stat-row">
+      <div class="stat-item"><div class="stat-num">5+</div><div class="stat-label">Active projects</div></div>
+      <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Departments</div></div>
+      <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Independent</div></div>
+      <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">Ambition</div></div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- DEPARTMENTS -->
-<div class="section" id="departments">
-  <div class="section-eyebrow reveal">Swiftaw Departments</div>
-  <div class="highlight-bar reveal reveal-delay-1"></div>
-  <div class="section-heading reveal reveal-delay-1">The teams building<br>the future.</div>
-  <div class="section-desc reveal reveal-delay-2">Each department drives a critical piece of the Swiftaw ecosystem -from research to safety to how we communicate with the world.</div>
-  <div class="dept-grid">
-    <a href="/departments/rd" class="dept-card">
-      <div class="dept-card-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7" cy="7" r="1.5" fill="currentColor"/><circle cx="17" cy="7" r="1.5" fill="currentColor"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/><path d="M7 8.5v3M17 8.5v3M12 8v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3 4h18v16c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
-      <h3>R&amp;D</h3>
-      <p>Innovative digital platforms, chat engines, and intelligent systems. The engineering heart of Swiftaw.</p>
-      <span class="dept-link">Learn more &rarr;</span>
-    </a>
-    <a href="/departments/safety" class="dept-card">
-      <div class="dept-card-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L3 6v5.5c0 7 9 10 9 10s9-3 9-10V6l-9-4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12l2.5 2.5 4-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <h3>Safety</h3>
-      <p>Protecting communities with advanced moderation, encryption, and responsible technology practices.</p>
-      <span class="dept-link">Learn more &rarr;</span>
-    </a>
-    <a href="/departments/communication" class="dept-card">
-      <div class="dept-card-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 10l9-7 9 7v10c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 12h6v8H9z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 12v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-      <h3>Communication</h3>
-      <p>Improving connectivity, user engagement, and the digital experience across every touchpoint.</p>
-      <span class="dept-link">Learn more &rarr;</span>
-    </a>
+<section>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Our teams</span>
+      <h2 class="section-title">Three departments, one direction</h2>
+      <p class="section-sub">Each team owns a distinct surface of Swiftaw, but they ship together.</p>
+    </div>
+
+    <div class="grid grid-3">
+      <a href="/departments/rd" class="dept-card reveal">
+        <div class="dept-tag">01 — Research &amp; Development</div>
+        <h3>Engineering what comes next</h3>
+        <p>Our R&amp;D team designs, prototypes and ships the technology that powers the Swiftaw ecosystem — from cryptography primitives to user-facing tools.</p>
+        <span class="dept-link">Enter R&amp;D</span>
+      </a>
+      <a href="/departments/safety" class="dept-card reveal">
+        <div class="dept-tag">02 — Safety</div>
+        <h3>Responsible by default</h3>
+        <p>Safety reviews every release before it ships: red-teaming, privacy audits, and the hard trade-offs that keep our users in control.</p>
+        <span class="dept-link">Enter Safety</span>
+      </a>
+      <a href="/departments/communication" class="dept-card reveal">
+        <div class="dept-tag">03 — Communication</div>
+        <h3>Clear, honest, on the record</h3>
+        <p>Communication handles our public voice — changelogs, incident reports, docs, and everything we tell the world.</p>
+        <span class="dept-link">Enter Communication</span>
+      </a>
+    </div>
   </div>
-</div>
+</section>
 
-<!-- QUOTE -->
-<div class="quote-section">
-  <blockquote>
-    &ldquo;Swiftaw powers a digital ecosystem that <em>amplifies human connection</em> and intelligence -moving beyond the limitations of today's technology.&rdquo;
-  </blockquote>
-</div>
-
-<!-- CTA -->
-<div class="cta-section">
-  <h2>Move Beyond the <em>Ordinary.</em></h2>
-  <p>Join the Swiftaw ecosystem.</p>
-  <div class="hero-actions">
-    <a href="https://fortized.com/signup" class="btn-yellow">Try Fortized</a>
-    <a href="/blog" class="btn-outline">Read our blog</a>
+<section>
+  <div class="container">
+    <div class="quote-block reveal">
+      <p>We don't believe in shipping the smallest thing that works. We ship the most useful thing that's honest about what it is.</p>
+      <cite>— Staw, founder &amp; CEO</cite>
+    </div>
   </div>
-</div>
+</section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
+<section>
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Stories</span>
+      <h2 class="section-title">What people are building with Swiftaw</h2>
+    </div>
+
+    <div class="story-rail">
+      <div class="story-card">
+        <p class="story-quote">"Fortized replaced three separate vendors for us and cut our incident response time roughly in half."</p>
+        <div class="story-person">
+          <div class="story-avatar">A</div>
+          <div class="story-meta"><span class="story-name">Aiko Tanaka</span><span class="story-role">Head of Security, small studio</span></div>
+        </div>
+      </div>
+      <div class="story-card">
+        <p class="story-quote">"The Swiftaw stack is the first thing in years that felt genuinely designed and not assembled."</p>
+        <div class="story-person">
+          <div class="story-avatar">M</div>
+          <div class="story-meta"><span class="story-name">Marcus Adeyemi</span><span class="story-role">Platform engineer</span></div>
+        </div>
+      </div>
+      <div class="story-card">
+        <p class="story-quote">"Their communication department is honestly the clearest I've ever read. Every changelog is a lesson."</p>
+        <div class="story-person">
+          <div class="story-avatar">L</div>
+          <div class="story-meta"><span class="story-name">Lena Novak</span><span class="story-role">Product lead</span></div>
+        </div>
+      </div>
+      <div class="story-card">
+        <p class="story-quote">"I trust them with our identity stack because they actually read the RFCs we cite at them."</p>
+        <div class="story-person">
+          <div class="story-avatar">R</div>
+          <div class="story-meta"><span class="story-name">Rahul Banerjee</span><span class="story-role">CTO, fintech startup</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head left">
+      <span class="eyebrow">Journal</span>
+      <h2 class="section-title">Latest from Swiftaw</h2>
+    </div>
+    <div class="news-grid">
+      <a href="/blog" class="news-card">
+        <span class="news-date">April 2026</span>
+        <h3>Announcing the Swiftaw ecosystem roadmap</h3>
+        <p>What we're shipping over the next year — across Fortized, ID, Cloud and Build.</p>
+      </a>
+      <a href="/blog" class="news-card">
+        <span class="news-date">March 2026</span>
+        <h3>How we think about safety reviews</h3>
+        <p>The checklist we run before every release touches a real user.</p>
+      </a>
+      <a href="/blog" class="news-card">
+        <span class="news-date">February 2026</span>
+        <h3>Open research notes: supply-chain hardening</h3>
+        <p>Findings from three months of attack-simulation against our own pipelines.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="cta-block">
+      <span class="pill">Join us</span>
+      <h2 style="margin-top:18px;">Build with the Swiftaw ecosystem</h2>
+      <p>Try Fortized, read our research, or jump into the docs. Everything we ship is designed to plug into what you already use.</p>
+      <div class="hero-actions">
+        <a href="https://fortized.swiftaw.com" class="btn btn-primary">Try Fortized <span class="arrow">→</span></a>
+        <a href="/documents" class="btn btn-ghost">Read the docs</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
       <div class="footer-brand">
-        <a href="/" class="nav-logo" style="margin-right:0;">
-          <img src="/SwiftawLogo.png" alt="Swiftaw">
-        </a>
-        <p>Building platforms for creativity, connection, and community.</p>
+        <img src="/SwiftawLogo.png" alt="Swiftaw">
+        <p>Swiftaw is an independent research-led technology company building a single ecosystem of trustworthy tools.</p>
       </div>
       <div class="footer-col">
-        <div class="footer-col-title">Products</div>
-        <a href="https://fortized.com">Fortized</a>
+        <h4>Products</h4>
+        <a href="https://fortized.swiftaw.com">Fortized</a>
+        <a href="#ecosystem">Swiftaw ID</a>
+        <a href="#ecosystem">Swiftaw Cloud</a>
+        <a href="#ecosystem">Swiftaw Build</a>
       </div>
       <div class="footer-col">
-        <div class="footer-col-title">Company</div>
+        <h4>Company</h4>
         <a href="/company/about">About</a>
         <a href="/company/goals">Goals</a>
         <a href="/company/commitments">Commitments</a>
-        <a href="/blog">Blog</a>
+        <a href="/blog">Journal</a>
       </div>
       <div class="footer-col">
-        <div class="footer-col-title">Departments</div>
-        <a href="/departments/rd">R&amp;D</a>
+        <h4>Teams</h4>
+        <a href="/departments/rd">Research &amp; Development</a>
         <a href="/departments/safety">Safety</a>
         <a href="/departments/communication">Communication</a>
         <a href="/documents">Documents</a>
       </div>
     </div>
     <div class="footer-bottom">
-      <p class="footer-copy">&copy; 2026 Swiftaw</p>
-      <div class="footer-socials">
-        <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </a>
-        <a href="https://www.youtube.com/@swiftaw" target="_blank" rel="noopener" title="YouTube">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-        </a>
-      </div>
+      <span>© 2026 Swiftaw. All rights reserved.</span>
+      <span>Built in the open · swiftaw.com</span>
     </div>
   </div>
 </footer>
 
-<script>
-// Scroll Reveal
-(function () {
-  var reveals = document.querySelectorAll('.reveal');
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-  reveals.forEach(function (el) { observer.observe(el); });
-})();
-
-// Stats Counter Animation
-(function () {
-  var statsBar = document.getElementById('statsBar');
-  if (!statsBar) return;
-  var animated = false;
-  function animateCounters() {
-    if (animated) return;
-    animated = true;
-    var items = statsBar.querySelectorAll('.stat-item');
-    items.forEach(function (item, i) {
-      setTimeout(function () { item.classList.add('visible'); }, i * 150);
-    });
-    var numbers = statsBar.querySelectorAll('.stat-number');
-    numbers.forEach(function (num) {
-      var target = parseInt(num.getAttribute('data-target'));
-      var suffix = num.getAttribute('data-suffix') || '';
-      var duration = 1500;
-      var start = performance.now();
-      function tick(now) {
-        var elapsed = now - start;
-        var progress = Math.min(elapsed / duration, 1);
-        var eased = 1 - Math.pow(1 - progress, 3);
-        var current = Math.round(eased * target);
-        num.textContent = current + suffix;
-        if (progress < 1) requestAnimationFrame(tick);
-      }
-      setTimeout(function () { requestAnimationFrame(tick); }, 300);
-    });
-  }
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) { if (entry.isIntersecting) animateCounters(); });
-  }, { threshold: 0.3 });
-  observer.observe(statsBar);
-})();
-
-// Card tilt effect
-(function () {
-  var cards = document.querySelectorAll('.feature-card, .dark-card, .dept-card');
-  cards.forEach(function (card) {
-    card.addEventListener('mousemove', function (e) {
-      var rect = card.getBoundingClientRect();
-      var x = (e.clientX - rect.left) / rect.width - 0.5;
-      var y = (e.clientY - rect.top) / rect.height - 0.5;
-      card.style.transform = 'perspective(600px) rotateY(' + (x * 5) + 'deg) rotateX(' + (-y * 5) + 'deg) translateY(-2px)';
-    });
-    card.addEventListener('mouseleave', function () { card.style.transform = ''; });
-  });
-})();
-</script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
-<script>
-(function(){
-  var canvas = document.getElementById('globeCanvas');
-  var tooltip = document.getElementById('globeTooltip');
-  var container = document.getElementById('globeContainer');
-  var ctx = canvas.getContext('2d');
-
-  var C_OCEAN = '#f5f5f0';
-  var C_LAND = '#e8e6e0';
-  var C_HOVER = '#d4d0c8';
-  var C_BORDER = 'rgba(0,0,0,0.18)';
-  var C_GRAT = 'rgba(0,0,0,0.06)';
-  var C_RING = 'rgba(0,0,0,0.15)';
-  var C_YELLOW = '#fff93e';
-  var C_ORANGE = '#ff9c3c';
-
-  var width, height;
-  function resize(){
-    var rect = container.getBoundingClientRect();
-    width = rect.width;
-    height = rect.height;
-    canvas.width = width * devicePixelRatio;
-    canvas.height = height * devicePixelRatio;
-    canvas.style.width = width + 'px';
-    canvas.style.height = height + 'px';
-    ctx.setTransform(1,0,0,1,0,0);
-    ctx.scale(devicePixelRatio, devicePixelRatio);
-  }
-  resize();
-
-  var proj = d3.geoOrthographic()
-    .scale(Math.min(width, height) * 0.48)
-    .translate([width / 2, height / 2])
-    .clipAngle(90)
-    .rotate([-2.2, -46.6, 0]);
-
-  var pathGen = d3.geoPath(proj, ctx);
-  var world = null, countries = null;
-  var hoveredId = null;
-  var rotating = true, dragging = false, lastPos = null;
-  var velX = 0, velY = 0, scale = 1, animId;
-
-  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      world = data;
-      countries = topojson.feature(data, data.objects.countries);
-      draw();
-      startAnim();
-    });
-
-  function getRadius(){ return Math.min(width, height) * 0.48 * scale; }
-
-  function isVisible(coords){
-    var r = proj.rotate();
-    var dLon = coords[0] - (-r[0]);
-    var dLat = coords[1] - (-r[1]);
-    return Math.cos(dLat * Math.PI/180) * Math.cos(dLon * Math.PI/180) > 0;
-  }
-
-  var PARIS = [2.35, 48.86];
-
-  function draw(){
-    ctx.clearRect(0, 0, width, height);
-    proj.scale(getRadius()).translate([width / 2, height / 2]);
-    var sphere = {type: 'Sphere'};
-    ctx.beginPath(); pathGen(sphere);
-    ctx.fillStyle = C_OCEAN; ctx.fill();
-    if(!world) return;
-    countries.features.forEach(function(f){
-      ctx.beginPath(); pathGen(f);
-      ctx.fillStyle = (+f.id === hoveredId) ? C_HOVER : C_LAND;
-      ctx.fill();
-      ctx.strokeStyle = C_BORDER;
-      ctx.lineWidth = 0.5;
-      ctx.stroke();
-    });
-    ctx.beginPath(); pathGen(d3.geoGraticule10());
-    ctx.strokeStyle = C_GRAT; ctx.lineWidth = 0.3; ctx.stroke();
-    ctx.beginPath(); pathGen(sphere);
-    ctx.strokeStyle = C_RING; ctx.lineWidth = 1; ctx.stroke();
-    if(isVisible(PARIS)){
-      var p = proj(PARIS);
-      if(p){
-        var px = p[0], py = p[1];
-        ctx.beginPath(); ctx.arc(px, py, 10, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(255,156,60,0.25)'; ctx.lineWidth = 1.5; ctx.stroke();
-        ctx.beginPath(); ctx.arc(px, py, 5.5, 0, Math.PI * 2);
-        ctx.fillStyle = C_ORANGE; ctx.fill();
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
-        ctx.beginPath(); ctx.arc(px, py, 2, 0, Math.PI * 2);
-        ctx.fillStyle = '#fff'; ctx.fill();
-        ctx.font = 'bold 11px Inter, sans-serif';
-        ctx.fillStyle = 'rgba(0,0,0,0.6)';
-        ctx.fillText('Paris', px + 14, py - 6);
-      }
-    }
-  }
-
-  function startAnim(){
-    cancelAnimationFrame(animId);
-    function tick(){
-      if(rotating && !dragging){
-        var r = proj.rotate();
-        proj.rotate([r[0] + 0.06, r[1], r[2]]);
-        draw();
-      } else if(!dragging && (Math.abs(velX) > 0.005 || Math.abs(velY) > 0.005)){
-        var r = proj.rotate();
-        proj.rotate([r[0] + velX, r[1] - velY, r[2]]);
-        velX *= 0.94; velY *= 0.94;
-        draw();
-      }
-      animId = requestAnimationFrame(tick);
-    }
-    animId = requestAnimationFrame(tick);
-  }
-
-  function getXY(e){
-    if(e.touches) return [e.touches[0].clientX, e.touches[0].clientY];
-    return [e.clientX, e.clientY];
-  }
-
-  function pointerDown(e){
-    rotating = false; dragging = true;
-    velX = 0; velY = 0;
-    var rect = canvas.getBoundingClientRect();
-    var xy = getXY(e);
-    lastPos = [xy[0] - rect.left, xy[1] - rect.top];
-    canvas.style.cursor = 'grabbing';
-    e.preventDefault();
-  }
-
-  function pointerMove(e){
-    var rect = canvas.getBoundingClientRect();
-    var xy = getXY(e);
-    var mx = xy[0] - rect.left, my = xy[1] - rect.top;
-    if(dragging && lastPos){
-      var dx = mx - lastPos[0], dy = my - lastPos[1];
-      var s = 0.25;
-      var r = proj.rotate();
-      proj.rotate([r[0] + dx * s, r[1] - dy * s, r[2]]);
-      velX = dx * s; velY = dy * s;
-      lastPos = [mx, my];
-      draw();
-    } else if(world) {
-      var pt = proj.invert ? proj.invert([mx, my]) : null;
-      if(pt){
-        var hit = countries.features.find(function(f){
-          try { return d3.geoContains(f, pt); } catch(err){ return false; }
-        });
-        if(hit){
-          hoveredId = +hit.id;
-          var name = (hit.properties && hit.properties.name) ? hit.properties.name : ('Country #' + hit.id);
-          tooltip.style.opacity = '1';
-          tooltip.style.left = (mx + 14) + 'px';
-          tooltip.style.top = (my - 10) + 'px';
-          tooltip.textContent = name;
-          draw();
-        } else {
-          if(hoveredId !== null){ hoveredId = null; draw(); }
-          tooltip.style.opacity = '0';
-        }
-      }
-    }
-    if(e.preventDefault) e.preventDefault();
-  }
-
-  function pointerUp(){
-    dragging = false; lastPos = null;
-    canvas.style.cursor = 'grab';
-    setTimeout(function(){ rotating = true; }, 2500);
-  }
-
-  canvas.addEventListener('mousedown', pointerDown);
-  canvas.addEventListener('mousemove', pointerMove);
-  canvas.addEventListener('mouseup', pointerUp);
-  canvas.addEventListener('mouseleave', function(){
-    pointerUp();
-    if(hoveredId !== null){ hoveredId = null; draw(); }
-    tooltip.style.opacity = '0';
-  });
-  canvas.addEventListener('touchstart', pointerDown, {passive: false});
-  canvas.addEventListener('touchmove', pointerMove, {passive: false});
-  canvas.addEventListener('touchend', pointerUp);
-  canvas.addEventListener('wheel', function(e){
-    scale = Math.max(0.5, Math.min(3, scale - e.deltaY * 0.001));
-    draw();
-    e.preventDefault();
-  }, {passive: false});
-  window.addEventListener('resize', function(){
-    resize();
-    if(world) draw();
-  });
-})();
-</script>
-
 <script src="/js/swiftaw-auth.js"></script>
 <script src="/js/swiftaw-nav.js"></script>
+<script>
+document.getElementById('nav-toggle').addEventListener('click', () => {
+  document.getElementById('nav-links').classList.toggle('open');
+});
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+}, { threshold: .12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
 </body>
 </html>

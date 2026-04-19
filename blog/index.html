@@ -3,715 +3,176 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog - Swiftaw</title>
-<meta name="description" content="Insights on social technology, cloud products, and digital ecosystems from the Swiftaw team.">
-<meta name="theme-color" content="#0a0a0a">
+<title>Journal · Swiftaw</title>
+<meta name="description" content="The Swiftaw journal — research notes, design decisions and release writeups from the team.">
 <link rel="icon" type="image/png" href="/SwiftawFavicon.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-::selection { background: rgba(255,249,62,.25); }
+.blog-header { padding: 64px 0 16px; }
+.blog-header h1 { font-family: var(--font-display); font-size: clamp(2.4rem, 5vw, 3.8rem); line-height: 1.05; margin: 16px 0 18px; }
 
-:root {
-  --brand-deep: #241f3c;
-  --brand-yellow: #fff93e;
-  --brand-orange: #ff9c3c;
-  --bg: #ffffff;
-  --bg-dark: #0a0a0a;
-  --text: #0a0a0a;
-  --text-light: #555;
-  --text-muted: #888;
-  --border: #e5e5e5;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-serif: 'Newsreader', Georgia, serif;
-  --nav-h: 64px;
-  --max-w: 1200px;
-  --pad: clamp(1.5rem, 4vw, 5rem);
+.feature-post {
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: 36px;
+  padding: 40px; border-radius: var(--radius-xl);
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(255,249,62,.12), transparent 55%),
+    radial-gradient(ellipse at 100% 100%, rgba(255,156,60,.12), transparent 55%),
+    linear-gradient(180deg, #14171f, #0c0f16);
+  border: 1px solid var(--border-strong);
+  align-items: center;
+  margin-bottom: 60px;
 }
+.feature-post h2 { font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.15; margin-bottom: 16px; }
+.feature-post p { color: var(--text-muted); margin-bottom: 18px; }
+.feature-meta { display: flex; gap: 14px; color: var(--text-muted); font-size: .84rem; margin-bottom: 16px; }
+.feature-meta span { text-transform: uppercase; letter-spacing: .12em; }
+.feature-thumb { aspect-ratio: 4/3; border-radius: var(--radius-lg); background: linear-gradient(135deg, rgba(255,249,62,.18), rgba(255,156,60,.18)); display:flex; align-items:center; justify-content:center; font-family: var(--font-display); font-size: 2.6rem; color: var(--text); border: 1px solid var(--border); }
+@media (max-width: 860px) { .feature-post { grid-template-columns: 1fr; } }
 
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
-img { display: block; -webkit-user-drag: none; user-select: none; }
-a { text-decoration: none; color: inherit; }
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+.filter { padding: 8px 16px; border-radius: 100px; background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--text-muted); font-size: .86rem; cursor: pointer; transition: all .15s; }
+.filter:hover, .filter.active { color: var(--primary); border-color: var(--primary); background: rgba(255,249,62,.08); }
 
-/* ═══ NAV ═══ */
-.nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  height: var(--nav-h);
-  display: flex; align-items: center;
-  padding: 0 var(--pad);
-  background: rgba(255,255,255,.82);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--border);
-}
-.nav-inner {
-  max-width: var(--max-w); width: 100%; margin: 0 auto;
-  display: flex; align-items: center;
-}
-.nav-logo { display: flex; align-items: center; margin-right: 36px; }
-.nav-logo img { height: 28px; width: auto; }
-.nav-links { display: flex; align-items: center; gap: 6px; }
-.nav-link {
-  font-size: .9rem; font-weight: 500; color: var(--text-light);
-  padding: 8px 14px; border-radius: 8px;
-  transition: background .2s, color .2s; cursor: pointer; white-space: nowrap;
-}
-.nav-link:hover { background: #f5f5f5; color: var(--text); }
-.nav-link.active { color: var(--text); font-weight: 600; background: rgba(0,0,0,.04); }
-.nav-link.has-dropdown { display: flex; align-items: center; gap: 4px; user-select: none; }
-.caret { font-size: .65em; opacity: .55; }
-.nav-dropdown-wrap { position: relative; }
-.nav-dropdown {
-  display: none; position: absolute; top: calc(100% + 8px); left: 0;
-  min-width: 220px; background: #fff;
-  border: 1px solid var(--border); border-radius: 12px; padding: 8px;
-  box-shadow: 0 12px 40px rgba(0,0,0,.08); z-index: 300;
-}
-.nav-dropdown-wrap:hover .nav-dropdown { display: block; }
-.nav-dropdown a {
-  display: block; padding: 10px 14px; border-radius: 8px;
-  font-size: .88rem; font-weight: 500; color: var(--text-light);
-  transition: background .12s, color .12s;
-}
-.nav-dropdown a:hover { background: rgba(0,0,0,.03); color: var(--text); }
-.nav-dropdown a .dd-desc { display: block; font-size: .78rem; color: var(--text-muted); font-weight: 400; margin-top: 2px; }
-.nav-spacer { flex: 1; }
-.nav-cta {
-  font-size: .88rem; font-weight: 600; color: var(--brand-deep);
-  background: var(--brand-yellow); padding: 9px 22px; border-radius: 100px;
-  transition: box-shadow .2s; white-space: nowrap;
-}
-.nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); }
+.post-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+@media (max-width: 980px) { .post-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px)  { .post-grid { grid-template-columns: 1fr; } }
 
-/* ═══ BLOG HERO ═══ */
-.blog-hero {
-  padding: calc(var(--nav-h) + 80px) var(--pad) 60px;
-  background: #faf8f3;
-}
-.blog-hero-inner {
-  max-width: var(--max-w); margin: 0 auto;
-}
-.blog-hero h1 {
-  font-size: clamp(2.4rem, 4vw, 3.6rem);
-  font-weight: 700; line-height: 1.1; letter-spacing: -.02em;
-  margin-bottom: 20px;
-}
-.blog-hero p {
-  font-family: var(--font-serif);
-  font-size: 1.1rem; color: var(--text-light); line-height: 1.72;
-  max-width: 500px;
-}
-
-/* ═══ FILTER TABS ═══ */
-.blog-filters {
-  max-width: var(--max-w); margin: 0 auto;
-  padding: 40px var(--pad) 40px;
-  display: flex; gap: 8px; flex-wrap: wrap;
-}
-.filter-tab {
-  font-size: 13px; font-weight: 600;
-  padding: 8px 18px; border-radius: 100px;
-  border: 1.5px solid var(--border);
-  color: var(--text-light); background: transparent;
-  cursor: pointer; transition: all .15s;
-}
-.filter-tab:hover { border-color: var(--brand-yellow); color: var(--text); }
-.filter-tab.active {
-  background: var(--brand-deep); color: var(--brand-yellow);
-  border-color: var(--brand-deep);
-}
-
-/* ═══ FEATURED POST ═══ */
-.blog-featured {
-  max-width: var(--max-w); margin: 0 auto;
-  padding: 0 var(--pad) 60px;
-}
-.featured-post {
-  display: grid; grid-template-columns: 1fr 1fr;
-  border: 1px solid var(--border); border-radius: 20px;
-  overflow: hidden; transition: box-shadow .2s;
-}
-.featured-post:hover { box-shadow: 0 20px 60px rgba(0,0,0,.06); }
-.featured-post-image {
-  background: linear-gradient(135deg, var(--brand-deep) 0%, #1a1530 50%, #0d0b1a 100%);
-  min-height: 360px;
-  display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
-}
-.featured-post-body { padding: 48px; display: flex; flex-direction: column; justify-content: center; }
-.post-category {
-  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--brand-orange); margin-bottom: 16px;
-}
-.featured-post-body h2 {
-  font-size: clamp(1.5rem, 2.5vw, 2rem);
-  font-weight: 700; line-height: 1.2; letter-spacing: -.01em;
-  margin-bottom: 16px;
-}
-.featured-post-body p {
-  font-size: 15px; color: var(--text-light); line-height: 1.72; margin-bottom: 32px;
-}
-.post-meta { display: flex; align-items: center; gap: 16px; font-size: 13px; color: var(--text-muted); }
-.post-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--border); }
-.post-author { display: flex; align-items: center; gap: 8px; }
-.post-author-avatar {
-  width: 28px; height: 28px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: var(--brand-deep);
-}
-.read-more {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 600; color: var(--brand-orange);
-  margin-top: 24px; transition: gap .15s;
-}
-.featured-post:hover .read-more { gap: 10px; }
-
-/* ═══ POSTS GRID ═══ */
-.blog-grid-section { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad) 100px; }
-.blog-grid-heading {
-  font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--text-muted); margin-bottom: 28px;
-  padding-bottom: 16px; border-bottom: 1px solid var(--border);
-}
-.posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 60px; }
-.post-card {
-  border: 1px solid var(--border); border-radius: 16px;
-  overflow: hidden; transition: box-shadow .2s, border-color .2s;
-  display: flex; flex-direction: column; cursor: pointer;
-}
-.post-card:hover { box-shadow: 0 12px 40px rgba(0,0,0,.06); border-color: rgba(255,249,62,.3); }
-.post-card-image {
-  height: 180px;
-  background: linear-gradient(135deg, var(--brand-deep) 0%, #1a1530 100%);
-  position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-}
-.post-card-image.fortized-theme { background: linear-gradient(135deg, #0d0b1a 0%, #241f3c 100%); }
-.post-card-image.cloud-theme { background: linear-gradient(135deg, #0a1a3d 0%, #1a2d5c 100%); }
-.post-card-image.company-theme { background: linear-gradient(135deg, #1a0a00 0%, #3d1f00 100%); }
-.post-card-image-glow {
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 60% 40%, rgba(255,249,62,.12) 0%, transparent 60%);
-}
-.post-card-image-label { font-size: 2.2rem; color: rgba(255,255,255,.07); position: relative; z-index: 1; }
-.post-card-cat {
-  position: absolute; top: 14px; left: 14px; z-index: 2;
-  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-  background: rgba(255,255,255,.12); color: rgba(255,255,255,.7);
-  backdrop-filter: blur(8px); padding: 4px 10px; border-radius: 100px;
-  border: 1px solid rgba(255,255,255,.1);
-}
-.post-card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
-.post-card-body h3 { font-size: 15px; font-weight: 600; line-height: 1.4; margin-bottom: 10px; letter-spacing: -.01em; }
-.post-card-body p { font-size: 13px; color: var(--text-light); line-height: 1.65; flex: 1; margin-bottom: 20px; }
-.post-card-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  padding-top: 16px; border-top: 1px solid var(--border);
-  font-size: 12px; color: var(--text-muted);
-}
-.post-card-footer .read-link {
-  font-size: 12px; font-weight: 600; color: var(--brand-orange);
-  display: flex; align-items: center; gap: 4px; transition: gap .15s;
-}
-.post-card:hover .read-link { gap: 8px; }
-
-/* ═══ ARTICLE VIEW ═══ */
-.article-view { display: none; }
-.article-view.active { display: block; }
-.article-header {
-  padding: calc(var(--nav-h) + 60px) var(--pad) 40px;
-  background: #faf8f3;
-}
-.article-header-inner {
-  max-width: 700px; margin: 0 auto;
-}
-.article-back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--brand-orange); margin-bottom: 24px; cursor: pointer; }
-.article-back:hover { gap: 10px; }
-.article-tag {
-  display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-  background: rgba(255,249,62,.15); color: var(--brand-deep); padding: 6px 14px; border-radius: 100px;
-  margin-bottom: 20px;
-}
-.article-title {
-  font-size: clamp(2rem, 4vw, 2.8rem);
-  font-weight: 700; line-height: 1.15; letter-spacing: -.01em;
-  margin-bottom: 20px; max-width: 100%;
-}
-.article-meta {
-  display: flex; align-items: center; gap: 20px; font-size: 14px; color: var(--text-muted);
-}
-.article-meta-item { display: flex; align-items: center; gap: 8px; }
-.article-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 700; color: var(--brand-deep);
-}
-
-.article-content {
-  padding: 60px var(--pad);
-  background: var(--bg);
-}
-.article-content-inner {
-  max-width: 700px; margin: 0 auto;
-  font-family: var(--font-serif);
-  font-size: 16px; line-height: 1.8; color: var(--text-light);
-}
-.article-content-inner h2 {
-  font-family: var(--font-sans);
-  font-size: 1.4rem; font-weight: 700; margin: 40px 0 20px; color: var(--text);
-}
-.article-content-inner h3 {
-  font-family: var(--font-sans);
-  font-size: 1.1rem; font-weight: 700; margin: 30px 0 15px; color: var(--text);
-}
-.article-content-inner p {
-  margin-bottom: 20px;
-}
-.article-content-inner ul, .article-content-inner ol {
-  margin: 20px 0 20px 40px;
-}
-.article-content-inner li {
-  margin-bottom: 12px;
-}
-.article-content-inner blockquote {
-  border-left: 4px solid var(--brand-yellow);
-  padding-left: 20px; margin: 30px 0;
-  color: var(--text-light); font-style: italic;
-}
-.article-content-inner strong { color: var(--text); font-weight: 700; }
-.article-content-inner em { font-style: italic; }
-
-/* ═══ FOOTER ═══ */
-footer { border-top: 1px solid var(--border); padding: 48px var(--pad) 40px; background: #fafafa; }
-.footer-inner { max-width: var(--max-w); margin: 0 auto; }
-.footer-top { display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 40px; margin-bottom: 40px; }
-.footer-brand p { font-size: 13px; color: var(--text-muted); line-height: 1.65; max-width: 260px; margin-top: 12px; }
-.footer-brand-logo { display: flex; align-items: center; gap: 10px; }
-.footer-brand-logo img { height: 26px; }
-.footer-col-title { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
-.footer-col a { display: block; font-size: 13px; color: var(--text-light); padding: 4px 0; transition: color .15s; }
-.footer-col a:hover { color: var(--text); }
-.footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 1px solid var(--border); }
-.footer-copy { font-size: 12px; color: var(--text-muted); }
-.footer-socials { display: flex; gap: 12px; }
-.footer-socials a { color: var(--text-muted); transition: color .15s; display: flex; align-items: center; }
-.footer-socials a:hover { color: var(--text); }
-
-@media (max-width: 900px) {
-  .nav-links { display: none; }
-  .posts-grid { grid-template-columns: 1fr 1fr; }
-  .footer-top { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 600px) {
-  .posts-grid { grid-template-columns: 1fr; }
-  .footer-top { grid-template-columns: 1fr; }
-  .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
-  .article-meta { flex-wrap: wrap; }
-}
+.post-card { display: flex; flex-direction: column; padding: 24px; border-radius: var(--radius-lg); background: var(--bg-card); border: 1px solid var(--border); transition: all .2s; height: 100%; }
+.post-card:hover { border-color: var(--border-glow); transform: translateY(-3px); }
+.post-tag { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--secondary); margin-bottom: 8px; }
+.post-card h3 { font-size: 1.1rem; margin-bottom: 8px; line-height: 1.3; }
+.post-card p { color: var(--text-muted); font-size: .92rem; flex: 1; }
+.post-footer { margin-top: 16px; display: flex; justify-content: space-between; color: var(--text-muted); font-size: .8rem; padding-top: 14px; border-top: 1px solid var(--border); }
 </style>
 </head>
 <body>
 
-<!-- ═══ NAV ═══ -->
-<nav class="nav">
+<nav class="site-nav">
   <div class="nav-inner">
-    <a href="/" class="nav-logo"><img src="/Swiftaw logomark black.png" alt="Swiftaw"></a>
-    <div class="nav-links">
-      <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
-        <div class="nav-dropdown">
-          <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
-        </div>
-      </div>
+    <a href="/" class="nav-brand"><img src="/Swiftaw logomark.png" alt=""><span>Swiftaw</span></a>
+    <div class="nav-links" id="nav-links">
+      <div class="nav-dropdown-wrap"><a class="nav-link has-menu">Products</a><div class="nav-dropdown"><a href="https://fortized.swiftaw.com"><strong>Fortized</strong><span>Security suite</span></a></div></div>
+      <div class="nav-dropdown-wrap"><a class="nav-link has-menu">Company</a><div class="nav-dropdown"><a href="/company/about"><strong>About</strong><span>Who we are</span></a><a href="/company/goals"><strong>Goals</strong><span>Where we're headed</span></a><a href="/company/commitments"><strong>Commitments</strong><span>The promises we keep</span></a></div></div>
+      <div class="nav-dropdown-wrap"><a class="nav-link has-menu">Departments</a><div class="nav-dropdown"><a href="/departments/rd"><strong>R&amp;D</strong><span>Engineering what's next</span></a><a href="/departments/safety"><strong>Safety</strong><span>Responsible by default</span></a><a href="/departments/communication"><strong>Communication</strong><span>Transparent</span></a></div></div>
+      <a href="/blog" class="nav-link">Blog</a>
       <a href="/documents" class="nav-link">Documents</a>
-      <a href="/blog" class="nav-link active">Blog</a>
-      <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
-        <div class="nav-dropdown">
-          <a href="/departments/rd">R&amp;D</a>
-          <a href="/departments/safety">Safety</a>
-          <a href="/departments/communication">Communication</a>
-        </div>
-      </div>
-      <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Company <span class="caret">&#9662;</span></span>
-        <div class="nav-dropdown">
-          <a href="/company/about">About</a>
-          <a href="/company/goals">Goals for the World</a>
-          <a href="/company/commitments">Commitments</a>
-        </div>
-      </div>
     </div>
-    <div class="nav-spacer"></div>
-    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
+    <a href="https://fortized.swiftaw.com" class="nav-cta">Try Fortized</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
   </div>
 </nav>
 
-<!-- ═══ BLOG VIEW ═══ -->
-<div id="blog-view" class="blog-view active">
-  <!-- ═══ BLOG HERO ═══ -->
-  <div class="blog-hero">
-    <div class="blog-hero-inner">
-      <h1>Blog</h1>
-      <p>Insights on social technology, cloud products, and the digital future – from the team building it.</p>
-    </div>
-  </div>
-
-  <!-- ═══ FILTER TABS ═══ -->
-  <div class="blog-filters">
-    <button class="filter-tab active" data-category="all">All</button>
-    <button class="filter-tab" data-category="fortized">Fortized</button>
-    <button class="filter-tab" data-category="company">Company</button>
-  </div>
-
-
-  <!-- ═══ POSTS GRID ═══ -->
-  <div class="blog-grid-section">
-    <div class="blog-grid-heading">All Articles</div>
-    <div class="posts-grid" id="posts-grid"></div>
-  </div>
+<div class="container">
+  <nav class="breadcrumb"><a href="/">Home</a><span class="sep">/</span><span class="here">Journal</span></nav>
 </div>
 
-<!-- ═══ ARTICLE VIEW ═══ -->
-<div id="article-view" class="article-view">
-  <div class="article-header">
-    <div class="article-header-inner">
-      <div class="article-back" id="article-back">← Back to Blog</div>
-      <div id="article-tag-container"></div>
-      <h1 class="article-title" id="article-title"></h1>
-      <div class="article-meta">
-        <div class="article-meta-item">
-          <div class="article-avatar" id="article-avatar"></div>
-          <div>
-            <div style="font-weight: 600; color: var(--text);" id="article-author"></div>
-            <div id="article-role"></div>
-          </div>
-        </div>
-        <div class="article-meta-item" id="article-date"></div>
-        <div class="article-meta-item" id="article-read-time"></div>
-      </div>
-    </div>
+<section class="blog-header">
+  <div class="container">
+    <span class="eyebrow">Swiftaw Journal</span>
+    <h1>Writing from the team,<br>about the work.</h1>
+    <p class="section-sub" style="margin:0;max-width:620px;">Research notes, design decisions, retrospectives, and the occasional strong opinion.</p>
   </div>
-  <div class="article-content">
-    <div class="article-content-inner" id="article-body"></div>
-  </div>
-</div>
+</section>
 
-<!-- ═══ FOOTER ═══ -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="footer-brand-logo">
-          <img src="/SwiftawLogo.png" alt="swiftaw">
-        </div>
-        <p>Building digital technologies – social platforms and cloud products – to reshape how the world connects and thinks.</p>
+<section style="padding-top:40px;">
+  <div class="container">
+
+    <a class="feature-post">
+      <div>
+        <div class="feature-meta"><span>Roadmap</span><span>·</span><span>April 2026</span></div>
+        <h2>Announcing the Swiftaw ecosystem roadmap</h2>
+        <p>Over the next year, Fortized, ID, Cloud and Build will converge into a single ecosystem. Here's what we're shipping, in what order, and why.</p>
+        <span class="btn btn-ghost" style="margin-top:8px;">Read the post →</span>
       </div>
-      <div class="footer-col">
-        <div class="footer-col-title">Products</div>
-        <a href="https://fortized.com">Fortized</a>
-      </div>
-      <div class="footer-col">
-        <div class="footer-col-title">Company</div>
-        <a href="/company/about">About</a>
-        <a href="/company/goals">Goals</a>
-        <a href="/company/commitments">Commitments</a>
-        <a href="/blog">Blog</a>
-      </div>
-      <div class="footer-col">
-        <div class="footer-col-title">Departments</div>
-        <a href="/departments/rd">R&amp;D</a>
-        <a href="/departments/safety">Safety</a>
-        <a href="/departments/communication">Communication</a>
-        <a href="/documents">Documents</a>
-      </div>
+      <div class="feature-thumb">✶</div>
+    </a>
+
+    <div class="filter-row">
+      <button class="filter active">All</button>
+      <button class="filter">Product</button>
+      <button class="filter">R&amp;D</button>
+      <button class="filter">Safety</button>
+      <button class="filter">Communication</button>
+      <button class="filter">Retrospectives</button>
     </div>
-    <div class="footer-bottom">
-      <p class="footer-copy">&copy; 2026 Swiftaw</p>
-      <div class="footer-socials">
-        <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </a>
-        <a href="https://www.youtube.com/@swiftaw" target="_blank" rel="noopener" title="YouTube">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-        </a>
-      </div>
+
+    <div class="post-grid">
+      <a class="post-card">
+        <div class="post-tag">Safety</div>
+        <h3>How we think about safety reviews</h3>
+        <p>The eight-point checklist the Safety department runs before any release touches a real user.</p>
+        <div class="post-footer"><span>March 2026</span><span>8 min</span></div>
+      </a>
+      <a class="post-card">
+        <div class="post-tag">R&amp;D</div>
+        <h3>Supply-chain hardening, in practice</h3>
+        <p>What we found after three months of red-teaming our own build pipeline.</p>
+        <div class="post-footer"><span>February 2026</span><span>12 min</span></div>
+      </a>
+      <a class="post-card">
+        <div class="post-tag">Product</div>
+        <h3>Designing Swiftaw ID, publicly</h3>
+        <p>The early sketches for our identity layer — and the three we threw away.</p>
+        <div class="post-footer"><span>February 2026</span><span>6 min</span></div>
+      </a>
+      <a class="post-card">
+        <div class="post-tag">Communication</div>
+        <h3>Writing changelogs worth reading</h3>
+        <p>Our house style for release notes, and why "bug fixes and improvements" is the least useful sentence we could ship.</p>
+        <div class="post-footer"><span>January 2026</span><span>5 min</span></div>
+      </a>
+      <a class="post-card">
+        <div class="post-tag">Retrospective</div>
+        <h3>Fortized year one, by the numbers</h3>
+        <p>What worked, what didn't, and how we spent our engineering budget in the first year.</p>
+        <div class="post-footer"><span>January 2026</span><span>10 min</span></div>
+      </a>
+      <a class="post-card">
+        <div class="post-tag">R&amp;D</div>
+        <h3>Post-quantum cryptography: our migration plan</h3>
+        <p>A walkthrough of how we're moving the Swiftaw stack to PQ-ready primitives before it's urgent.</p>
+        <div class="post-footer"><span>December 2025</span><span>14 min</span></div>
+      </a>
     </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="cta-block">
+      <h2>Get it in your inbox</h2>
+      <p>Roughly one email a month — new posts, shipped features, and occasional thinking we'd like you to hear first.</p>
+      <form style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;" onsubmit="event.preventDefault();this.querySelector('button').textContent='Thanks!';">
+        <input type="email" required placeholder="you@somewhere.com" style="padding:12px 18px;border-radius:100px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);color:var(--text);min-width:260px;font-family:inherit;">
+        <button class="btn btn-primary" type="submit">Subscribe →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><img src="/SwiftawLogo.png" alt="Swiftaw"><p>Swiftaw is an independent research-led technology company building a single ecosystem of trustworthy tools.</p></div>
+      <div class="footer-col"><h4>Products</h4><a href="https://fortized.swiftaw.com">Fortized</a><a href="/#ecosystem">Swiftaw ID</a><a href="/#ecosystem">Cloud</a><a href="/#ecosystem">Build</a></div>
+      <div class="footer-col"><h4>Company</h4><a href="/company/about">About</a><a href="/company/goals">Goals</a><a href="/company/commitments">Commitments</a><a href="/blog">Journal</a></div>
+      <div class="footer-col"><h4>Teams</h4><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a><a href="/documents">Documents</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Swiftaw. All rights reserved.</span><span>Built in the open · swiftaw.com</span></div>
   </div>
 </footer>
 
 <script src="/js/swiftaw-auth.js"></script>
 <script src="/js/swiftaw-nav.js"></script>
-
 <script>
-const ARTICLES = {
-  'bastion-community-structure': {
-    title: 'How Fortized\'s Bastion system reinvents online community structure',
-    category: 'fortized',
-    date: 'Feb 2026',
-    readTime: 5,
-    author: 'Maya Chen',
-    role: 'Head of Product',
-    avatar: 'M',
-    avatarColor: '#ff9c3c',
-    description: 'Traditional servers and groups weren\'t built for the way modern gamers actually organize. Bastions are.',
-    content: `
-<h2>The Problem with Traditional Communities</h2>
-<p>For decades, online communities have been built on the same fundamental structure: channels, servers, and message threads. This architecture made sense when internet communication was sparse and asynchronous. But modern gaming communities operate at a completely different scale and velocity.</p>
-
-<p>Players today want to organize by activity, skill level, region, and playstyle simultaneously. A single guild in a traditional game might have thousands of members, yet only 20-30 are actually playing together at any given moment. The rest are buried in channels they don't care about, missing content they want to see.</p>
-
-<h2>The Bastion Philosophy</h2>
-<p>Bastions are our answer: autonomous, player-created subgroupings within larger communities. Each Bastion has its own channels, permissions, and culture—but they're all interconnected within a larger whole.</p>
-
-<p>Think of it like this: the old model is a massive apartment building with narrow hallways. Everyone living on Floor 12 can interact, but that's it. Bastions let you create smaller, purpose-built spaces—a gaming lounge for speedrunners on one side, a raid planning room on another, a social hangout somewhere else. But you're all still in the same building. You can move between spaces. You can collaborate. You're not isolated.</p>
-
-<h2>Why It Matters</h2>
-<p>Community structure directly impacts player retention and satisfaction. When players feel like they're part of a group that actually shares their interests—not just a mass audience—they stay longer, contribute more, and build stronger friendships.</p>
-
-<p>The beauty of Bastions is that they're created and managed by players themselves. We provide the tools; the community decides how to organize. This has led to some incredible emergent structures we never could have designed ourselves.</p>
-
-<h2>What\'s Next</h2>
-<p>We're continuing to expand Bastion capabilities with better moderation tools, cross-Bastion events, and deeper integration with Fortized's larger features. The goal is simple: make it as natural to organize in-game as it is to think about organizing.</p>
-    `
-  },
-
-  'onyx-earned-rewards': {
-    title: 'The Onyx economy: why we built an earned-not-bought rewards system',
-    category: 'fortized',
-    date: 'Jan 2026',
-    readTime: 4,
-    author: 'James Rodriguez',
-    role: 'Economics Lead',
-    avatar: 'J',
-    avatarColor: '#fff93e',
-    description: 'Pay-to-win is broken. We built an entirely different model—one where your participation is your currency.',
-    content: `
-<h2>The Pay-to-Win Problem</h2>
-<p>Most online games with real-money rewards eventually hit the same wall: players with more money feel they have an unfair advantage, and players without money feel left behind. It creates resentment that corrodes communities.</p>
-
-<p>At Fortized, we asked a different question: what if the primary currency for cosmetics and status wasn't money—but participation?</p>
-
-<h2>Introducing Onyx</h2>
-<p>Onyx is earned through playing, winning, creating content, helping other players, and contributing to your community. You can't buy it with real money. You earn it.</p>
-
-<p>This changes everything. A new player and a veteran can both feel like they're working toward something real. Status symbols mean something because everyone knows they had to be earned. There's no shortcut.</p>
-
-<h2>How It Works</h2>
-<p>Different activities award different amounts of Onyx based on difficulty, rarity, and community impact. A difficult tournament victory awards more than a casual match win. Creating a helpful guide for new players awards more than a single kill. The system is transparent—players can see exactly how their actions contribute to their progression.</p>
-
-<h2>The Cultural Impact</h2>
-<p>When I look at Fortized communities, I see something that pure pay-to-win games rarely achieve: respect is actually based on skill and contribution, not spending power. New players don't feel hopeless. Veterans don't feel their achievements are cheapened by whale players.</p>
-
-<p>It's not perfect—no economy is. But it's built on the right principle: your time and skill are valuable. Not your wallet.</p>
-    `
-  },
-
-  'realtime-chat-scale': {
-    title: 'Real-time communication at scale: lessons from building Fortized\'s chat engine',
-    category: 'fortized',
-    date: 'Jan 2026',
-    readTime: 9,
-    author: 'Sarah Kim',
-    role: 'Principal Engineer',
-    avatar: 'S',
-    avatarColor: '#241f3c',
-    description: 'Millions of simultaneous messages. Zero compromises on latency. What it actually takes to build at this scale.',
-    content: `
-<h2>The Scale Challenge</h2>
-<p>Fortized can have millions of simultaneous users. A single message stream might have thousands of people typing at the same time. Traditional chat architecture—built on request-response cycles and database writes—collapses under this load.</p>
-
-<p>We needed something fundamentally different. Something designed from the ground up for massive, real-time message throughput with consistent, low latency.</p>
-
-<h2>Architecture Principles</h2>
-<p>Our approach is built on three core principles:</p>
-
-<h3>1. Distributed Everything</h3>
-<p>No single point of failure. Messages are distributed across multiple regions and availability zones. If one data center goes down, message flow continues seamlessly. This required rethinking how we handle message ordering and consistency.</p>
-
-<h3>2. Edge Delivery</h3>
-<p>We deliver messages to the edge of the network, closest to where users are. A message from a player in Tokyo shouldn't take a round trip to California and back. Edge nodes handle local caching, deduplication, and delivery optimization.</p>
-
-<h3>3. Async Everything</h3>
-<p>Synchronous operations are the enemy of scale. Our message pipeline is almost entirely asynchronous. Write a message, it immediately goes to the user who sent it (optimistic update). It propagates through our distributed system. Persistence happens afterwards, not as a blocking operation.</p>
-
-<h2>Technical Details</h2>
-<p>We built custom message brokers optimized for gaming chat patterns. Gaming chat is different from enterprise communication—players expect sub-100ms latency, but they're less concerned with guarantee of delivery compared to business messaging.</p>
-
-<p>We use a combination of in-memory caches (Redis), persistent message stores, and edge networks to balance speed, durability, and cost. Message deduplication happens at multiple layers. Ordering is handled through vector clocks rather than strict sequential numbering—it scales better and handles clock skew gracefully.</p>
-
-<h2>Lessons Learned</h2>
-<p>Building this system taught us that scale isn't just about having bigger servers. It's about rethinking architecture from first principles. What works for 10,000 users breaks at 1 million. You can't patch your way there.</p>
-
-<p>It also taught us that sometimes the "correct" solution is less important than the pragmatic solution. We don't have perfect consistency. But we have consistent, sub-100ms latency across every region, which is what actually matters to players.</p>
-    `
-  },
-
-  'safety-automod-encryption': {
-    title: 'Safety as a first-class feature: how AutoMod and encryption protect Swiftaw communities',
-    category: 'company',
-    date: 'Dec 2025',
-    readTime: 6,
-    author: 'Alex Torres',
-    role: 'Head of Safety',
-    avatar: 'A',
-    avatarColor: '#ff9c3c',
-    description: 'Security isn\'t a feature you bolt on at the end. Here\'s how our Safety Department builds from day one.',
-    content: `
-<h2>Safety by Design</h2>
-<p>When we build new features at Swiftaw, safety isn't an afterthought or a compliance checkbox. It's a first-class design goal, given equal weight to functionality and performance.</p>
-
-<p>This means making hard tradeoffs. Sometimes a feature that would be technically cool is built slightly differently—or not at all—because of safety concerns. That's intentional.</p>
-
-<h2>AutoMod: Machine Learning at Scale</h2>
-<p>Our AutoMod system uses a combination of machine learning models and community-reported patterns to catch harmful content before it harms communities.</p>
-
-<p>It's not about censorship—it's about enforcement. Communities set their own rules. AutoMod helps enforce them at scale. A Bastion might have different rules than another Bastion. Our system learns community norms and applies them consistently.</p>
-
-<p>The key innovation is context awareness. The same message might be fine in one community and inappropriate in another. Our models understand context—community culture, conversation history, relationships between users.</p>
-
-<h2>Encryption and Privacy</h2>
-<p>Users should control their data. We offer end-to-end encryption for direct messages by default. Communities can choose their encryption model for group conversations.</p>
-
-<p>This creates tension with moderation. How do you prevent harm if you can't see messages? We're transparent about this: we tell users when features use encryption, and we design moderation tools that work with encryption (focusing on user reports and behavioral signals rather than content inspection).</p>
-
-<h2>Community Moderation</h2>
-<p>The most effective moderation happens at the community level. We empower community leaders with tools, training, and support. They understand their communities better than any algorithm.</p>
-
-<p>But we also support them with data. We show community leaders patterns in their community—message velocity, user activity, safety reports. This helps them make informed moderation decisions.</p>
-
-<h2>Responsibility</h2>
-<p>Safety is never "solved." It's an ongoing conversation between users, communities, our team, and the broader world. We listen. We iterate. We admit when we get things wrong and do better next time.</p>
-    `
-  },
-
-};
-
-function getArticleThemeClass(category) {
-  const themes = {
-    'fortized': 'fortized-theme',
-    'cloud': 'cloud-theme',
-    'company': 'company-theme'
-  };
-  return themes[category] || 'fortized-theme';
-}
-
-function getArticleEmoji(id) {
-  const emojis = {
-    'bastion-community-structure': '⚡',
-    'onyx-earned-rewards': '🎪',
-    'realtime-chat-scale': '🌐',
-    'safety-automod-encryption': '🛡️'
-  };
-  return emojis[id] || '📝';
-}
-
-function renderBlogView() {
-  const grid = document.getElementById('posts-grid');
-  grid.innerHTML = '';
-
-  const category = document.querySelector('.filter-tab.active').dataset.category;
-
-  Object.entries(ARTICLES).forEach(([id, article]) => {
-    if (category !== 'all' && article.category !== category) return;
-
-    const card = document.createElement('div');
-    card.className = 'post-card';
-    card.innerHTML = `
-      <div class="post-card-image ${getArticleThemeClass(article.category)}">
-        <div class="post-card-image-glow"></div>
-        <div class="post-card-image-label">${getArticleEmoji(id)}</div>
-        <div class="post-card-cat">${article.category.charAt(0).toUpperCase() + article.category.slice(1)}</div>
-      </div>
-      <div class="post-card-body">
-        <h3>${article.title}</h3>
-        <p>${article.description}</p>
-        <div class="post-card-footer">
-          <span>${article.date} · ${article.readTime} min</span>
-          <span class="read-link">Read →</span>
-        </div>
-      </div>
-    `;
-
-    card.addEventListener('click', () => openArticle(id));
-    grid.appendChild(card);
-  });
-}
-
-function openArticle(id) {
-  const article = ARTICLES[id];
-  if (!article) return;
-
-  document.getElementById('blog-view').classList.remove('active');
-  document.getElementById('article-view').classList.add('active');
-
-  document.getElementById('article-title').textContent = article.title;
-  document.getElementById('article-author').textContent = article.author;
-  document.getElementById('article-role').textContent = article.role;
-  document.getElementById('article-date').textContent = article.date;
-  document.getElementById('article-read-time').textContent = `${article.readTime} min read`;
-  document.getElementById('article-body').innerHTML = article.content;
-
-  const avatar = document.getElementById('article-avatar');
-  avatar.textContent = article.avatar;
-  avatar.style.background = article.avatarColor;
-
-  const tagContainer = document.getElementById('article-tag-container');
-  tagContainer.innerHTML = `<span class="article-tag">${article.category.charAt(0).toUpperCase() + article.category.slice(1)}</span>`;
-
-  window.history.pushState({article: id}, '', `?article=${id}`);
-  window.scrollTo(0, 0);
-}
-
-function closeArticle() {
-  document.getElementById('article-view').classList.remove('active');
-  document.getElementById('blog-view').classList.add('active');
-  window.history.pushState(null, '', '/blog');
-  window.scrollTo(0, 0);
-}
-
-// Filter tabs
-document.querySelectorAll('.filter-tab').forEach(tab => {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-    this.classList.add('active');
-    renderBlogView();
-  });
-});
-
-// Back button
-document.getElementById('article-back').addEventListener('click', closeArticle);
-
-// Handle browser back/forward
-window.addEventListener('popstate', () => {
-  const params = new URLSearchParams(window.location.search);
-  const articleId = params.get('article');
-
-  if (articleId && ARTICLES[articleId]) {
-    openArticle(articleId);
-  } else {
-    closeArticle();
-  }
-});
-
-
-// Check if we should open an article on page load
-const params = new URLSearchParams(window.location.search);
-const articleId = params.get('article');
-if (articleId && ARTICLES[articleId]) {
-  openArticle(articleId);
-} else {
-  renderBlogView();
-}
+document.getElementById('nav-toggle').addEventListener('click', () => { document.getElementById('nav-links').classList.toggle('open'); });
+document.querySelectorAll('.filter').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.filter').forEach(f => f.classList.remove('active'));
+  b.classList.add('active');
+}));
 </script>
 </body>
 </html>

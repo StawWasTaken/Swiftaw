@@ -3,236 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Goals for the World - Swiftaw</title>
-<link rel="icon" type="image/png" href="/SwiftawFavicon.png?v=2">
-<link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<title>Goals · Swiftaw</title>
+<meta name="description" content="Where Swiftaw is headed — the goals that shape our ecosystem and roadmap.">
+<link rel="icon" type="image/png" href="/SwiftawFavicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-:root {
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-serif: 'Newsreader', Georgia, serif;
-  --font-display: 'Afronaut Test', 'Newsreader', sans-serif;
-  --brand-deep: #241f3c; --brand-yellow: #fff93e; --brand-orange: #ff9c3c;
-  --bg: #ffffff; --bg-dark: #0a0a0a; --text: #0a0a0a;
-  --text-light: #555; --text-muted: #888; --border: #e5e5e5;
-}
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-::selection { background: rgba(255,249,62,.25); }
-html { scroll-behavior: smooth; }
-body { font-family: var(--font-sans); color: var(--text); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
-img { max-width: 100%; display: block; }
-a { color: inherit; text-decoration: none; }
-.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
-.nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 32px; height: 64px; }
-.nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; margin-right: 36px; flex-shrink: 0; }
-.nav-logo img { height: 28px; width: auto; }
-.nav-links { display: flex; align-items: center; gap: 6px; }
-.nav-link { padding: 8px 14px; font-size: .9rem; font-weight: 500; color: var(--text-light); border-radius: 8px; transition: background .2s, color .2s; cursor: pointer; white-space: nowrap; }
-.nav-link:hover { background: #f5f5f5; color: var(--text); }
-.nav-link.has-dropdown { display: flex; align-items: center; gap: 4px; user-select: none; }
-.caret { font-size: .65em; opacity: .55; }
-.nav-dropdown-wrap { position: relative; }
-.nav-dropdown { display: none; position: absolute; top: calc(100% + 8px); left: 0; min-width: 220px; background: #fff; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.10); padding: 8px; z-index: 100; }
-.nav-dropdown-wrap:hover .nav-dropdown { display: block; }
-.nav-dropdown a { display: block; padding: 10px 14px; border-radius: 8px; font-size: .88rem; font-weight: 500; transition: background .15s; }
-.nav-dropdown a:hover { background: #f7f7f7; }
-.dd-desc { display: block; font-size: .78rem; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
-.nav-spacer { flex: 1; }
-.nav-cta { padding: 9px 22px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-size: .88rem; font-weight: 600; transition: box-shadow .2s; white-space: nowrap; }
-.nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); }
-.btn-yellow { display: inline-block; padding: 14px 32px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-weight: 600; font-size: .95rem; transition: opacity .2s; border: none; cursor: pointer; }
-.btn-yellow:hover { opacity: .88; }
-.btn-outline { display: inline-block; padding: 14px 32px; background: transparent; color: var(--text); border: 1.5px solid var(--border); border-radius: 100px; font-weight: 600; font-size: .95rem; transition: border-color .2s, color .2s; cursor: pointer; }
-.btn-outline:hover { border-color: var(--text); }
-.highlight-bar { width: 80px; height: 3px; background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); border-radius: 3px; }
-.hero { background: #faf8f3; padding: 180px 32px 80px; border-bottom: 1px solid var(--border); }
-.hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: start; }
-.hero-left h1 { font-family: var(--font-display); font-size: clamp(3rem, 6vw, 4.4rem); font-weight: 700; line-height: 1.05; color: var(--text); margin-bottom: 20px; }
-.hero-left .highlight-bar { width: 64px; height: 3px; }
-.hero-right { padding-top: 12px; }
-.hero-right p { font-family: var(--font-serif); font-size: 1.18rem; color: var(--text-light); line-height: 1.75; margin-bottom: 32px; }
-.hero-focus-label { font-size: .82rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); margin-bottom: 10px; }
-.hero-focus { display: flex; flex-wrap: wrap; gap: 8px; }
-.hero-focus a { font-size: .85rem; font-weight: 500; color: var(--brand-deep); background: rgba(36,31,60,.06); padding: 5px 14px; border-radius: 100px; transition: background .2s, color .2s; text-decoration: none; }
-.hero-focus a:hover { background: var(--brand-yellow); color: var(--brand-deep); }
-.section { padding: 100px 32px; max-width: 1100px; margin: 0 auto; }
-.section-alt { background: #fafafa; }
-.section h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; margin-bottom: 20px; line-height: 1.15; }
-.section p { font-size: 1.05rem; color: var(--text-light); line-height: 1.75; max-width: 720px; }
-.section p + p { margin-top: 16px; }
-.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-top: 48px; }
-.feature-card { padding: 40px 32px; border: 1px solid var(--border); border-radius: 16px; transition: box-shadow .2s, transform .2s; }
-.feature-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.06); transform: translateY(-2px); }
-.feature-card .card-icon { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 1.3rem; }
-.feature-card h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 12px; }
-.feature-card p { font-size: .95rem; color: var(--text-light); line-height: 1.65; max-width: none; }
-.goal-block { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-.goal-block + .goal-block { margin-top: 100px; }
-.goal-block.reverse { direction: rtl; }
-.goal-block.reverse > * { direction: ltr; }
-.goal-visual { background: linear-gradient(135deg, #f8f8f8, #f0f0f0); border-radius: 20px; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; }
-.goal-visual .visual-number { font-family: var(--font-display); font-size: 5rem; font-weight: 700; background: linear-gradient(135deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-.cta-section { padding: 100px 32px; text-align: center; background: var(--bg-dark); color: #fff; }
-.cta-section h2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 700; margin-bottom: 16px; }
-.cta-section p { font-size: 1.05rem; color: #aaa; margin-bottom: 36px; max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.7; }
-.cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-footer { background: #fafafa; border-top: 1px solid var(--border); padding: 64px 32px 32px; }
-.footer-inner { max-width: 1200px; margin: 0 auto; }
-.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
-.footer-brand p { font-size: .9rem; color: var(--text-muted); margin-top: 16px; line-height: 1.6; max-width: 300px; }
-.footer-col { display: flex; flex-direction: column; gap: 10px; }
-.footer-col-title { font-weight: 600; font-size: .85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text); margin-bottom: 4px; }
-.footer-col a { font-size: .9rem; color: var(--text-light); transition: color .2s; }
-.footer-col a:hover { color: var(--text); }
-.footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); }
-.footer-copy { font-size: .82rem; color: var(--text-muted); }
-.footer-socials { display: flex; gap: 16px; }
-.footer-socials a { color: var(--text-muted); transition: color .2s; }
-.footer-socials a:hover { color: var(--text); }
-@media (max-width: 768px) {
-  .nav-links { display: none; }
-  .goal-block, .goal-block.reverse { grid-template-columns: 1fr; gap: 40px; direction: ltr; }
-  .footer-top { grid-template-columns: 1fr 1fr; }
-  .hero { padding: 130px 24px 60px; }
-  .hero-inner { grid-template-columns: 1fr; gap: 28px; }
-  .section { padding: 72px 24px; }
-}
+.goal-row { display: grid; grid-template-columns: 80px 1fr; gap: 32px; padding: 32px 0; border-top: 1px solid var(--border); align-items: start; }
+.goal-row:first-child { border-top: none; }
+.goal-num { font-family: var(--font-display); font-size: 3rem; line-height: 1; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.goal-row h3 { font-size: 1.4rem; margin-bottom: 10px; }
+.goal-row p { color: var(--text-muted); font-size: 1rem; max-width: 680px; }
+.goal-row .tags { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+@media (max-width: 640px) { .goal-row { grid-template-columns: 1fr; gap: 12px; } }
 </style>
 </head>
 <body>
 
-<nav class="nav">
+<nav class="site-nav">
   <div class="nav-inner">
-    <a href="/" class="nav-logo"><img src="/Swiftaw logomark black.png" alt="Swiftaw"></a>
-    <div class="nav-links">
-      <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
-        <div class="nav-dropdown">
-          <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
-          
-        </div>
-      </div>
-      <a href="/documents" class="nav-link">Documents</a>
+    <a href="/" class="nav-brand"><img src="/Swiftaw logomark.png" alt=""><span>Swiftaw</span></a>
+    <div class="nav-links" id="nav-links">
+      <div class="nav-dropdown-wrap"><a class="nav-link has-menu">Products</a><div class="nav-dropdown"><a href="https://fortized.swiftaw.com"><strong>Fortized</strong><span>Security suite</span></a></div></div>
+      <div class="nav-dropdown-wrap"><a class="nav-link has-menu">Company</a><div class="nav-dropdown"><a href="/company/about"><strong>About</strong><span>Who we are</span></a><a href="/company/goals"><strong>Goals</strong><span>Where we're headed</span></a><a href="/company/commitments"><strong>Commitments</strong><span>The promises we keep</span></a></div></div>
+      <div class="nav-dropdown-wrap"><a class="nav-link has-menu">Departments</a><div class="nav-dropdown"><a href="/departments/rd"><strong>R&amp;D</strong><span>Engineering what's next</span></a><a href="/departments/safety"><strong>Safety</strong><span>Responsible by default</span></a><a href="/departments/communication"><strong>Communication</strong><span>Transparent</span></a></div></div>
       <a href="/blog" class="nav-link">Blog</a>
-      <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
-        <div class="nav-dropdown">
-          <a href="/departments/rd">R&amp;D</a>
-          <a href="/departments/safety">Safety</a>
-          <a href="/departments/communication">Communication</a>
-        </div>
-      </div>
-      <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Company <span class="caret">&#9662;</span></span>
-        <div class="nav-dropdown">
-          <a href="/company/about">About</a>
-          <a href="/company/goals">Goals for the World</a>
-          <a href="/company/commitments">Commitments</a>
-        </div>
-      </div>
+      <a href="/documents" class="nav-link">Documents</a>
     </div>
-    <div class="nav-spacer"></div>
-    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
+    <a href="https://fortized.swiftaw.com" class="nav-cta">Try Fortized</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
   </div>
 </nav>
 
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-left">
-      <h1>What We're Building Toward</h1>
-      <div class="highlight-bar"></div>
-    </div>
-    <div class="hero-right">
-      <p>We're building long-term foundations for how people create, connect, and collaborate online. These are not just aspirations. They are commitments to action.</p>
-      <div class="hero-focus-label">Our focus</div>
-      <div class="hero-focus">
-        <a href="#global-connectivity">Global Connectivity</a>
-        <a href="#digital-collaboration">Digital Collaboration</a>
-        <a href="#community-empowerment">Community Empowerment</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="goal-block">
-    <div>
-      <div class="highlight-bar" style="margin-bottom:24px;"></div>
-      <h2 id="global-connectivity">Global Connectivity</h2>
-      <p>The internet promised to bring the world together, but too many communities remain fragmented across platforms that were never designed with them in mind.</p>
-      <p>Swiftaw is building infrastructure that makes meaningful digital connection accessible to everyone, regardless of where they are or what language they speak. We are creating platforms that break down barriers and foster genuine cross-cultural dialogue.</p>
-    </div>
-    <div class="goal-visual"><span class="visual-number">01</span></div>
-  </div>
-  <div class="goal-block reverse">
-    <div>
-      <div class="highlight-bar" style="margin-bottom:24px;"></div>
-      <h2 id="digital-collaboration">Digital Collaboration</h2>
-      <p>The future of work and creativity depends on tools that make collaboration feel effortless. Current solutions force people to adapt to rigid systems rather than adapting to how people naturally think and create.</p>
-      <p>We are developing intelligent collaboration tools that understand context, anticipate needs, and get out of the way so teams can focus on what matters: doing great work together.</p>
-    </div>
-    <div class="goal-visual"><span class="visual-number">02</span></div>
-  </div>
-  <div class="goal-block">
-    <div>
-      <div class="highlight-bar" style="margin-bottom:24px;"></div>
-      <h2 id="community-empowerment">Community Empowerment</h2>
-      <p>Communities are the foundation of everything we build. When communities thrive, people thrive. But too often, platforms extract value from communities without giving anything back.</p>
-      <p>Our goal is to empower communities with ownership, tools, and autonomy. We want every community on our platforms to feel like they have a home they control, with the resources to grow on their own terms.</p>
-    </div>
-    <div class="goal-visual"><span class="visual-number">03</span></div>
-  </div>
-</section>
-
-<div class="section-alt">
-  <section class="section">
-    <div style="text-align:center; margin-bottom:16px;">
-      <div class="highlight-bar" style="margin:0 auto 24px;"></div>
-      <h2>How We Get There</h2>
-      <p style="margin:0 auto;">Every goal needs a plan. Here is how we are turning ambition into reality across our ecosystem.</p>
-    </div>
-    <div class="features-grid">
-      <div class="feature-card"><div class="card-icon">&#9889;</div><h3>Smart Moderation</h3><p>We build tools that help communities stay healthy and safe, making it easy to moderate and organize without extra effort.</p></div>
-      <div class="feature-card"><div class="card-icon">&#127760;</div><h3>Cross-Platform Bridges</h3><p>We are building interoperability into our ecosystem so communities can connect across different tools and platforms seamlessly.</p></div>
-      <div class="feature-card"><div class="card-icon">&#128274;</div><h3>Open Standards</h3><p>We contribute to and adopt open standards that prevent vendor lock-in and ensure our users always own their data and content.</p></div>
-      <div class="feature-card"><div class="card-icon">&#129309;</div><h3>Community Grants</h3><p>We invest directly in the communities that use our platforms, providing grants, tools, and mentorship to help them scale their impact.</p></div>
-      <div class="feature-card"><div class="card-icon">&#128640;</div><h3>Developer Ecosystem</h3><p>We are building robust APIs and developer tools that let creators extend our platforms in ways we have not even imagined yet.</p></div>
-      <div class="feature-card"><div class="card-icon">&#127891;</div><h3>Digital Literacy</h3><p>We partner with educators and nonprofits to promote digital literacy and help people use technology more intentionally and safely.</p></div>
-    </div>
-  </section>
+<div class="container">
+  <nav class="breadcrumb"><a href="/">Home</a><span class="sep">/</span><a href="#">Company</a><span class="sep">/</span><span class="here">Goals</span></nav>
 </div>
 
-<section class="cta-section">
-  <h2>Be part of the transformation.</h2>
-  <p>Our goals are ambitious, but we do not pursue them alone. Explore our products and join a community that is building something meaningful.</p>
-  <div class="cta-buttons">
-    <a href="https://fortized.com" class="btn-yellow">Try Fortized</a>
-    <a href="/company/commitments" class="btn-outline" style="color:#fff; border-color:rgba(255,255,255,.25);">Our Commitments</a>
+<section style="padding:64px 0 24px;">
+  <div class="container">
+    <span class="eyebrow">Where we're headed</span>
+    <h1 class="section-title" style="margin-top:14px;">Five goals we're working toward,<br>out loud.</h1>
+    <p class="section-sub" style="margin-top:16px;max-width:640px;">We publish our goals so we can be held to them. Each one has a plan, a team, and a public commitment.</p>
   </div>
 </section>
 
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="/" class="nav-logo" style="margin-right:0;"><img src="/SwiftawLogo.png" alt="Swiftaw"></a>
-        <p>Building platforms for creativity, connection, and community.</p>
-      </div>
-      <div class="footer-col"><div class="footer-col-title">Products</div><a href="https://fortized.com">Fortized</a></div>
-      <div class="footer-col"><div class="footer-col-title">Company</div><a href="/company/about">About</a><a href="/company/goals">Goals</a><a href="/company/commitments">Commitments</a><a href="/blog">Blog</a></div>
-      <div class="footer-col"><div class="footer-col-title">Departments</div><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a><a href="/documents">Documents</a></div>
-    </div>
-    <div class="footer-bottom">
-      <p class="footer-copy">&copy; 2026 Swiftaw</p>
-      <div class="footer-socials">
-        <a href="https://x.com/SwiftawTech" target="_blank" rel="noopener" title="X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-        <a href="https://www.youtube.com/@swiftaw" target="_blank" rel="noopener" title="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+<section>
+  <div class="container container-narrow">
+    <div class="goal-row">
+      <div class="goal-num">01</div>
+      <div>
+        <h3>A complete, connected ecosystem by 2027.</h3>
+        <p>Fortized, ID, Cloud and Build — each a first-class product on its own, and all of them tightly integrated for the people using more than one.</p>
+        <div class="tags"><span class="pill">Product</span><span class="pill">Roadmap</span></div>
       </div>
     </div>
+    <div class="goal-row">
+      <div class="goal-num">02</div>
+      <div>
+        <h3>Document everything we ship.</h3>
+        <p>Every feature, every config flag, every trade-off — written up in plain language before it reaches general availability. No "read the source" as a doc.</p>
+        <div class="tags"><span class="pill">Docs</span><span class="pill">Communication</span></div>
+      </div>
+    </div>
+    <div class="goal-row">
+      <div class="goal-num">03</div>
+      <div>
+        <h3>Safety reviews on every public release.</h3>
+        <p>No release crosses into GA without a Safety signoff — even internal tooling. We publish what we looked at and what we found.</p>
+        <div class="tags"><span class="pill">Safety</span><span class="pill">Process</span></div>
+      </div>
+    </div>
+    <div class="goal-row">
+      <div class="goal-num">04</div>
+      <div>
+        <h3>Contribute back to the open stack.</h3>
+        <p>We stand on a pile of open-source work. Our R&amp;D department is measured in part by what we upstream to it.</p>
+        <div class="tags"><span class="pill">R&amp;D</span><span class="pill">Open source</span></div>
+      </div>
+    </div>
+    <div class="goal-row">
+      <div class="goal-num">05</div>
+      <div>
+        <h3>Stay small enough to care.</h3>
+        <p>Growth for its own sake corrupts product decisions. We grow the team only as fast as we can keep meeting each other in the same room.</p>
+        <div class="tags"><span class="pill">Culture</span><span class="pill">Independence</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="cta-block" style="padding:56px 36px;">
+      <h2>Check back as we ship</h2>
+      <p>We update this page whenever a goal moves — forward, sideways, or occasionally backward.</p>
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="/blog" class="btn btn-primary">Read the journal</a>
+        <a href="/company/commitments" class="btn btn-ghost">See our commitments</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><img src="/SwiftawLogo.png" alt="Swiftaw"><p>Swiftaw is an independent research-led technology company building a single ecosystem of trustworthy tools.</p></div>
+      <div class="footer-col"><h4>Products</h4><a href="https://fortized.swiftaw.com">Fortized</a><a href="/#ecosystem">Swiftaw ID</a><a href="/#ecosystem">Cloud</a><a href="/#ecosystem">Build</a></div>
+      <div class="footer-col"><h4>Company</h4><a href="/company/about">About</a><a href="/company/goals">Goals</a><a href="/company/commitments">Commitments</a><a href="/blog">Journal</a></div>
+      <div class="footer-col"><h4>Teams</h4><a href="/departments/rd">R&amp;D</a><a href="/departments/safety">Safety</a><a href="/departments/communication">Communication</a><a href="/documents">Documents</a></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Swiftaw. All rights reserved.</span><span>Built in the open · swiftaw.com</span></div>
   </div>
 </footer>
 
 <script src="/js/swiftaw-auth.js"></script>
 <script src="/js/swiftaw-nav.js"></script>
+<script>document.getElementById('nav-toggle').addEventListener('click', () => { document.getElementById('nav-links').classList.toggle('open'); });</script>
 </body>
 </html>

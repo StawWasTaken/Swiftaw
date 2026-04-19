@@ -1,624 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Swiftaw Admin Dashboard</title>
-  <meta name="robots" content="noindex, nofollow">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="/js/swiftaw-auth.js"></script>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #1a1625 0%, #2d1b4e 100%);
-      color: #e0e0e0;
-      min-height: 100vh;
-    }
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .access-denied {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .access-denied h1 {
-      font-size: 2.5em;
-      color: #ff6b6b;
-    }
-    .access-denied p {
-      font-size: 1.1em;
-      color: #a0a0a0;
-    }
-    .admin-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      padding: 20px;
-      background: rgba(255, 249, 62, 0.1);
-      border: 1px solid rgba(255, 249, 62, 0.3);
-      border-radius: 12px;
-    }
-    .admin-header h1 {
-      font-size: 2em;
-      color: #fff93e;
-    }
-    .admin-header .user-info {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-    .user-badge {
-      background: rgba(255, 249, 62, 0.2);
-      padding: 8px 16px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 249, 62, 0.4);
-      font-size: 0.9em;
-    }
-    .logout-btn {
-      padding: 8px 16px;
-      background: #ff6b6b;
-      border: none;
-      border-radius: 6px;
-      color: white;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.3s;
-    }
-    .logout-btn:hover {
-      background: #ff5252;
-    }
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 30px;
-      border-bottom: 1px solid rgba(255, 249, 62, 0.2);
-    }
-    .tab-btn {
-      padding: 12px 20px;
-      background: none;
-      border: none;
-      color: #a0a0a0;
-      cursor: pointer;
-      font-weight: 600;
-      border-bottom: 3px solid transparent;
-      transition: all 0.3s;
-    }
-    .tab-btn.active {
-      color: #fff93e;
-      border-bottom-color: #fff93e;
-    }
-    .tab-btn:hover {
-      color: #fff93e;
-    }
-    .tab-content {
-      display: none;
-    }
-    .tab-content.active {
-      display: block;
-    }
-    .panel {
-      background: rgba(30, 20, 50, 0.8);
-      border: 1px solid rgba(255, 249, 62, 0.2);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .panel-title {
-      font-size: 1.3em;
-      color: #fff93e;
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255, 249, 62, 0.2);
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      color: #a0a0a0;
-      font-weight: 600;
-      font-size: 0.9em;
-    }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      background: rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 249, 62, 0.2);
-      border-radius: 6px;
-      color: #e0e0e0;
-      font-family: inherit;
-    }
-    input:focus, select:focus {
-      outline: none;
-      border-color: #fff93e;
-      box-shadow: 0 0 10px rgba(255, 249, 62, 0.2);
-    }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-    button.btn {
-      padding: 10px 20px;
-      background: #fff93e;
-      color: #1a1625;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    button.btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(255, 249, 62, 0.3);
-    }
-    button.btn-danger {
-      background: #ff6b6b;
-      color: white;
-    }
-    button.btn-danger:hover {
-      background: #ff5252;
-    }
-    .accounts-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-    .accounts-table th {
-      background: rgba(255, 249, 62, 0.1);
-      padding: 12px;
-      text-align: left;
-      border: 1px solid rgba(255, 249, 62, 0.2);
-      color: #fff93e;
-      font-weight: 600;
-    }
-    .accounts-table td {
-      padding: 12px;
-      border: 1px solid rgba(255, 249, 62, 0.1);
-    }
-    .accounts-table tr:hover {
-      background: rgba(255, 249, 62, 0.05);
-    }
-    .role-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.85em;
-      font-weight: 600;
-    }
-    .role-ceo {
-      background: rgba(255, 107, 107, 0.2);
-      color: #ff6b6b;
-    }
-    .role-crdo {
-      background: rgba(255, 193, 7, 0.2);
-      color: #ffc107;
-    }
-    .role-other {
-      background: rgba(76, 175, 80, 0.2);
-      color: #4caf50;
-    }
-    .status-banned {
-      color: #ff6b6b;
-      font-weight: 600;
-    }
-    .status-active {
-      color: #4caf50;
-      font-weight: 600;
-    }
-    .action-buttons {
-      display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
-    }
-    .action-buttons button {
-      padding: 5px 10px;
-      font-size: 0.85em;
-    }
-    .alert {
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 15px;
-    }
-    .alert-success {
-      background: rgba(76, 175, 80, 0.2);
-      border: 1px solid rgba(76, 175, 80, 0.4);
-      color: #4caf50;
-    }
-    .alert-error {
-      background: rgba(255, 107, 107, 0.2);
-      border: 1px solid rgba(255, 107, 107, 0.4);
-      color: #ff6b6b;
-    }
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-    .stat-card {
-      background: rgba(255, 249, 62, 0.1);
-      border: 1px solid rgba(255, 249, 62, 0.2);
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-    }
-    .stat-number {
-      font-size: 2em;
-      color: #fff93e;
-      font-weight: 700;
-    }
-    .stat-label {
-      color: #a0a0a0;
-      font-size: 0.9em;
-      margin-top: 5px;
-    }
-    .hidden { display: none !important; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Swiftaw</title>
+<meta name="description" content="Swiftaw admin dashboard.">
+<link rel="icon" type="image/png" href="/SwiftawFavicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw.css">
+<style>
+.admin-hero { padding: 56px 0 24px; }
+.admin-hero h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.8rem); margin: 12px 0 12px; }
+.admin-hero p { color: var(--text-muted); }
+
+.admin-grid { display: grid; grid-template-columns: 280px 1fr; gap: 32px; align-items: start; }
+@media (max-width: 860px) { .admin-grid { grid-template-columns: 1fr; } }
+
+.admin-sidebar { position: sticky; top: 80px; padding: 16px; border-radius: var(--radius-lg); background: var(--bg-card); border: 1px solid var(--border); }
+.admin-sidebar h4 { font-size: .76rem; text-transform: uppercase; letter-spacing: .12em; color: var(--text-muted); margin-bottom: 10px; }
+.admin-sidebar .tab-btn { display: block; width: 100%; text-align: left; padding: 10px 14px; border-radius: 8px; background: transparent; border: none; color: var(--text-muted); font: inherit; cursor: pointer; transition: all .12s; font-size: .9rem; }
+.admin-sidebar .tab-btn:hover, .admin-sidebar .tab-btn.active { background: rgba(255,249,62,.08); color: var(--primary); }
+
+.stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+@media (max-width: 720px) { .stat-grid { grid-template-columns: 1fr 1fr; } }
+.stat-box { padding: 20px; border-radius: var(--radius-md); background: var(--bg-card); border: 1px solid var(--border); }
+.stat-box .num { font-family: var(--font-display); font-size: 2rem; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1; }
+.stat-box .label { font-size: .76rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .1em; margin-top: 8px; }
+
+.accounts-table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+.accounts-table th, .accounts-table td { padding: 14px 16px; text-align: left; font-size: .9rem; border-bottom: 1px solid var(--border); }
+.accounts-table th { background: rgba(255,255,255,.02); color: var(--text-muted); font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; }
+.accounts-table tr:last-child td { border-bottom: none; }
+.accounts-table .level { display: inline-flex; padding: 3px 10px; border-radius: 100px; font-size: .7rem; font-weight: 700; background: rgba(255,249,62,.08); color: var(--primary); border: 1px solid rgba(255,249,62,.22); }
+.accounts-table .status { display: inline-flex; padding: 3px 10px; border-radius: 100px; font-size: .7rem; font-weight: 700; }
+.accounts-table .status.active { background: rgba(123,237,159,.1); color: #7bed9f; border: 1px solid rgba(123,237,159,.25); }
+.accounts-table .status.banned { background: rgba(255,131,131,.1); color: #ff8383; border: 1px solid rgba(255,131,131,.25); }
+.accounts-table .status.timeout { background: rgba(255,156,60,.1); color: var(--secondary); border: 1px solid rgba(255,156,60,.25); }
+.accounts-table .avatar { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; color: #0a0d10; font-size: .78rem; vertical-align: middle; margin-right: 8px; }
+.accounts-table .actions { display: flex; gap: 6px; }
+.accounts-table .mini-btn { padding: 5px 10px; font-size: .76rem; border-radius: 6px; background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--text); cursor: pointer; font-family: inherit; transition: all .12s; }
+.accounts-table .mini-btn:hover { border-color: var(--primary); color: var(--primary); }
+.accounts-table .mini-btn.danger:hover { border-color: #ff8383; color: #ff8383; }
+
+.panel { padding: 24px; border-radius: var(--radius-lg); background: var(--bg-card); border: 1px solid var(--border); }
+.panel h3 { font-size: 1.1rem; margin-bottom: 18px; }
+
+.no-access {
+  text-align: center; padding: 80px 20px;
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg);
+}
+.no-access h2 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 12px; }
+.no-access p { color: var(--text-muted); max-width: 440px; margin: 0 auto 24px; }
+
+.form-inline { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.form-inline input, .form-inline select { padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,.04); border: 1px solid var(--border); color: var(--text); font: inherit; font-size: .88rem; }
+.form-inline input:focus, .form-inline select:focus { outline: none; border-color: var(--primary); }
+
+.toast { position: fixed; bottom: 20px; right: 20px; padding: 14px 22px; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; color: var(--text); box-shadow: 0 20px 60px rgba(0,0,0,.4); transform: translateY(20px); opacity: 0; transition: all .25s; z-index: 10001; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.ok { border-color: rgba(123,237,159,.4); }
+.toast.err { border-color: rgba(255,131,131,.4); color: #ff8383; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+</style>
 </head>
 <body>
-  <div id="access-denied-screen" class="access-denied hidden">
-    <h1>🔐 Access Denied</h1>
-    <p>Only CEOs can access the admin dashboard.</p>
-    <p><a href="/" style="color: #fff93e; text-decoration: none;">Return to Home</a></p>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand"><img src="/Swiftaw logomark.png" alt=""><span>Swiftaw</span></a>
+    <div class="nav-links" id="nav-links">
+      <div class="nav-dropdown-wrap"><a class="nav-link has-menu">Products</a><div class="nav-dropdown"><a href="https://fortized.swiftaw.com"><strong>Fortized</strong><span>Security suite</span></a></div></div>
+      <div class="nav-dropdown-wrap"><a class="nav-link has-menu">Company</a><div class="nav-dropdown"><a href="/company/about"><strong>About</strong><span>Who we are</span></a><a href="/company/goals"><strong>Goals</strong><span>Where we're headed</span></a><a href="/company/commitments"><strong>Commitments</strong><span>The promises we keep</span></a></div></div>
+      <div class="nav-dropdown-wrap"><a class="nav-link has-menu">Departments</a><div class="nav-dropdown"><a href="/departments/rd"><strong>R&amp;D</strong><span>Engineering what's next</span></a><a href="/departments/safety"><strong>Safety</strong><span>Responsible by default</span></a><a href="/departments/communication"><strong>Communication</strong><span>Transparent</span></a></div></div>
+      <a href="/blog" class="nav-link">Blog</a>
+      <a href="/documents" class="nav-link">Documents</a>
+    </div>
+    <a href="https://fortized.swiftaw.com" class="nav-cta">Try Fortized</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
   </div>
+</nav>
 
-  <div id="admin-content" class="hidden">
-    <div class="container">
-      <div class="admin-header">
-        <h1>👨‍💼 Admin Dashboard</h1>
-        <div class="user-info">
-          <div class="user-badge" id="current-user">Loading...</div>
-          <button class="logout-btn" id="logout-btn">Logout</button>
+<div class="container">
+  <nav class="breadcrumb"><a href="/">Home</a><span class="sep">/</span><span class="here">Admin</span></nav>
+</div>
+
+<section class="admin-hero">
+  <div class="container">
+    <span class="pill">Restricted · Level 5</span>
+    <h1>Admin Dashboard</h1>
+    <p id="admin-subtitle">Checking access…</p>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="container" id="admin-root">
+    <!-- Content injected based on access level -->
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script src="/js/swiftaw-auth.js"></script>
+<script src="/js/swiftaw-nav.js"></script>
+<script>
+document.getElementById('nav-toggle').addEventListener('click', () => { document.getElementById('nav-links').classList.toggle('open'); });
+
+const root = document.getElementById('admin-root');
+const subtitle = document.getElementById('admin-subtitle');
+const toast = document.getElementById('toast');
+
+function showToast(msg, kind) {
+  toast.textContent = msg;
+  toast.className = 'toast show ' + (kind || 'ok');
+  setTimeout(() => toast.classList.remove('show'), 2400);
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = String(s == null ? '' : s); return d.innerHTML; }
+
+function render() {
+  const user = SwiftawAuth.getUser();
+  if (!user) {
+    subtitle.textContent = 'You need to be logged in with a Level 5 (CEO) account.';
+    root.innerHTML = `
+      <div class="no-access">
+        <h2>Admin access required</h2>
+        <p>Log in with a Level 5 (CEO) Swiftaw account to manage the ecosystem.</p>
+        <button class="btn btn-primary" id="login-trigger">Log in</button>
+      </div>`;
+    document.getElementById('login-trigger').addEventListener('click', () => SwiftawNav.openAuthModal('login'));
+    return;
+  }
+  if (user.accessLevel < 5) {
+    subtitle.textContent = 'Signed in as ' + user.displayName + ' · insufficient access.';
+    root.innerHTML = `
+      <div class="no-access">
+        <h2>You're signed in, but not admin</h2>
+        <p>This dashboard is restricted to Level 5 (CEO) accounts. Your current level is ${user.accessLevel}.</p>
+        <a href="/" class="btn btn-ghost">Return home</a>
+      </div>`;
+    return;
+  }
+
+  subtitle.textContent = 'Signed in as ' + user.displayName + ' · ' + user.role + ' · Level ' + user.accessLevel;
+
+  const accounts = SwiftawAuth.adminGetAllAccounts() || {};
+  const list = Object.values(accounts);
+  const stats = {
+    total: list.length,
+    builtin: list.filter(a => a.builtin).length,
+    active: list.filter(a => !a.banned && (!a.timedOutUntil || a.timedOutUntil < Date.now())).length,
+    banned: list.filter(a => a.banned).length
+  };
+
+  root.innerHTML = `
+    <div class="admin-grid">
+      <aside class="admin-sidebar">
+        <h4>Sections</h4>
+        <button class="tab-btn active" data-tab="accounts">👥 Accounts</button>
+        <button class="tab-btn" data-tab="create">+ Create account</button>
+        <button class="tab-btn" data-tab="overview">📊 Overview</button>
+      </aside>
+      <div>
+        <div class="tab-content active" data-tab="accounts">
+          <div class="stat-grid">
+            <div class="stat-box"><div class="num">${stats.total}</div><div class="label">Total accounts</div></div>
+            <div class="stat-box"><div class="num">${stats.active}</div><div class="label">Active</div></div>
+            <div class="stat-box"><div class="num">${stats.banned}</div><div class="label">Banned</div></div>
+            <div class="stat-box"><div class="num">${stats.builtin}</div><div class="label">Built-in</div></div>
+          </div>
+          <div class="panel">
+            <h3>All accounts</h3>
+            <table class="accounts-table">
+              <thead><tr><th>User</th><th>Role</th><th>Level</th><th>Status</th><th></th></tr></thead>
+              <tbody>
+                ${list.map(a => {
+                  const timedOut = a.timedOutUntil && a.timedOutUntil > Date.now();
+                  const status = a.banned ? '<span class="status banned">Banned</span>' : (timedOut ? '<span class="status timeout">Timed out</span>' : '<span class="status active">Active</span>');
+                  return `
+                  <tr data-user="${esc(a.username)}">
+                    <td><span class="avatar" style="background:${esc(a.color)}">${esc(a.displayName.charAt(0).toUpperCase())}</span>${esc(a.displayName)} <span style="color:var(--text-muted);font-size:.8rem;">@${esc(a.username)}</span>${a.builtin ? ' <span class="pill" style="margin-left:6px;">built-in</span>' : ''}</td>
+                    <td>${esc(a.role)}</td>
+                    <td><span class="level">L${a.accessLevel}</span></td>
+                    <td>${status}</td>
+                    <td><div class="actions">
+                      <button class="mini-btn" data-act="edit">Edit</button>
+                      ${a.banned ? '<button class="mini-btn" data-act="unban">Unban</button>' : '<button class="mini-btn danger" data-act="ban">Ban</button>'}
+                      ${!a.builtin ? '<button class="mini-btn danger" data-act="delete">Delete</button>' : ''}
+                    </div></td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
 
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="accounts">Manage Accounts</button>
-        <button class="tab-btn" data-tab="moderation">Moderation</button>
-        <button class="tab-btn" data-tab="statistics">Statistics</button>
-      </div>
-
-      <!-- ACCOUNTS TAB -->
-      <div id="accounts" class="tab-content active">
-        <div class="panel">
-          <div class="panel-title">Create New Account</div>
-          <form id="create-account-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="new-username">Username</label>
-                <input type="text" id="new-username" placeholder="username" required>
-              </div>
-              <div class="form-group">
-                <label for="new-password">Password</label>
-                <input type="password" id="new-password" placeholder="password" required>
-              </div>
+        <div class="tab-content" data-tab="create">
+          <div class="panel">
+            <h3>Create account</h3>
+            <div class="form-inline">
+              <input id="c-user" placeholder="username (lowercase)">
+              <input id="c-name" placeholder="Display name">
+              <input id="c-pass" placeholder="Password" type="password">
+              <select id="c-level">
+                <option value="0">Level 0 — User</option>
+                <option value="1">Level 1 — Employee</option>
+                <option value="2">Level 2 — Advanced</option>
+                <option value="3">Level 3 — Moderator</option>
+                <option value="4">Level 4 — Writer</option>
+                <option value="5">Level 5 — Admin/CEO</option>
+              </select>
+              <input id="c-role" placeholder="Role (e.g. Employee)">
+              <input id="c-dept" placeholder="Department (optional)">
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="new-displayname">Display Name</label>
-                <input type="text" id="new-displayname" placeholder="Full Name" required>
-              </div>
-              <div class="form-group">
-                <label for="new-role">Role</label>
-                <select id="new-role" required>
-                  <option value="">Select a role</option>
-                  <option value="Employee">Employee</option>
-                  <option value="CRDO">CRDO</option>
-                  <option value="CEO">CEO</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="new-level">Access Level</label>
-                <select id="new-level" required>
-                  <option value="1">1 - Employee</option>
-                  <option value="2">2 - Training Lab</option>
-                  <option value="3">3 - Moderator</option>
-                  <option value="4">4 - Document Writer</option>
-                  <option value="5">5 - CEO/Admin</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="new-department">Department</label>
-                <input type="text" id="new-department" placeholder="e.g., Engineering">
-              </div>
-            </div>
-            <div id="create-message"></div>
-            <button type="submit" class="btn">Create Account</button>
-          </form>
-        </div>
-
-        <div class="panel">
-          <div class="panel-title">Existing Accounts</div>
-          <table class="accounts-table">
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Display Name</th>
-                <th>Role</th>
-                <th>Access Level</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="accounts-tbody">
-              <tr><td colspan="6" style="text-align: center; color: #a0a0a0;">Loading accounts...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- MODERATION TAB -->
-      <div id="moderation" class="tab-content">
-        <div class="panel">
-          <div class="panel-title">Timeout User</div>
-          <p style="color: #a0a0a0; margin-bottom: 15px;">Temporarily restrict a user's access</p>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="timeout-user">Username</label>
-              <input type="text" id="timeout-user" placeholder="username">
-            </div>
-            <div class="form-group">
-              <label for="timeout-duration">Duration (minutes)</label>
-              <input type="number" id="timeout-duration" value="30" min="1">
-            </div>
-          </div>
-          <div id="timeout-message"></div>
-          <button class="btn" onclick="handleTimeout()">Issue Timeout</button>
-        </div>
-
-        <div class="panel">
-          <div class="panel-title">Ban User</div>
-          <p style="color: #a0a0a0; margin-bottom: 15px;">Permanently ban a user from the platform</p>
-          <div class="form-group">
-            <label for="ban-user">Username</label>
-            <input type="text" id="ban-user" placeholder="username">
-          </div>
-          <div id="ban-message"></div>
-          <button class="btn btn-danger" onclick="handleBan()">Ban User</button>
-        </div>
-      </div>
-
-      <!-- STATISTICS TAB -->
-      <div id="statistics" class="tab-content">
-        <div class="stats">
-          <div class="stat-card">
-            <div class="stat-number" id="stat-total">-</div>
-            <div class="stat-label">Total Accounts</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="stat-active">-</div>
-            <div class="stat-label">Active Users</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="stat-banned">-</div>
-            <div class="stat-label">Banned Users</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-number" id="stat-employees">-</div>
-            <div class="stat-label">Employees</div>
+            <button class="btn btn-primary" id="c-submit">Create account</button>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-title">System Information</div>
-          <div style="display: grid; gap: 10px; color: #a0a0a0;">
-            <div><strong>Last Updated:</strong> <span id="last-updated">-</span></div>
-            <div><strong>Platform Version:</strong> <span id="platform-version">1.0.0</span></div>
-            <div><strong>Authentication System:</strong> <span id="auth-system">SwiftawAuth v2</span></div>
+        <div class="tab-content" data-tab="overview">
+          <div class="stat-grid">
+            <div class="stat-box"><div class="num">${stats.total}</div><div class="label">Total accounts</div></div>
+            <div class="stat-box"><div class="num">${list.filter(a => a.accessLevel >= 1).length}</div><div class="label">Employees (L1+)</div></div>
+            <div class="stat-box"><div class="num">${list.filter(a => a.accessLevel >= 5).length}</div><div class="label">Admins (L5)</div></div>
+            <div class="stat-box"><div class="num">${list.filter(a => a.department).length}</div><div class="label">With department</div></div>
+          </div>
+          <div class="panel">
+            <h3>Access levels</h3>
+            <p class="text-muted" style="font-size:.92rem;margin-bottom:12px;">A quick reference for the levels you're assigning:</p>
+            <ul style="list-style:none;display:grid;gap:10px;">
+              <li><strong>Level 0</strong> <span class="text-muted">— Public/user account</span></li>
+              <li><strong>Level 1</strong> <span class="text-muted">— Employee, confidential docs</span></li>
+              <li><strong>Level 2</strong> <span class="text-muted">— + advanced access</span></li>
+              <li><strong>Level 3</strong> <span class="text-muted">— + moderation (timeout, ban)</span></li>
+              <li><strong>Level 4</strong> <span class="text-muted">— + write documents</span></li>
+              <li><strong>Level 5</strong> <span class="text-muted">— Admin / CEO</span></li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  `;
 
-  <script>
-    // Check authentication
-    function checkAdminAccess() {
-      const user = SwiftawAuth?.getUser();
-      if (!user || user.accessLevel !== 5) {
-        document.getElementById('access-denied-screen').classList.remove('hidden');
-        document.getElementById('admin-content').classList.add('hidden');
-        return false;
-      }
-      return true;
-    }
+  // Tab switching
+  root.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      root.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      root.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.dataset.tab === tab));
+    });
+  });
 
-    if (!checkAdminAccess()) {
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          if (!checkAdminAccess()) {
-            document.body.innerHTML = '<div class="access-denied"><h1>🔐 Access Denied</h1><p>Only CEOs can access the admin dashboard.</p></div>';
-          }
-        }, 100);
-      });
-    } else {
-      document.getElementById('access-denied-screen').classList.add('hidden');
-      document.getElementById('admin-content').classList.remove('hidden');
-    }
-
-    // Tab switching
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+  // Account row actions
+  root.querySelectorAll('.accounts-table tr[data-user]').forEach(tr => {
+    const u = tr.dataset.user;
+    tr.querySelectorAll('[data-act]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const tab = btn.dataset.tab;
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tab).classList.add('active');
-        btn.classList.add('active');
-      });
-    });
-
-    // Update user display
-    function updateUserDisplay() {
-      const user = SwiftawAuth?.getUser();
-      if (user) {
-        document.getElementById('current-user').textContent = `${user.displayName} (${user.role})`;
-      }
-    }
-
-    // Load accounts
-    function loadAccounts() {
-      const accountsObj = SwiftawAuth?.getAllAccounts?.() || {};
-      const accounts = Object.values(accountsObj);
-      const tbody = document.getElementById('accounts-tbody');
-      tbody.innerHTML = '';
-
-      if (accounts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #a0a0a0;">No accounts found</td></tr>';
-        return;
-      }
-
-      accounts.forEach(acc => {
-        const row = document.createElement('tr');
-        const status = acc.banned ? '<span class="status-banned">BANNED</span>' : '<span class="status-active">ACTIVE</span>';
-        const roleClass = acc.role === 'CEO' ? 'role-ceo' : (acc.role === 'CRDO' ? 'role-crdo' : 'role-other');
-
-        row.innerHTML = `
-          <td><strong>${acc.username}</strong></td>
-          <td>${acc.displayName}</td>
-          <td><span class="role-badge ${roleClass}">${acc.role}</span></td>
-          <td>${acc.accessLevel}</td>
-          <td>${status}</td>
-          <td>
-            <div class="action-buttons">
-              <button class="btn" style="padding: 5px 10px; font-size: 0.85em;" onclick="editAccount('${acc.username}')">Edit</button>
-              ${acc.banned ? `<button class="btn" style="padding: 5px 10px; font-size: 0.85em;" onclick="unbanUser('${acc.username}')">Unban</button>` : `<button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.85em;" onclick="banUser('${acc.username}')">Ban</button>`}
-            </div>
-          </td>
-        `;
-        tbody.appendChild(row);
-      });
-    }
-
-    // Create account
-    document.getElementById('create-account-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const username = document.getElementById('new-username').value.trim().toLowerCase();
-      const password = document.getElementById('new-password').value;
-      const displayName = document.getElementById('new-displayname').value;
-      const role = document.getElementById('new-role').value;
-      const level = parseInt(document.getElementById('new-level').value);
-      const department = document.getElementById('new-department').value || 'General';
-
-      const result = SwiftawAuth?.adminCreateAccount?.(username, password, displayName, role, level, department);
-      const msgEl = document.getElementById('create-message');
-
-      if (result?.success) {
-        msgEl.innerHTML = '<div class="alert alert-success">✓ Account created successfully</div>';
-        document.getElementById('create-account-form').reset();
-        loadAccounts();
-        setTimeout(() => msgEl.innerHTML = '', 3000);
-      } else {
-        msgEl.innerHTML = `<div class="alert alert-error">✗ ${result?.error || 'Failed to create account'}</div>`;
-        setTimeout(() => msgEl.innerHTML = '', 3000);
-      }
-    });
-
-    // Ban/Unban user
-    function banUser(username) {
-      if (confirm(`Ban user ${username}? They will not be able to log in.`)) {
-        const result = SwiftawAuth?.moderateBan?.(username);
-        if (result?.success) {
-          alert('User banned successfully');
-          loadAccounts();
-        } else {
-          alert(`Error: ${result?.error || 'Failed to ban user'}`);
+        const act = btn.dataset.act;
+        if (act === 'ban') {
+          const r = SwiftawAuth.moderateBan(u);
+          r.success ? (showToast('Banned @' + u), render()) : showToast(r.error, 'err');
+        } else if (act === 'unban') {
+          const r = SwiftawAuth.moderateUnban(u);
+          r.success ? (showToast('Unbanned @' + u), render()) : showToast(r.error, 'err');
+        } else if (act === 'delete') {
+          if (!confirm('Delete @' + u + '? This cannot be undone.')) return;
+          const r = SwiftawAuth.adminDeleteAccount(u);
+          r.success ? (showToast('Deleted @' + u), render()) : showToast(r.error, 'err');
+        } else if (act === 'edit') {
+          const levelStr = prompt('New access level for @' + u + ' (0-5):');
+          if (levelStr == null) return;
+          const level = parseInt(levelStr, 10);
+          if (isNaN(level) || level < 0 || level > 5) { showToast('Invalid level', 'err'); return; }
+          const r = SwiftawAuth.adminUpdateAccount(u, { accessLevel: level });
+          r.success ? (showToast('Updated @' + u), render()) : showToast(r.error, 'err');
         }
-      }
-    }
-
-    function unbanUser(username) {
-      const result = SwiftawAuth?.adminUpdateAccount?.(username, { banned: false });
-      if (result?.success) {
-        alert('User unbanned successfully');
-        loadAccounts();
-      } else {
-        alert(`Error: ${result?.error || 'Failed to unban user'}`);
-      }
-    }
-
-    // Moderation functions
-    function handleTimeout() {
-      const username = document.getElementById('timeout-user').value.trim().toLowerCase();
-      const duration = parseInt(document.getElementById('timeout-duration').value);
-      if (!username) {
-        alert('Please enter a username');
-        return;
-      }
-      const result = SwiftawAuth?.moderateTimeout?.(username, duration);
-      const msgEl = document.getElementById('timeout-message');
-      if (result?.success) {
-        msgEl.innerHTML = `<div class="alert alert-success">✓ ${username} has been timed out for ${duration} minutes</div>`;
-        document.getElementById('timeout-user').value = '';
-        setTimeout(() => msgEl.innerHTML = '', 3000);
-      } else {
-        msgEl.innerHTML = `<div class="alert alert-error">✗ ${result?.error || 'Failed to timeout user'}</div>`;
-        setTimeout(() => msgEl.innerHTML = '', 3000);
-      }
-    }
-
-    function handleBan() {
-      const username = document.getElementById('ban-user').value.trim().toLowerCase();
-      if (!username || !confirm(`Permanently ban ${username}?`)) return;
-      const result = SwiftawAuth?.moderateBan?.(username);
-      const msgEl = document.getElementById('ban-message');
-      if (result?.success) {
-        msgEl.innerHTML = `<div class="alert alert-success">✓ ${username} has been banned</div>`;
-        document.getElementById('ban-user').value = '';
-        loadAccounts();
-        setTimeout(() => msgEl.innerHTML = '', 3000);
-      } else {
-        msgEl.innerHTML = `<div class="alert alert-error">✗ ${result?.error || 'Failed to ban user'}</div>`;
-        setTimeout(() => msgEl.innerHTML = '', 3000);
-      }
-    }
-
-    // Update stats
-    function updateStats() {
-      const accountsObj = SwiftawAuth?.getAllAccounts?.() || {};
-      const accounts = Object.values(accountsObj);
-      const total = accounts.length;
-      const banned = accounts.filter(a => a.banned).length;
-      const active = total - banned;
-      const employees = accounts.filter(a => a.accessLevel >= 1).length;
-
-      document.getElementById('stat-total').textContent = total;
-      document.getElementById('stat-active').textContent = active;
-      document.getElementById('stat-banned').textContent = banned;
-      document.getElementById('stat-employees').textContent = employees;
-      document.getElementById('last-updated').textContent = new Date().toLocaleString();
-    }
-
-    // Logout
-    document.getElementById('logout-btn').addEventListener('click', () => {
-      SwiftawAuth?.logout?.();
-      window.location.href = '/';
+      });
     });
+  });
 
-    // Initialize
-    window.addEventListener('load', () => {
-      updateUserDisplay();
-      loadAccounts();
-      updateStats();
-    });
+  // Create account form
+  const cSubmit = document.getElementById('c-submit');
+  if (cSubmit) cSubmit.addEventListener('click', () => {
+    const u = document.getElementById('c-user').value;
+    const n = document.getElementById('c-name').value;
+    const p = document.getElementById('c-pass').value;
+    const lvl = parseInt(document.getElementById('c-level').value, 10);
+    const role = document.getElementById('c-role').value || 'Employee';
+    const dept = document.getElementById('c-dept').value || '';
+    const r = SwiftawAuth.adminCreateAccount(u, p, n, role, lvl, dept);
+    if (r.success) { showToast('Created @' + u); render(); }
+    else showToast(r.error, 'err');
+  });
+}
 
-    // Refresh stats every 30 seconds
-    setInterval(updateStats, 30000);
-
-    function editAccount(username) {
-      alert(`Edit account modal for ${username} - to be implemented`);
-    }
-  </script>
+render();
+window.addEventListener('swiftaw-auth-change', render);
+</script>
 </body>
 </html>

@@ -3,170 +3,70 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Page Not Found - Swiftaw</title>
-<meta name="description" content="This page doesn't exist on Swiftaw.">
-<meta name="theme-color" content="#0a0a0a">
+<title>Page not found · Swiftaw</title>
+<meta name="description" content="The page you were looking for doesn't exist.">
 <link rel="icon" type="image/png" href="/SwiftawFavicon.png">
-<link href="https://fonts.cdnfonts.com/css/afronaut-test" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-::selection { background: rgba(255,249,62,.25); }
-:root {
-  --brand-deep: #241f3c;
-  --brand-yellow: #fff93e;
-  --brand-orange: #ff9c3c;
-  --bg: #ffffff;
-  --text: #0a0a0a;
-  --text-light: #555;
-  --text-muted: #888;
-  --border: #e5e5e5;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-serif: 'Newsreader', Georgia, serif;
-  --font-display: 'Afronaut Test', 'Newsreader', sans-serif;
+.nf-wrap {
+  min-height: calc(100vh - 80px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 60px 20px; text-align: center;
+  position: relative; overflow: hidden;
 }
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  background: var(--bg); color: var(--text);
-  font-family: var(--font-sans); -webkit-font-smoothing: antialiased;
-  min-height: 100vh; display: flex; flex-direction: column;
+.nf-wrap::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 600px 400px at 50% 20%, rgba(255,249,62,.1), transparent 55%),
+    radial-gradient(ellipse 600px 400px at 50% 80%, rgba(255,156,60,.08), transparent 55%);
 }
-img { display: block; -webkit-user-drag: none; user-select: none; }
-a { text-decoration: none; color: inherit; }
-
-/* NAV */
-.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(255,255,255,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
-.nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 32px; height: 64px; }
-.nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; margin-right: 36px; flex-shrink: 0; }
-.nav-logo img { height: 28px; width: auto; }
-.nav-links { display: flex; align-items: center; gap: 6px; }
-.nav-link { padding: 8px 14px; font-size: .9rem; font-weight: 500; color: var(--text-light); border-radius: 8px; transition: background .2s, color .2s; cursor: pointer; white-space: nowrap; }
-.nav-link:hover { background: #f5f5f5; color: var(--text); }
-.nav-link.has-dropdown { display: flex; align-items: center; gap: 4px; user-select: none; }
-.caret { font-size: .65em; opacity: .55; }
-.nav-dropdown-wrap { position: relative; }
-.nav-dropdown { display: none; position: absolute; top: calc(100% + 8px); left: 0; min-width: 220px; background: #fff; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,.10); padding: 8px; z-index: 100; }
-.nav-dropdown-wrap:hover .nav-dropdown { display: block; }
-.nav-dropdown a { display: block; padding: 10px 14px; border-radius: 8px; font-size: .88rem; font-weight: 500; transition: background .15s; }
-.nav-dropdown a:hover { background: #f7f7f7; }
-.dd-desc { display: block; font-size: .78rem; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
-.nav-spacer { flex: 1; }
-.nav-cta { padding: 9px 22px; background: var(--brand-yellow); color: var(--brand-deep); border-radius: 100px; font-size: .88rem; font-weight: 600; transition: box-shadow .2s; white-space: nowrap; }
-.nav-cta:hover { box-shadow: 0 0 20px rgba(255,249,62,.4); }
-@media (max-width: 768px) { .nav-links { display: none; } }
-
-.main {
-  flex: 1; display: flex; align-items: center; justify-content: center;
-  padding: 64px 24px 40px;
-}
-.container { text-align: center; max-width: 480px; }
-.code {
+.nf-inner { position: relative; z-index: 1; max-width: 540px; }
+.nf-code {
   font-family: var(--font-display);
-  font-size: 96px; font-weight: 400;
-  color: var(--brand-yellow); line-height: 1;
-  margin-bottom: 16px;
-  text-shadow: 0 0 60px rgba(255,249,62,.15);
-}
-.title {
-  font-family: var(--font-display);
-  font-size: 24px; font-weight: 400;
+  font-size: clamp(6rem, 16vw, 11rem);
+  line-height: .9;
+  background: var(--grad);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
   margin-bottom: 12px;
 }
-.desc { font-size: 15px; color: var(--text-light); line-height: 1.65; margin-bottom: 12px; }
-.path {
-  display: inline-block; font-size: 13px; color: var(--text-muted);
-  background: #f5f5f5; border: 1px solid var(--border); border-radius: 8px;
-  padding: 6px 16px; font-family: monospace; margin-bottom: 32px; word-break: break-all;
-}
-.actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 28px; border-radius: 100px;
-  font-size: 14px; font-weight: 600; transition: .2s;
-}
-.btn-yellow { background: var(--brand-yellow); color: var(--brand-deep); }
-.btn-yellow:hover { box-shadow: 0 0 24px rgba(255,249,62,.4); transform: translateY(-1px); }
-.btn-ghost { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
-.btn-ghost:hover { border-color: #999; transform: translateY(-1px); }
-.highlight-bar {
-  height: 3px; max-width: 40px; margin: 0 auto 24px;
-  background: linear-gradient(90deg, var(--brand-yellow), var(--brand-orange), var(--brand-deep));
-  border-radius: 2px;
-}
-.footer-note { margin-top: 48px; font-size: 12px; color: var(--text-muted); }
-.footer-note a { color: var(--brand-orange); }
-.footer-note a:hover { text-decoration: underline; }
-@media (max-width: 480px) {
-  .code { font-size: 72px; }
-  .actions { flex-direction: column; }
-  .btn { justify-content: center; width: 100%; }
-}
+.nf-inner h1 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); margin-bottom: 14px; }
+.nf-inner p { color: var(--text-muted); font-size: 1.04rem; margin-bottom: 28px; }
+.nf-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 </style>
 </head>
 <body>
 
-<nav class="nav">
+<nav class="site-nav">
   <div class="nav-inner">
-    <a href="/" class="nav-logo"><img src="/Swiftaw logomark black.png" alt="Swiftaw"></a>
-    <div class="nav-links">
-      <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Products <span class="caret">&#9662;</span></span>
-        <div class="nav-dropdown">
-          <a href="https://fortized.com">Try Fortized<span class="dd-desc">Gaming community platform</span></a>
-          
-        </div>
-      </div>
-      <a href="/documents" class="nav-link">Documents</a>
+    <a href="/" class="nav-brand"><img src="/Swiftaw logomark.png" alt=""><span>Swiftaw</span></a>
+    <div class="nav-links" id="nav-links">
+      <a href="/company/about" class="nav-link">About</a>
       <a href="/blog" class="nav-link">Blog</a>
-      <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Departments <span class="caret">&#9662;</span></span>
-        <div class="nav-dropdown">
-          <a href="/departments/rd">R&amp;D</a>
-          <a href="/departments/safety">Safety</a>
-          <a href="/departments/communication">Communication</a>
-        </div>
-      </div>
-      <div class="nav-dropdown-wrap">
-        <span class="nav-link has-dropdown">Company <span class="caret">&#9662;</span></span>
-        <div class="nav-dropdown">
-          <a href="/company/about">About</a>
-          <a href="/company/goals">Goals for the World</a>
-          <a href="/company/commitments">Commitments</a>
-        </div>
-      </div>
+      <a href="/documents" class="nav-link">Documents</a>
     </div>
-    <div class="nav-spacer"></div>
-    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
+    <a href="https://fortized.swiftaw.com" class="nav-cta">Try Fortized</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
   </div>
 </nav>
 
-<main class="main">
-  <div class="container">
-    <div class="code">404</div>
-    <div class="highlight-bar"></div>
-    <h1 class="title">Page not found</h1>
-    <p class="desc">The page you're looking for doesn't exist or has been moved.</p>
-    <div class="path" id="path"></div>
-    <div class="actions">
-      <a href="/" class="btn btn-yellow">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Go home
-      </a>
-      <a href="javascript:history.back()" class="btn btn-ghost">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        Go back
-      </a>
-    </div>
-    <div class="footer-note">
-      <p>&copy; 2026 <a href="/">Swiftaw</a></p>
+<div class="nf-wrap">
+  <div class="nf-inner">
+    <div class="nf-code">404</div>
+    <h1>We couldn't find that page.</h1>
+    <p>The page may have moved, or it was never here to begin with. Try one of these instead:</p>
+    <div class="nf-links">
+      <a href="/" class="btn btn-primary">Back to home</a>
+      <a href="/blog" class="btn btn-ghost">Read the journal</a>
+      <a href="/documents" class="btn btn-ghost">Browse docs</a>
     </div>
   </div>
-</main>
+</div>
 
-<script>
-  var p = document.getElementById('path');
-  if (p) p.textContent = window.location.pathname;
-</script>
 <script src="/js/swiftaw-auth.js"></script>
 <script src="/js/swiftaw-nav.js"></script>
+<script>document.getElementById('nav-toggle').addEventListener('click', () => { document.getElementById('nav-links').classList.toggle('open'); });</script>
 </body>
 </html>
