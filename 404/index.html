@@ -8,33 +8,33 @@
 <link rel="icon" type="image/png" href="/SwiftawFavicon.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
 .nf-wrap {
   min-height: calc(100vh - 80px);
-  display: flex; align-items: center; justify-content: center;
-  padding: 60px 20px; text-align: center;
-  position: relative; overflow: hidden;
+  display: flex; align-items: center;
+  padding: 80px 0;
 }
-.nf-wrap::before {
-  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
-  background:
-    radial-gradient(ellipse 600px 400px at 50% 20%, rgba(255,249,62,.1), transparent 55%),
-    radial-gradient(ellipse 600px 400px at 50% 80%, rgba(255,249,62,.08), transparent 55%);
-}
-.nf-inner { position: relative; z-index: 1; max-width: 540px; }
+.nf-inner { max-width: 640px; }
 .nf-code {
-  font-family: var(--font-display);
-  font-size: clamp(6rem, 16vw, 11rem);
-  line-height: .9;
-  background: var(--grad);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  margin-bottom: 12px;
+  font-size: .82rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .2em;
+  color: var(--text-muted);
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 14px;
 }
-.nf-inner h1 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.6rem); margin-bottom: 14px; }
-.nf-inner p { color: var(--text-muted); font-size: 1.04rem; margin-bottom: 28px; }
-.nf-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.nf-code::before {
+  content: ''; width: 28px; height: 1px; background: var(--yellow);
+}
+.nf-inner h1 {
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: -.01em;
+  margin-bottom: 18px;
+}
+.nf-inner p { color: var(--text-muted); font-size: 1.02rem; margin-bottom: 32px; max-width: 52ch; }
+.nf-links { display: flex; gap: 12px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
@@ -44,7 +44,7 @@
     <a href="/" class="nav-brand"><img src="/Swiftaw logomark.png" alt="Swiftaw"></a>
     <div class="nav-links" id="nav-links">
       <a href="/#about" class="nav-link">About</a>
-      <a href="/#projects" class="nav-link">Projects</a>
+      <a href="/#project" class="nav-link">Project</a>
       <a href="https://fortized.com" class="nav-link">Fortized</a>
     </div>
     <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
@@ -52,14 +52,16 @@
   </div>
 </nav>
 
-<div class="nf-wrap">
-  <div class="nf-inner">
-    <div class="nf-code">404</div>
-    <h1>We couldn't find that page.</h1>
-    <p>The page may have moved, or it was never here to begin with. Try one of these instead:</p>
-    <div class="nf-links">
-      <a href="/" class="btn btn-primary">Back to home</a>
-      <a href="https://fortized.com" class="btn btn-ghost">Try Fortized</a>
+<div class="container">
+  <div class="nf-wrap">
+    <div class="nf-inner">
+      <div class="nf-code">Error 404 — Page not found</div>
+      <h1>The page you requested could not be found.</h1>
+      <p>The page may have moved, or the link may be incorrect. You can return to the homepage or open Fortized below.</p>
+      <div class="nf-links">
+        <a href="/" class="btn btn-primary">Return home</a>
+        <a href="https://fortized.com" class="btn">Open Fortized</a>
+      </div>
     </div>
   </div>
 </div>
