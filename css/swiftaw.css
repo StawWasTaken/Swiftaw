@@ -145,7 +145,7 @@ section + section { padding-top: 0; }
   color: var(--text);
   letter-spacing: .02em;
 }
-.nav-brand img { height: 32px; width: auto; }
+.nav-brand img { height: 40px; width: auto; }
 .nav-links {
   display: flex; align-items: center; gap: 4px;
   margin-left: 18px;

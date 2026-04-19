@@ -3,194 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swiftaw — Engineering a safer, more useful future</title>
-<meta name="description" content="Swiftaw builds trustworthy products, tools and research across cybersecurity, infrastructure and design. Meet Fortized and the rest of our ecosystem.">
+<title>Swiftaw — Move Beyond the Ordinary</title>
+<meta name="description" content="Swiftaw is a european research-led technology company working to create tools that connect people together.">
 <link rel="icon" type="image/png" href="/SwiftawFavicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-/* Page-specific */
-.hero-orb {
-  position: absolute;
-  width: 720px; height: 720px;
-  left: 50%; top: -220px;
-  transform: translateX(-50%);
-  background: radial-gradient(closest-side, rgba(255,249,62,.14), rgba(255,156,60,.06) 45%, transparent 70%);
-  filter: blur(10px);
-  pointer-events: none; z-index: 0;
-}
+/* ── Page-specific (Wikimedia-inspired, minimal) ── */
 
-.product-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  grid-template-rows: auto auto;
-  gap: 20px;
-}
-@media (max-width: 980px) { .product-grid { grid-template-columns: 1fr 1fr; } .product-grid .tile.lead { grid-column: 1 / -1; } }
-@media (max-width: 640px)  { .product-grid { grid-template-columns: 1fr; } .product-grid .tile.lead { grid-column: auto; } }
-
-.tile {
+.home-hero {
+  padding: 120px 20px 80px;
+  text-align: center;
   position: relative;
-  border-radius: var(--radius-lg);
+}
+.home-hero .slogan {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  line-height: 1;
+  letter-spacing: -.01em;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 18px auto 28px;
+  max-width: 14ch;
+}
+.home-hero .intro {
+  max-width: 640px;
+  margin: 0 auto 36px;
+  color: var(--text-muted);
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+.home-hero .intro strong { color: var(--text); font-weight: 600; }
+.home-hero .hero-actions { justify-content: center; }
+
+.home-divider {
+  height: 1px;
+  background: var(--border);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.home-section {
+  padding: 80px 20px;
+}
+.home-section .container {
+  max-width: 1100px;
+}
+
+.home-section h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  letter-spacing: -.01em;
+  margin-bottom: 14px;
+}
+.home-section .lede {
+  color: var(--text-muted);
+  font-size: 1.02rem;
+  max-width: 58ch;
+  margin-bottom: 40px;
+}
+
+/* Projects (single real project: Fortized) */
+.projects {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+.project {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 32px;
+  align-items: start;
   padding: 28px;
-  background: var(--bg-card);
   border: 1px solid var(--border);
-  overflow: hidden;
-  transition: transform .25s, border-color .25s;
-  min-height: 220px;
-  display: flex; flex-direction: column; justify-content: space-between;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  transition: border-color .2s;
 }
-.tile:hover { transform: translateY(-4px); border-color: var(--border-glow); }
-.tile.lead {
-  grid-row: span 2;
-  min-height: 460px;
-  background:
-    radial-gradient(ellipse 500px 400px at 100% 0%, rgba(255,156,60,.18), transparent 60%),
-    radial-gradient(ellipse 500px 400px at 0% 100%, rgba(255,249,62,.12), transparent 60%),
-    var(--bg-card);
-  border-color: rgba(255,249,62,.2);
-}
-.tile .tile-top { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-.tile .tile-top img { height: 28px; width: auto; }
-.tile .tile-tag {
-  font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  padding: 4px 10px; border-radius: 100px;
-  background: rgba(255,249,62,.12); color: var(--primary);
-  border: 1px solid rgba(255,249,62,.25);
-}
-.tile h3 { font-size: 1.35rem; margin-bottom: 10px; }
-.tile.lead h3 { font-size: 2rem; line-height: 1.1; font-family: var(--font-display); font-weight: 400; letter-spacing: -.01em; }
-.tile p { color: var(--text-muted); font-size: .94rem; }
-.tile-cta { margin-top: 18px; font-size: .86rem; font-weight: 600; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; }
-.tile-cta::after { content: '→'; transition: transform .15s; }
-.tile:hover .tile-cta::after { transform: translateX(4px); }
-
-.ecosystem-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 14px;
-}
-@media (max-width: 980px) { .ecosystem-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 520px)  { .ecosystem-grid { grid-template-columns: repeat(2, 1fr); } }
-.eco-item {
+.project:hover { border-color: var(--border-glow); }
+.project-logo {
+  width: 200px;
+  aspect-ratio: 1 / 1;
+  display: flex; align-items: center; justify-content: center;
   background: var(--bg-panel);
-  border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 22px 16px;
-  text-align: center;
-  transition: all .2s;
-}
-.eco-item:hover { border-color: var(--primary); background: var(--bg-card-hover); transform: translateY(-2px); }
-.eco-emoji { font-size: 1.6rem; margin-bottom: 10px; display: block; }
-.eco-name { font-size: .86rem; font-weight: 600; color: var(--text); }
-.eco-desc { font-size: .72rem; color: var(--text-muted); margin-top: 4px; }
-
-.story-rail { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 10px; margin: 0 -28px; padding-left: 28px; padding-right: 28px; scrollbar-width: thin; }
-.story-rail::-webkit-scrollbar { height: 6px; }
-.story-rail::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 3px; }
-.story-card {
-  flex: 0 0 340px; scroll-snap-align: start;
-  padding: 26px;
-  border-radius: var(--radius-lg);
-  background: var(--bg-card);
   border: 1px solid var(--border);
-  display: flex; flex-direction: column; gap: 14px;
-  transition: all .2s;
 }
-.story-card:hover { border-color: var(--border-glow); }
-.story-quote { font-size: 1rem; color: var(--text); line-height: 1.55; }
-.story-person { display: flex; align-items: center; gap: 10px; margin-top: auto; }
-.story-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--grad); display: flex; align-items: center; justify-content: center; color: #0a0d10; font-weight: 700; }
-.story-meta { display: flex; flex-direction: column; }
-.story-name { font-size: .9rem; font-weight: 600; }
-.story-role { font-size: .78rem; color: var(--text-muted); }
+.project-logo img { max-width: 72%; height: auto; }
+.project-body h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.9rem;
+  letter-spacing: -.01em;
+  margin-bottom: 8px;
+}
+.project-tag {
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--primary);
+  background: rgba(255,249,62,.1);
+  border: 1px solid rgba(255,249,62,.22);
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+}
+.project-body p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 18px;
+}
+.project-body .btn { font-size: .9rem; }
 
-.cta-block {
-  position: relative;
-  overflow: hidden;
-  padding: 72px 48px;
-  border-radius: var(--radius-xl);
-  background:
-    radial-gradient(ellipse at 20% 0%, rgba(255,249,62,.2), transparent 60%),
-    radial-gradient(ellipse at 100% 100%, rgba(255,156,60,.18), transparent 55%),
-    linear-gradient(180deg, #14171f, #0c0f16);
-  border: 1px solid var(--border-strong);
-  text-align: center;
+@media (max-width: 720px) {
+  .project { grid-template-columns: 1fr; }
+  .project-logo { width: 120px; }
 }
-.cta-block h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.05; margin-bottom: 16px; }
-.cta-block p { color: var(--text-muted); max-width: 560px; margin: 0 auto 28px; }
-.cta-block .hero-actions { justify-content: center; }
 
-.dept-card {
-  padding: 32px;
-  border-radius: var(--radius-lg);
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  transition: all .25s;
-  height: 100%;
-  display: flex; flex-direction: column;
+/* About block */
+.about-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
 }
-.dept-card:hover { border-color: var(--border-glow); transform: translateY(-4px); box-shadow: var(--shadow-glow); }
-.dept-tag { font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--secondary); margin-bottom: 14px; }
-.dept-card h3 { font-size: 1.35rem; margin-bottom: 10px; }
-.dept-card p { color: var(--text-muted); font-size: .94rem; flex: 1; }
-.dept-card .dept-link { margin-top: 22px; font-size: .88rem; font-weight: 600; color: var(--primary); display: inline-flex; align-items: center; gap: 6px; }
-.dept-card .dept-link::after { content: '→'; transition: transform .15s; }
-.dept-card:hover .dept-link::after { transform: translateX(4px); }
+.about-block p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 14px;
+}
+.about-block p strong { color: var(--text); font-weight: 600; }
+@media (max-width: 720px) {
+  .about-block { grid-template-columns: 1fr; gap: 16px; }
+}
 
-.news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-@media (max-width: 980px) { .news-grid { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 640px)  { .news-grid { grid-template-columns: 1fr; } }
-.news-card {
-  padding: 24px;
-  border-radius: var(--radius-lg);
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  transition: all .2s;
-  display: flex; flex-direction: column; gap: 10px;
-}
-.news-card:hover { border-color: var(--border-glow); transform: translateY(-3px); }
-.news-date { font-size: .74rem; font-weight: 600; color: var(--secondary); text-transform: uppercase; letter-spacing: .1em; }
-.news-card h3 { font-size: 1.1rem; line-height: 1.3; }
-.news-card p { color: var(--text-muted); font-size: .92rem; }
+/* Footer simplification (uses shared .site-footer) */
 </style>
 </head>
 <body>
 
 <nav class="site-nav">
   <div class="nav-inner">
-    <a href="/" class="nav-brand">
-      <img src="/Swiftaw logomark.png" alt="">
-      <span>Swiftaw</span>
-    </a>
+    <a href="/" class="nav-brand"><img src="/Swiftaw logomark.png" alt="Swiftaw"></a>
     <div class="nav-links" id="nav-links">
-      <div class="nav-dropdown-wrap">
-        <a class="nav-link has-menu">Products</a>
-        <div class="nav-dropdown">
-          <a href="https://fortized.swiftaw.com"><strong>Fortized</strong><span>Comprehensive security platform</span></a>
-          <a href="#ecosystem"><strong>See all products</strong><span>Explore the Swiftaw ecosystem</span></a>
-        </div>
-      </div>
-      <div class="nav-dropdown-wrap">
-        <a class="nav-link has-menu">Company</a>
-        <div class="nav-dropdown">
-          <a href="/company/about"><strong>About</strong><span>Who we are and what we build</span></a>
-          <a href="/company/goals"><strong>Goals</strong><span>Where we're headed</span></a>
-          <a href="/company/commitments"><strong>Commitments</strong><span>The promises we keep</span></a>
-        </div>
-      </div>
-      <div class="nav-dropdown-wrap">
-        <a class="nav-link has-menu">Departments</a>
-        <div class="nav-dropdown">
-          <a href="/departments/rd"><strong>Research &amp; Development</strong><span>Engineering what's next</span></a>
-          <a href="/departments/safety"><strong>Safety</strong><span>Responsible by default</span></a>
-          <a href="/departments/communication"><strong>Communication</strong><span>Clear and transparent</span></a>
-        </div>
-      </div>
-      <a href="/blog" class="nav-link">Blog</a>
-      <a href="/documents" class="nav-link">Documents</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#projects" class="nav-link">Projects</a>
+      <a href="https://fortized.swiftaw.com" class="nav-link">Fortized</a>
     </div>
     <a href="https://fortized.swiftaw.com" class="nav-cta">Try Fortized</a>
     <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
@@ -199,260 +165,64 @@
   </div>
 </nav>
 
-<section class="hero">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-orb"></div>
-  <div class="container hero-inner">
-    <span class="pill">Building the Swiftaw ecosystem</span>
-    <h1 class="hero-title">Engineering a <span class="accent">safer,<br>more useful</span> future</h1>
-    <p class="hero-sub">Swiftaw is a research-led technology company shipping trustworthy tools across security, infrastructure and design — all connected by a single ecosystem.</p>
+<section class="home-hero">
+  <div class="container">
+    <span class="pill">Welcome to Swiftaw</span>
+    <h1 class="slogan">Move Beyond the Ordinary.</h1>
+    <p class="intro">Swiftaw is a european research-led technology company working to create tools that connect people together.</p>
     <div class="hero-actions">
-      <a href="#ecosystem" class="btn btn-primary">Explore our work <span class="arrow">→</span></a>
-      <a href="/company/about" class="btn btn-ghost">About Swiftaw</a>
+      <a href="https://fortized.swiftaw.com" class="btn btn-primary">Try Fortized <span class="arrow">→</span></a>
+      <a href="#about" class="btn btn-ghost">Learn more</a>
     </div>
   </div>
 </section>
 
-<section id="ecosystem">
+<div class="home-divider"></div>
+
+<section class="home-section" id="about">
   <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Our ecosystem</span>
-      <h2 class="section-title">Products built on the Swiftaw stack</h2>
-      <p class="section-sub">Every Swiftaw product shares a common backbone — secure by default, open in design, and engineered to work together.</p>
-    </div>
-
-    <div class="product-grid">
-      <a href="https://fortized.swiftaw.com" class="tile lead reveal">
-        <div>
-          <div class="tile-top">
-            <img src="/product-logos/Fortized logomark.png" alt="">
-            <span class="tile-tag">Flagship</span>
-          </div>
-          <h3>Fortized — the complete security suite</h3>
-          <p>Unify identity, monitoring and remediation in one platform. Fortized is engineered from the ground up to give small teams enterprise-grade protection — without the complexity.</p>
-        </div>
-        <span class="tile-cta">Open Fortized</span>
-      </a>
-
-      <a class="tile reveal">
-        <div class="tile-top"><span class="tile-tag">In development</span></div>
-        <h3>Swiftaw Cloud</h3>
-        <p>Durable, geo-replicated storage primitives for modern teams.</p>
-        <span class="tile-cta">Coming 2026</span>
-      </a>
-
-      <a class="tile reveal">
-        <div class="tile-top"><span class="tile-tag">In development</span></div>
-        <h3>Swiftaw ID</h3>
-        <p>A single, privacy-first identity across the ecosystem.</p>
-        <span class="tile-cta">Coming 2026</span>
-      </a>
-
-      <a class="tile reveal">
-        <div class="tile-top"><span class="tile-tag">Beta</span></div>
-        <h3>Swiftaw Build</h3>
-        <p>CI/CD with reproducible artifacts and supply-chain checks baked in.</p>
-        <span class="tile-cta">Request access</span>
-      </a>
-
-      <a class="tile reveal">
-        <div class="tile-top"><span class="tile-tag">Research</span></div>
-        <h3>Swiftaw Research</h3>
-        <p>Open papers, benchmarks and tooling from our R&amp;D team.</p>
-        <span class="tile-cta">Read papers</span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Everything we make</span>
-      <h2 class="section-title">One ecosystem. Many surfaces.</h2>
-      <p class="section-sub">A clean set of products that do one thing well and plug into each other.</p>
-    </div>
-
-    <div class="ecosystem-grid">
-      <a href="https://fortized.swiftaw.com" class="eco-item"><span class="eco-emoji">🛡️</span><div class="eco-name">Fortized</div><div class="eco-desc">Security suite</div></a>
-      <a class="eco-item"><span class="eco-emoji">🆔</span><div class="eco-name">Swiftaw ID</div><div class="eco-desc">Identity</div></a>
-      <a class="eco-item"><span class="eco-emoji">☁️</span><div class="eco-name">Cloud</div><div class="eco-desc">Storage</div></a>
-      <a class="eco-item"><span class="eco-emoji">🧱</span><div class="eco-name">Build</div><div class="eco-desc">CI/CD</div></a>
-      <a href="/departments/rd" class="eco-item"><span class="eco-emoji">🧪</span><div class="eco-name">Research</div><div class="eco-desc">Open science</div></a>
-      <a href="/blog" class="eco-item"><span class="eco-emoji">📰</span><div class="eco-name">Journal</div><div class="eco-desc">Our writing</div></a>
-      <a href="/documents" class="eco-item"><span class="eco-emoji">📚</span><div class="eco-name">Docs</div><div class="eco-desc">Guides &amp; refs</div></a>
-      <a href="/company/about" class="eco-item"><span class="eco-emoji">🏛️</span><div class="eco-name">Company</div><div class="eco-desc">Who we are</div></a>
-      <a href="/departments/safety" class="eco-item"><span class="eco-emoji">🧯</span><div class="eco-name">Safety</div><div class="eco-desc">Trust &amp; integrity</div></a>
-      <a href="/departments/communication" class="eco-item"><span class="eco-emoji">📣</span><div class="eco-name">Comms</div><div class="eco-desc">Outreach</div></a>
-      <a href="/company/goals" class="eco-item"><span class="eco-emoji">🎯</span><div class="eco-name">Goals</div><div class="eco-desc">Roadmap</div></a>
-      <a href="/company/commitments" class="eco-item"><span class="eco-emoji">🤝</span><div class="eco-name">Commitments</div><div class="eco-desc">Our promises</div></a>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <div class="stat-row">
-      <div class="stat-item"><div class="stat-num">5+</div><div class="stat-label">Active projects</div></div>
-      <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Departments</div></div>
-      <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Independent</div></div>
-      <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">Ambition</div></div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Our teams</span>
-      <h2 class="section-title">Three departments, one direction</h2>
-      <p class="section-sub">Each team owns a distinct surface of Swiftaw, but they ship together.</p>
-    </div>
-
-    <div class="grid grid-3">
-      <a href="/departments/rd" class="dept-card reveal">
-        <div class="dept-tag">01 — Research &amp; Development</div>
-        <h3>Engineering what comes next</h3>
-        <p>Our R&amp;D team designs, prototypes and ships the technology that powers the Swiftaw ecosystem — from cryptography primitives to user-facing tools.</p>
-        <span class="dept-link">Enter R&amp;D</span>
-      </a>
-      <a href="/departments/safety" class="dept-card reveal">
-        <div class="dept-tag">02 — Safety</div>
-        <h3>Responsible by default</h3>
-        <p>Safety reviews every release before it ships: red-teaming, privacy audits, and the hard trade-offs that keep our users in control.</p>
-        <span class="dept-link">Enter Safety</span>
-      </a>
-      <a href="/departments/communication" class="dept-card reveal">
-        <div class="dept-tag">03 — Communication</div>
-        <h3>Clear, honest, on the record</h3>
-        <p>Communication handles our public voice — changelogs, incident reports, docs, and everything we tell the world.</p>
-        <span class="dept-link">Enter Communication</span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <div class="quote-block reveal">
-      <p>We don't believe in shipping the smallest thing that works. We ship the most useful thing that's honest about what it is.</p>
-      <cite>— Staw, founder &amp; CEO</cite>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow">Stories</span>
-      <h2 class="section-title">What people are building with Swiftaw</h2>
-    </div>
-
-    <div class="story-rail">
-      <div class="story-card">
-        <p class="story-quote">"Fortized replaced three separate vendors for us and cut our incident response time roughly in half."</p>
-        <div class="story-person">
-          <div class="story-avatar">A</div>
-          <div class="story-meta"><span class="story-name">Aiko Tanaka</span><span class="story-role">Head of Security, small studio</span></div>
-        </div>
+    <div class="about-block">
+      <div>
+        <span class="eyebrow">About</span>
+        <h2>An independent project, built in Europe.</h2>
       </div>
-      <div class="story-card">
-        <p class="story-quote">"The Swiftaw stack is the first thing in years that felt genuinely designed and not assembled."</p>
-        <div class="story-person">
-          <div class="story-avatar">M</div>
-          <div class="story-meta"><span class="story-name">Marcus Adeyemi</span><span class="story-role">Platform engineer</span></div>
-        </div>
-      </div>
-      <div class="story-card">
-        <p class="story-quote">"Their communication department is honestly the clearest I've ever read. Every changelog is a lesson."</p>
-        <div class="story-person">
-          <div class="story-avatar">L</div>
-          <div class="story-meta"><span class="story-name">Lena Novak</span><span class="story-role">Product lead</span></div>
-        </div>
-      </div>
-      <div class="story-card">
-        <p class="story-quote">"I trust them with our identity stack because they actually read the RFCs we cite at them."</p>
-        <div class="story-person">
-          <div class="story-avatar">R</div>
-          <div class="story-meta"><span class="story-name">Rahul Banerjee</span><span class="story-role">CTO, fintech startup</span></div>
-        </div>
+      <div>
+        <p><strong>Swiftaw</strong> is a small, independent technology company based in Europe. We're research-led: we take the time to understand a problem before we build a tool for it.</p>
+        <p>Our focus is on software that helps people connect — to each other, to their work, to the things they care about. We're early, and we're honest about it.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="container">
-    <div class="section-head left">
-      <span class="eyebrow">Journal</span>
-      <h2 class="section-title">Latest from Swiftaw</h2>
-    </div>
-    <div class="news-grid">
-      <a href="/blog" class="news-card">
-        <span class="news-date">April 2026</span>
-        <h3>Announcing the Swiftaw ecosystem roadmap</h3>
-        <p>What we're shipping over the next year — across Fortized, ID, Cloud and Build.</p>
-      </a>
-      <a href="/blog" class="news-card">
-        <span class="news-date">March 2026</span>
-        <h3>How we think about safety reviews</h3>
-        <p>The checklist we run before every release touches a real user.</p>
-      </a>
-      <a href="/blog" class="news-card">
-        <span class="news-date">February 2026</span>
-        <h3>Open research notes: supply-chain hardening</h3>
-        <p>Findings from three months of attack-simulation against our own pipelines.</p>
-      </a>
-    </div>
-  </div>
-</section>
+<div class="home-divider"></div>
 
-<section>
+<section class="home-section" id="projects">
   <div class="container">
-    <div class="cta-block">
-      <span class="pill">Join us</span>
-      <h2 style="margin-top:18px;">Build with the Swiftaw ecosystem</h2>
-      <p>Try Fortized, read our research, or jump into the docs. Everything we ship is designed to plug into what you already use.</p>
-      <div class="hero-actions">
-        <a href="https://fortized.swiftaw.com" class="btn btn-primary">Try Fortized <span class="arrow">→</span></a>
-        <a href="/documents" class="btn btn-ghost">Read the docs</a>
-      </div>
+    <span class="eyebrow">Projects</span>
+    <h2>What we're working on.</h2>
+    <p class="lede">One project, shipping today. More will come when they're ready — not before.</p>
+
+    <div class="projects">
+      <a href="https://fortized.swiftaw.com" class="project">
+        <div class="project-logo">
+          <img src="/product-logos/Fortized logomark.png" alt="Fortized">
+        </div>
+        <div class="project-body">
+          <span class="project-tag">Live</span>
+          <h3>Fortized</h3>
+          <p>Our first product. Visit fortized.swiftaw.com to learn more about what it does and try it for yourself.</p>
+          <span class="btn btn-primary">Open Fortized <span class="arrow">→</span></span>
+        </div>
+      </a>
     </div>
   </div>
 </section>
 
 <footer class="site-footer">
   <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <img src="/SwiftawLogo.png" alt="Swiftaw">
-        <p>Swiftaw is an independent research-led technology company building a single ecosystem of trustworthy tools.</p>
-      </div>
-      <div class="footer-col">
-        <h4>Products</h4>
-        <a href="https://fortized.swiftaw.com">Fortized</a>
-        <a href="#ecosystem">Swiftaw ID</a>
-        <a href="#ecosystem">Swiftaw Cloud</a>
-        <a href="#ecosystem">Swiftaw Build</a>
-      </div>
-      <div class="footer-col">
-        <h4>Company</h4>
-        <a href="/company/about">About</a>
-        <a href="/company/goals">Goals</a>
-        <a href="/company/commitments">Commitments</a>
-        <a href="/blog">Journal</a>
-      </div>
-      <div class="footer-col">
-        <h4>Teams</h4>
-        <a href="/departments/rd">Research &amp; Development</a>
-        <a href="/departments/safety">Safety</a>
-        <a href="/departments/communication">Communication</a>
-        <a href="/documents">Documents</a>
-      </div>
-    </div>
     <div class="footer-bottom">
-      <span>© 2026 Swiftaw. All rights reserved.</span>
-      <span>Built in the open · swiftaw.com</span>
+      <span>© 2026 Swiftaw</span>
+      <span>swiftaw.com</span>
     </div>
   </div>
 </footer>
@@ -463,10 +233,6 @@
 document.getElementById('nav-toggle').addEventListener('click', () => {
   document.getElementById('nav-links').classList.toggle('open');
 });
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-}, { threshold: .12 });
-document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 </script>
 </body>
 </html>
