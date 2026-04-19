@@ -122,7 +122,7 @@
 /* Facts table */
 .facts {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
@@ -132,6 +132,11 @@
   border-right: 1px solid var(--border);
 }
 .facts .fact:last-child { border-right: none; }
+@media (max-width: 980px) {
+  .facts { grid-template-columns: repeat(2, 1fr); }
+  .facts .fact:nth-child(2) { border-right: none; }
+  .facts .fact:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+}
 .facts .fact .k {
   font-size: .72rem; font-weight: 600;
   text-transform: uppercase; letter-spacing: .2em;
@@ -218,9 +223,10 @@
       <h2>Company information.</h2>
     </div>
     <div class="facts">
-      <div class="fact"><div class="k">Headquarters</div><div class="v">Europe</div></div>
+      <div class="fact"><div class="k">Headquarters</div><div class="v">Île-de-France, France</div></div>
       <div class="fact"><div class="k">Status</div><div class="v">Independent</div></div>
-      <div class="fact"><div class="k">Active products</div><div class="v">Fortized</div></div>
+      <div class="fact"><div class="k">Founded</div><div class="v">August 2025</div></div>
+      <div class="fact"><div class="k">Products</div><div class="v">Software, social media, artificial intelligence, etc.</div></div>
     </div>
   </div>
 </section>
