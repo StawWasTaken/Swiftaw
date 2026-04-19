@@ -17,12 +17,12 @@
     }
     .nav-auth-btn:hover { border-color: #fff93e; color: #fff93e; }
     .nav-auth-btn.login-btn {
-      background: linear-gradient(135deg, #fff93e 0%, #ff9c3c 100%);
+      background: #fff93e;
       color: #0a0d10; border-color: transparent;
     }
     .nav-auth-btn.login-btn:hover {
       transform: translateY(-1px); color: #0a0d10;
-      box-shadow: 0 8px 24px rgba(255,156,60,.3);
+      box-shadow: 0 8px 24px rgba(255,249,62,.3);
     }
     .nav-user-pill {
       display: flex; align-items: center; gap: 8px; padding: 5px 14px 5px 6px;
@@ -71,7 +71,7 @@
     }
     .swiftaw-auth-card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, #fff93e, #ff9c3c, transparent);
+      background: linear-gradient(90deg, transparent, #fff93e, transparent);
       opacity: .5;
     }
     .swiftaw-auth-card h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 6px; color: #f4f4f5; }
@@ -98,11 +98,11 @@
     .auth-error { color: #ff8383; font-size: .82rem; margin-bottom: 12px; min-height: 20px; }
     .auth-submit {
       width: 100%; padding: 13px; border: none; border-radius: 10px;
-      background: linear-gradient(135deg, #fff93e 0%, #ff9c3c 100%);
+      background: #fff93e;
       color: #0a0d10; font-size: .95rem; font-weight: 700;
       cursor: pointer; transition: transform .15s, box-shadow .15s; font-family: inherit;
     }
-    .auth-submit:hover { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(255,156,60,.3); }
+    .auth-submit:hover { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(255,249,62,.3); }
     .auth-switch { text-align: center; margin-top: 18px; font-size: .86rem; color: #a1a7b3; }
     .auth-switch a { color: #fff93e; font-weight: 600; cursor: pointer; }
     .auth-switch a:hover { text-decoration: underline; }

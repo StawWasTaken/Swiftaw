@@ -37,7 +37,7 @@ const SwiftawAuth = (function () {
       displayName: 'Tyrianum',
       role: 'CRDO',
       accessLevel: 4,
-      color: '#ff9c3c',
+      color: '#fff93e',
       department: 'R&D',
       builtin: true,
       banned: false,

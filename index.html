@@ -11,141 +11,107 @@
 <link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-/* ── Page-specific (Wikimedia-inspired, minimal) ── */
-
-.home-hero {
-  padding: 120px 20px 80px;
-  text-align: center;
-  position: relative;
+/* ── Homepage ── */
+.page-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
-.home-hero .slogan {
+
+.hero-banner {
+  padding: 72px 0 24px;
+  text-align: center;
+}
+.hero-banner img {
+  max-width: 520px;
+  width: 100%;
+  margin: 0 auto 28px;
+  display: block;
+}
+.hero-banner .slogan {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(3rem, 9vw, 6.5rem);
+  font-size: clamp(2.6rem, 7vw, 4.8rem);
   line-height: 1;
   letter-spacing: -.01em;
-  background: var(--grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin: 18px auto 28px;
-  max-width: 14ch;
+  color: #fff93e;
+  margin-bottom: 24px;
 }
-.home-hero .intro {
-  max-width: 640px;
-  margin: 0 auto 36px;
-  color: var(--text-muted);
-  font-size: 1.15rem;
+.hero-banner .intro {
+  max-width: 620px;
+  margin: 0 auto 32px;
+  color: var(--text);
+  font-size: 1.1rem;
   line-height: 1.6;
 }
-.home-hero .intro strong { color: var(--text); font-weight: 600; }
-.home-hero .hero-actions { justify-content: center; }
+.hero-banner .intro .muted { color: var(--text-muted); }
 
-.home-divider {
+.hero-actions { justify-content: center; }
+
+.rule {
   height: 1px;
   background: var(--border);
-  max-width: 1100px;
-  margin: 0 auto;
+  max-width: 760px;
+  margin: 56px auto;
 }
 
-.home-section {
-  padding: 80px 20px;
-}
-.home-section .container {
-  max-width: 1100px;
-}
-
-.home-section h2 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-  letter-spacing: -.01em;
-  margin-bottom: 14px;
-}
-.home-section .lede {
-  color: var(--text-muted);
-  font-size: 1.02rem;
-  max-width: 58ch;
-  margin-bottom: 40px;
-}
-
-/* Projects (single real project: Fortized) */
-.projects {
+.rows {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
+  gap: 0;
+  max-width: 760px;
+  margin: 0 auto 40px;
 }
-.project {
+.row {
   display: grid;
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: 180px 1fr;
   gap: 32px;
+  padding: 28px 0;
+  border-top: 1px solid var(--border);
   align-items: start;
-  padding: 28px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--bg-card);
-  transition: border-color .2s;
 }
-.project:hover { border-color: var(--border-glow); }
-.project-logo {
-  width: 200px;
-  aspect-ratio: 1 / 1;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--bg-panel);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-}
-.project-logo img { max-width: 72%; height: auto; }
-.project-body h3 {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: 1.9rem;
-  letter-spacing: -.01em;
-  margin-bottom: 8px;
-}
-.project-tag {
-  display: inline-block;
-  font-size: .7rem;
+.row:last-child { border-bottom: 1px solid var(--border); }
+.row .label {
+  font-size: .78rem;
   font-weight: 700;
-  letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--primary);
-  background: rgba(255,249,62,.1);
-  border: 1px solid rgba(255,249,62,.22);
-  padding: 3px 10px;
-  border-radius: 100px;
-  margin-bottom: 14px;
+  letter-spacing: .16em;
+  color: #fff93e;
+  padding-top: 4px;
 }
-.project-body p {
-  color: var(--text-muted);
+.row p {
+  color: var(--text);
   font-size: 1rem;
-  margin-bottom: 18px;
+  line-height: 1.65;
+  margin-bottom: 0;
 }
-.project-body .btn { font-size: .9rem; }
+.row p + p { margin-top: 10px; }
+.row p .muted { color: var(--text-muted); }
+.row .row-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 14px;
+  font-weight: 600;
+  font-size: .95rem;
+  color: #fff93e;
+  border-bottom: 1px solid rgba(255,249,62,.35);
+  padding-bottom: 2px;
+  transition: border-color .15s;
+}
+.row .row-link:hover { border-color: #fff93e; }
+.row .row-link::after { content: '→'; transition: transform .15s; }
+.row .row-link:hover::after { transform: translateX(3px); }
 
-@media (max-width: 720px) {
-  .project { grid-template-columns: 1fr; }
-  .project-logo { width: 120px; }
-}
-
-/* About block */
-.about-block {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: start;
-}
-.about-block p {
-  color: var(--text-muted);
-  font-size: 1rem;
-  margin-bottom: 14px;
-}
-.about-block p strong { color: var(--text); font-weight: 600; }
-@media (max-width: 720px) {
-  .about-block { grid-template-columns: 1fr; gap: 16px; }
+@media (max-width: 640px) {
+  .row { grid-template-columns: 1fr; gap: 6px; }
 }
 
-/* Footer simplification (uses shared .site-footer) */
+.foot {
+  text-align: center;
+  padding: 48px 0 40px;
+  color: var(--text-dim);
+  font-size: .86rem;
+  border-top: 1px solid var(--border);
+}
+.foot .dot { opacity: .4; margin: 0 10px; }
 </style>
 </head>
 <body>
@@ -155,77 +121,60 @@
     <a href="/" class="nav-brand"><img src="/Swiftaw logomark.png" alt="Swiftaw"></a>
     <div class="nav-links" id="nav-links">
       <a href="#about" class="nav-link">About</a>
-      <a href="#projects" class="nav-link">Projects</a>
-      <a href="https://fortized.swiftaw.com" class="nav-link">Fortized</a>
+      <a href="#project" class="nav-link">Project</a>
+      <a href="https://fortized.com" class="nav-link">Fortized</a>
     </div>
-    <a href="https://fortized.swiftaw.com" class="nav-cta">Try Fortized</a>
+    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
     <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
     </button>
   </div>
 </nav>
 
-<section class="home-hero">
-  <div class="container">
-    <span class="pill">Welcome to Swiftaw</span>
+<main class="page-wrap">
+
+  <section class="hero-banner">
+    <img src="/Swiftaw Banner.png?v=2" alt="Swiftaw">
     <h1 class="slogan">Move Beyond the Ordinary.</h1>
-    <p class="intro">Swiftaw is a european research-led technology company working to create tools that connect people together.</p>
-    <div class="hero-actions">
-      <a href="https://fortized.swiftaw.com" class="btn btn-primary">Try Fortized <span class="arrow">→</span></a>
-      <a href="#about" class="btn btn-ghost">Learn more</a>
-    </div>
-  </div>
-</section>
+    <p class="intro">Swiftaw is a <strong>european research-led technology company</strong> <span class="muted">working to create tools that connect people together.</span></p>
+  </section>
 
-<div class="home-divider"></div>
+  <div class="rule"></div>
 
-<section class="home-section" id="about">
-  <div class="container">
-    <div class="about-block">
-      <div>
-        <span class="eyebrow">About</span>
-        <h2>An independent project, built in Europe.</h2>
-      </div>
-      <div>
-        <p><strong>Swiftaw</strong> is a small, independent technology company based in Europe. We're research-led: we take the time to understand a problem before we build a tool for it.</p>
-        <p>Our focus is on software that helps people connect — to each other, to their work, to the things they care about. We're early, and we're honest about it.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="home-divider"></div>
-
-<section class="home-section" id="projects">
-  <div class="container">
-    <span class="eyebrow">Projects</span>
-    <h2>What we're working on.</h2>
-    <p class="lede">One project, shipping today. More will come when they're ready — not before.</p>
-
-    <div class="projects">
-      <a href="https://fortized.swiftaw.com" class="project">
-        <div class="project-logo">
-          <img src="/product-logos/Fortized logomark.png" alt="Fortized">
+  <section id="about">
+    <div class="rows">
+      <div class="row">
+        <div class="label">About</div>
+        <div>
+          <p>Swiftaw is a small, independent company based in Europe. We're research-led — we take the time to understand a problem before we build a tool for it.</p>
+          <p class="muted">Our focus is on software that helps people connect: to each other, to their work, to the things they care about.</p>
         </div>
-        <div class="project-body">
-          <span class="project-tag">Live</span>
-          <h3>Fortized</h3>
-          <p>Our first product. Visit fortized.swiftaw.com to learn more about what it does and try it for yourself.</p>
-          <span class="btn btn-primary">Open Fortized <span class="arrow">→</span></span>
-        </div>
-      </a>
-    </div>
-  </div>
-</section>
+      </div>
 
-<footer class="site-footer">
-  <div class="container">
-    <div class="footer-bottom">
-      <span>© 2026 Swiftaw</span>
-      <span>swiftaw.com</span>
+      <div class="row" id="project">
+        <div class="label">Project</div>
+        <div>
+          <p><strong>Fortized</strong> is our first and only product. It's live today at fortized.com.</p>
+          <a href="https://fortized.com" class="row-link">Open Fortized </a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label">Contact</div>
+        <div>
+          <p class="muted">More projects will come when they're ready — not before.</p>
+        </div>
+      </div>
     </div>
-  </div>
-</footer>
+  </section>
+
+  <footer class="foot">
+    <span>© 2026 Swiftaw</span>
+    <span class="dot">·</span>
+    <span>swiftaw.com</span>
+  </footer>
+
+</main>
 
 <script src="/js/swiftaw-auth.js"></script>
 <script src="/js/swiftaw-nav.js"></script>
