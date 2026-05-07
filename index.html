@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swiftaw - European Technology</title>
+<title>Swiftaw</title>
 <meta name="description" content="Swiftaw is a European research-led technology company working to create tools that connect people together.">
 <link rel="icon" type="image/png" href="/SwiftawFavicon.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +20,10 @@
   --border:     rgba(255,255,255,.07);
   --border-h:   rgba(255,255,255,.14);
   --yellow:     #fef83d;
-  --yellow-gl:  rgba(254,248,61,.1);
+  --yellow-gl:  rgba(254,248,61,.12);
+  --orange:     #fd9a3a;
+  --orange-gl:  rgba(253,154,58,.12);
+  --indigo:     #19143a;
   --text:       #efefef;
   --text-sub:   #888;
   --text-muted: #4a4a4a;
@@ -44,8 +47,8 @@ a { color: inherit; text-decoration: none; }
 /* ── NAV ── */
 .site-nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  border-bottom: 1px solid var(--border);
-  background: rgba(13,13,13,.9);
+  border-bottom: 1px solid var(--yellow);
+  background: rgba(13,13,13,.92);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
 }
 .nav-inner {
@@ -54,12 +57,22 @@ a { color: inherit; text-decoration: none; }
 }
 @media (max-width: 600px) { .nav-inner { padding: 0 20px; } }
 
-.nav-brand img { height: 20px; display: block; }
+/* Logomark in nav - mix-blend-mode:screen removes black bg */
+.nav-brand img {
+  height: 32px; display: block;
+  mix-blend-mode: screen;
+  filter: brightness(1.1);
+}
 .nav-links { display: flex; margin-left: auto; }
 .nav-link { font-size: .82rem; font-weight: 500; color: var(--text-sub); padding: 6px 14px; transition: color .18s; letter-spacing: .01em; }
-.nav-link:hover { color: var(--text); }
-.nav-cta { font-size: .82rem; font-weight: 700; background: var(--yellow); color: var(--black); padding: 7px 18px; border-radius: var(--r); margin-left: 12px; letter-spacing: .01em; transition: opacity .18s, transform .15s; }
-.nav-cta:hover { opacity: .85; transform: translateY(-1px); }
+.nav-link:hover { color: var(--yellow); }
+.nav-cta {
+  font-size: .82rem; font-weight: 700;
+  background: var(--yellow); color: var(--black);
+  padding: 7px 18px; border-radius: var(--r); margin-left: 12px; letter-spacing: .01em;
+  transition: background .18s, transform .15s;
+}
+.nav-cta:hover { background: #fff; transform: translateY(-1px); }
 .nav-toggle { display: none; background: none; border: none; cursor: pointer; color: var(--text); padding: 4px; margin-left: auto; }
 .nav-toggle svg { width: 22px; height: 22px; display: block; }
 
@@ -77,10 +90,34 @@ a { color: inherit; text-decoration: none; }
   background: var(--yellow); color: var(--black);
   font-family: var(--font); font-size: .86rem; font-weight: 700;
   padding: 11px 22px; border-radius: var(--r); letter-spacing: .01em;
-  transition: opacity .18s, transform .15s, box-shadow .2s;
+  transition: background .18s, transform .15s, box-shadow .2s;
   white-space: nowrap; flex-shrink: 0;
 }
-.btn-primary:hover { opacity: .86; transform: translateY(-2px); box-shadow: 0 8px 32px var(--yellow-gl); }
+.btn-primary:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 8px 32px var(--yellow-gl); }
+
+/* Secondary - outlined yellow */
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--yellow);
+  border: 1px solid rgba(254,248,61,.4);
+  font-family: var(--font); font-size: .86rem; font-weight: 600;
+  padding: 11px 22px; border-radius: var(--r); letter-spacing: .01em;
+  transition: background .18s, border-color .18s, transform .15s;
+  white-space: nowrap; flex-shrink: 0;
+}
+.btn-secondary:hover { background: rgba(254,248,61,.08); border-color: var(--yellow); transform: translateY(-1px); }
+
+/* Tertiary - deep indigo, orange border accent */
+.btn-tertiary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--indigo); color: var(--text-sub);
+  border: 1px solid rgba(253,154,58,.25);
+  font-family: var(--font); font-size: .86rem; font-weight: 500;
+  padding: 11px 22px; border-radius: var(--r); letter-spacing: .01em;
+  transition: border-color .18s, color .18s, transform .15s;
+  white-space: nowrap; flex-shrink: 0;
+}
+.btn-tertiary:hover { border-color: var(--orange); color: var(--text); transform: translateY(-1px); }
 
 .btn-ghost {
   display: inline-flex; align-items: center; gap: 8px;
@@ -316,7 +353,7 @@ a { color: inherit; text-decoration: none; }
 
 .leader-role {
   font-size: .63rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: .2em; color: var(--yellow); margin-bottom: 12px; display: block;
+  letter-spacing: .2em; color: var(--orange); margin-bottom: 12px; display: block;
 }
 .leader-name {
   font-family: var(--font-display);
@@ -342,7 +379,7 @@ a { color: inherit; text-decoration: none; }
   background: var(--bg-card); overflow: hidden;
   transition: border-color .2s;
 }
-.dept-card:hover { border-color: rgba(254,248,61,.18); }
+.dept-card:hover { border-color: rgba(253,154,58,.2); }
 .dept-card-head {
   padding: 18px 22px;
   border-bottom: 1px solid var(--border);
@@ -354,7 +391,7 @@ a { color: inherit; text-decoration: none; }
 }
 .dept-chief {
   font-family: var(--font-display); font-size: .78rem;
-  color: var(--yellow); letter-spacing: .06em;
+  color: var(--orange); letter-spacing: .06em;
 }
 .dept-body {
   padding: 14px 22px;
@@ -362,20 +399,21 @@ a { color: inherit; text-decoration: none; }
 }
 
 .team-card {
-  border: 1px solid rgba(254,248,61,.14); border-radius: var(--r);
+  border: 1px solid rgba(253,154,58,.15); border-radius: var(--r);
   background: var(--bg-card); overflow: hidden;
   transition: border-color .2s;
 }
-.team-card:hover { border-color: rgba(254,248,61,.28); }
+.team-card:hover { border-color: rgba(253,154,58,.35); }
 .team-card-head {
   padding: 18px 22px;
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; gap: 10px;
+  background: var(--indigo);
 }
 .team-badge {
   font-size: .62rem; font-weight: 700; text-transform: uppercase; letter-spacing: .16em;
-  background: rgba(254,248,61,.08); color: var(--yellow);
-  border: 1px solid rgba(254,248,61,.18);
+  background: rgba(253,154,58,.12); color: var(--orange);
+  border: 1px solid rgba(253,154,58,.25);
   padding: 3px 10px; border-radius: 100px;
 }
 .team-name {
@@ -387,8 +425,8 @@ a { color: inherit; text-decoration: none; }
 /* Personnel note */
 .org-note {
   padding: 18px 22px;
-  border: 1px solid var(--border); border-radius: var(--r);
-  background: var(--bg-card);
+  border: 1px solid rgba(253,154,58,.15); border-radius: var(--r);
+  background: var(--indigo);
   font-size: .8rem; font-weight: 300; color: var(--text-muted); line-height: 1.65;
 }
 .org-note b { color: var(--text-sub); font-weight: 500; }
@@ -399,7 +437,7 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
 
-.footer-brand img { height: 20px; display: block; margin-bottom: 18px; }
+.footer-brand img { height: 22px; display: block; margin-bottom: 18px; mix-blend-mode: screen; filter: brightness(1.1); }
 .footer-brand p { color: var(--text-muted); font-size: .85rem; font-weight: 300; max-width: 34ch; line-height: 1.65; }
 
 .footer-col h4 { font-size: .66rem; font-weight: 700; text-transform: uppercase; letter-spacing: .2em; color: var(--text-muted); margin-bottom: 16px; }
@@ -417,7 +455,7 @@ a { color: inherit; text-decoration: none; }
 
 <nav class="site-nav">
   <div class="nav-inner">
-    <a href="/" class="nav-brand"><img src="/SwiftawLogo.png" alt="Swiftaw"></a>
+    <a href="/" class="nav-brand"><img src="/SwiftawFavicon.png" alt="Swiftaw"></a>
     <div class="nav-links" id="nav-links">
       <a href="#about"    class="nav-link">About</a>
       <a href="#how-we-work" class="nav-link">Structure</a>
@@ -441,7 +479,7 @@ a { color: inherit; text-decoration: none; }
     <p class="hero-sub">We are a French, research-led technology company building digital tools that connect communities, push the boundaries of software, and adapt to the way people actually work and live.</p>
     <div class="hero-actions">
       <a href="https://fortized.com" class="btn-primary">Try Fortized <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-      <a href="#about" class="btn-ghost">About Swiftaw</a>
+      <a href="#about" class="btn-tertiary">About Swiftaw</a>
     </div>
   </div>
   <div class="hero-scroll"><span>Scroll</span><div class="hero-scroll-line"></div></div>
