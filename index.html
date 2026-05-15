@@ -17,7 +17,7 @@
   --bg: #0a0a0a;
   --gray: #1a1a1a;
   --border: #1f2228;
-  --white: #ffffff;
+  --white: #ffffff; --text: #ffffff; --text-muted: rgba(255,255,255,0.6);
   --text: rgba(255,255,255,0.8);
   --text-muted: rgba(255,255,255,0.5);
   --font: 'Syne', sans-serif;
@@ -71,19 +71,23 @@ img { max-width: 100%; display: block; }
 .hero-stars {
   position: absolute; inset: 0;
   background-image: 
-    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.8), transparent),
-    radial-gradient(1px 1px at 40% 20%, rgba(255,255,255,0.6), transparent),
-    radial-gradient(1px 1px at 60% 25%, rgba(255,255,255,0.7), transparent),
-    radial-gradient(1px 1px at 80% 35%, rgba(255,255,255,0.5), transparent),
-    radial-gradient(1px 1px at 10% 50%, rgba(255,255,255,0.6), transparent),
-    radial-gradient(1px 1px at 90% 45%, rgba(255,255,255,0.7), transparent),
-    radial-gradient(1.5px 1.5px at 30% 40%, rgba(255,255,255,0.9), transparent),
-    radial-gradient(1.5px 1.5px at 70% 55%, rgba(255,255,255,0.8), transparent);
-  animation: starMove 20s linear infinite;
+    radial-gradient(2px 2px at 15% 25%, rgba(255,255,255,0.9), transparent),
+    radial-gradient(2px 2px at 35% 35%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(2px 2px at 55% 20%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 75% 30%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 25% 45%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(2px 2px at 65% 50%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 85% 40%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(2.5px 2.5px at 45% 55%, rgba(255,255,255,0.95), transparent),
+    radial-gradient(2.5px 2.5px at 10% 60%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2.5px 2.5px at 90% 55%, rgba(255,255,255,0.85), transparent),
+    radial-gradient(3px 3px at 30% 65%, rgba(255,255,255,1), transparent),
+    radial-gradient(3px 3px at 70% 70%, rgba(255,255,255,0.9), transparent);
+  animation: starMove 25s linear infinite;
 }
 @keyframes starMove {
   0% { background-position: 0% 0%; }
-  100% { background-position: 0% 100%; }
+  100% { background-position: 0% 150%; }
 }
 .hero-grid {
   position: absolute; inset: 0;
@@ -145,7 +149,7 @@ img { max-width: 100%; display: block; }
   padding: 40px 32px; border-top: 1px solid var(--border);
   text-align: center;
 }
-.footer-brand img { height: 20px; margin: 0 auto 16px; opacity: 0.6; }
+.footer-brand img { height: 20px; margin: 0 auto 16px; }
 .footer-links {
   display: flex; gap: 24px; justify-content: center; margin: 24px 0;
 }
@@ -178,7 +182,7 @@ img { max-width: 100%; display: block; }
       <img src="/SWFTW_Logomark_white.png" alt="Swiftaw">
     </div>
     <h1>Swiftly Beyond</h1>
-    <p>European research-led technology company</p>
+    <p>A European technology ecosystem building modern, ambitious and future-oriented products.</p>
     <a href="https://fortized.com" class="hero-cta">Explore Fortized</a>
     <div class="hero-links">
       <a href="/about-us">Learn more</a>
@@ -189,19 +193,19 @@ img { max-width: 100%; display: block; }
 
 <section class="section">
   <div class="container">
-    <h2 class="section-title">What we do</h2>
+    <h2 class="section-title">Our philosophy</h2>
     <div class="grid">
       <div class="grid-card">
-        <h3>Research & Development</h3>
-        <p>Building better underlying technology - faster systems, smarter interfaces, and adaptive software.</p>
+        <h3>Healthy Experiences</h3>
+        <p>Technology that feels inspiring, elegant and purposeful - built for meaningful human connection.</p>
       </div>
       <div class="grid-card">
-        <h3>Communication</h3>
-        <p>How we present ourselves to the world - announcements, content, and community relations.</p>
+        <h3>Futuristic Engineering</h3>
+        <p>Advanced design meet long-term innovation - engineering with tomorrow in mind.</p>
       </div>
       <div class="grid-card">
-        <h3>Safety</h3>
-        <p>Maintaining safe environments across all projects - moderation policy and user standards.</p>
+        <h3>Research-Driven</h3>
+        <p>Curiosity and creativity guide every project - progress through thoughtful development.</p>
       </div>
     </div>
   </div>

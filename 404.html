@@ -17,7 +17,7 @@
   --bg: #0a0a0a;
   --gray: #1a1a1a;
   --border: #1f2228;
-  --white: #ffffff;
+  --white: #ffffff; --text: #ffffff; --text-muted: rgba(255,255,255,0.6);
   --text: rgba(255,255,255,0.8);
   --text-muted: rgba(255,255,255,0.5);
   --font: 'Syne', sans-serif;
@@ -99,6 +99,12 @@ img { max-width: 100%; display: block; }
   padding: 24px 32px; border-top: 1px solid var(--border);
   text-align: center; flex-shrink: 0;
 }
+.footer-brand img { height: 20px; margin: 0 auto 16px; }
+.footer-links {
+  display: flex; gap: 24px; justify-content: center; margin: 24px 0;
+}
+.footer-links a { font-size: 12px; color: var(--text-muted); }
+.footer-links a:hover { color: var(--white); }
 .footer-copy { font-size: 11px; color: var(--text-muted); }
 </style>
 </head>
@@ -131,6 +137,15 @@ img { max-width: 100%; display: block; }
 </section>
 
 <footer class="footer">
+  <div class="footer-brand">
+    <img src="/SwiftawFavicon.png" alt="Swiftaw">
+  </div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/about-us">About</a>
+    <a href="/products">Products</a>
+    <a href="https://fortized.com">Fortized</a>
+  </div>
   <div class="footer-copy">© 2026 Swiftaw</div>
 </footer>
 
