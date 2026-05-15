@@ -3,69 +3,136 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Page not found · Swiftaw</title>
+<title>Page not found - Swiftaw</title>
 <meta name="description" content="The page you were looking for doesn't exist.">
 <link rel="icon" type="image/png" href="/SwiftawFavicon.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/swiftaw.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-.nf-wrap {
-  min-height: calc(100vh - 80px);
-  display: flex; align-items: center;
-  padding: 80px 0;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #000000;
+  --bg: #0a0a0a;
+  --gray: #1a1a1a;
+  --border: rgba(255,255,255,0.08);
+  --white: #ffffff;
+  --text: rgba(255,255,255,0.8);
+  --text-muted: rgba(255,255,255,0.5);
+  --font: 'Syne', sans-serif;
 }
-.nf-inner { max-width: 640px; }
-.nf-code {
-  font-size: .82rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: .2em;
-  color: var(--text-muted);
-  margin-bottom: 18px;
-  display: flex; align-items: center; gap: 14px;
+
+::selection { background: var(--white); color: var(--black); }
+html { scroll-behavior: smooth; }
+body { background: var(--black); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; flex-direction: column; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+::-webkit-scrollbar { width: 1px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--text-muted); }
+
+/* Nav */
+.nav {
+  background: rgba(0,0,0,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
 }
-.nf-code::before {
-  content: ''; width: 28px; height: 1px; background: var(--yellow);
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 32px;
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
 }
-.nf-inner h1 {
-  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
-  font-weight: 600;
-  letter-spacing: -.01em;
-  margin-bottom: 18px;
+.nav-brand img { height: 24px; }
+.nav-links { display: flex; gap: 32px; }
+.nav-links a {
+  font-size: 13px; font-weight: 500; color: var(--text-muted);
+  transition: color 0.2s;
 }
-.nf-inner p { color: var(--text-muted); font-size: 1.02rem; margin-bottom: 32px; max-width: 52ch; }
-.nf-links { display: flex; gap: 12px; flex-wrap: wrap; }
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+  font-size: 12px; font-weight: 700;
+  background: var(--white); color: var(--black);
+  padding: 8px 20px; transition: opacity 0.2s;
+}
+.nav-cta:hover { opacity: 0.85; }
+@media (max-width: 768px) { .nav-links { display: none; } }
+
+/* 404 Content */
+.error-page {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  position: relative; padding: 80px 32px;
+}
+.error-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 60% 50% at 30% 50%, rgba(0,0,0,0.7), transparent);
+}
+.error-content { position: relative; z-index: 1; text-align: center; max-width: 400px; }
+.error-code {
+  font-size: clamp(6rem, 15vw, 12rem); font-weight: 800;
+  color: transparent; -webkit-text-stroke: 1px var(--text-muted);
+  line-height: 1; margin-bottom: 24px;
+}
+.error-title {
+  font-size: 24px; font-weight: 800; margin-bottom: 12px;
+}
+.error-text {
+  font-size: 14px; color: var(--text-muted); margin-bottom: 32px;
+}
+.error-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 700;
+  background: var(--white); color: var(--black);
+  padding: 12px 28px; transition: opacity 0.2s;
+}
+.error-cta:hover { opacity: 0.85; }
+.error-links {
+  margin-top: 24px; display: flex; gap: 24px; justify-content: center;
+}
+.error-links a { font-size: 13px; color: var(--text-muted); }
+.error-links a:hover { color: var(--white); }
+
+/* Footer */
+.footer {
+  padding: 24px 32px; border-top: 1px solid var(--border);
+  text-align: center; flex-shrink: 0;
+}
+.footer-copy { font-size: 11px; color: var(--text-muted); }
 </style>
 </head>
 <body>
 
-<nav class="site-nav">
+<nav class="nav">
   <div class="nav-inner">
-    <a href="/" class="nav-brand"><img src="/Swiftaw logomark.png" alt="Swiftaw"></a>
-    <div class="nav-links" id="nav-links">
-      <a href="/#about" class="nav-link">About</a>
-      <a href="/#project" class="nav-link">Project</a>
-      <a href="https://fortized.com" class="nav-link">Fortized</a>
+    <a href="/" class="nav-brand"><img src="/SWFTW_Logomark_white.png" alt="Swiftaw"></a>
+    <div class="nav-links">
+      <a href="/about-us">About</a>
+      <a href="/products">Products</a>
     </div>
-    <a href="https://fortized.com" class="nav-cta">Try Fortized</a>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    <a href="https://fortized.com" class="nav-cta">Fortized</a>
   </div>
 </nav>
 
-<div class="container">
-  <div class="nf-wrap">
-    <div class="nf-inner">
-      <div class="nf-code">Error 404 — Page not found</div>
-      <h1>The page you requested could not be found.</h1>
-      <p>The page may have moved, or the link may be incorrect. You can return to the homepage or open Fortized below.</p>
-      <div class="nf-links">
-        <a href="/" class="btn btn-primary">Return home</a>
-        <a href="https://fortized.com" class="btn">Open Fortized</a>
-      </div>
+<section class="error-page">
+  <div class="error-grid"></div>
+  <div class="error-content">
+    <div class="error-code">404</div>
+    <h1 class="error-title">Page not found</h1>
+    <p class="error-text">The page you're looking for doesn't exist or has been moved.</p>
+    <a href="/" class="error-cta">Go home</a>
+    <div class="error-links">
+      <a href="/about-us">About</a>
+      <a href="/products">Products</a>
+      <a href="https://fortized.com">Fortized</a>
     </div>
   </div>
-</div>
+</section>
 
-<script>document.getElementById('nav-toggle').addEventListener('click', () => { document.getElementById('nav-links').classList.toggle('open'); });</script>
+<footer class="footer">
+  <div class="footer-copy">- 2026 Swiftaw SAS</div>
+</footer>
+
 </body>
 </html>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swiftaw</title>
-<meta name="description" content="European research-led technology company building tools that connect people together.">
+<title>Products - Swiftaw</title>
+<meta name="description" content="Products from Swiftaw - Building tools that connect people together.">
 <link rel="icon" type="image/png" href="/SwiftawFavicon.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,68 +58,82 @@ img { max-width: 100%; display: block; }
 .nav-cta:hover { opacity: 0.85; }
 @media (max-width: 768px) { .nav-links { display: none; } }
 
-/* Hero */
-.hero {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  position: relative; padding: 100px 32px 60px;
+/* Page */
+.page { padding: 120px 32px 80px; }
+.container { max-width: 1200px; margin: 0 auto; }
+.page-title {
+  font-size: clamp(2rem, 4vw, 3rem); font-weight: 800;
+  margin-bottom: 48px;
 }
-.hero-bg {
+
+/* Product Banner - Tesla Style */
+.product-hero {
+  position: relative; min-height: 70vh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 48px; margin-bottom: 80px;
+  background: var(--gray);
+  border-radius: 4px; overflow: hidden;
+}
+.product-hero-bg {
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse 60% 50% at 50% 100%, rgba(255,255,255,0.03), transparent);
+  background: url('https://www.fortized.com/Fortized%20banner5.png') center/cover no-repeat;
+  opacity: 0.6;
 }
-.hero-grid {
-  position: absolute; inset: 0;
-  background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size: 60px 60px;
+.product-hero-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, var(--black), transparent 60%);
 }
-.hero-content { position: relative; z-index: 1; text-align: center; max-width: 600px; }
-.hero-logo { margin-bottom: 32px; }
-.hero-logo img { height: 48px; margin: 0 auto; }
-.hero h1 {
-  font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 800;
-  line-height: 1.15; margin-bottom: 16px;
+.product-hero-content {
+  position: relative; z-index: 1;
 }
-.hero p {
-  color: var(--text-muted); font-size: 15px; margin-bottom: 32px;
+.product-badge {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; color: var(--text-muted);
+  padding: 6px 12px; background: var(--black);
+  border-radius: 2px; margin-bottom: 16px;
 }
-.hero-cta {
+.product-hero h2 {
+  font-size: clamp(2rem, 4vw, 3rem); font-weight: 800;
+  margin-bottom: 12px;
+}
+.product-hero p {
+  font-size: 14px; color: var(--text-muted);
+  max-width: 400px; margin-bottom: 24px;
+}
+.product-hero-cta {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 13px; font-weight: 700;
   background: var(--white); color: var(--black);
   padding: 12px 28px; transition: opacity 0.2s;
 }
-.hero-cta:hover { opacity: 0.85; }
-.hero-links {
-  margin-top: 24px; display: flex; gap: 24px; justify-content: center;
-}
-.hero-links a { font-size: 13px; color: var(--text-muted); transition: color 0.2s; }
-.hero-links a:hover { color: var(--white); }
+.product-hero-cta:hover { opacity: 0.85; }
 
-/* Sections */
-.section {
-  padding: 80px 32px; border-top: 1px solid var(--border);
+/* Other products */
+.products-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
 }
-.container { max-width: 1000px; margin: 0 auto; }
-.section-title {
-  font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800;
-  margin-bottom: 40px;
-}
+@media (max-width: 768px) { .products-grid { grid-template-columns: 1fr; } }
 
-/* Grid */
-.grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1px; background: var(--border);
+.product-card {
+  background: var(--gray); border-radius: 4px; padding: 32px;
+  min-height: 300px; display: flex; flex-direction: column; justify-content: space-between;
 }
-@media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
-.grid-card {
-  background: var(--bg); padding: 32px;
+.product-card.coming { opacity: 0.5; }
+.product-card h3 {
+  font-size: 24px; font-weight: 800; margin-bottom: 8px;
 }
-.grid-card h3 {
-  font-size: 14px; font-weight: 700; margin-bottom: 12px;
+.product-card p {
+  font-size: 13px; color: var(--text-muted);
 }
-.grid-card p {
-  font-size: 13px; color: var(--text-muted); line-height: 1.6;
+.product-card-link {
+  margin-top: 24px; font-size: 13px; font-weight: 700;
+  color: var(--white); display: inline-flex; align-items: center; gap: 8px;
+}
+.product-card-link:hover { opacity: 0.7; }
+.product-status {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; color: var(--text-muted);
 }
 
 /* Footer */
@@ -151,38 +165,38 @@ img { max-width: 100%; display: block; }
   </div>
 </nav>
 
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="hero-content">
-    <div class="hero-logo">
-      <img src="/SWFTW_Logomark_white.png" alt="Swiftaw">
-    </div>
-    <h1>Building tools that connect people together</h1>
-    <p>European research-led technology company</p>
-    <a href="https://fortized.com" class="hero-cta">Explore Fortized</a>
-    <div class="hero-links">
-      <a href="/about-us">Learn more</a>
-      <a href="/products">Our products</a>
-    </div>
-  </div>
-</section>
-
-<section class="section">
+<section class="page">
   <div class="container">
-    <h2 class="section-title">What we do</h2>
-    <div class="grid">
-      <div class="grid-card">
-        <h3>Research & Development</h3>
-        <p>Building better underlying technology - faster systems, smarter interfaces, and adaptive software.</p>
+    <h1 class="page-title">Our Products</h1>
+
+    <!-- Fortized - Main Product -->
+    <div class="product-hero">
+      <div class="product-hero-bg"></div>
+      <div class="product-hero-content">
+        <div class="product-badge">LIVE</div>
+        <h2>Fortized</h2>
+        <p>A modern, gaming-oriented community platform built for players and their communities.</p>
+        <a href="https://fortized.com" class="product-hero-cta">Explore Fortized</a>
       </div>
-      <div class="grid-card">
-        <h3>Communication</h3>
-        <p>How we present ourselves to the world - announcements, content, and community relations.</p>
+    </div>
+
+    <!-- Other Products -->
+    <div class="products-grid">
+      <div class="product-card coming">
+        <div>
+          <div class="product-status">COMING SOON</div>
+          <h3>Project S4</h3>
+          <p>The next generation of community tools from Swiftaw.</p>
+        </div>
+        <a href="#" class="product-card-link">Coming soon</a>
       </div>
-      <div class="grid-card">
-        <h3>Safety</h3>
-        <p>Maintaining safe environments across all projects - moderation policy and user standards.</p>
+      <div class="product-card coming">
+        <div>
+          <div class="product-status">COMING SOON</div>
+          <h3>Project X</h3>
+          <p>Something new is brewing. Stay tuned.</p>
+        </div>
+        <a href="#" class="product-card-link">Coming soon</a>
       </div>
     </div>
   </div>
@@ -193,6 +207,7 @@ img { max-width: 100%; display: block; }
     <img src="/SWFTW_Logomark_white.png" alt="Swiftaw">
   </div>
   <div class="footer-links">
+    <a href="/">Home</a>
     <a href="/about-us">About</a>
     <a href="/products">Products</a>
     <a href="https://fortized.com">Fortized</a>

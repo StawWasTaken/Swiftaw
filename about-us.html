@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About - Swiftaw</title>
+<meta name="description" content="About Swiftaw - European research-led technology company.">
+<link rel="icon" type="image/png" href="/SwiftawFavicon.png?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #000000;
+  --bg: #0a0a0a;
+  --gray: #1a1a1a;
+  --border: rgba(255,255,255,0.08);
+  --white: #ffffff;
+  --text: rgba(255,255,255,0.8);
+  --text-muted: rgba(255,255,255,0.5);
+  --font: 'Syne', sans-serif;
+}
+
+::selection { background: var(--white); color: var(--black); }
+html { scroll-behavior: smooth; }
+body { background: var(--black); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+::-webkit-scrollbar { width: 1px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--text-muted); }
+
+/* Nav */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(0,0,0,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 32px;
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
+}
+.nav-brand img { height: 24px; }
+.nav-links { display: flex; gap: 32px; }
+.nav-links a {
+  font-size: 13px; font-weight: 500; color: var(--text-muted);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+  font-size: 12px; font-weight: 700;
+  background: var(--white); color: var(--black);
+  padding: 8px 20px; transition: opacity 0.2s;
+}
+.nav-cta:hover { opacity: 0.85; }
+@media (max-width: 768px) { .nav-links { display: none; } }
+
+/* Page */
+.page { padding: 120px 32px 80px; }
+.container { max-width: 1000px; margin: 0 auto; }
+.page-title {
+  font-size: clamp(2rem, 4vw, 3rem); font-weight: 800;
+  margin-bottom: 16px;
+}
+.page-sub {
+  color: var(--text-muted); font-size: 16px;
+  max-width: 600px; margin-bottom: 64px;
+}
+
+/* Info grid */
+.info-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1px; background: var(--border);
+  margin-bottom: 64px;
+}
+@media (max-width: 768px) { .info-grid { grid-template-columns: 1fr; } }
+.info-card {
+  background: var(--bg); padding: 32px;
+}
+.info-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.info-value {
+  font-size: 18px; font-weight: 700;
+}
+
+/* Leadership */
+.leadership { margin-bottom: 64px; }
+.leadership h2 {
+  font-size: 24px; font-weight: 800; margin-bottom: 24px;
+}
+.lead-list {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1px; background: var(--border);
+}
+@media (max-width: 768px) { .lead-list { grid-template-columns: 1fr; } }
+.lead-item {
+  background: var(--bg); padding: 24px;
+}
+.lead-role {
+  font-size: 11px; color: var(--text-muted); margin-bottom: 4px;
+}
+.lead-name {
+  font-size: 16px; font-weight: 700;
+}
+.lead-note {
+  font-size: 12px; color: var(--text-muted); margin-top: 4px;
+}
+
+/* Mission */
+.mission {
+  padding: 48px; background: var(--gray); border-radius: 4px;
+  margin-bottom: 64px;
+}
+.mission h2 {
+  font-size: 18px; font-weight: 800; margin-bottom: 16px;
+}
+.mission p {
+  font-size: 15px; color: var(--text-muted); line-height: 1.7;
+}
+
+/* Footer */
+.footer {
+  padding: 40px 32px; border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footer-brand img { height: 20px; margin: 0 auto 16px; opacity: 0.6; }
+.footer-links {
+  display: flex; gap: 24px; justify-content: center; margin: 24px 0;
+}
+.footer-links a { font-size: 12px; color: var(--text-muted); }
+.footer-links a:hover { color: var(--white); }
+.footer-copy {
+  font-size: 11px; color: var(--text-muted);
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand"><img src="/SWFTW_Logomark_white.png" alt="Swiftaw"></a>
+    <div class="nav-links">
+      <a href="/about-us">About</a>
+      <a href="/products">Products</a>
+    </div>
+    <a href="https://fortized.com" class="nav-cta">Fortized</a>
+  </div>
+</nav>
+
+<section class="page">
+  <div class="container">
+    <h1 class="page-title">About Swiftaw</h1>
+    <p class="page-sub">European research-led technology company building tools that connect people together.</p>
+
+    <div class="mission">
+      <h2>Our mission</h2>
+      <p>Swiftaw works at the intersection of software, AI, and human connection. We believe the best technology disappears - letting people focus on what matters: each other.</p>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-label">HEADQUARTERS</div>
+        <div class="info-value">Ile-de-France</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">COUNTRY</div>
+        <div class="info-value">France, EU</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">FOUNDED</div>
+        <div class="info-value">August 2025</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">STATUS</div>
+        <div class="info-value">Independent</div>
+      </div>
+    </div>
+
+    <div class="leadership">
+      <h2>Leadership</h2>
+      <div class="lead-list">
+        <div class="lead-item">
+          <div class="lead-role">Chief Executive Officer</div>
+          <div class="lead-name">Staw</div>
+          <div class="lead-note">Founder - Since Aug 2025</div>
+        </div>
+        <div class="lead-item">
+          <div class="lead-role">Chief R&D Officer</div>
+          <div class="lead-name">Tyrianum</div>
+          <div class="lead-note">Since Dec 2025</div>
+        </div>
+        <div class="lead-item">
+          <div class="lead-role">Chief Communication Officer</div>
+          <div class="lead-name">Weaverdant</div>
+          <div class="lead-note">Since Feb 2026</div>
+        </div>
+        <div class="lead-item">
+          <div class="lead-role">Chief Safety Officer</div>
+          <div class="lead-name">Vacant</div>
+          <div class="lead-note">Open since Feb 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="leadership">
+      <h2>Departments</h2>
+      <div class="lead-list">
+        <div class="lead-item">
+          <div class="lead-role">R&D Department</div>
+          <div class="lead-name">Tyrianum</div>
+        </div>
+        <div class="lead-item">
+          <div class="lead-role">Communication Department</div>
+          <div class="lead-name">Weaverdant</div>
+        </div>
+        <div class="lead-item">
+          <div class="lead-role">Safety Department</div>
+          <div class="lead-name">Vacant</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-brand">
+    <img src="/SWFTW_Logomark_white.png" alt="Swiftaw">
+  </div>
+  <div class="footer-links">
+    <a href="/">Home</a>
+    <a href="/about-us">About</a>
+    <a href="/products">Products</a>
+    <a href="https://fortized.com">Fortized</a>
+  </div>
+  <div class="footer-copy">
+    - 2026 Swiftaw SAS
+  </div>
+</footer>
+
+</body>
+</html>
