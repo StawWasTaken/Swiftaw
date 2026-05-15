@@ -3,193 +3,693 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swiftaw</title>
-<meta name="description" content="Swiftaw is a European research-led technology company working to create tools that connect people together.">
+<title>Swiftaw — Connecting People</title>
+<meta name="description" content="European research-led technology company building tools that connect people together.">
 <link rel="icon" type="image/png" href="/SwiftawFavicon.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Syne:wght@400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --black:      #080808;
-  --bg:         #0d0d0d;
-  --bg-card:    #111111;
-  --bg-lift:    #161616;
-  --border:     rgba(255,255,255,.07);
-  --border-h:   rgba(255,255,255,.14);
-  --yellow:     #fef83d;
-  --yellow-gl:  rgba(254,248,61,.12);
-  --orange:     #fd9a3a;
-  --orange-gl:  rgba(253,154,58,.12);
-  --indigo:     #19143a;
-  --text:       #efefef;
-  --text-sub:   #888;
-  --text-muted: #4a4a4a;
-  --font:         'DM Sans', sans-serif;
-  --font-display: 'Limelight', cursive;
-  --font-secondary: 'Syne', sans-serif;
-  --r: 2px;
+  --black: #000000;
+  --dark: #0a0a0a;
+  --dark-mid: #141414;
+  --dark-soft: #1a1a1a;
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.15);
+  --white: #ffffff;
+  --white-soft: rgba(255,255,255,0.85);
+  --white-muted: rgba(255,255,255,0.5);
+  --accent: #c0c0c0;
+  --accent-glow: rgba(255,255,255,0.03);
+  --font-body: 'Instrument Sans', sans-serif;
+  --font-display: 'Playfair Display', serif;
 }
 
-::selection { background: var(--yellow); color: var(--black); }
-::-moz-selection { background: var(--yellow); color: var(--black); }
+::selection { background: var(--white); color: var(--black); }
+::-moz-selection { background: var(--white); color: var(--black); }
 
 html { scroll-behavior: smooth; }
-body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+body { 
+  background: var(--black); 
+  color: var(--white-soft); 
+  font-family: var(--font-body); 
+  font-size: 15px; 
+  line-height: 1.7; 
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
 a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
 
-::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar { width: 2px; }
 ::-webkit-scrollbar-track { background: var(--black); }
-::-webkit-scrollbar-thumb { background: var(--yellow); }
+::-webkit-scrollbar-thumb { background: var(--white-muted); }
 
-.container { max-width: 1160px; margin: 0 auto; padding: 0 40px; }
-@media (max-width: 600px) { .container { padding: 0 20px; } }
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+@keyframes glowPulse { 
+  0%, 100% { opacity: 0.4; } 
+  50% { opacity: 0.7; } 
+}
+
+.animate-fade-in { animation: fadeIn 1s ease forwards; }
+.animate-fade-up { opacity: 0; animation: fadeUp 1s ease forwards; }
+.animate-scale-in { opacity: 0; animation: scaleIn 1.2s ease forwards; }
 
 /* ── NAV ── */
 .site-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  background: rgba(10,10,10,.96);
-  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
 }
 .nav-inner {
-  max-width: 1160px; margin: 0 auto; padding: 0 40px;
-  height: 64px; display: flex; align-items: center; gap: 8px;
+  max-width: 1400px; margin: 0 auto; padding: 0 48px;
+  height: 72px; display: flex; align-items: center; justify-content: space-between;
 }
-@media (max-width: 600px) { .nav-inner { padding: 0 20px; } }
+@media (max-width: 768px) { .nav-inner { padding: 0 24px; } }
 
-.nav-brand { display: flex; align-items: center; margin-right: 8px; }
+.nav-brand { position: relative; z-index: 1; }
 .nav-brand img {
-  height: 30px; display: block;
-  mix-blend-mode: screen; filter: brightness(1.15);
+  height: 28px; display: block;
+  filter: brightness(1.1);
 }
 
-.nav-links { display: flex; margin-left: auto; }
+.nav-links { display: flex; align-items: center; gap: 40px; }
 .nav-link {
-  font-family: var(--font); font-size: .82rem; font-weight: 500;
-  color: var(--text-muted); padding: 6px 14px;
-  transition: color .18s; letter-spacing: .02em;
+  font-size: 13px; font-weight: 500;
+  color: var(--white-muted); letter-spacing: 0.04em;
+  transition: color 0.25s ease;
 }
-.nav-link:hover { color: var(--text); }
+.nav-link:hover { color: var(--white); }
 
 .nav-cta {
-  font-family: var(--font); font-size: .82rem; font-weight: 700;
-  background: var(--yellow); color: var(--black);
-  padding: 7px 20px; border-radius: var(--r); margin-left: 16px;
-  letter-spacing: .02em; transition: opacity .18s, transform .15s;
+  font-size: 12px; font-weight: 600;
+  color: var(--black); background: var(--white);
+  padding: 10px 24px; letter-spacing: 0.06em;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
-.nav-cta:hover { opacity: .88; transform: translateY(-1px); }
+.nav-cta:hover { opacity: 0.85; transform: scale(1.02); }
 
-.nav-toggle { display: none; background: none; border: none; cursor: pointer; color: var(--text); padding: 4px; margin-left: auto; }
-.nav-toggle svg { width: 22px; height: 22px; display: block; }
-
-@media (max-width: 720px) {
-  .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: #0e0e0e; border-bottom: 1px solid var(--border); padding: 12px 20px 20px; gap: 2px; }
-  .nav-links.open { display: flex; }
-  .nav-link { font-size: .9rem; padding: 10px 14px; }
-  .nav-toggle { display: block; }
-  .nav-cta { display: none; }
+@media (max-width: 900px) {
+  .nav-links { display: none; }
 }
-
-/* ── BUTTONS ── */
-/* Primary - yellow fill, Swiftaw's main CTA colour */
-.btn-primary {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--yellow); color: #0a0a0a;
-  font-family: var(--font); font-size: .86rem; font-weight: 700;
-  padding: 11px 24px; border-radius: var(--r); letter-spacing: .02em;
-  transition: opacity .18s, transform .15s, box-shadow .2s;
-  white-space: nowrap; flex-shrink: 0;
-}
-.btn-primary:hover { opacity: .88; transform: translateY(-2px); box-shadow: 0 6px 28px rgba(254,248,61,.18); }
-
-/* Secondary - orange fill, warm supporting CTA */
-.btn-secondary {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--orange); color: #0a0a0a;
-  font-family: var(--font); font-size: .86rem; font-weight: 700;
-  padding: 11px 24px; border-radius: var(--r); letter-spacing: .02em;
-  transition: opacity .18s, transform .15s, box-shadow .2s;
-  white-space: nowrap; flex-shrink: 0;
-}
-.btn-secondary:hover { opacity: .88; transform: translateY(-2px); box-shadow: 0 6px 28px rgba(253,154,58,.18); }
-
-/* Tertiary - indigo fill, subtle deep tone */
-.btn-tertiary {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--indigo); color: var(--text-sub);
-  border: 1px solid rgba(255,255,255,.1);
-  font-family: var(--font); font-size: .86rem; font-weight: 500;
-  padding: 11px 24px; border-radius: var(--r); letter-spacing: .02em;
-  transition: border-color .18s, color .18s, transform .15s;
-  white-space: nowrap; flex-shrink: 0;
-}
-.btn-tertiary:hover { border-color: rgba(254,248,61,.3); color: var(--text); transform: translateY(-1px); }
-
-/* Ghost - outlined, neutral */
-.btn-ghost {
-  display: inline-flex; align-items: center; gap: 8px;
-  border: 1px solid var(--border-h); color: var(--text-sub);
-  font-family: var(--font); font-size: .86rem; font-weight: 500;
-  padding: 11px 24px; border-radius: var(--r); letter-spacing: .02em;
-  transition: border-color .18s, color .18s, transform .15s;
-}
-.btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,.28); transform: translateY(-1px); }
 
 /* ── HERO ── */
 .hero {
-  min-height: 100vh; display: flex; align-items: center;
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
   position: relative; overflow: hidden;
-  padding: 120px 0 100px;
-  border-bottom: 1px solid var(--border);
+  padding: 120px 48px 80px;
 }
-.hero-banner {
+.hero-bg {
   position: absolute; inset: 0;
-  background-image: url('/Swiftaw Banner.png');
-  background-size: cover; background-position: center 40%;
-  opacity: .14;
-  mask-image: linear-gradient(135deg, transparent 5%, black 38%, black 72%, transparent 100%);
-  -webkit-mask-image: linear-gradient(135deg, transparent 5%, black 38%, black 72%, transparent 100%);
+  background: radial-gradient(ellipse 80% 60% at 50% 80%, rgba(255,255,255,0.03) 0%, transparent 60%),
+              var(--black);
 }
 .hero-grid {
   position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse 75% 75% at 65% 50%, rgba(0,0,0,.9) 0%, transparent 100%);
-  -webkit-mask-image: radial-gradient(ellipse 75% 75% at 65% 50%, rgba(0,0,0,.9) 0%, transparent 100%);
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 60%, rgba(0,0,0,1) 0%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 60%, rgba(0,0,0,1) 0%, transparent 100%);
 }
-.hero-glow {
-  position: absolute; bottom: -180px; right: 8%;
-  width: 700px; height: 700px;
-  background: radial-gradient(circle, rgba(254,248,61,.05) 0%, transparent 65%);
-  pointer-events: none;
+.hero-content {
+  position: relative; z-index: 10; text-align: center; max-width: 800px;
 }
-.hero .container { position: relative; z-index: 1; }
+
+.hero-logo {
+  margin-bottom: 48px;
+  animation: scaleIn 1.5s ease forwards;
+}
+.hero-logo img {
+  height: 64px; margin: 0 auto;
+  filter: brightness(1.2);
+}
 
 .hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 12px;
-  font-size: .69rem; font-weight: 700; text-transform: uppercase; letter-spacing: .24em;
-  color: var(--text-muted); margin-bottom: 36px;
-  opacity: 0; animation: fadeUp .6s .1s forwards;
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.28em;
+  color: var(--white-muted); margin-bottom: 24px;
+  animation: fadeUp 1s 0.3s forwards;
+  opacity: 0;
 }
-.hero-eyebrow::before { content:''; width: 26px; height: 1px; background: var(--yellow); display: block; }
 
 .hero h1 {
   font-family: var(--font-display);
-  font-size: clamp(2.7rem, 5.4vw, 4.4rem);
-  font-weight: 400; line-height: 1.12; letter-spacing: .02em;
-  max-width: 16ch; margin-bottom: 28px;
-  opacity: 0; animation: fadeUp .7s .2s forwards;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 400; line-height: 1.15; letter-spacing: 0.01em;
+  color: var(--white); margin-bottom: 28px;
+  animation: fadeUp 1s 0.5s forwards;
+  opacity: 0;
 }
-.hero h1 em { font-style: normal; color: var(--yellow); }
 
 .hero-sub {
-  color: var(--text-sub); font-size: 1rem; font-weight: 300;
-  max-width: 50ch; line-height: 1.72; margin-bottom: 44px;
+  font-size: 15px; color: var(--white-muted);
+  max-width: 520px; margin: 0 auto 48px;
+  animation: fadeUp 1s 0.7s forwards;
+  opacity: 0;
+}
+
+.hero-actions {
+  display: flex; gap: 16px; justify-content: center;
+  animation: fadeUp 1s 0.9s forwards;
+  opacity: 0;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+  padding: 14px 32px; border-radius: 2px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--white); color: var(--black);
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.btn-secondary {
+  background: transparent; color: var(--white);
+  border: 1px solid var(--border-hover);
+}
+.btn-secondary:hover { border-color: var(--white); }
+
+.hero-scroll {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  color: var(--white-muted); font-size: 10px; letter-spacing: 0.2em;
+  animation: fadeIn 1s 1.5s forwards; opacity: 0;
+}
+.hero-scroll::after {
+  content: ''; width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--white-muted), transparent);
+  margin-top: 8px;
+}
+
+/* ── SECTIONS ── */
+.section {
+  padding: 140px 48px;
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 768px) { .section { padding: 100px 24px; } }
+
+.container {
+  max-width: 1200px; margin: 0 auto;
+}
+
+.section-label {
+  font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.24em;
+  color: var(--white-muted); margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400; color: var(--white);
+  margin-bottom: 64px;
+}
+
+/* ── ABOUT GRID ── */
+.about-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+  border-radius: 4px; overflow: hidden;
+}
+@media (max-width: 900px) { .about-grid { grid-template-columns: 1fr; } }
+
+.about-card {
+  background: var(--dark); padding: 48px 36px;
+  transition: background 0.4s ease;
+}
+.about-card:hover { background: var(--dark-mid); }
+
+.about-num {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+  color: var(--white-muted); margin-bottom: 20px;
+}
+
+.about-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.4rem; font-weight: 500; color: var(--white);
+  margin-bottom: 16px;
+}
+
+.about-card p {
+  font-size: 0.9rem; color: var(--white-muted);
+  line-height: 1.7;
+}
+
+/* ── MISSION ── */
+.mission {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+}
+@media (max-width: 900px) { .mission { grid-template-columns: 1fr; gap: 48px; } }
+
+.mission-visual {
+  position: relative; aspect-ratio: 4/3;
+  background: var(--dark-mid); border-radius: 4px;
+  overflow: hidden;
+}
+.mission-visual::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.04) 0%, transparent 50%);
+}
+.mission-visual img {
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: 0.7; mix-blend-mode: luminosity;
+}
+
+.mission-content h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 400; color: var(--white);
+  margin-bottom: 24px; line-height: 1.3;
+}
+
+.mission-content p {
+  font-size: 1rem; color: var(--white-muted);
+  margin-bottom: 32px; line-height: 1.8;
+}
+
+.mission-stats {
+  display: flex; gap: 48px;
+}
+
+.stat-num {
+  font-size: 2rem; font-weight: 600; color: var(--white);
+  font-family: var(--font-display);
+}
+
+.stat-label {
+  font-size: 0.8rem; color: var(--white-muted);
+  letter-spacing: 0.05em;
+}
+
+/* ── STRUCTURE ── */
+.structure-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 1px; background: var(--border);
+  border-radius: 4px; overflow: hidden;
+}
+@media (max-width: 900px) { .structure-grid { grid-template-columns: 1fr; } }
+
+.struct-card {
+  background: var(--dark); padding: 40px 32px;
+}
+
+.struct-title {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.2em;
+  color: var(--white-muted); text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.struct-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.struct-item:last-child { border-bottom: none; }
+
+.struct-role {
+  font-size: 0.75rem; color: var(--white-muted); letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.struct-name {
+  font-size: 1.1rem; color: var(--white); font-weight: 500;
+}
+
+.struct-note {
+  font-size: 0.8rem; color: var(--white-muted); margin-top: 4px;
+}
+
+/* ── PRODUCT ── */
+.product-hero {
+  min-height: 80vh; display: flex; align-items: flex-end;
+  padding: 80px 48px;
+  background: var(--dark-mid);
+  border-radius: 4px; position: relative; overflow: hidden;
+}
+.product-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to top, var(--black), transparent 60%);
+}
+.product-hero-content {
+  position: relative; z-index: 2;
+}
+
+.product-badge {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; color: var(--white-muted);
+  padding: 8px 16px; background: var(--dark-soft);
+  border-radius: 2px; margin-bottom: 16px;
+}
+
+.product-hero h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 400; color: var(--white);
+  margin-bottom: 16px;
+}
+
+.product-hero p {
+  font-size: 1rem; color: var(--white-muted);
+  max-width: 480px; margin-bottom: 32px;
+}
+
+.product-link {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-size: 12px; font-weight: 600;
+  color: var(--black); background: var(--white);
+  padding: 14px 28px; letter-spacing: 0.06em;
+  transition: all 0.3s ease;
+}
+.product-link:hover { opacity: 0.85; transform: translateX(4px); }
+
+/* ── FACTS ── */
+.facts {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border);
+  border-radius: 4px; overflow: hidden;
+}
+@media (max-width: 900px) { .facts { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) { .facts { grid-template-columns: 1fr; } }
+
+.fact {
+  background: var(--dark); padding: 36px 28px;
+}
+
+.fact-num {
+  font-size: 0.7rem; color: var(--white-muted);
+  letter-spacing: 0.16em; margin-bottom: 16px;
+}
+
+.fact-label {
+  font-size: 0.85rem; color: var(--white-muted);
+  margin-bottom: 8px;
+}
+
+.fact-value {
+  font-size: 1.3rem; color: var(--white); font-weight: 500;
+}
+
+/* ── FOOTER ── */
+.site-footer {
+  padding: 80px 48px 40px;
+  border-top: 1px solid var(--border);
+}
+@media (max-width: 768px) { .site-footer { padding: 60px 24px 32px; } }
+
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+@media (max-width: 768px) { .footer-inner { flex-direction: column; gap: 32px; align-items: flex-start; } }
+
+.footer-brand img {
+  height: 24px; margin-bottom: 16px;
+  filter: brightness(1.1);
+}
+
+.footer-tag {
+  font-size: 0.85rem; color: var(--white-muted);
+}
+
+.footer-links {
+  display: flex; gap: 40px;
+}
+
+.footer-col {
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.footer-col h4 {
+  font-size: 0.7rem; font-weight: 600;
+  letter-spacing: 0.16em; color: var(--white-muted);
+  text-transform: uppercase; margin-bottom: 8px;
+}
+
+.footer-col a {
+  font-size: 0.9rem; color: var(--white-soft);
+  transition: color 0.25s ease;
+}
+.footer-col a:hover { color: var(--white); }
+
+.footer-bottom {
+  max-width: 1200px; margin: 60px auto 0;
+  padding-top: 24px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between;
+  font-size: 0.75rem; color: var(--white-muted);
+}
+@media (max-width: 768px) { .footer-bottom { flex-direction: column; gap: 12px; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-brand">
+      <img src="/SWFTW_Logomark_white.png" alt="Swiftaw">
+    </a>
+    <div class="nav-links">
+      <a href="#about" class="nav-link">About</a>
+      <a href="#mission" class="nav-link">Mission</a>
+      <a href="#structure" class="nav-link">Structure</a>
+      <a href="#product" class="nav-link">Product</a>
+      <a href="https://fortized.com" class="nav-cta">Fortized</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-logo">
+      <img src="/SWFTW_Logomark_white.png" alt="Swiftaw">
+    </div>
+    <div class="hero-eyebrow">European Technology</div>
+    <h1>Building tools that connect people together</h1>
+    <p class="hero-sub">Research-led company creating the next generation of platforms for communities, connection, and collaboration.</p>
+    <div class="hero-actions">
+      <a href="#mission" class="btn btn-primary">Discover</a>
+      <a href="https://fortized.com" class="btn btn-secondary">View Product</a>
+    </div>
+  </div>
+  <div class="hero-scroll">SCROLL</div>
+</section>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="section-label">01 — About</div>
+    <h2 class="section-title">Three focus areas.</h2>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="about-num">01</div>
+        <h3>Research & Development</h3>
+        <p>Building better underlying technology—faster systems, smarter interfaces, and adaptive software that evolves with use.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-num">02</div>
+        <h3>Communication</h3>
+        <p>How we present ourselves to the world—announcements, public content, and community relations across all platforms.</p>
+      </div>
+      <div class="about-card">
+        <div class="about-num">03</div>
+        <h3>Safety</h3>
+        <p>Maintaining safe environments—moderation policy, user standards, and enforcement across all projects.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="section" id="mission">
+  <div class="container">
+    <div class="mission">
+      <div class="mission-visual">
+        <img src="/SwiftawFavicon.png" alt="Swiftaw">
+      </div>
+      <div class="mission-content">
+        <div class="section-label">02 — Mission</div>
+        <h2>Creating tools that bring people closer</h2>
+        <p>Swiftaw is a European research-led technology company working at the intersection of software, AI, and human connection. We believe the best technology disappears—letting people focus on what matters: each other.</p>
+        <div class="mission-stats">
+          <div>
+            <div class="stat-num">2025</div>
+            <div class="stat-label">Founded</div>
+          </div>
+          <div>
+            <div class="stat-num">France</div>
+            <div class="stat-label">Headquarters</div>
+          </div>
+          <div>
+            <div class="stat-num">Independent</div>
+            <div class="stat-label">Status</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRUCTURE -->
+<section class="section" id="structure">
+  <div class="container">
+    <div class="section-label">03 — Structure</div>
+    <h2 class="section-title">How we work.</h2>
+    <div class="structure-grid">
+      <div class="struct-card">
+        <div class="struct-title">Leadership</div>
+        <div class="struct-item">
+          <div class="struct-role">Chief Executive Officer</div>
+          <div class="struct-name">Staw</div>
+          <div class="struct-note">Founder · Since Aug 2025</div>
+        </div>
+        <div class="struct-item">
+          <div class="struct-role">Chief R&D Officer</div>
+          <div class="struct-name">Tyrianum</div>
+          <div class="struct-note">Since Dec 2025</div>
+        </div>
+        <div class="struct-item">
+          <div class="struct-role">Chief Communication Officer</div>
+          <div class="struct-name">Weaverdant</div>
+          <div class="struct-note">Since Feb 2026</div>
+        </div>
+      </div>
+      <div class="struct-card">
+        <div class="struct-title">Departments</div>
+        <div class="struct-item">
+          <div class="struct-role">R&D Department</div>
+          <div class="struct-name">Tyrianum</div>
+        </div>
+        <div class="struct-item">
+          <div class="struct-role">Communication</div>
+          <div class="struct-name">Weaverdant</div>
+        </div>
+        <div class="struct-item">
+          <div class="struct-role">Safety Department</div>
+          <div class="struct-name">Vacant</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT -->
+<section class="section" id="product">
+  <div class="container">
+    <div class="section-label">04 — Product</div>
+    <h2 class="section-title">What we ship.</h2>
+    <div class="product-hero">
+      <div class="product-hero-content">
+        <div class="product-badge">Live</div>
+        <h2>Fortized</h2>
+        <p>A modern, gaming-oriented community platform built for players and their communities. The first product from Swiftaw.</p>
+        <a href="https://fortized.com" class="product-link">Explore fortized.com <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FACTS -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">05 — At a glance</div>
+    <h2 class="section-title">Company information.</h2>
+    <div class="facts">
+      <div class="fact">
+        <div class="fact-num">01</div>
+        <div class="fact-label">Headquarters</div>
+        <div class="fact-value">Île-de-France</div>
+      </div>
+      <div class="fact">
+        <div class="fact-num">02</div>
+        <div class="fact-label">Founded</div>
+        <div class="fact-value">August 2025</div>
+      </div>
+      <div class="fact">
+        <div class="fact-num">03</div>
+        <div class="fact-label">Status</div>
+        <div class="fact-value">Independent</div>
+      </div>
+      <div class="fact">
+        <div class="fact-num">04</div>
+        <div class="fact-label">Focus</div>
+        <div class="fact-value">Software & AI</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <img src="/SWFTW_Logomark_white.png" alt="Swiftaw">
+      <p class="footer-tag">European research-led technology company</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#about">About</a>
+        <a href="#mission">Mission</a>
+        <a href="#structure">Structure</a>
+      </div>
+      <div class="footer-col">
+        <h4>Products</h4>
+        <a href="https://fortized.com">Fortized</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Swiftaw SAS. All rights reserved.</span>
+    <span>swiftaw.com</span>
+  </div>
+</footer>
+
+<script>
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if(target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// Intersection Observer for scroll animations
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting) {
+      entry.target.classList.add('animate-fade-up');
+      observer.unobserve(entry.target);
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.section').forEach(section => {
+  observer.observe(section);
+});
+</script>
+
+</body>
+</html>
   opacity: 0; animation: fadeUp .7s .3s forwards;
 }
 .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; opacity: 0; animation: fadeUp .7s .4s forwards; }
