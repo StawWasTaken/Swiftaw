@@ -68,34 +68,7 @@ img { max-width: 100%; display: block; }
   background: url('/Swiftaw_banner.png') center/cover no-repeat;
   opacity: 0.8;
 }
-.hero-stars {
-  position: absolute; inset: 0;
-  background: 
-    /* Bottom center going outward/up */
-    radial-gradient(2.5px 2.5px at 50% 95%, rgba(255,255,255,0.95), transparent),
-    radial-gradient(2px 2px at 45% 90%, rgba(255,255,255,0.85), transparent),
-    radial-gradient(2px 2px at 55% 90%, rgba(255,255,255,0.85), transparent),
-    /* Moving up and outward in V */
-    radial-gradient(2.5px 2.5px at 38% 75%, rgba(255,255,255,0.8), transparent),
-    radial-gradient(2.5px 2.5px at 62% 75%, rgba(255,255,255,0.8), transparent),
-    radial-gradient(2px 2px at 30% 60%, rgba(255,255,255,0.7), transparent),
-    radial-gradient(2px 2px at 70% 60%, rgba(255,255,255,0.7), transparent),
-    /* Upper area */
-    radial-gradient(3px 3px at 22% 45%, rgba(255,255,255,0.6), transparent),
-    radial-gradient(3px 3px at 78% 45%, rgba(255,255,255,0.6), transparent),
-    radial-gradient(2.5px 2.5px at 15% 30%, rgba(255,255,255,0.5), transparent),
-    radial-gradient(2.5px 2.5px at 85% 30%, rgba(255,255,255,0.5), transparent),
-    radial-gradient(2px 2px at 8% 15%, rgba(255,255,255,0.4), transparent),
-    radial-gradient(2px 2px at 92% 15%, rgba(255,255,255,0.4), transparent);
-  animation: starV 8s linear infinite;
-}
-@keyframes starV {
-  0% { transform: translateY(0) scale(0.5); opacity: 0; }
-  5% { opacity: 1; transform: translateY(0) scale(1); }
-  50% { opacity: 1; }
-  95% { opacity: 1; }
-  100% { transform: translateY(-80px) scale(0.8); opacity: 0; }
-}
+
 .hero-grid {
   position: absolute; inset: 0;
   background-image: linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
@@ -182,7 +155,7 @@ img { max-width: 100%; display: block; }
 
 <section class="hero">
   <div class="hero-bg"></div>
-  <div class="hero-stars"></div>
+  
   <div class="hero-grid"></div>
   <div class="hero-content">
     <div class="hero-logo">
@@ -231,6 +204,69 @@ img { max-width: 100%; display: block; }
     © 2026 Swiftaw
   </div>
 </footer>
+
+<script>
+(function() {
+  const hero = document.querySelector('.hero');
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;';
+  hero.insertBefore(canvas, hero.firstChild);
+
+  const ctx = canvas.getContext('2d');
+  const stars = [];
+  const MAX = 45;
+
+  function resize() {
+    canvas.width = hero.offsetWidth;
+    canvas.height = hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function spawn() {
+    const angle = (Math.random() * 180 - 90) * Math.PI / 180;
+    const speed = 0.18 + Math.random() * 0.32;
+    const hBias = (Math.random() - 0.5) * 1.6;
+    stars.push({
+      x: canvas.width / 2 + (Math.random() - 0.5) * 20,
+      y: canvas.height - 8,
+      vx: Math.sin(angle) * speed + hBias * 0.18,
+      vy: -(0.08 + Math.random() * 0.18),
+      size: 0.6 + Math.random() * 1.0,
+      life: 0,
+      maxLife: 600 + Math.random() * 400,
+      twinkle: Math.random() * Math.PI * 2,
+      twinkleSpeed: 0.015 + Math.random() * 0.025
+    });
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (Math.random() < 0.22 && stars.length < MAX) spawn();
+    for (let i = stars.length - 1; i >= 0; i--) {
+      const s = stars[i];
+      s.x += s.vx;
+      s.y += s.vy;
+      s.life++;
+      s.twinkle += s.twinkleSpeed;
+
+      const p = s.life / s.maxLife;
+      const distFromCenter = Math.abs(s.x - canvas.width / 2) / (canvas.width / 2);
+      const sideFade = Math.max(0, 1 - Math.pow(distFromCenter, 1.5));
+      const lifeFade = p < 0.06 ? p / 0.06 : p > 0.6 ? 1 - (p - 0.6) / 0.4 : 1;
+      const twinkle = 0.78 + 0.22 * Math.sin(s.twinkle);
+
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${lifeFade * sideFade * twinkle * 0.88})`;
+      ctx.fill();
+      if (s.life >= s.maxLife || s.y < -10) stars.splice(i, 1);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
 
 </body>
 </html>
