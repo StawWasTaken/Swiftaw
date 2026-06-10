@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovation Room — Swiftaw</title>
+<meta name="description" content="The Innovation Room — where Swiftaw's research and early-stage projects live.">
+<meta name="theme-color" content="#fef83d">
+<link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw.css">
+<style>
+.empty {
+  position: relative;
+  margin: 40px auto 0;
+  max-width: 880px;
+  background: linear-gradient(160deg, rgba(20,26,38,.95) 0%, rgba(13,17,23,.92) 100%);
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  padding: 80px 48px;
+  overflow: hidden; isolation: isolate;
+  text-align: center;
+}
+.empty::before {
+  content:""; position: absolute; inset: 0; border-radius: 26px;
+  background: radial-gradient(circle at 50% -20%, rgba(254,248,61,.16), transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+.empty > * { position: relative; z-index: 1; }
+
+.empty-orb {
+  width: 120px; height: 120px;
+  margin: 0 auto 28px;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.empty-orb-glow {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(254,248,61,.36), transparent 65%);
+  filter: blur(20px);
+  animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity: .7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+.empty-orb img {
+  width: 64px; height: 64px; position: relative; z-index: 1;
+  filter: drop-shadow(0 0 14px rgba(254,248,61,.55));
+  animation: floaty 5s ease-in-out infinite;
+}
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+.empty h2 {
+  font-family: var(--font-display);
+  font-size: 40px; font-weight: 800; letter-spacing: -1.2px; line-height: 1.05;
+  margin-bottom: 14px;
+}
+.empty h2 span { background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.empty p { font-size: 16px; color: var(--muted-light); line-height: 1.7; max-width: 480px; margin: 0 auto 26px; }
+
+.empty-meta {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid rgba(254,248,61,.18);
+  padding: 6px 14px; border-radius: 100px;
+}
+.empty-meta .pulse-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: blink 2s ease infinite;
+}
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+
+@media (max-width: 600px) {
+  .empty { padding: 56px 24px; }
+  .empty h2 { font-size: 30px; letter-spacing: -.8px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav-root">
+  <a href="/" class="nav-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+  <div class="nav-pill-group">
+    <a href="/" class="nav-pill">Home</a>
+    <a href="/about-us" class="nav-pill">About</a>
+    <a href="/products" class="nav-pill">Products</a>
+    <a href="/innovation-room" class="nav-pill active">Innovation Room</a>
+    <a href="/newsroom" class="nav-pill">Newsroom</a>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-right">
+    <a href="https://fortized.com" class="nav-btn-ghost">Fortized</a>
+    <a href="/products" class="nav-btn-cta">Explore</a>
+    <div class="nav-hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="/">Home</a>
+  <a href="/about-us">About</a>
+  <a href="/products">Products</a>
+  <a href="/innovation-room">Innovation Room</a>
+  <a href="/newsroom">Newsroom</a>
+  <a href="https://fortized.com">Fortized →</a>
+</div>
+
+<section class="page">
+  <div class="container">
+    <div class="page-head">
+      <div class="page-tag">Innovation Room</div>
+      <h1 class="page-title">Where <span>tomorrow</span> is being prototyped.</h1>
+      <p class="page-sub">Early-stage research, experiments and ideas that aren't ready to leave the lab — yet.</p>
+    </div>
+
+    <div class="empty reveal">
+      <div class="empty-orb">
+        <div class="empty-orb-glow"></div>
+        <img src="/SwiftawLogo.png" alt="">
+      </div>
+      <div class="empty-meta"><span class="pulse-dot"></span> Quietly brewing</div>
+      <h2 style="margin-top:22px;">Nothing to show. <span>Yet.</span></h2>
+      <p>This is the room where things take shape — slowly, deliberately. When something's ready to step out of the door, it'll appear here first.</p>
+      <a href="/newsroom" class="btn-ghost">Follow the Newsroom →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-left">
+    <a href="/" class="footer-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+    <div class="footer-socials"></div>
+  </div>
+  <div class="copy">© 2026 Swiftaw · Swiftly Beyond</div>
+  <div class="footer-links">
+    <a href="/about-us">About</a>
+    <a href="/products">Products</a>
+    <a href="https://fortized.com">Fortized</a>
+  </div>
+</footer>
+
+<script src="/css/swiftaw.js"></script>
+</body>
+</html>
