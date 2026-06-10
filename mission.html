@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Our Mission — Swiftaw</title>
-<meta name="description" content="Our mission at Swiftaw — building healthy, human-shaped technology for communities and the people inside them.">
+<title>Mission - Swiftaw</title>
+<meta name="description" content="Why Swiftaw exists - tech for the people inside it, not the people watching the graph.">
 <meta name="theme-color" content="#fef83d">
 <link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,541 +12,296 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-/* ───── Mission narrative (Gestalt-inspired: gentle, generous, rounded) ───── */
-.mission-hero {
-  position: relative;
-  max-width: 920px; margin: 0 auto 56px;
-  background: linear-gradient(160deg, rgba(20,26,38,.95) 0%, rgba(13,17,23,.92) 100%);
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  padding: 52px;
-  overflow: hidden; isolation: isolate;
-}
-.mission-hero::before {
-  content:""; position: absolute; inset: 0; border-radius: 28px;
-  background: radial-gradient(circle at 80% -20%, rgba(254,248,61,.16), transparent 60%);
-  pointer-events: none; z-index: 0;
-}
-.mission-hero > * { position: relative; z-index: 1; }
-.mission-hero .lede {
+.page-top { padding: 140px 0 40px; position: relative; }
+.page-top .eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
-  font-size: 32px; font-weight: 800; letter-spacing: -.8px; line-height: 1.18;
+  font-size: 13px; font-weight: 700;
+  color: var(--c-pink);
+  background: rgba(255,138,180,.08);
+  border: 1.5px solid rgba(255,138,180,.25);
+  padding: 7px 14px; border-radius: 100px;
   margin-bottom: 22px;
+  transform: rotate(-2deg);
 }
-.mission-hero .lede em {
+.page-top h1 {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 6.4vw, 96px);
+  font-weight: 800;
+  letter-spacing: -3px;
+  line-height: .92;
+  margin-bottom: 24px;
+  max-width: 900px;
+}
+.page-top h1 .pop {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  transform: rotate(-1.5deg);
+}
+.page-top .lede { font-size: 19px; max-width: 600px; color: var(--text); line-height: 1.55; }
+.page-top .lede b { color: #fff; font-weight: 600; }
+
+/* pinned stickers cluster */
+.cluster {
+  margin-top: 70px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+@media (max-width: 980px) { .cluster { grid-template-columns: 1fr; } }
+
+.cluster .left .sticker { margin-bottom: 18px; }
+.cluster .left .sticker-quote {
+  padding: 36px;
+  font-family: var(--font-display);
+  font-size: 22px; line-height: 1.3; letter-spacing: -.6px;
+  transform: rotate(-1.2deg);
+}
+.cluster .left .sticker-quote::before {
+  content: "“"; display: block;
+  font-size: 80px; line-height: .5; color: var(--accent);
+  margin-bottom: 12px;
+}
+.cluster .left .sticker-quote em {
   font-style: normal;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.mission-hero p {
-  font-size: 16.5px; color: var(--muted-light); line-height: 1.75;
-}
-.mission-hero p + p { margin-top: 14px; }
-@media (max-width: 600px) {
-  .mission-hero { padding: 36px 24px; }
-  .mission-hero .lede { font-size: 24px; }
+.cluster .left .sticker-quote .who {
+  display: block; margin-top: 18px;
+  font-family: var(--font-body); font-size: 12.5px; color: var(--muted-light);
+  letter-spacing: .14em; text-transform: uppercase;
 }
 
-/* Pillar tokens — Gestalt-style soft cards */
-.pillars {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  max-width: 1080px;
-  margin: 0 auto 80px;
+.cluster .right { position: relative; }
+.cluster .pillar {
+  margin-bottom: 16px;
+  padding: 22px 24px;
 }
-@media (max-width: 900px) { .pillars { grid-template-columns: 1fr; } }
-.pillar {
-  background: rgba(255,255,255,.02);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 24px;
-  transition: border-color .2s, background .2s, transform .2s;
-}
-.pillar:hover { border-color: rgba(254,248,61,.22); background: rgba(254,248,61,.025); transform: translateY(-3px); }
-.pillar-num {
+.cluster .pillar.p1 { transform: rotate(1.5deg); }
+.cluster .pillar.p2 { transform: rotate(-1deg); margin-left: 22px; }
+.cluster .pillar.p3 { transform: rotate(.8deg); margin-left: -10px; }
+.cluster .pillar .num {
   font-family: var(--font-display);
-  font-size: 11px; font-weight: 700; letter-spacing: .14em;
-  color: var(--accent); margin-bottom: 10px;
+  font-size: 12px; font-weight: 700; letter-spacing: .14em;
+  color: var(--accent); margin-bottom: 6px;
 }
-.pillar h3 {
+.cluster .pillar h3 { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -.4px; margin-bottom: 6px; }
+.cluster .pillar p { font-size: 14px; color: var(--muted-light); line-height: 1.55; }
+
+/* Deco */
+.deco-m1 { top: 60px; right: 6%; width: 36px; height: 36px; color: var(--c-blue); --r: 12deg; }
+.deco-m2 { bottom: -20px; left: -2%; width: 30px; height: 30px; color: var(--c-pink); --r: -22deg; }
+
+/* React big section */
+.react-big { margin-top: 110px; padding: 0 28px; }
+.react-big-inner {
+  max-width: 1000px; margin: 0 auto;
+}
+.react-big-head { text-align: center; margin-bottom: 32px; }
+.react-big-head .chip { margin-bottom: 16px; }
+.react-big-head h2 {
   font-family: var(--font-display);
-  font-size: 18px; font-weight: 800; letter-spacing: -.3px; margin-bottom: 6px;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 800;
+  letter-spacing: -2.2px;
+  line-height: 1;
+  margin-bottom: 14px;
 }
-.pillar p { font-size: 13.5px; color: var(--muted-light); line-height: 1.6; }
+.react-big-head p { font-size: 16.5px; color: var(--text); max-width: 520px; margin: 0 auto; }
 
-/* ───── Reactions widget ───── */
-.react-section { margin-top: 40px; }
-.react-card {
-  position: relative;
-  max-width: 1080px; margin: 0 auto;
-  background: linear-gradient(160deg, rgba(20,26,38,.95) 0%, rgba(13,17,23,.92) 100%);
-  border: 1px solid var(--border);
-  border-radius: 28px;
-  padding: 44px;
-  overflow: hidden; isolation: isolate;
-}
-.react-card::before {
-  content:""; position: absolute; inset: 0; border-radius: 28px;
-  background: radial-gradient(circle at 50% -20%, rgba(254,248,61,.10), transparent 60%);
-  pointer-events: none; z-index: 0;
-}
-.react-card > * { position: relative; z-index: 1; }
+/* bigger emoji buttons */
+.react-big .react-widget { padding: 40px 36px 32px; }
+.react-big .react-btn { padding: 22px 22px; flex-direction: column; align-items: flex-start; min-height: 200px; gap: 14px; }
+.react-big .react-emoji { width: 80px; height: 80px; }
+.react-big .react-btn .react-meta { flex: 0; }
+.react-big .react-name { font-size: 18px; }
+.react-big .react-count { font-size: 30px; }
 
-.react-head {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; flex-wrap: wrap;
-  margin-bottom: 28px;
+.react-explainer {
+  margin-top: 26px;
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
 }
-.react-head .left h2 {
-  font-family: var(--font-display);
-  font-size: 28px; font-weight: 800; letter-spacing: -.7px;
-  margin-bottom: 6px;
-}
-.react-head .left p { font-size: 14px; color: var(--muted-light); }
-.live-chip {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--font-display);
-  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: #4ade80;
-  background: rgba(74,222,128,.08);
-  border: 1px solid rgba(74,222,128,.22);
-  padding: 6px 12px; border-radius: 100px;
-}
-.live-chip .dot {
-  width: 7px; height: 7px; border-radius: 50%; background: #4ade80;
-  box-shadow: 0 0 8px rgba(74,222,128,.6);
-  animation: liveBlink 1.6s ease infinite;
-}
-@keyframes liveBlink { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.7); } }
-
-/* Reaction grid */
-.react-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 22px;
-}
-@media (max-width: 760px) { .react-grid { grid-template-columns: 1fr; } }
-
-.react-btn {
-  position: relative;
-  background: rgba(255,255,255,.02);
+@media (max-width: 720px) { .react-explainer { grid-template-columns: 1fr; } }
+.explain {
+  background: var(--panel);
   border: 1.5px solid var(--border);
-  border-radius: 22px;
-  padding: 22px;
-  cursor: pointer;
-  overflow: hidden;
-  text-align: left;
-  display: flex; align-items: center; gap: 18px;
-  transition: transform .25s cubic-bezier(.22,1,.36,1), border-color .2s, background .2s, box-shadow .25s;
-  font-family: inherit;
-  color: inherit;
-}
-.react-btn:hover {
-  transform: translateY(-4px);
-  border-color: rgba(254,248,61,.28);
-  background: rgba(254,248,61,.025);
-  box-shadow: 0 18px 40px rgba(0,0,0,.4), 0 0 32px rgba(254,248,61,.06);
-}
-.react-btn:hover .react-emoji { transform: scale(1.08) rotate(-4deg); }
-.react-btn:active { transform: translateY(-2px) scale(.99); }
-
-.react-btn.picked {
-  border-color: rgba(254,248,61,.5);
-  background: linear-gradient(160deg, rgba(254,248,61,.10), rgba(254,248,61,.02));
-  box-shadow: 0 18px 40px rgba(0,0,0,.4), 0 0 36px rgba(254,248,61,.18);
-}
-.react-btn.picked::after {
-  content:"YOURS";
-  position: absolute; top: 12px; right: 14px;
-  font-family: var(--font-display);
-  font-size: 9.5px; font-weight: 800; letter-spacing: .14em;
-  color: #0d1117;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  padding: 3px 8px; border-radius: 100px;
-}
-
-.react-emoji {
-  width: 64px; height: 64px;
-  flex-shrink: 0;
-  filter: grayscale(1) brightness(.75) contrast(1.1);
-  transition: filter .55s ease, transform .35s cubic-bezier(.22,1,.36,1);
-}
-.react-btn.picked .react-emoji {
-  filter: grayscale(0) brightness(1) drop-shadow(0 0 14px rgba(254,248,61,.35));
-  animation: emojiPop .7s cubic-bezier(.22,1,.36,1);
-}
-@keyframes emojiPop {
-  0% { transform: scale(.6) rotate(-20deg); }
-  50% { transform: scale(1.25) rotate(8deg); }
-  100% { transform: scale(1) rotate(0); }
-}
-
-.react-meta { flex: 1; min-width: 0; }
-.react-name {
-  font-family: var(--font-display);
-  font-size: 17px; font-weight: 800; letter-spacing: -.3px;
-  color: #fff; margin-bottom: 4px;
-}
-.react-count {
-  font-family: var(--font-display);
-  font-size: 22px; font-weight: 800; letter-spacing: -.5px;
-  color: var(--accent);
-  font-variant-numeric: tabular-nums;
-  display: inline-block;
-  transition: transform .25s;
-}
-.react-count.bump { animation: countBump .5s cubic-bezier(.22,1,.36,1); }
-@keyframes countBump {
-  0% { transform: translateY(0); }
-  40% { transform: translateY(-6px) scale(1.08); }
-  100% { transform: translateY(0) scale(1); }
-}
-.react-pct {
-  font-size: 12.5px; color: var(--muted-light);
-  margin-left: 8px;
-  font-variant-numeric: tabular-nums;
-}
-
-.react-bar {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  height: 3px;
-  background: rgba(255,255,255,.04);
-  overflow: hidden;
-}
-.react-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  width: 0%;
-  transition: width .6s cubic-bezier(.22,1,.36,1);
-  box-shadow: 0 0 10px var(--accent-glow);
-}
-
-/* Burst (confetti) overlay */
-.react-burst {
-  position: absolute; inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-.spark {
-  position: absolute;
-  top: 50%; left: 28px;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0;
-}
-.spark.go { animation: sparkFly .9s cubic-bezier(.22,1,.36,1) forwards; }
-@keyframes sparkFly {
-  0% { opacity: 1; transform: translate(0,0) scale(1); }
-  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.4); }
-}
-
-/* Total + live feed */
-.react-foot {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 16px;
-  align-items: center;
-  padding-top: 20px;
-  border-top: 1px solid rgba(255,255,255,.06);
+  border-radius: 16px;
+  padding: 16px;
   font-size: 13px; color: var(--muted-light);
+  display: flex; gap: 10px; align-items: center;
 }
-.react-total {
-  font-family: var(--font-display);
-  font-size: 13px; font-weight: 700; letter-spacing: .04em;
-  color: #fff;
-}
-.react-total .num {
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  font-variant-numeric: tabular-nums;
-}
-.react-feed { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); }
-.react-feed .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px var(--accent-glow); animation: liveBlink 2s ease infinite; }
-
-@media (max-width: 600px) {
-  .react-card { padding: 30px 22px; }
-  .react-btn { padding: 18px; }
-  .react-emoji { width: 52px; height: 52px; }
-  .react-foot { grid-template-columns: 1fr; }
-}
+.explain svg { width: 20px; height: 20px; fill: var(--accent); flex-shrink: 0; }
+.explain b { color: #fff; font-weight: 600; }
 </style>
 </head>
 <body>
 
+<div class="bg-blob b1"></div>
+<div class="bg-blob b2"></div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-fire" viewBox="0 0 448 512"><path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2zM225.7 416c25.3 0 47.7-7 68.8-21 42.1-29.4 53.4-88.2 28.1-134.4-4.5-9-16-9.6-22.5-2l-25.2 29.3c-6.6 7.6-18.5 7.4-24.7-.5-17.3-22.1-49.1-62.4-65.3-83-5.4-6.9-15.2-8-21.5-1.9-18.3 17.8-51.5 56.8-51.5 104.3 0 68.6 50.6 109.2 113.7 109.2z"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 384 512"><path d="M32 32C32 14.3 46.3 0 64 0L320 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-29.5 0 10.3 134.1c37.1 21.2 65.8 56.4 78.2 99.7l3.8 13.4c2.8 9.7 .8 20-5.2 28.1S362 352 352 352L32 352c-10 0-19.5-4.7-25.5-12.7s-8-18.4-5.2-28.1L5 297.8c12.4-43.3 41-78.5 78.2-99.7L93.5 64 64 64C46.3 64 32 49.7 32 32zM160 400l64 0 0 112c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-112z"/></symbol>
+  <symbol id="i-comments" viewBox="0 0 576 512"><path d="M384 144c0 97.2-86 176-192 176-26.7 0-52.1-5-75.2-14L35.2 349.2c-9.3 4.9-20.7 3.2-28.2-4.2s-9.2-18.9-4.2-28.2l35.6-67.2C14.3 220.2 0 183.6 0 144 0 46.8 86-32 192-32S384 46.8 384 144zm0 368c-94.1 0-172.4-62.1-188.8-144 120-1.5 224.3-86.9 235.8-202.7 83.3 19.2 145 88.3 145 170.7 0 39.6-14.3 76.2-38.4 105.6l35.6 67.2c4.9 9.3 3.2 20.7-4.2 28.2s-18.9 9.2-28.2 4.2L459.2 498c-23.1 9-48.5 14-75.2 14z"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 512 512"><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></symbol>
+  <symbol id="i-hashtag" viewBox="0 0 512 512"><path d="M214.7 .7c17.3 3.7 28.3 20.7 24.6 38l-19.1 89.3 126.5 0 22-102.7C372.4 8 389.4-3 406.7 .7s28.3 20.7 24.6 38L412.2 128 480 128c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-27.4 128 67.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38l19.1-89.3-126.5 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38L99.8 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 27.4-128-67.8 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 22-102.7C180.4 8 197.4-3 214.7 .7zM206.4 192l-27.4 128 126.5 0 27.4-128-126.5 0z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 448 512"><path d="M128 0C110.3 0 96 14.3 96 32l0 32-32 0C28.7 64 0 92.7 0 128l0 48 448 0 0-48c0-35.3-28.7-64-64-64l-32 0 0-32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 32-128 0 0-32c0-17.7-14.3-32-32-32zM0 224L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-192-448 0z"/></symbol>
+  <symbol id="i-people" viewBox="0 0 576 512"><path d="M64 128a112 112 0 1 1 224 0 112 112 0 1 1 -224 0zM0 464c0-97.2 78.8-176 176-176s176 78.8 176 176l0 6c0 23.2-18.8 42-42 42L42 512c-23.2 0-42-18.8-42-42l0-6zM432 64a96 96 0 1 1 0 192 96 96 0 1 1 0-192zm0 240c79.5 0 144 64.5 144 144l0 22.4c0 23-18.6 41.6-41.6 41.6l-144.8 0c6.6-12.5 10.4-26.8 10.4-42l0-6c0-51.5-17.4-98.9-46.5-136.7 22.6-14.7 49.6-23.3 78.5-23.3z"/></symbol>
+</svg>
+
 <nav class="nav-root">
   <a href="/" class="nav-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
   <div class="nav-pill-group">
-    <a href="/" class="nav-pill">Home</a>
     <a href="/about-us" class="nav-pill">About</a>
     <a href="/mission" class="nav-pill active">Mission</a>
     <a href="/products" class="nav-pill">Products</a>
-    <a href="/innovation-room" class="nav-pill">Innovation Room</a>
-    <a href="/newsroom" class="nav-pill">Newsroom</a>
+    <a href="/innovation-room" class="nav-pill">Lab</a>
+    <a href="/newsroom" class="nav-pill">News</a>
   </div>
   <div class="nav-spacer"></div>
   <div class="nav-right">
-    <a href="https://fortized.com" class="nav-btn-ghost">Fortized</a>
-    <a href="/products" class="nav-btn-cta">Explore</a>
+    <a href="https://fortized.com" class="nav-btn-cta">Fortized</a>
     <div class="nav-hamburger"><span></span><span></span><span></span></div>
   </div>
 </nav>
 <div class="mobile-menu">
-  <a href="/">Home</a>
   <a href="/about-us">About</a>
   <a href="/mission">Mission</a>
   <a href="/products">Products</a>
-  <a href="/innovation-room">Innovation Room</a>
-  <a href="/newsroom">Newsroom</a>
+  <a href="/innovation-room">Lab</a>
+  <a href="/newsroom">News</a>
   <a href="https://fortized.com">Fortized →</a>
 </div>
 
-<section class="page">
+<section class="page-top">
   <div class="container">
-    <div class="page-head">
-      <div class="page-tag">Our Mission</div>
-      <h1 class="page-title">Tech, for the <span>people</span> inside it.</h1>
-      <p class="page-sub">We build for communities, players and the humans behind every screen — not for metrics, not for noise.</p>
-    </div>
+    <div class="eyebrow">our mission, in plain words</div>
+    <h1>tech for the <span class="pop">people</span> inside it.</h1>
+    <p class="lede">We make things for communities, players, friend groups and weirdos online. Not for metrics, not for noise, not for the graph.</p>
 
-    <div class="mission-hero reveal">
-      <div class="lede">Swiftaw exists to make technology feel <em>inspiring, elegant and purposeful</em> — again.</div>
-      <p>We're a small European studio building modern, ambitious and future-oriented products. Fortized was the first — a healthy, community-shaped platform for players. Whatever we make next will follow the same compass: human-first, generously designed, made to last.</p>
-      <p>We borrow good ideas where we find them. Lately, that's been Pinterest's <a href="https://gestalt.pinterest.systems/" target="_blank" rel="noopener" style="color:var(--accent); border-bottom:1px dashed rgba(254,248,61,.4);">Gestalt</a> — soft, generous, opinionated about clarity. You'll see traces of it in what we ship next.</p>
-    </div>
-
-    <div class="pillars">
-      <div class="pillar reveal">
-        <div class="pillar-num">01 · For communities</div>
-        <h3>Built around groups, not feeds</h3>
-        <p>The internet is at its best in small rooms. We design for the people inside the room — gamers, friends, makers — not the algorithm watching them.</p>
-      </div>
-      <div class="pillar reveal">
-        <div class="pillar-num">02 · Healthy by default</div>
-        <h3>Calm, not loud</h3>
-        <p>No dark patterns, no engagement traps. Software that respects your attention because we'd want the same.</p>
-      </div>
-      <div class="pillar reveal">
-        <div class="pillar-num">03 · European-built</div>
-        <h3>Independent &amp; long-term</h3>
-        <p>Made from Île-de-France with no urgency to please a quarterly graph. We move at the speed of getting it right.</p>
-      </div>
-    </div>
-
-    <div class="react-section">
-      <div class="section-label" style="display:flex; justify-content:center; margin-bottom:12px;">React</div>
-      <div style="text-align:center; max-width:560px; margin:0 auto 28px;">
-        <h2 style="font-family:var(--font-display); font-size:32px; font-weight:800; letter-spacing:-.9px; line-height:1.1; margin-bottom:10px;">How does this land?</h2>
-        <p style="color:var(--muted-light); font-size:15px;">Tap one. We'll be honest — it changes nothing, but it tells us we're not just shouting into the void.</p>
-      </div>
-
-      <div class="react-card reveal">
-        <div class="react-head">
-          <div class="left">
-            <h2>Pick your reaction</h2>
-            <p>One vote per person. Change your mind anytime.</p>
-          </div>
-          <div class="live-chip"><span class="dot"></span> Live</div>
+    <div class="cluster">
+      <div class="left">
+        <div class="deco deco-m1 float-a"><svg><use href="#i-hashtag"/></svg></div>
+        <div class="sticker sticker-quote tint-yellow reveal">
+          Swiftaw exists to make tech feel <em>inspiring, elegant and purposeful</em> - again.
+          <span class="who">- the whole reason</span>
         </div>
-
-        <div class="react-grid" id="reactGrid">
-          <button class="react-btn" data-key="stoked" aria-pressed="false">
-            <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/joyster_laugh.png" alt="Stoked">
-            <div class="react-meta">
-              <div class="react-name">Stoked</div>
-              <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
-            </div>
-            <div class="react-bar"><div class="react-bar-fill" data-bar></div></div>
-            <div class="react-burst" data-burst></div>
-          </button>
-
-          <button class="react-btn" data-key="stunned" aria-pressed="false">
-            <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/leafen_stunned.png" alt="Stunned">
-            <div class="react-meta">
-              <div class="react-name">Stunned</div>
-              <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
-            </div>
-            <div class="react-bar"><div class="react-bar-fill" data-bar></div></div>
-            <div class="react-burst" data-burst></div>
-          </button>
-
-          <button class="react-btn" data-key="loved" aria-pressed="false">
-            <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_heart.png" alt="Loved">
-            <div class="react-meta">
-              <div class="react-name">Loved</div>
-              <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
-            </div>
-            <div class="react-bar"><div class="react-bar-fill" data-bar></div></div>
-            <div class="react-burst" data-burst></div>
-          </button>
+        <div class="sticker tilt-r-sm reveal" style="padding:24px;">
+          <p style="font-size:15px; color:var(--text); line-height:1.65;">A tiny European studio. <b style="color:#fff;">Fortized</b> was the first thing we shipped - a healthy community platform for players. Whatever comes next will follow the same compass: <b style="color:#fff;">human-first, generously designed, made to last.</b></p>
         </div>
+        <div class="sticker tilt-l-sm reveal" style="padding:24px; background: linear-gradient(160deg, #14242e 0%, #0e1a26 100%); border-color: rgba(125,211,252,.25);">
+          <p style="font-size:14.5px; color:var(--text); line-height:1.6;">We borrow good ideas where we find them. Lately, that's been Pinterest's <a href="https://gestalt.pinterest.systems/" target="_blank" rel="noopener" style="color:var(--c-blue); border-bottom:1px dashed rgba(125,211,252,.4);">Gestalt</a> - soft, generous, opinionated about clarity. You'll feel traces of it in what we ship next.</p>
+        </div>
+      </div>
 
-        <div class="react-foot">
-          <div class="react-total"><span class="num" id="reactTotal">0</span> reactions and counting</div>
-          <div class="react-feed"><span class="pulse"></span> <span id="reactFeed">listening for new reactions…</span></div>
+      <div class="right">
+        <div class="deco deco-m2 float-b"><svg><use href="#i-fire"/></svg></div>
+        <div class="sticker pillar p1 tint-pink reveal">
+          <div class="num">01 / for communities</div>
+          <h3>Built around small rooms.</h3>
+          <p>The internet is at its best in groups. We design for the people inside the room, not the algorithm watching them.</p>
+        </div>
+        <div class="sticker pillar p2 tint-mint reveal">
+          <div class="num">02 / healthy by default</div>
+          <h3>Calm, not loud.</h3>
+          <p>No dark patterns. No engagement traps. Software that respects your attention because we'd want the same.</p>
+        </div>
+        <div class="sticker pillar p3 tint-lilac reveal">
+          <div class="num">03 / european-built</div>
+          <h3>Independent. Long-term.</h3>
+          <p>From Île-de-France. No quarterly graph to please. We move at the speed of getting it right.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<footer class="site-footer">
-  <div class="footer-left">
-    <a href="/" class="footer-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
-    <div class="footer-socials"></div>
+<!-- BIG reaction section -->
+<section class="react-big">
+  <div class="react-big-inner">
+    <div class="react-big-head reveal">
+      <div class="chip yellow"><span class="dot"></span> react · in real time</div>
+      <h2>How does this land?</h2>
+      <p>Pick one. Everyone else watching this page sees it tick up. Live, across every device.</p>
+    </div>
+
+    <div class="react-widget reveal" data-react-widget>
+      <div class="react-head">
+        <div>
+          <h3>Pick your reaction</h3>
+          <p>change your mind anytime - it'll update for everyone.</p>
+        </div>
+        <div class="live-chip" data-live-chip><span class="dot"></span> <span class="label">Live</span></div>
+      </div>
+
+      <div class="react-grid">
+        <button class="react-btn" data-key="stoked">
+          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/joyster_laugh.png" alt="">
+          <div class="react-meta">
+            <div class="react-name">Stoked</div>
+            <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
+          </div>
+          <div class="react-bar"><div class="react-bar-fill" data-bar></div></div>
+          <div class="react-burst"></div>
+        </button>
+        <button class="react-btn" data-key="stunned">
+          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/leafen_stunned.png" alt="">
+          <div class="react-meta">
+            <div class="react-name">Stunned</div>
+            <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
+          </div>
+          <div class="react-bar"><div class="react-bar-fill" data-bar></div></div>
+          <div class="react-burst"></div>
+        </button>
+        <button class="react-btn" data-key="loved">
+          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_heart.png" alt="">
+          <div class="react-meta">
+            <div class="react-name">Loved</div>
+            <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
+          </div>
+          <div class="react-bar"><div class="react-bar-fill" data-bar></div></div>
+          <div class="react-burst"></div>
+        </button>
+      </div>
+
+      <div class="react-foot">
+        <div class="react-total"><span class="num" data-react-total>0</span> reactions and counting</div>
+        <div class="react-feed"><span class="pulse"></span> <span data-react-feed>listening for new reactions…</span></div>
+      </div>
+    </div>
+
+    <div class="react-explainer">
+      <div class="explain"><svg><use href="#i-people"/></svg> <span><b>Real people, real reactions.</b> No fake ticks, no bots.</span></div>
+      <div class="explain"><svg><use href="#i-fire"/></svg> <span><b>133 seeded</b> to start the party. Everything after is you.</span></div>
+      <div class="explain"><svg><use href="#i-hashtag"/></svg> <span><b>Live across devices.</b> Tap, watch others react in real time.</span></div>
+    </div>
   </div>
-  <div class="copy">© 2026 Swiftaw · Swiftly Beyond</div>
-  <div class="footer-links">
-    <a href="/about-us">About</a>
-    <a href="/mission">Mission</a>
-    <a href="/products">Products</a>
-    <a href="https://fortized.com">Fortized</a>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <a href="/" class="footer-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+    <div class="footer-copy">© 2026 Swiftaw · swiftly beyond · made in Île-de-France</div>
+    <div class="footer-links">
+      <a href="/about-us">About</a>
+      <a href="/products">Products</a>
+      <a href="https://fortized.com">Fortized</a>
+    </div>
   </div>
 </footer>
 
-<script src="/css/swiftaw.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-(function () {
-  // Seeded fake counts — total = 136
-  const BASE = { stoked: 58, stunned: 34, loved: 44 };
-  const KEYS = ['stoked','stunned','loved'];
-  const STORAGE_PICK = 'swiftaw.reactions.pick.v1';
-  const STORAGE_DRIFT = 'swiftaw.reactions.drift.v1';
-
-  // Drift = the simulated "other people reacting" delta. Persisted so the count
-  // grows monotonically across reloads instead of resetting.
-  let drift = JSON.parse(localStorage.getItem(STORAGE_DRIFT) || '{"stoked":0,"stunned":0,"loved":0}');
-  let pick = localStorage.getItem(STORAGE_PICK) || null;
-
-  const grid = document.getElementById('reactGrid');
-  const btns = Array.from(grid.querySelectorAll('.react-btn'));
-  const totalEl = document.getElementById('reactTotal');
-  const feedEl = document.getElementById('reactFeed');
-
-  const counts = () => {
-    const c = {};
-    KEYS.forEach(k => { c[k] = BASE[k] + (drift[k] || 0); });
-    if (pick) c[pick] = (c[pick] || 0) + 1;
-    return c;
-  };
-  const total = c => KEYS.reduce((s,k) => s + c[k], 0);
-
-  // Tween a number element from its current value to target
-  function tween(el, to, dur = 600) {
-    const from = parseInt(el.textContent.replace(/\D/g,''), 10) || 0;
-    if (from === to) return;
-    const start = performance.now();
-    function step(now) {
-      const t = Math.min(1, (now - start) / dur);
-      const eased = 1 - Math.pow(1 - t, 3);
-      el.textContent = Math.round(from + (to - from) * eased).toLocaleString();
-      if (t < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }
-
-  function render(opts = {}) {
-    const c = counts();
-    const tot = total(c);
-    btns.forEach(btn => {
-      const key = btn.dataset.key;
-      const countEl = btn.querySelector('[data-count]');
-      const pctEl = btn.querySelector('[data-pct]');
-      const barEl = btn.querySelector('[data-bar]');
-      const isPicked = pick === key;
-      btn.classList.toggle('picked', isPicked);
-      btn.setAttribute('aria-pressed', isPicked ? 'true' : 'false');
-      tween(countEl, c[key]);
-      const pct = tot ? Math.round((c[key] / tot) * 100) : 0;
-      pctEl.textContent = pct + '%';
-      barEl.style.width = pct + '%';
-      if (opts.bumpKey === key) {
-        countEl.classList.remove('bump');
-        void countEl.offsetWidth;
-        countEl.classList.add('bump');
-      }
-    });
-    tween(totalEl, tot, 700);
-  }
-
-  // Confetti burst out of the emoji
-  function burst(btn) {
-    const host = btn.querySelector('[data-burst]');
-    if (!host) return;
-    for (let i = 0; i < 14; i++) {
-      const s = document.createElement('span');
-      s.className = 'spark';
-      const angle = (Math.PI * 2) * (i / 14) + Math.random() * 0.4;
-      const dist = 60 + Math.random() * 60;
-      s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
-      s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
-      s.style.background = ['#fef83d', '#fff000', '#ffffff'][i % 3];
-      s.style.top = '50%';
-      s.style.left = '28px';
-      host.appendChild(s);
-      requestAnimationFrame(() => s.classList.add('go'));
-      setTimeout(() => s.remove(), 1000);
-    }
-  }
-
-  // Wire buttons
-  btns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const key = btn.dataset.key;
-      if (pick === key) {
-        pick = null;
-        localStorage.removeItem(STORAGE_PICK);
-      } else {
-        pick = key;
-        localStorage.setItem(STORAGE_PICK, pick);
-        burst(btn);
-      }
-      render({ bumpKey: key });
-      feedEl.textContent = pick ? 'you reacted just now' : 'reaction removed';
-    });
-  });
-
-  // Simulated live drift — gentle, weighted toward "loved" and "stoked"
-  const WEIGHTS = { stoked: 0.42, stunned: 0.22, loved: 0.36 };
-  function pickWeighted() {
-    const r = Math.random();
-    let acc = 0;
-    for (const k of KEYS) { acc += WEIGHTS[k]; if (r <= acc) return k; }
-    return KEYS[0];
-  }
-  const FEED_LINES = [
-    'someone in {city} just reacted',
-    '+1 reaction from {city}',
-    'a new reaction landed',
-    'live · {city}',
-    'just now · {city}'
-  ];
-  const CITIES = ['Paris','Lyon','Tokyo','Berlin','Lisbon','Montréal','Bristol','Madrid','Warsaw','Seoul','Helsinki','Dublin'];
-  function fillFeed() {
-    const line = FEED_LINES[Math.floor(Math.random() * FEED_LINES.length)];
-    feedEl.textContent = line.replace('{city}', CITIES[Math.floor(Math.random() * CITIES.length)]);
-  }
-
-  function scheduleTick() {
-    const wait = 7000 + Math.random() * 13000; // 7–20s
-    setTimeout(() => {
-      const k = pickWeighted();
-      drift[k] = (drift[k] || 0) + 1;
-      localStorage.setItem(STORAGE_DRIFT, JSON.stringify(drift));
-      render({ bumpKey: k });
-      fillFeed();
-      scheduleTick();
-    }, wait);
-  }
-
-  // Initial paint (set counts to zero so the tween animates in)
-  btns.forEach(b => { b.querySelector('[data-count]').textContent = '0'; });
-  totalEl.textContent = '0';
-  setTimeout(() => render(), 240);
-  scheduleTick();
-})();
+window.SWIFTAW_CFG = {
+  SUPABASE_URL: 'https://cnlhwcsmptsbmowhmioj.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_E2EfRwuyL-1oVRFj4W22BQ_-tfVfI6J'
+};
 </script>
+<script src="/css/swiftaw.js"></script>
 </body>
 </html>

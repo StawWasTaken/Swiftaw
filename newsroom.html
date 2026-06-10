@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Newsroom — Swiftaw</title>
-<meta name="description" content="Announcements, milestones and stories from Swiftaw.">
+<title>News - Swiftaw</title>
+<meta name="description" content="Announcements, milestones and the occasional party.">
 <meta name="theme-color" content="#fef83d">
 <link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,154 +12,195 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-.news-list { display: flex; flex-direction: column; gap: 14px; max-width: 920px; margin: 0 auto; }
-.news-item {
+.page-top { padding: 140px 0 40px; position: relative; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display);
+  font-size: 13px; font-weight: 700;
+  color: var(--c-peach);
+  background: rgba(253,186,116,.08);
+  border: 1.5px solid rgba(253,186,116,.25);
+  padding: 7px 14px; border-radius: 100px;
+  margin-bottom: 22px;
+  transform: rotate(-2deg);
+}
+.page-top h1 {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 6.4vw, 96px);
+  font-weight: 800;
+  letter-spacing: -3px;
+  line-height: .92;
+  margin-bottom: 24px;
+  max-width: 800px;
+}
+.page-top h1 .pop {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: inline-block; transform: rotate(-2deg);
+}
+.page-top .lede { font-size: 18px; color: var(--text); max-width: 540px; line-height: 1.55; }
+
+/* News stack - tilted note cards */
+.news-stack {
+  margin-top: 60px;
   position: relative;
-  background: linear-gradient(160deg, rgba(20,26,38,.95) 0%, rgba(13,17,23,.92) 100%);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 22px 24px;
+  display: flex; flex-direction: column;
+  gap: 22px;
+  max-width: 880px;
+}
+.note {
+  position: relative;
+  background: linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%);
+  border: 1.5px solid var(--border);
+  border-radius: 22px;
+  padding: 24px 28px;
+  box-shadow: 0 6px 0 0 var(--ink), 0 18px 40px rgba(0,0,0,.4);
   display: grid;
-  grid-template-columns: 120px 1fr auto;
+  grid-template-columns: 140px 1fr auto;
   gap: 20px;
   align-items: center;
-  transition: border-color .2s, transform .2s, box-shadow .25s;
+  transition: transform .25s, box-shadow .25s;
 }
-.news-item:hover {
-  border-color: rgba(254,248,61,.22);
-  transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(0,0,0,.4);
-}
-.news-date {
+.note.t1 { transform: rotate(-1deg); margin-left: 0; }
+.note.t2 { transform: rotate(1deg); margin-left: 30px; }
+.note.t3 { transform: rotate(-.7deg); margin-left: -10px; }
+.note.t4 { transform: rotate(.6deg); margin-left: 20px; }
+.note:hover { transform: rotate(0) translateY(-3px); box-shadow: 0 10px 0 0 var(--ink), 0 24px 50px rgba(0,0,0,.5); }
+.note.tint-yellow { background: linear-gradient(160deg, #2a2912 0%, #1c1a08 100%); border-color: rgba(254,248,61,.25); }
+.note.tint-pink   { background: linear-gradient(160deg, #2a1822 0%, #1c0e16 100%); border-color: rgba(255,138,180,.25); }
+.note.tint-blue   { background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(125,211,252,.25); }
+.note .when {
   font-family: var(--font-display);
-  font-size: 11px; font-weight: 700; letter-spacing: .14em;
+  font-size: 13px; font-weight: 700; letter-spacing: .04em;
   color: var(--accent);
-  text-transform: uppercase;
 }
-.news-body h3 {
-  font-family: var(--font-display);
-  font-size: 18px; font-weight: 800; letter-spacing: -.3px;
+.note .body h3 {
+  font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -.4px;
   margin-bottom: 4px;
 }
-.news-body p { font-size: 13.5px; color: var(--muted-light); line-height: 1.6; }
-.news-tag {
-  font-family: var(--font-display); font-size: 10.5px; font-weight: 700; letter-spacing: .14em;
-  color: var(--muted-light); text-transform: uppercase;
-  padding: 5px 12px; border-radius: 100px;
+.note .body p { font-size: 14px; color: var(--muted-light); line-height: 1.55; }
+.note .tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-display);
+  font-size: 10.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted-light);
+  background: rgba(255,255,255,.04);
   border: 1px solid var(--border);
-  background: rgba(255,255,255,.02);
-  white-space: nowrap;
+  padding: 5px 12px; border-radius: 100px;
 }
-@media (max-width: 700px) {
-  .news-item { grid-template-columns: 1fr; gap: 8px; }
-  .news-tag { justify-self: start; }
+.note .tag svg { width: 12px; height: 12px; fill: currentColor; }
+@media (max-width: 720px) {
+  .note { grid-template-columns: 1fr; gap: 10px; }
+  .note .tag { justify-self: start; }
+  .note.t1, .note.t2, .note.t3, .note.t4 { margin-left: 0; }
 }
 
-.coming-banner {
-  position: relative;
-  margin: 64px auto 0;
-  max-width: 920px;
-  background: linear-gradient(160deg, rgba(20,26,38,.95) 0%, rgba(13,17,23,.92) 100%);
-  border: 1px dashed rgba(254,248,61,.18);
-  border-radius: 20px;
-  padding: 28px;
+.more-soon {
+  margin-top: 40px;
+  padding: 32px;
+  border: 2px dashed rgba(254,248,61,.30);
+  border-radius: 24px;
   text-align: center;
-  overflow: hidden; isolation: isolate;
+  background: linear-gradient(160deg, #2a2912 0%, #1c1a08 100%);
+  transform: rotate(-.7deg);
+  max-width: 880px;
 }
-.coming-banner::before {
-  content:""; position: absolute; inset: 0; border-radius: 20px;
-  background: radial-gradient(circle at 50% -20%, rgba(254,248,61,.08), transparent 60%);
-  pointer-events: none; z-index: 0;
-}
-.coming-banner > * { position: relative; z-index: 1; }
-.coming-banner h3 {
-  font-family: var(--font-display);
-  font-size: 18px; font-weight: 800; letter-spacing: -.3px; margin-bottom: 6px;
-}
-.coming-banner p { font-size: 13.5px; color: var(--muted-light); }
+.more-soon h3 { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -.4px; margin-bottom: 6px; }
+.more-soon p { font-size: 14px; color: var(--muted-light); }
+
+.deco-n1 { top: 100px; right: 4%; width: 36px; height: 36px; color: var(--c-pink); --r: 14deg; }
+.deco-n2 { top: 360px; left: -2%; width: 28px; height: 28px; color: var(--c-blue); --r: -16deg; }
 </style>
 </head>
 <body>
 
+<div class="bg-blob b1"></div>
+<div class="bg-blob b2"></div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-fire" viewBox="0 0 448 512"><path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2zM225.7 416c25.3 0 47.7-7 68.8-21 42.1-29.4 53.4-88.2 28.1-134.4-4.5-9-16-9.6-22.5-2l-25.2 29.3c-6.6 7.6-18.5 7.4-24.7-.5-17.3-22.1-49.1-62.4-65.3-83-5.4-6.9-15.2-8-21.5-1.9-18.3 17.8-51.5 56.8-51.5 104.3 0 68.6 50.6 109.2 113.7 109.2z"/></symbol>
+  <symbol id="i-people" viewBox="0 0 576 512"><path d="M64 128a112 112 0 1 1 224 0 112 112 0 1 1 -224 0zM0 464c0-97.2 78.8-176 176-176s176 78.8 176 176l0 6c0 23.2-18.8 42-42 42L42 512c-23.2 0-42-18.8-42-42l0-6zM432 64a96 96 0 1 1 0 192 96 96 0 1 1 0-192zm0 240c79.5 0 144 64.5 144 144l0 22.4c0 23-18.6 41.6-41.6 41.6l-144.8 0c6.6-12.5 10.4-26.8 10.4-42l0-6c0-51.5-17.4-98.9-46.5-136.7 22.6-14.7 49.6-23.3 78.5-23.3z"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 384 512"><path d="M32 32C32 14.3 46.3 0 64 0L320 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-29.5 0 10.3 134.1c37.1 21.2 65.8 56.4 78.2 99.7l3.8 13.4c2.8 9.7 .8 20-5.2 28.1S362 352 352 352L32 352c-10 0-19.5-4.7-25.5-12.7s-8-18.4-5.2-28.1L5 297.8c12.4-43.3 41-78.5 78.2-99.7L93.5 64 64 64C46.3 64 32 49.7 32 32zM160 400l64 0 0 112c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-112z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 448 512"><path d="M128 0C110.3 0 96 14.3 96 32l0 32-32 0C28.7 64 0 92.7 0 128l0 48 448 0 0-48c0-35.3-28.7-64-64-64l-32 0 0-32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 32-128 0 0-32c0-17.7-14.3-32-32-32zM0 224L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-192-448 0z"/></symbol>
+  <symbol id="i-hashtag" viewBox="0 0 512 512"><path d="M214.7 .7c17.3 3.7 28.3 20.7 24.6 38l-19.1 89.3 126.5 0 22-102.7C372.4 8 389.4-3 406.7 .7s28.3 20.7 24.6 38L412.2 128 480 128c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-27.4 128 67.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38l19.1-89.3-126.5 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38L99.8 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 27.4-128-67.8 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 22-102.7C180.4 8 197.4-3 214.7 .7zM206.4 192l-27.4 128 126.5 0 27.4-128-126.5 0z"/></symbol>
+</svg>
+
 <nav class="nav-root">
   <a href="/" class="nav-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
   <div class="nav-pill-group">
-    <a href="/" class="nav-pill">Home</a>
     <a href="/about-us" class="nav-pill">About</a>
     <a href="/mission" class="nav-pill">Mission</a>
     <a href="/products" class="nav-pill">Products</a>
-    <a href="/innovation-room" class="nav-pill">Innovation Room</a>
-    <a href="/newsroom" class="nav-pill active">Newsroom</a>
+    <a href="/innovation-room" class="nav-pill">Lab</a>
+    <a href="/newsroom" class="nav-pill active">News</a>
   </div>
   <div class="nav-spacer"></div>
   <div class="nav-right">
-    <a href="https://fortized.com" class="nav-btn-ghost">Fortized</a>
-    <a href="/products" class="nav-btn-cta">Explore</a>
+    <a href="https://fortized.com" class="nav-btn-cta">Fortized</a>
     <div class="nav-hamburger"><span></span><span></span><span></span></div>
   </div>
 </nav>
 <div class="mobile-menu">
-  <a href="/">Home</a>
   <a href="/about-us">About</a>
   <a href="/mission">Mission</a>
   <a href="/products">Products</a>
-  <a href="/innovation-room">Innovation Room</a>
-  <a href="/newsroom">Newsroom</a>
+  <a href="/innovation-room">Lab</a>
+  <a href="/newsroom">News</a>
   <a href="https://fortized.com">Fortized →</a>
 </div>
 
-<section class="page">
+<section class="page-top">
   <div class="container">
-    <div class="page-head">
-      <div class="page-tag">Newsroom</div>
-      <h1 class="page-title">Notes from <span>Swiftaw</span>.</h1>
-      <p class="page-sub">Announcements, milestones and small stories along the way.</p>
-    </div>
+    <div class="deco deco-n1 float-a"><svg><use href="#i-trophy"/></svg></div>
+    <div class="deco deco-n2 float-b"><svg><use href="#i-hashtag"/></svg></div>
 
-    <div class="news-list">
-      <div class="news-item reveal">
-        <div class="news-date">Feb 2026</div>
-        <div class="news-body">
-          <h3>Weaverdant joins as Chief Communication Officer</h3>
-          <p>A new voice for Swiftaw — strengthening how we share what we build.</p>
+    <div class="eyebrow">the news</div>
+    <h1>small wins,<br>quiet <span class="pop">updates</span>.</h1>
+    <p class="lede">We post when there's something worth posting. No noise, no SEO mush.</p>
+
+    <div class="news-stack">
+      <div class="note t1 tint-pink reveal">
+        <div class="when">Feb 2026</div>
+        <div class="body">
+          <h3>Weaverdant joins as CCO</h3>
+          <p>A new voice for Swiftaw - strengthening how we share what we build.</p>
         </div>
-        <div class="news-tag">Team</div>
+        <div class="tag"><svg><use href="#i-people"/></svg> team</div>
       </div>
-      <div class="news-item reveal">
-        <div class="news-date">Dec 2025</div>
-        <div class="news-body">
+      <div class="note t2 tint-blue reveal">
+        <div class="when">Dec 2025</div>
+        <div class="body">
           <h3>Tyrianum joins as Chief R&amp;D Officer</h3>
           <p>Research and engineering get a dedicated home inside Swiftaw.</p>
         </div>
-        <div class="news-tag">Team</div>
+        <div class="tag"><svg><use href="#i-people"/></svg> team</div>
       </div>
-      <div class="news-item reveal">
-        <div class="news-date">Aug 2025</div>
-        <div class="news-body">
+      <div class="note t3 tint-yellow reveal">
+        <div class="when">Aug 2025</div>
+        <div class="body">
           <h3>Swiftaw is founded</h3>
-          <p>A European technology ecosystem begins, with Fortized as its first product.</p>
+          <p>A small European studio begins. Fortized becomes the first product.</p>
         </div>
-        <div class="news-tag">Milestone</div>
+        <div class="tag"><svg><use href="#i-trophy"/></svg> milestone</div>
       </div>
     </div>
 
-    <div class="coming-banner reveal">
-      <h3>More on the way.</h3>
-      <p>We don't ship news for its own sake — only when something's actually worth saying.</p>
+    <div class="more-soon reveal">
+      <h3>more on the way</h3>
+      <p>we don't ship news for its own sake. only when something's worth saying.</p>
     </div>
   </div>
 </section>
 
 <footer class="site-footer">
-  <div class="footer-left">
+  <div class="footer-inner">
     <a href="/" class="footer-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
-    <div class="footer-socials"></div>
-  </div>
-  <div class="copy">© 2026 Swiftaw · Swiftly Beyond</div>
-  <div class="footer-links">
-    <a href="/about-us">About</a>
-    <a href="/products">Products</a>
-    <a href="https://fortized.com">Fortized</a>
+    <div class="footer-copy">© 2026 Swiftaw · swiftly beyond · made in Île-de-France</div>
+    <div class="footer-links">
+      <a href="/about-us">About</a>
+      <a href="/mission">Mission</a>
+      <a href="https://fortized.com">Fortized</a>
+    </div>
   </div>
 </footer>
 

@@ -3,83 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Page not found — Swiftaw</title>
-<meta name="description" content="The page you were looking for doesn't exist.">
+<title>404 - Swiftaw</title>
+<meta name="description" content="The page wandered off.">
 <meta name="theme-color" content="#fef83d">
 <link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-.four-wrap {
+.wrap {
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
-  padding: 100px 24px 40px;
+  padding: 130px 28px 60px;
   position: relative;
+}
+.four {
+  position: relative;
+  max-width: 600px;
   text-align: center;
 }
-.four-spotlight {
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% 40%, rgba(254,248,61,.10), transparent 60%);
-  pointer-events: none;
-}
-.four-inner { position: relative; z-index: 1; max-width: 540px; }
-.four-num {
+.big {
   font-family: var(--font-display);
-  font-size: clamp(120px, 22vw, 220px); font-weight: 800; line-height: 1;
+  font-size: clamp(120px, 22vw, 240px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -10px;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  margin-bottom: 14px; letter-spacing: -8px;
-  filter: drop-shadow(0 0 32px rgba(254,248,61,.25));
-}
-.four-inner h1 {
-  font-family: var(--font-display);
-  font-size: 32px; font-weight: 800; letter-spacing: -.8px;
+  filter: drop-shadow(0 0 28px rgba(254,248,61,.30));
+  transform: rotate(-3deg);
   margin-bottom: 14px;
 }
-.four-inner p { font-size: 16px; color: var(--muted-light); margin-bottom: 28px; line-height: 1.65; }
-.four-actions { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.four h1 { font-family: var(--font-display); font-size: 34px; font-weight: 800; letter-spacing: -.9px; margin-bottom: 12px; }
+.four p { font-size: 16px; color: var(--text); margin-bottom: 26px; }
+.four .row { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.deco-4 { position: absolute; }
+.d4-1 { top: 14%; left: 12%; width: 38px; height: 38px; color: var(--c-pink); --r: 18deg; }
+.d4-2 { bottom: 18%; right: 12%; width: 32px; height: 32px; color: var(--c-blue); --r: -14deg; }
+.d4-3 { top: 28%; right: 8%; width: 28px; height: 28px; color: var(--c-mint); --r: 8deg; }
 </style>
 </head>
 <body>
 
+<div class="bg-blob b1"></div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-compass" viewBox="0 0 512 512"><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></symbol>
+  <symbol id="i-hashtag" viewBox="0 0 512 512"><path d="M214.7 .7c17.3 3.7 28.3 20.7 24.6 38l-19.1 89.3 126.5 0 22-102.7C372.4 8 389.4-3 406.7 .7s28.3 20.7 24.6 38L412.2 128 480 128c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-27.4 128 67.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38l19.1-89.3-126.5 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38L99.8 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 27.4-128-67.8 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 22-102.7C180.4 8 197.4-3 214.7 .7zM206.4 192l-27.4 128 126.5 0 27.4-128-126.5 0z"/></symbol>
+  <symbol id="i-fire" viewBox="0 0 448 512"><path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2zM225.7 416c25.3 0 47.7-7 68.8-21 42.1-29.4 53.4-88.2 28.1-134.4-4.5-9-16-9.6-22.5-2l-25.2 29.3c-6.6 7.6-18.5 7.4-24.7-.5-17.3-22.1-49.1-62.4-65.3-83-5.4-6.9-15.2-8-21.5-1.9-18.3 17.8-51.5 56.8-51.5 104.3 0 68.6 50.6 109.2 113.7 109.2z"/></symbol>
+</svg>
+
 <nav class="nav-root">
   <a href="/" class="nav-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
   <div class="nav-pill-group">
-    <a href="/" class="nav-pill">Home</a>
     <a href="/about-us" class="nav-pill">About</a>
     <a href="/mission" class="nav-pill">Mission</a>
     <a href="/products" class="nav-pill">Products</a>
-    <a href="/innovation-room" class="nav-pill">Innovation Room</a>
-    <a href="/newsroom" class="nav-pill">Newsroom</a>
+    <a href="/innovation-room" class="nav-pill">Lab</a>
+    <a href="/newsroom" class="nav-pill">News</a>
   </div>
   <div class="nav-spacer"></div>
   <div class="nav-right">
-    <a href="https://fortized.com" class="nav-btn-ghost">Fortized</a>
-    <a href="/products" class="nav-btn-cta">Explore</a>
+    <a href="https://fortized.com" class="nav-btn-cta">Fortized</a>
     <div class="nav-hamburger"><span></span><span></span><span></span></div>
   </div>
 </nav>
 <div class="mobile-menu">
-  <a href="/">Home</a>
   <a href="/about-us">About</a>
   <a href="/mission">Mission</a>
   <a href="/products">Products</a>
-  <a href="/innovation-room">Innovation Room</a>
-  <a href="/newsroom">Newsroom</a>
+  <a href="/innovation-room">Lab</a>
+  <a href="/newsroom">News</a>
   <a href="https://fortized.com">Fortized →</a>
 </div>
 
-<div class="four-wrap">
-  <div class="four-spotlight"></div>
-  <div class="four-inner">
-    <div class="four-num">404</div>
-    <h1>This page wandered off.</h1>
-    <p>The link's broken, the page moved, or it never existed. Either way — let's get you back.</p>
-    <div class="four-actions">
-      <a href="/" class="btn-cta">Back home →</a>
-      <a href="/products" class="btn-ghost">See products</a>
+<div class="wrap">
+  <div class="deco deco-4 d4-1 float-a"><svg><use href="#i-compass"/></svg></div>
+  <div class="deco deco-4 d4-2 float-b"><svg><use href="#i-hashtag"/></svg></div>
+  <div class="deco deco-4 d4-3 float-c"><svg><use href="#i-fire"/></svg></div>
+
+  <div class="four">
+    <div class="big">404</div>
+    <h1>this page wandered off.</h1>
+    <p>broken link, page moved, or it never existed. either way - let's get you home.</p>
+    <div class="row">
+      <a href="/" class="btn-3d">back home <svg class="i"><use href="#i-compass"/></svg></a>
+      <a href="/products" class="btn-3d-ghost">see products</a>
     </div>
   </div>
 </div>
