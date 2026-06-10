@@ -1,4 +1,30 @@
 // ════════════════════════════════════════════
+//   Shared icon sprite - injected once
+// ════════════════════════════════════════════
+(function () {
+  if (document.getElementById('swiftaw-sprite')) return;
+  const wrap = document.createElement('div');
+  wrap.id = 'swiftaw-sprite';
+  wrap.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;';
+  wrap.innerHTML = [
+    '<svg xmlns="http://www.w3.org/2000/svg">',
+    // Fortized logo as an SVG icon (simplified fortress mark)
+    '<symbol id="i-fortized" viewBox="0 0 512 512">',
+      '<path d="M64 96 L256 32 L448 96 L448 256 C448 362 360 456 256 480 C152 456 64 362 64 256 Z M256 156 ',
+      'C204 156 162 198 162 250 C162 302 204 344 256 344 C308 344 350 302 350 250 C350 198 308 156 256 156 Z" />',
+      '<path d="M256 196 L286 256 L256 316 L226 256 Z" />',
+    '</symbol>',
+    // Standard icons (subset, ensure availability everywhere)
+    '<symbol id="i-fire-g" viewBox="0 0 448 512"><path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2zM225.7 416c25.3 0 47.7-7 68.8-21 42.1-29.4 53.4-88.2 28.1-134.4-4.5-9-16-9.6-22.5-2l-25.2 29.3c-6.6 7.6-18.5 7.4-24.7-.5-17.3-22.1-49.1-62.4-65.3-83-5.4-6.9-15.2-8-21.5-1.9-18.3 17.8-51.5 56.8-51.5 104.3 0 68.6 50.6 109.2 113.7 109.2z"/></symbol>',
+    '<symbol id="i-heart" viewBox="0 0 512 512"><path d="M225.8 468.2l-2.5-2.3L48.1 303.2C17.4 274.7 0 234.7 0 192.8v-3.3c0-70.4 50-130.8 119.2-144C158.6 37.9 198.9 47 231 69.6c9 6.4 17.4 13.8 25 22.3 4.2-4.8 8.7-9.2 13.5-13.3 3.7-3.2 7.5-6.2 11.5-9 32.1-22.6 72.4-31.7 111.8-24.1C461.5 58.6 512 119.2 512 189.5v3.3c0 41.9-17.4 81.9-48.1 110.4L288.7 465.9l-2.5 2.3c-8.2 7.6-19 11.9-30.2 11.9s-22-4.2-30.2-11.9z"/></symbol>',
+    '<symbol id="i-star" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 339 113.2 483.9c-2 11.9 3 24 12.9 31.1s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.1L438.5 339 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></symbol>',
+    '</svg>'
+  ].join('');
+  if (document.body) document.body.prepend(wrap);
+  else document.addEventListener('DOMContentLoaded', () => document.body.prepend(wrap));
+})();
+
+// ════════════════════════════════════════════
 //   Swiftaw - shared site interactions
 // ════════════════════════════════════════════
 
@@ -32,28 +58,104 @@
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  // Parallax tilt on stickers with data-tilt
-  document.querySelectorAll('[data-tilt]').forEach(el => {
-    el.addEventListener('mousemove', e => {
-      const r = el.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      el.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg)`;
-    });
-    el.addEventListener('mouseleave', () => {
-      el.style.transform = '';
-    });
+  // Twemoji - parse all emoji to SVGs
+  function runTwemoji() {
+    if (window.twemoji) {
+      window.twemoji.parse(document.body, { folder: 'svg', ext: '.svg' });
+    }
+  }
+  if (window.twemoji) runTwemoji();
+  else {
+    const s = document.createElement('script');
+    s.src = 'https://unpkg.com/twemoji@latest/dist/twemoji.min.js';
+    s.crossOrigin = 'anonymous';
+    s.onload = runTwemoji;
+    document.head.appendChild(s);
+  }
+})();
+
+// ════════════════════════════════════════════
+//   Custom context menu (right-click)
+// ════════════════════════════════════════════
+(function () {
+  const ICONS = {
+    home: '<svg viewBox="0 0 576 512"><path d="M575.8 255.5c0 18-15 32.1-32 32.1L512 287.6l.7 160.2c0 2.7-.2 5.4-.5 8.1L512 480c0 17.7-14.3 32-32 32H448 416c-17.7 0-32-14.3-32-32V416 384c0-17.7-14.3-32-32-32H288c-17.7 0-32 14.3-32 32v32 64c0 17.7-14.3 32-32 32H192 160.1c-1.2 0-2.4-.1-3.6-.1c-1.5 .1-3 .1-4.5 .1H128c-17.7 0-32-14.3-32-32V416c0-1.6 .1-3.2 .2-4.8V288H64c-17.7 0-32-14.3-32-32 0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231c8 7 12 15 11 24z"/></svg>',
+    compass: '<svg viewBox="0 0 512 512"><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></svg>',
+    copy: '<svg viewBox="0 0 448 512"><path d="M384 96L384 0H192C156.7 0 128 28.7 128 64v256c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64v-224H352c-17.7 0-32-14.3-32-32V96h64zm-32 0h96L352 0V96zM64 128C28.7 128 0 156.7 0 192V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H224v32c0 17.7-14.3 32-32 32H64c-17.7 0-32-14.3-32-32V192c0-17.7 14.3-32 32-32H96V128H64z"/></svg>',
+    fortized: '<svg viewBox="0 0 512 512"><path d="M64 96 256 32l192 64v160c0 106-79 200-192 224C143 456 64 362 64 256V96zm192 64a96 96 0 1 0 0 192 96 96 0 1 0 0-192z"/></svg>',
+    fire: '<svg viewBox="0 0 448 512"><path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2zM225.7 416c25.3 0 47.7-7 68.8-21 42.1-29.4 53.4-88.2 28.1-134.4-4.5-9-16-9.6-22.5-2l-25.2 29.3c-6.6 7.6-18.5 7.4-24.7-.5-17.3-22.1-49.1-62.4-65.3-83-5.4-6.9-15.2-8-21.5-1.9-18.3 17.8-51.5 56.8-51.5 104.3 0 68.6 50.6 109.2 113.7 109.2z"/></svg>',
+    refresh: '<svg viewBox="0 0 512 512"><path d="M463.5 224h8.5c13.3 0 24-10.7 24-24v-128c0-9.7-5.8-18.5-14.8-22.2S461.9 51.4 455 58.3l-41.6 41.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8h119.5z"/></svg>',
+    sparkles: '<svg viewBox="0 0 512 512"><path d="M327.5 85.2c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L384 128l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L448 128l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L448 64 426.8 7.5C425.1 3 420.8 0 416 0s-9.1 3-10.8 7.5L384 64 327.5 85.2zM205.6 27c-2.7-6.8-9.3-11-16.5-11s-13.8 4.4-16.5 11L128 144 11.1 188.6c-6.8 2.7-11 9.3-11 16.5s4.4 13.8 11 16.5L128 266l44.6 117c2.7 6.8 9.3 11 16.5 11s13.8-4.4 16.5-11L250 266l117-44.6c6.8-2.7 11-9.3 11-16.5s-4.4-13.8-11-16.5L250 144 205.6 27zM384 320l-56.5 21.2c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L384 384l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L448 384l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L448 320 426.8 263.5C425.1 259 420.8 256 416 256s-9.1 3-10.8 7.5L384 320z"/></svg>',
+    back: '<svg viewBox="0 0 448 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H109.2L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg>'
+  };
+
+  function build() {
+    const m = document.createElement('div');
+    m.className = 'ctx-menu';
+    m.innerHTML = `
+      <div class="ctx-head">
+        <img src="/SWFTW_Logomark.png" alt="">
+        <span>Swiftaw menu</span>
+      </div>
+      <div class="ctx-item" data-act="home">${ICONS.home}<span>Back to home</span><span class="shortcut">H</span></div>
+      <div class="ctx-item" data-act="mission">${ICONS.sparkles}<span>Pick a reaction</span><span class="shortcut">R</span></div>
+      <div class="ctx-item" data-act="products">${ICONS.compass}<span>See what we make</span><span class="shortcut">P</span></div>
+      <div class="ctx-sep"></div>
+      <div class="ctx-item" data-act="fortized">${ICONS.fortized}<span>Open Fortized</span></div>
+      <div class="ctx-sep"></div>
+      <div class="ctx-item" data-act="copy">${ICONS.copy}<span>Copy link</span></div>
+      <div class="ctx-item" data-act="back">${ICONS.back}<span>Back</span></div>
+      <div class="ctx-item" data-act="refresh">${ICONS.refresh}<span>Reload</span></div>
+    `;
+    document.body.appendChild(m);
+    return m;
+  }
+
+  let menu;
+  document.addEventListener('contextmenu', e => {
+    // Don't hijack right-clicks on form fields / images / links the user wants the browser default for
+    if (e.shiftKey) return; // hold shift for browser menu
+    e.preventDefault();
+    if (!menu) menu = build();
+    menu.classList.add('open');
+    const w = 260, h = menu.offsetHeight || 380;
+    let x = e.clientX, y = e.clientY;
+    if (x + w > window.innerWidth)  x = window.innerWidth  - w - 8;
+    if (y + h > window.innerHeight) y = window.innerHeight - h - 8;
+    menu.style.left = x + 'px';
+    menu.style.top  = y + 'px';
+  });
+  document.addEventListener('click', () => menu && menu.classList.remove('open'));
+  document.addEventListener('scroll', () => menu && menu.classList.remove('open'));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && menu) menu.classList.remove('open');
+  });
+  document.addEventListener('click', e => {
+    const it = e.target.closest && e.target.closest('.ctx-item');
+    if (!it) return;
+    const act = it.dataset.act;
+    if (act === 'home')      location.href = '/';
+    if (act === 'mission')   location.href = '/mission';
+    if (act === 'products')  location.href = '/products';
+    if (act === 'fortized')  window.open('https://fortized.com', '_blank');
+    if (act === 'back')      history.back();
+    if (act === 'refresh')   location.reload();
+    if (act === 'copy') {
+      navigator.clipboard && navigator.clipboard.writeText(location.href);
+    }
   });
 })();
 
 // ════════════════════════════════════════════
-//   Reactions module
-//   - Supabase realtime if SUPABASE_URL + KEY are set on window.SWIFTAW_CFG
-//   - Falls back to localStorage (single device) when not configured
+//   Reactions module - real-time via Supabase
+//   - subscribes to swiftaw_reactions table
+//   - polls every 1s as a heartbeat so the total
+//     stays visibly alive
+//   - falls back to localStorage if no creds
 // ════════════════════════════════════════════
 window.SwiftawReactions = (function () {
   const KEYS = ['stoked', 'stunned', 'loved'];
-  // The only fake reactions on the whole site (133, as agreed).
+  // The 133 fake seed reactions. Everything beyond this is real users.
   const SEED = { stoked: 53, stunned: 37, loved: 43 }; // sum = 133
   const STORAGE_PICK  = 'swiftaw.reactions.pick.v2';
   const STORAGE_LOCAL = 'swiftaw.reactions.localcounts.v2';
@@ -70,7 +172,7 @@ window.SwiftawReactions = (function () {
     const liveEl  = rootEl.querySelector('[data-live-chip]');
 
     let pick = localStorage.getItem(STORAGE_PICK) || null;
-    let remote = null;     // counts from supabase
+    let remote = null;
     let localDrift = JSON.parse(localStorage.getItem(STORAGE_LOCAL) || '{"stoked":0,"stunned":0,"loved":0}');
 
     function liveCounts() {
@@ -130,47 +232,55 @@ window.SwiftawReactions = (function () {
         s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
         s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
         s.style.background = ['#fef83d', '#fff000', '#ffffff', '#ff8ab4'][i % 4];
-        s.style.top = '50%';
-        s.style.left = '30px';
+        s.style.top = '50%'; s.style.left = '30px';
         host.appendChild(s);
         requestAnimationFrame(() => s.classList.add('go'));
         setTimeout(() => s.remove(), 1000);
       }
     }
 
-    // ───── Remote (Supabase) wiring ─────
     let client = null;
-    async function setupRemote() {
-      client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
-      // initial fetch
+
+    async function fetchOnce() {
+      if (!client) return false;
       const { data, error } = await client
         .from('swiftaw_reactions')
         .select('key,count');
-      if (error || !data) {
-        return false;
-      }
-      remote = {};
-      KEYS.forEach(k => { remote[k] = SEED[k]; });
-      data.forEach(row => { if (KEYS.includes(row.key)) remote[row.key] = row.count; });
-      render();
+      if (error || !data) return false;
+      const next = {};
+      KEYS.forEach(k => { next[k] = SEED[k]; });
+      data.forEach(row => { if (KEYS.includes(row.key)) next[row.key] = row.count; });
+      const changed = !remote || KEYS.some(k => remote[k] !== next[k]);
+      remote = next;
+      if (changed) render();
+      return true;
+    }
 
-      // subscribe to live updates
-      client.channel('swiftaw_reactions_live')
+    async function setupRemote() {
+      client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+      const ok = await fetchOnce();
+      if (!ok) return false;
+
+      // subscribe to live row updates
+      client.channel('swiftaw_reactions_live_' + Math.random().toString(36).slice(2, 8))
         .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'swiftaw_reactions' }, payload => {
           const k = payload.new.key;
           const prev = remote[k];
           remote[k] = payload.new.count;
           if (prev !== payload.new.count) {
             render(k);
-            if (feedEl) {
-              feedEl.textContent = randomFeedLine();
-            }
+            if (feedEl) feedEl.textContent = randomFeedLine();
           }
         })
         .subscribe();
+
+      // heartbeat - re-fetch every 1s so the total feels alive even if realtime drops
+      setInterval(fetchOnce, 1000);
+
       if (liveEl) {
         liveEl.classList.remove('offline');
-        liveEl.querySelector('.label').textContent = 'Live';
+        const lab = liveEl.querySelector('.label');
+        if (lab) lab.textContent = 'Live';
       }
       return true;
     }
@@ -179,6 +289,12 @@ window.SwiftawReactions = (function () {
       if (!client) return;
       try {
         await client.rpc(delta > 0 ? 'swiftaw_inc_reaction' : 'swiftaw_dec_reaction', { k: key });
+        // optimistically reflect right away
+        if (remote) {
+          remote[key] = Math.max(0, (remote[key] || 0) + delta);
+          render(key);
+        }
+        fetchOnce();
       } catch (e) { /* ignore */ }
     }
 
@@ -193,17 +309,15 @@ window.SwiftawReactions = (function () {
       '+1 from somewhere',
       'fresh reaction in',
       'live tap',
-      'one more vote',
+      'one more vote'
     ];
     function randomFeedLine() { return FEED_LINES[Math.floor(Math.random() * FEED_LINES.length)]; }
 
-    // ───── Wire buttons ─────
     btns.forEach(btn => {
       btn.addEventListener('click', async () => {
         const key = btn.dataset.key;
         const prev = pick;
         if (pick === key) {
-          // un-react
           pick = null;
           localStorage.removeItem(STORAGE_PICK);
           if (useRemote) bumpRemote(key, -1);
@@ -219,33 +333,28 @@ window.SwiftawReactions = (function () {
           if (useRemote) bumpRemote(key, 1);
           else bumpLocal(key, 1);
         }
-        // optimistic render: re-render after a tick so remote update can come through
         render(key);
         if (feedEl) feedEl.textContent = pick ? 'you reacted just now' : 'reaction removed';
       });
     });
 
-    // boot
     if (useRemote) {
-      setupRemote().then(ok => {
-        if (!ok) {
-          // remote failed, behave as local
-          render();
-        }
-      });
+      setupRemote().then(ok => { if (!ok) render(); });
     } else {
       if (liveEl) {
         liveEl.classList.add('offline');
-        liveEl.querySelector('.label').textContent = 'Demo';
+        const lab = liveEl.querySelector('.label');
+        if (lab) lab.textContent = 'Demo';
       }
       render();
+      // local heartbeat too - keeps the total feeling alive
+      setInterval(() => render(), 1000);
     }
   }
 
   return { init };
 })();
 
-// Auto-init every widget on the page
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-react-widget]').forEach(el => window.SwiftawReactions.init(el));
 });
