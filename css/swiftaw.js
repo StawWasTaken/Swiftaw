@@ -83,33 +83,9 @@
 // ════════════════════════════════════════════
 window.SwiftawReactions = (function () {
   const KEYS = ['stoked', 'stunned', 'loved'];
-  // The 133 fake seed reactions. Everything beyond this is real users.
+  // The 133 fake seed reactions live in the Supabase row as if they
+  // were real. Everything beyond 133 is real users, nothing simulated.
   const SEED = { stoked: 53, stunned: 37, loved: 43 }; // sum = 133
-
-  // Time-anchored visual drift so the count *feels* alive even before
-  // real users start tapping. This is purely a display layer - never
-  // pushed to Supabase, never persisted. Every device computes the same
-  // number at the same wall-clock time.
-  // Rate: ~1 simulated reaction every 75 seconds, weighted across the
-  // three options. Reset by editing LAUNCH if needed.
-  const LAUNCH = new Date('2026-06-10T00:00:00Z').getTime();
-  const TICK_MS = 75 * 1000;
-  const DRIFT_WEIGHTS = { stoked: 0.42, stunned: 0.22, loved: 0.36 };
-
-  function visualDrift() {
-    const totalSteps = Math.max(0, Math.floor((Date.now() - LAUNCH) / TICK_MS));
-    let assigned = 0;
-    const per = {};
-    KEYS.forEach((k, i) => {
-      if (i === KEYS.length - 1) {
-        per[k] = totalSteps - assigned;
-      } else {
-        per[k] = Math.round(totalSteps * DRIFT_WEIGHTS[k]);
-        assigned += per[k];
-      }
-    });
-    return per;
-  }
 
   const STORAGE_PICK  = 'swiftaw.reactions.pick.v2';
   const STORAGE_LOCAL = 'swiftaw.reactions.localcounts.v2';
@@ -131,10 +107,9 @@ window.SwiftawReactions = (function () {
 
     function liveCounts() {
       const out = {};
-      const vd = visualDrift();
       KEYS.forEach(k => {
-        const base = remote ? (remote[k] ?? SEED[k]) : SEED[k] + (localDrift[k] || 0);
-        out[k] = base + vd[k];
+        if (remote) out[k] = remote[k] ?? SEED[k];
+        else out[k] = SEED[k] + (localDrift[k] || 0);
       });
       return out;
     }
@@ -227,9 +202,9 @@ window.SwiftawReactions = (function () {
         })
         .subscribe();
 
-      // heartbeat: re-fetch every 1s AND re-render so the time-anchored
-      // visual drift ticks the total upward even without real activity
-      setInterval(() => { fetchOnce(); render(); }, 1000);
+      // heartbeat - re-fetch every 1s + re-render so real reactions
+      // appearing on other devices are reflected here within a second
+      setInterval(() => { fetchOnce().then(ok => { if (ok) render(); }); }, 1000);
 
       if (liveEl) {
         liveEl.classList.remove('offline');
