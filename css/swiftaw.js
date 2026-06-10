@@ -94,7 +94,18 @@ window.SwiftawReactions = (function () {
     if (!rootEl) return;
 
     const cfg = window.SWIFTAW_CFG || {};
-    const useRemote = !!(cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY && window.supabase);
+    let useRemote = !!(cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY && window.supabase);
+
+    function demoteToLocal(reason) {
+      if (!useRemote) return;
+      console.warn('[swiftaw reactions] falling back to local mode:', reason);
+      useRemote = false;
+      if (liveEl) {
+        liveEl.classList.add('offline');
+        const lab = liveEl.querySelector('.label');
+        if (lab) lab.textContent = 'Demo';
+      }
+    }
 
     const btns = Array.from(rootEl.querySelectorAll('.react-btn'));
     const totalEl = rootEl.querySelector('[data-react-total]');
@@ -217,14 +228,18 @@ window.SwiftawReactions = (function () {
     async function bumpRemote(key, delta) {
       if (!client) return;
       try {
-        await client.rpc(delta > 0 ? 'swiftaw_inc_reaction' : 'swiftaw_dec_reaction', { k: key });
-        // optimistically reflect right away
-        if (remote) {
-          remote[key] = Math.max(0, (remote[key] || 0) + delta);
-          render(key);
+        const { error } = await client.rpc(
+          delta > 0 ? 'swiftaw_inc_reaction' : 'swiftaw_dec_reaction',
+          { k: key }
+        );
+        if (error) {
+          console.warn('[swiftaw reactions] RPC error:', error.message || error);
+          // refetch to keep our optimistic state honest with the db
+          fetchOnce().then(ok => { if (ok) render(key); });
         }
-        fetchOnce();
-      } catch (e) { /* ignore */ }
+      } catch (e) {
+        console.warn('[swiftaw reactions] RPC threw:', e);
+      }
     }
 
     function bumpLocal(key, delta) {
@@ -242,25 +257,40 @@ window.SwiftawReactions = (function () {
     ];
     function randomFeedLine() { return FEED_LINES[Math.floor(Math.random() * FEED_LINES.length)]; }
 
+    // Optimistic local update of the in-memory remote so render() shows
+    // the new number INSTANTLY. The RPC fires in the background; the 1s
+    // heartbeat will reconcile if anything is off.
+    function applyOptimistic(key, delta) {
+      if (useRemote) {
+        if (!remote) remote = { ...SEED };
+        remote[key] = Math.max(0, (remote[key] || 0) + delta);
+      } else {
+        bumpLocal(key, delta);
+      }
+    }
+
     btns.forEach(btn => {
-      btn.addEventListener('click', async () => {
+      btn.addEventListener('click', () => {
         const key = btn.dataset.key;
         const prev = pick;
+
         if (pick === key) {
+          // un-react
           pick = null;
           localStorage.removeItem(STORAGE_PICK);
+          applyOptimistic(key, -1);
           if (useRemote) bumpRemote(key, -1);
-          else bumpLocal(key, -1);
         } else {
+          // switching or first react
           pick = key;
           localStorage.setItem(STORAGE_PICK, pick);
           burst(btn);
           if (prev) {
+            applyOptimistic(prev, -1);
             if (useRemote) bumpRemote(prev, -1);
-            else bumpLocal(prev, -1);
           }
+          applyOptimistic(key, 1);
           if (useRemote) bumpRemote(key, 1);
-          else bumpLocal(key, 1);
         }
         render(key);
         if (feedEl) feedEl.textContent = pick ? 'you reacted just now' : 'reaction removed';
@@ -268,7 +298,12 @@ window.SwiftawReactions = (function () {
     });
 
     if (useRemote) {
-      setupRemote().then(ok => { if (!ok) render(); });
+      setupRemote().then(ok => {
+        if (!ok) {
+          demoteToLocal('initial Supabase fetch failed - did you run supabase-reactions.sql?');
+        }
+        render();
+      });
     } else {
       if (liveEl) {
         liveEl.classList.add('offline');
@@ -276,8 +311,6 @@ window.SwiftawReactions = (function () {
         if (lab) lab.textContent = 'Demo';
       }
       render();
-      // local heartbeat too - keeps the total feeling alive
-      setInterval(() => render(), 1000);
     }
   }
 
