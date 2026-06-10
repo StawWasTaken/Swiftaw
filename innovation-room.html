@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-.page-top { padding: 140px 0 0; position: relative; min-height: 80vh; display: flex; flex-direction: column; }
+.page-top { padding: 140px 0 0; position: relative; }
 .eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
@@ -33,10 +33,10 @@
 }
 .page-top h1 {
   font-family: var(--font-display);
-  font-size: clamp(48px, 7vw, 112px);
+  font-size: clamp(40px, 7vw, 96px);
   font-weight: 800;
-  letter-spacing: -3px;
-  line-height: .9;
+  letter-spacing: -2.5px;
+  line-height: .92;
   margin-bottom: 22px;
   max-width: 900px;
 }
@@ -45,66 +45,275 @@
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   display: inline-block; transform: rotate(-2deg);
 }
-.page-top .lede { font-size: 19px; color: var(--text); max-width: 540px; line-height: 1.55; }
+.page-top .lede { font-size: 18px; color: var(--text); max-width: 540px; line-height: 1.55; }
 
-.lab-stage {
-  position: relative;
+/* ───────── PINBOARD ───────── */
+.pinboard-wrap {
   margin: 60px 0 0;
-  flex: 1;
-  min-height: 460px;
+  padding: 0 20px;
+}
+.pinboard {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 720px;
+  padding: 60px 40px 80px;
+  background:
+    radial-gradient(circle at 20% 14%, rgba(0,0,0,.18) 1px, transparent 2px),
+    radial-gradient(circle at 80% 28%, rgba(0,0,0,.20) 1px, transparent 2px),
+    radial-gradient(circle at 50% 62%, rgba(0,0,0,.16) 1px, transparent 2px),
+    radial-gradient(circle at 12% 78%, rgba(0,0,0,.18) 1px, transparent 2px),
+    radial-gradient(circle at 88% 88%, rgba(0,0,0,.18) 1px, transparent 2px),
+    linear-gradient(160deg, #3a2a14 0%, #2a1d0c 100%);
+  background-size: 22px 22px, 30px 30px, 26px 26px, 24px 24px, 28px 28px, auto;
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 28px;
+  box-shadow:
+    0 8px 0 0 var(--ink),
+    0 30px 80px rgba(0,0,0,.6),
+    inset 0 0 0 6px rgba(0,0,0,.25),
+    inset 0 0 0 8px rgba(255,255,255,.04),
+    inset 0 0 120px rgba(0,0,0,.4);
+  overflow: hidden;
+}
+/* cork-board fiber noise overlay */
+.pinboard::before {
+  content:""; position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.35  0 0 0 0 0.18  0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");
+  opacity: .35; mix-blend-mode: overlay; pointer-events: none;
+  border-radius: 28px;
+}
+.pinboard::after {
+  content:""; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(255,255,255,.05), transparent 60%);
+  border-radius: 28px;
+  pointer-events: none;
+}
+.pinboard > * { position: relative; z-index: 1; }
+
+/* small label tag at top of board */
+.board-tag {
+  position: absolute;
+  top: -16px; left: 32px;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--bg-2);
+  border: 1.5px solid var(--border);
+  padding: 8px 14px;
+  border-radius: 100px;
+  transform: rotate(-3deg);
+  box-shadow: 0 4px 0 0 var(--ink);
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--c-lilac);
+  z-index: 5;
+}
+.board-tag .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--c-lilac); box-shadow: 0 0 8px var(--c-lilac);
+  animation: liveBlink 2s ease infinite;
 }
 
-/* Empty notebook sticker, central */
+/* pinned note (sticker variant) */
+.note-pin {
+  position: absolute;
+  padding: 18px 20px 16px;
+  background: linear-gradient(160deg, #fef83d 0%, #fff000 100%);
+  color: #2a1d0c;
+  border-radius: 4px;
+  box-shadow:
+    0 14px 24px rgba(0,0,0,.45),
+    0 2px 0 rgba(0,0,0,.2) inset;
+  min-width: 200px; max-width: 240px;
+  font-family: var(--font-body);
+}
+.note-pin::before {
+  /* push-pin head */
+  content:""; position: absolute;
+  top: -10px; left: 50%;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ff6b6b 0%, #d94343 55%, #8a1f1f 100%);
+  transform: translateX(-50%);
+  box-shadow:
+    0 2px 0 rgba(0,0,0,.35),
+    inset 1px 1px 2px rgba(255,255,255,.55),
+    inset -1px -1px 3px rgba(0,0,0,.35);
+  z-index: 3;
+}
+.note-pin::after {
+  /* tiny pin shaft glint */
+  content:""; position: absolute;
+  top: -2px; left: 50%;
+  width: 4px; height: 6px;
+  background: rgba(0,0,0,.25);
+  border-radius: 0 0 2px 2px;
+  transform: translateX(-50%);
+}
+.note-pin .lbl {
+  font-family: var(--font-display);
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: 6px;
+  opacity: .65;
+}
+.note-pin h4 {
+  font-family: var(--font-display);
+  font-size: 17px; font-weight: 800;
+  letter-spacing: -.3px; line-height: 1.15;
+}
+.note-pin .strike { text-decoration: line-through; opacity: .55; }
+
+/* paper-style tints */
+.note-pin.paper { background: linear-gradient(160deg, #f3ead0 0%, #e6d9b1 100%); color: #3a2a14; }
+.note-pin.paper::before { background: radial-gradient(circle at 30% 30%, #6dd3f0 0%, #2b95c4 55%, #134c66 100%); }
+
+.note-pin.pink { background: linear-gradient(160deg, #ffc8de 0%, #ffa8c8 100%); color: #4a1530; }
+.note-pin.pink::before { background: radial-gradient(circle at 30% 30%, #5cd97a 0%, #2da94a 55%, #155f25 100%); }
+
+.note-pin.mint { background: linear-gradient(160deg, #c7f5d4 0%, #9fe7b3 100%); color: #14391f; }
+.note-pin.mint::before { background: radial-gradient(circle at 30% 30%, #ffd86b 0%, #e0a51c 55%, #6b4d08 100%); }
+
+.note-pin.blue { background: linear-gradient(160deg, #c5e6ff 0%, #94cfff 100%); color: #0a2a44; }
+.note-pin.blue::before { background: radial-gradient(circle at 30% 30%, #ff8aa8 0%, #d23a5e 55%, #6b1226 100%); }
+
+.note-pin.lilac { background: linear-gradient(160deg, #ddd0fb 0%, #c4b5fd 100%); color: #1f1140; }
+.note-pin.lilac::before { background: radial-gradient(circle at 30% 30%, #ffd86b 0%, #d99318 55%, #6b4408 100%); }
+
+/* positions + rotations - chaotic, hand-pinned */
+.n1 { top: 60px;  left: 4%;   transform: rotate(-8deg);  animation: bobA 9s ease-in-out infinite; }
+.n2 { top: 32px;  left: 32%;  transform: rotate(4deg);   animation: bobB 11s ease-in-out infinite; }
+.n3 { top: 96px;  right: 6%;  transform: rotate(7deg);   animation: bobC 10s ease-in-out infinite; }
+.n4 { bottom: 88px;  left: 7%;   transform: rotate(5deg);   animation: bobB 12s ease-in-out infinite; }
+.n5 { bottom: 56px;  left: 36%;  transform: rotate(-3deg);  animation: bobA 13s ease-in-out infinite; }
+.n6 { bottom: 100px; right: 5%;  transform: rotate(-6deg);  animation: bobC 11s ease-in-out infinite; }
+.n7 { top: 220px;    right: 36%; transform: rotate(2deg);   animation: bobB 9s ease-in-out infinite; }
+
+/* taped-receipt style note */
+.note-pin.taped { padding-top: 28px; }
+.note-pin.taped::before { display: none; }
+.note-pin.taped::after {
+  content:"";
+  position: absolute; top: -10px; left: 50%;
+  width: 60px; height: 18px;
+  background: rgba(255,255,255,.45);
+  border-radius: 1px;
+  transform: translateX(-50%) rotate(-3deg);
+  box-shadow: 0 1px 0 rgba(0,0,0,.1);
+}
+
+/* string between two notes */
+.string {
+  position: absolute;
+  background: rgba(255,255,255,.18);
+  height: 1px;
+  transform-origin: 0 50%;
+  z-index: 0;
+  box-shadow: 0 1px 0 rgba(0,0,0,.25);
+}
+
+/* central empty note - pinned to the board */
 .empty-note {
   position: relative;
-  max-width: 560px;
-  margin: 60px auto 0;
-  padding: 40px 36px;
-  background: linear-gradient(160deg, #1c1a2c 0%, #13111e 100%);
-  border: 2px dashed rgba(196,181,253,.4);
-  border-radius: 28px;
+  z-index: 2;
+  max-width: 520px;
+  margin: 140px auto 60px;
+  padding: 40px 32px 32px;
+  background: linear-gradient(160deg, rgba(28,26,44,.96) 0%, rgba(19,17,30,.96) 100%);
+  border: 1.5px solid rgba(196,181,253,.35);
+  border-radius: 20px;
   text-align: center;
   transform: rotate(-1.5deg);
-  box-shadow: 0 8px 0 0 var(--ink), 0 30px 60px rgba(0,0,0,.5);
+  box-shadow:
+    0 8px 0 0 var(--ink),
+    0 26px 60px rgba(0,0,0,.55);
+}
+.empty-note::before {
+  /* big push-pin */
+  content:""; position: absolute;
+  top: -14px; left: 50%;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fef83d 0%, #c4a90b 60%, #6b5a04 100%);
+  transform: translateX(-50%);
+  box-shadow:
+    0 4px 0 rgba(0,0,0,.4),
+    inset 2px 2px 4px rgba(255,255,255,.5),
+    inset -2px -2px 5px rgba(0,0,0,.35);
+  z-index: 5;
+}
+.empty-note::after {
+  content:""; position: absolute;
+  top: 0; left: 50%;
+  width: 6px; height: 10px;
+  background: rgba(0,0,0,.3);
+  border-radius: 0 0 3px 3px;
+  transform: translateX(-50%);
+  z-index: 4;
 }
 .empty-note .scribble {
   font-family: var(--font-display);
-  font-size: 13px; color: var(--c-lilac);
+  font-size: 12px; color: var(--c-lilac);
   letter-spacing: .14em; text-transform: uppercase;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   display: inline-flex; align-items: center; gap: 6px;
 }
 .empty-note .scribble .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c-lilac); box-shadow: 0 0 10px var(--c-lilac); animation: liveBlink 2s ease infinite; }
 .empty-note h2 {
   font-family: var(--font-display);
-  font-size: 42px; font-weight: 800; letter-spacing: -1.2px; line-height: 1;
-  margin-bottom: 14px;
+  font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -1px; line-height: 1;
+  margin-bottom: 12px;
 }
 .empty-note h2 .pop { background: linear-gradient(135deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: inline-block; transform: rotate(-3deg); }
-.empty-note p { font-size: 15.5px; color: var(--text); max-width: 420px; margin: 0 auto 22px; line-height: 1.6; }
-.empty-note .row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.empty-note p { font-size: 15px; color: var(--text); max-width: 380px; margin: 0 auto 20px; line-height: 1.6; }
+.empty-note .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
-/* scattered floating ideas (decoration) */
-.scatter { position: absolute; }
-.scatter .sticker { padding: 16px 20px; }
-.scatter .label { font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--muted-light); text-transform: uppercase; margin-bottom: 6px; }
-.scatter h4 { font-family: var(--font-display); font-size: 15px; font-weight: 800; letter-spacing: -.3px; }
+/* small overlay polaroid */
+.polaroid {
+  position: absolute;
+  width: 140px;
+  padding: 8px 8px 22px;
+  background: #f5efe4;
+  box-shadow: 0 12px 22px rgba(0,0,0,.5);
+  transform: rotate(8deg);
+  top: 60px; right: 30%;
+  z-index: 1;
+}
+.polaroid::before {
+  content:""; position: absolute;
+  top: -8px; left: 50%;
+  width: 50px; height: 14px;
+  background: rgba(255,255,255,.55);
+  transform: translateX(-50%) rotate(-2deg);
+  box-shadow: 0 1px 0 rgba(0,0,0,.15);
+}
+.polaroid .ph {
+  height: 120px;
+  background: linear-gradient(160deg, #1a2233 0%, #0d1117 100%);
+  border-radius: 1px;
+  display: flex; align-items: center; justify-content: center;
+}
+.polaroid .ph img { height: 60%; object-fit: contain; }
+.polaroid .cap {
+  font-family: var(--font-body);
+  font-size: 11px; color: #3a2a14;
+  text-align: center; margin-top: 6px;
+  letter-spacing: -.2px;
+}
 
-.scatter.s1 { top: 5%; left: 4%; width: 200px; transform: rotate(-9deg); animation: bobA 8s ease-in-out infinite; }
-.scatter.s2 { top: 12%; right: 6%; width: 180px; transform: rotate(8deg); animation: bobB 9s ease-in-out infinite; }
-.scatter.s3 { bottom: 12%; left: 8%; width: 200px; transform: rotate(6deg); animation: bobC 10s ease-in-out infinite; }
-.scatter.s4 { bottom: 5%; right: 4%; width: 180px; transform: rotate(-7deg); animation: bobA 11s ease-in-out infinite; }
-
-.scatter .strike { text-decoration: line-through; opacity: .5; }
-
-/* floating decorative icons */
-.deco-l1 { top: 20%; left: 24%; width: 30px; height: 30px; color: var(--c-pink); --r: 18deg; }
-.deco-l2 { top: 36%; right: 18%; width: 24px; height: 24px; color: var(--c-mint); --r: -14deg; }
-.deco-l3 { bottom: 36%; left: 30%; width: 28px; height: 28px; color: var(--c-blue); --r: 22deg; }
-
-@media (max-width: 760px) {
-  .scatter { display: none; }
-  .deco-l1, .deco-l2, .deco-l3 { display: none; }
+/* responsive - mobile pinboard */
+@media (max-width: 880px) {
+  .pinboard { padding: 70px 16px 60px; min-height: auto; }
+  .note-pin { position: relative; min-width: 0; width: 100%; max-width: 100%; margin: 0 0 16px; }
+  .n1, .n2, .n3, .n4, .n5, .n6, .n7 { top: auto; left: auto; right: auto; bottom: auto; transform: rotate(-1.5deg); animation: none; }
+  .n2 { transform: rotate(1.5deg); }
+  .n3 { transform: rotate(-2deg); }
+  .n4 { transform: rotate(2deg); }
+  .n5 { transform: rotate(-1deg); }
+  .n6 { transform: rotate(1.8deg); }
+  .n7 { transform: rotate(-2.2deg); }
+  .empty-note { margin: 30px auto 0; transform: none; }
+  .polaroid { display: none; }
+  .string { display: none; }
 }
 </style>
 </head>
@@ -115,11 +324,8 @@
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
   <symbol id="i-fire" viewBox="0 0 448 512"><path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2zM225.7 416c25.3 0 47.7-7 68.8-21 42.1-29.4 53.4-88.2 28.1-134.4-4.5-9-16-9.6-22.5-2l-25.2 29.3c-6.6 7.6-18.5 7.4-24.7-.5-17.3-22.1-49.1-62.4-65.3-83-5.4-6.9-15.2-8-21.5-1.9-18.3 17.8-51.5 56.8-51.5 104.3 0 68.6 50.6 109.2 113.7 109.2z"/></symbol>
-  <symbol id="i-trophy" viewBox="0 0 384 512"><path d="M32 32C32 14.3 46.3 0 64 0L320 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-29.5 0 10.3 134.1c37.1 21.2 65.8 56.4 78.2 99.7l3.8 13.4c2.8 9.7 .8 20-5.2 28.1S362 352 352 352L32 352c-10 0-19.5-4.7-25.5-12.7s-8-18.4-5.2-28.1L5 297.8c12.4-43.3 41-78.5 78.2-99.7L93.5 64 64 64C46.3 64 32 49.7 32 32zM160 400l64 0 0 112c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-112z"/></symbol>
   <symbol id="i-comments" viewBox="0 0 576 512"><path d="M384 144c0 97.2-86 176-192 176-26.7 0-52.1-5-75.2-14L35.2 349.2c-9.3 4.9-20.7 3.2-28.2-4.2s-9.2-18.9-4.2-28.2l35.6-67.2C14.3 220.2 0 183.6 0 144 0 46.8 86-32 192-32S384 46.8 384 144zm0 368c-94.1 0-172.4-62.1-188.8-144 120-1.5 224.3-86.9 235.8-202.7 83.3 19.2 145 88.3 145 170.7 0 39.6-14.3 76.2-38.4 105.6l35.6 67.2c4.9 9.3 3.2 20.7-4.2 28.2s-18.9 9.2-28.2 4.2L459.2 498c-23.1 9-48.5 14-75.2 14z"/></symbol>
   <symbol id="i-compass" viewBox="0 0 512 512"><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></symbol>
-  <symbol id="i-hashtag" viewBox="0 0 512 512"><path d="M214.7 .7c17.3 3.7 28.3 20.7 24.6 38l-19.1 89.3 126.5 0 22-102.7C372.4 8 389.4-3 406.7 .7s28.3 20.7 24.6 38L412.2 128 480 128c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-27.4 128 67.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38l19.1-89.3-126.5 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38L99.8 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 27.4-128-67.8 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 22-102.7C180.4 8 197.4-3 214.7 .7zM206.4 192l-27.4 128 126.5 0 27.4-128-126.5 0z"/></symbol>
-  <symbol id="i-people" viewBox="0 0 576 512"><path d="M64 128a112 112 0 1 1 224 0 112 112 0 1 1 -224 0zM0 464c0-97.2 78.8-176 176-176s176 78.8 176 176l0 6c0 23.2-18.8 42-42 42L42 512c-23.2 0-42-18.8-42-42l0-6zM432 64a96 96 0 1 1 0 192 96 96 0 1 1 0-192zm0 240c79.5 0 144 64.5 144 144l0 22.4c0 23-18.6 41.6-41.6 41.6l-144.8 0c6.6-12.5 10.4-26.8 10.4-42l0-6c0-51.5-17.4-98.9-46.5-136.7 22.6-14.7 49.6-23.3 78.5-23.3z"/></symbol>
 </svg>
 
 <nav class="nav-root">
@@ -153,43 +359,55 @@
     <p class="lede">most don't make it out. the ones that do, you'll see here first.</p>
   </div>
 
-  <div class="lab-stage container">
-    <div class="deco deco-l1 float-a"><svg><use href="#i-hashtag"/></svg></div>
-    <div class="deco deco-l2 float-b"><svg><use href="#i-fire"/></svg></div>
-    <div class="deco deco-l3 float-c"><svg><use href="#i-comments"/></svg></div>
+  <div class="pinboard-wrap">
+    <div class="pinboard">
+      <div class="board-tag"><span class="dot"></span> idea board · scribbles only</div>
 
-    <div class="scatter s1">
-      <div class="sticker tint-pink">
-        <div class="label strike">idea 014</div>
+      <!-- pinned notes -->
+      <div class="note-pin n1 paper">
+        <div class="lbl strike">idea 014</div>
         <h4 class="strike">RSS for friend groups</h4>
       </div>
-    </div>
-    <div class="scatter s2">
-      <div class="sticker tint-blue">
-        <div class="label">idea 028</div>
+      <div class="note-pin n2 blue">
+        <div class="lbl">idea 028</div>
         <h4>shared moodboards</h4>
       </div>
-    </div>
-    <div class="scatter s3">
-      <div class="sticker tint-mint">
-        <div class="label">idea 031</div>
+      <div class="note-pin n3 mint">
+        <div class="lbl">idea 031</div>
         <h4>a kinder DM client</h4>
       </div>
-    </div>
-    <div class="scatter s4">
-      <div class="sticker tint-yellow">
-        <div class="label strike">idea 007</div>
+      <div class="note-pin n4 pink">
+        <div class="lbl strike">idea 007</div>
         <h4 class="strike">browser pets</h4>
       </div>
-    </div>
+      <div class="note-pin n5 lilac">
+        <div class="lbl">idea 042</div>
+        <h4>profiles that feel like rooms</h4>
+      </div>
+      <div class="note-pin n6">
+        <div class="lbl">idea 053</div>
+        <h4>tiny tools for big servers</h4>
+      </div>
+      <div class="note-pin n7 paper taped">
+        <div class="lbl">scribble</div>
+        <h4>"what if a feed could feel quiet?"</h4>
+      </div>
 
-    <div class="empty-note reveal">
-      <div class="scribble"><span class="pulse-dot"></span> currently · stewing</div>
-      <h2>nothing to show. <span class="pop">yet.</span></h2>
-      <p>this is the room where things take shape - slowly, on purpose. when something's ready to walk out the door, it'll show up here first.</p>
-      <div class="row">
-        <a href="/newsroom" class="btn-3d">Watch the News <svg class="i"><use href="#i-comments"/></svg></a>
-        <a href="/" class="btn-3d-ghost">Back home</a>
+      <!-- polaroid -->
+      <div class="polaroid">
+        <div class="ph"><img src="/SwiftawLogo.png" alt=""></div>
+        <div class="cap">team off-site, '25</div>
+      </div>
+
+      <!-- central pinned panel -->
+      <div class="empty-note reveal">
+        <div class="scribble"><span class="pulse-dot"></span> currently · stewing</div>
+        <h2>nothing to show. <span class="pop">yet.</span></h2>
+        <p>this is the room where things take shape - slowly, on purpose. when something's ready to walk out the door, it'll show up here first.</p>
+        <div class="row">
+          <a href="/newsroom" class="btn-3d">Watch the News <svg class="i"><use href="#i-comments"/></svg></a>
+          <a href="/" class="btn-3d-ghost">Back home</a>
+        </div>
       </div>
     </div>
   </div>

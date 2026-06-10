@@ -210,9 +210,31 @@
   .sticker-stack .s3 { left: 10%; }
   .sticker-stack .s4 { right: 0; }
 }
-@media (max-width: 520px) {
-  .sticker-stack { height: 420px; }
-  .sticker-stack .sticker { width: 210px; padding: 18px; }
+/* mobile: stack vertically with gentle tilt so each card is fully readable */
+@media (max-width: 720px) {
+  .hero { padding: 100px 18px 40px; }
+  .hero-grid { gap: 36px; }
+  .sticker-stack {
+    height: auto;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0;
+  }
+  .sticker-stack .sticker {
+    position: relative !important;
+    top: auto !important; left: auto !important;
+    right: auto !important; bottom: auto !important;
+    width: 100% !important;
+  }
+  .sticker-stack .s1 { transform: rotate(-1.5deg); }
+  .sticker-stack .s2 { transform: rotate(1.3deg); }
+  .sticker-stack .s3 { transform: rotate(-1deg); }
+  .sticker-stack .s4 { transform: rotate(1.8deg); }
+  .hero-deco-1, .hero-deco-2, .hero-deco-3 { display: none; }
+  .hero h1 { font-size: clamp(38px, 11vw, 56px); letter-spacing: -2px; }
+  .hero-sub { font-size: 16px; }
 }
 
 /* ─── what we make ─── */
@@ -478,9 +500,9 @@
 
       <div class="sticker s4 tint-mint">
         <div class="s-now">
-          <span class="label"><span class="pulse-dot"></span> brewing</span>
-          <h4>something new</h4>
-          <p>cooking in the Lab</p>
+          <span class="label"><span class="pulse-dot"></span> shipping</span>
+          <h4>Fortized v2</h4>
+          <p>brewing in the Lab</p>
         </div>
       </div>
     </div>
@@ -575,7 +597,7 @@
     <div class="react-intro">
       <div>
         <div class="section-eyebrow"><svg><use href="#i-comments"/></svg> say something</div>
-        <h2>How are our projects landing? <img class="fmoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/joyster_laugh.png" alt=""></h2>
+        <h2>How are our projects landing? <img class="fmoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_nyancat.png" alt=""></h2>
       </div>
       <p>Tap one. Everyone watching this page sees it move in real time. It changes nothing - it just tells us we're not shouting into the void.</p>
     </div>

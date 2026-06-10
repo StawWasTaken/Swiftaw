@@ -196,7 +196,44 @@ body::before {
   .nav-hamburger { display: flex; }
   .nav-btn-ghost { display: none; }
   .nav-spacer { width: 8px; }
-  .nav-root { padding: 0 6px 0 14px; }
+  .nav-root {
+    top: 12px;
+    height: 56px;
+    padding: 0 6px 0 14px;
+    width: calc(100% - 20px);
+    max-width: 540px;
+    border-radius: 22px;
+  }
+  .nav-logo img { height: 22px; }
+  .nav-right { gap: 6px; }
+  .nav-btn-cta { padding: 7px 12px; font-size: 12.5px; border-radius: 14px; }
+  .mobile-menu {
+    top: 74px; left: 10px; right: 10px;
+    padding: 16px;
+    border-radius: 22px;
+  }
+  .mobile-menu a {
+    font-family: var(--font-display);
+    font-size: 17px; font-weight: 700;
+    padding: 14px 16px;
+    color: #fff;
+    letter-spacing: -.3px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .mobile-menu a::after {
+    content: "→";
+    color: var(--muted);
+    font-weight: 500;
+    transition: color .15s, transform .15s;
+  }
+  .mobile-menu a:hover::after,
+  .mobile-menu a:active::after { color: var(--accent); transform: translateX(4px); }
+}
+@media (max-width: 420px) {
+  .nav-root { padding: 0 4px 0 12px; }
+  .nav-logo { margin-right: 6px; }
+  .nav-logo img { height: 20px; }
 }
 
 /* SVG icons inside yellow surfaces should be dark (not yellow) */
