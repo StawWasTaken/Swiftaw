@@ -1,9 +1,8 @@
 -- ════════════════════════════════════════════
 --   Swiftaw reactions - real-time counter
 --   Run this once in your Supabase SQL editor.
---   Then plug SUPABASE_URL + SUPABASE_ANON_KEY
---   into the <script> at the bottom of each page
---   that uses the reactions widget.
+--   (If you ran an older version where counts looked stuck at the seed,
+--   re-run this file - it adds the RLS bits the old version missed.)
 -- ════════════════════════════════════════════
 
 create table if not exists public.swiftaw_reactions (
@@ -51,6 +50,21 @@ grant usage on schema public to anon;
 grant select on public.swiftaw_reactions to anon;
 grant execute on function public.swiftaw_inc_reaction(text) to anon;
 grant execute on function public.swiftaw_dec_reaction(text) to anon;
+
+-- ════════════════════════════════════════════
+-- Row Level Security: Supabase enables RLS by default on new tables.
+-- Without a SELECT policy, anon gets an empty array back and the widget
+-- silently shows the seed numbers instead of the real ones.
+-- Enable RLS explicitly and add a policy that lets anyone read counts.
+-- ════════════════════════════════════════════
+alter table public.swiftaw_reactions enable row level security;
+
+drop policy if exists "anon can read reactions" on public.swiftaw_reactions;
+create policy "anon can read reactions"
+  on public.swiftaw_reactions
+  for select
+  to anon, authenticated
+  using (true);
 
 -- Realtime broadcast (so other tabs/devices update live)
 alter publication supabase_realtime add table public.swiftaw_reactions;

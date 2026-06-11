@@ -187,7 +187,16 @@ window.SwiftawReactions = (function () {
       const { data, error } = await client
         .from('swiftaw_reactions')
         .select('key,count');
-      if (error || !data) return false;
+      if (error) {
+        console.warn('[swiftaw reactions] SELECT failed:', error.message || error);
+        return false;
+      }
+      if (!data || data.length === 0) {
+        // Empty result usually means RLS is enabled with no SELECT policy,
+        // or the seed rows are missing. Surface this loudly.
+        console.warn('[swiftaw reactions] SELECT returned 0 rows - did you re-run supabase-reactions.sql? RLS may be blocking the anon role.');
+        return false;
+      }
       const next = {};
       KEYS.forEach(k => { next[k] = SEED[k]; });
       data.forEach(row => { if (KEYS.includes(row.key)) next[row.key] = row.count; });
