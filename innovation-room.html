@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lab - Swiftaw</title>
-<meta name="description" content="The Lab - where Swiftaw's weird ideas grow up. Empty for now, on purpose.">
+<meta name="description" content="The Lab - where Swiftaw's weird ideas grow up. Currently cooking: Stampled.">
 <link rel="canonical" href="https://swiftaw.com/innovation-room">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Swiftaw - Lab">
-<meta property="og:description" content="Where weird ideas grow up.">
-<meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
+<meta property="og:description" content="Where weird ideas grow up. Currently cooking: Stampled.">
+<meta property="og:image" content="https://swiftaw.com/SwiftawLab-Stampled.png">
 <meta property="og:url" content="https://swiftaw.com/innovation-room">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#fef83d">
@@ -53,6 +53,155 @@
   flex: 1;
   min-height: 520px;
 }
+
+/* ── featured project card (Stampled) ───────────────────── */
+.project-card {
+  position: relative;
+  max-width: 760px;
+  margin: 60px auto 0;
+  background: linear-gradient(160deg, #1d1a2e 0%, #14111f 100%);
+  border: 1.5px solid rgba(196,181,253,.35);
+  border-radius: 28px;
+  overflow: hidden;
+  transform: rotate(-1deg);
+  box-shadow: 0 10px 0 0 var(--ink), 0 30px 60px rgba(0,0,0,.5);
+  z-index: 2;
+}
+/* yellow pin at the top */
+.project-card::before {
+  content:""; position: absolute;
+  top: -12px; left: 50%;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fef83d 0%, #c4a90b 60%, #6b5a04 100%);
+  transform: translateX(-50%);
+  box-shadow:
+    0 3px 0 rgba(0,0,0,.4),
+    inset 1.5px 1.5px 3px rgba(255,255,255,.5),
+    inset -1.5px -1.5px 4px rgba(0,0,0,.35);
+  z-index: 5;
+}
+.project-card .visual {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #0a0a14;
+  overflow: hidden;
+  border-bottom: 1.5px solid rgba(196,181,253,.18);
+}
+.project-card .visual img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.project-card .visual::after {
+  content:""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(20,17,31,.40));
+  pointer-events: none;
+}
+.project-card .status-chip {
+  position: absolute;
+  top: 16px; left: 16px;
+  z-index: 3;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--c-lilac);
+  background: rgba(13,17,23,.78);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(196,181,253,.30);
+  padding: 6px 12px;
+  border-radius: 100px;
+}
+.project-card .status-chip .pulse-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--c-lilac);
+  box-shadow: 0 0 8px var(--c-lilac);
+  animation: liveBlink 1.8s ease infinite;
+}
+.project-card .body {
+  padding: 32px 36px 28px;
+}
+.project-card .name {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -1.4px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.project-card .name .pop {
+  background: linear-gradient(135deg, var(--c-lilac), #a78bfa);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.project-card .tagline {
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 18px;
+  letter-spacing: -.3px;
+}
+.project-card p {
+  font-size: 15.5px;
+  color: var(--text);
+  line-height: 1.65;
+  margin-bottom: 16px;
+}
+.project-card p:last-of-type { margin-bottom: 22px; }
+.project-card .three-line {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted-light);
+  line-height: 1.55;
+  margin-bottom: 8px;
+  letter-spacing: -.2px;
+}
+.project-card .three-line span { display: block; }
+.project-card .punchline {
+  font-family: var(--font-display);
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--c-lilac);
+  margin-bottom: 22px;
+  letter-spacing: -.3px;
+}
+.project-card .foot {
+  display: flex; align-items: center; gap: 14px;
+  flex-wrap: wrap;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.project-card .foot .more {
+  font-family: var(--font-display);
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted);
+  margin-left: auto;
+}
+@media (max-width: 720px) {
+  .project-card { transform: none; }
+  .project-card .body { padding: 24px 22px 22px; }
+}
+
+/* a tiny 'more cooking' note that lives below the project card */
+.more-cooking {
+  max-width: 560px;
+  margin: 36px auto 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 13px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted-light);
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 10px 18px;
+  border-radius: 100px;
+  background: rgba(255,255,255,.03);
+  border: 1px dashed rgba(196,181,253,.22);
+  position: relative;
+  z-index: 2;
+}
+.more-cooking-wrap { text-align: center; }
 
 /* central empty panel */
 .empty-note {
@@ -233,13 +382,37 @@
       </div>
     </div>
 
-    <div class="empty-note reveal">
-      <div class="scribble"><span class="pulse-dot"></span> currently · stewing</div>
-      <h2>nothing to show. <span class="pop">yet.</span></h2>
-      <p>this is the room where things take shape - slowly, on purpose. when something's ready to walk out the door, it'll show up here first.</p>
-      <div class="row">
-        <a href="/newsroom" class="btn-3d">Watch the News <svg class="i"><use href="#i-comments"/></svg></a>
-        <a href="/" class="btn-3d-ghost">Back home</a>
+    <article class="project-card reveal" id="stampled">
+      <div class="visual">
+        <span class="status-chip"><span class="pulse-dot"></span> currently · cooking</span>
+        <img src="/SwiftawLab-Stampled.png" alt="Stampled" loading="lazy">
+      </div>
+      <div class="body">
+        <div class="name">stampled<span style="color:var(--accent);">.</span></div>
+        <div class="tagline">some ideas deserve more than a like button.</div>
+
+        <p>a new social experiment growing inside the Lab. we're poking at new ways for people to collect, share, and leave their mark online.</p>
+        <p>nothing flashy to announce yet. just a small room, a few prototypes, and a lot of opinions about the way ideas spread.</p>
+
+        <div class="three-line">
+          <span>still early.</span>
+          <span>still weird.</span>
+          <span>still changing every week.</span>
+        </div>
+        <div class="punchline">that's usually a good sign.</div>
+
+        <div class="foot">
+          <a href="/newsroom" class="btn-3d sm">Follow along <svg class="i"><use href="#i-comments"/></svg></a>
+          <a href="/" class="btn-3d-ghost sm">Back home</a>
+          <span class="more">more soon</span>
+        </div>
+      </div>
+    </article>
+
+    <div class="more-cooking-wrap">
+      <div class="more-cooking">
+        <svg class="i" style="width:12px;height:12px;fill:var(--c-lilac);"><use href="#i-hashtag"/></svg>
+        other things still in the oven
       </div>
     </div>
   </div>
