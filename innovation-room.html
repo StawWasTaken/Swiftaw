@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lab - Swiftaw</title>
-<meta name="description" content="The Lab - where Swiftaw's weird ideas grow up. Currently cooking: Stampled.">
+<meta name="description" content="The Lab - where Swiftaw cooks up weird, ambitious, european-built software. Currently featuring: Stampled.">
 <link rel="canonical" href="https://swiftaw.com/innovation-room">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Swiftaw - Lab">
-<meta property="og:description" content="Where weird ideas grow up. Currently cooking: Stampled.">
+<meta property="og:description" content="Where weird ideas grow up. Currently featuring: Stampled.">
 <meta property="og:image" content="https://swiftaw.com/SwiftawLab-Stampled.png">
 <meta property="og:url" content="https://swiftaw.com/innovation-room">
 <meta name="twitter:card" content="summary_large_image">
@@ -19,7 +19,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-.page-top { padding: 140px 0 0; position: relative; min-height: 80vh; display: flex; flex-direction: column; }
+:root { --stamp-red: #eb4545; --stamp-red-bright: #ff5a5a; --stamp-red-deep: #8a1d1d; --stamp-red-glow: rgba(235,69,69,.40); }
+
+.page-top { padding: 130px 0 80px; position: relative; }
 .eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
@@ -47,191 +49,329 @@
 }
 .page-top .lede { font-size: 18px; color: var(--text); max-width: 540px; line-height: 1.55; }
 
-.lab-stage {
-  position: relative;
-  margin: 60px 0 0;
-  flex: 1;
-  min-height: 520px;
+/* ───────── FEATURED BANNER + ARTICLE ───────── */
+.featured-wrap { margin-top: 80px; position: relative; }
+
+.featured-rail {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 22px;
+}
+.featured-rail .label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--stamp-red);
+  background: rgba(235,69,69,.08);
+  border: 1px solid rgba(235,69,69,.30);
+  padding: 6px 14px;
+  border-radius: 100px;
+}
+.featured-rail .label .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--stamp-red);
+  box-shadow: 0 0 10px var(--stamp-red);
+  animation: liveBlink 1.6s ease infinite;
+}
+.featured-rail .line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(235,69,69,.40), transparent); }
+.featured-rail .index {
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--muted);
 }
 
-/* ── Featured project: Stampled (red card, simple) ─────── */
-.project-card {
-  --stamp-red: #eb4545;
-  --stamp-red-glow: rgba(235,69,69,.35);
-
+/* The article itself */
+.article-card {
   position: relative;
-  max-width: 720px;
-  margin: 60px auto 0;
-  background: linear-gradient(160deg, #2a0e0e 0%, #1a0808 100%);
-  border: 1.5px solid rgba(235,69,69,.40);
+  background: #15080a;
+  border: 1.5px solid rgba(235,69,69,.30);
   border-radius: 26px;
   overflow: hidden;
-  transform: rotate(-1deg);
-  box-shadow:
-    0 10px 0 0 var(--ink),
-    0 28px 60px rgba(0,0,0,.55),
-    0 0 50px rgba(235,69,69,.10);
-  z-index: 2;
+  box-shadow: 0 14px 0 0 var(--ink), 0 30px 70px rgba(0,0,0,.55);
 }
-/* yellow pin at the top */
-.project-card::before {
-  content:""; position: absolute;
-  top: -12px; left: 50%;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #fef83d 0%, #c4a90b 60%, #6b5a04 100%);
-  transform: translateX(-50%);
-  box-shadow:
-    0 3px 0 rgba(0,0,0,.4),
-    inset 1.5px 1.5px 3px rgba(255,255,255,.5),
-    inset -1.5px -1.5px 4px rgba(0,0,0,.35);
-  z-index: 5;
+.article-card::before {
+  content:""; position: absolute; inset: 0; border-radius: 26px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(235,69,69,.18), transparent 55%),
+    radial-gradient(circle at 0% 100%, rgba(235,69,69,.08), transparent 55%);
+  pointer-events: none;
+  z-index: 0;
 }
+.article-card > * { position: relative; z-index: 1; }
 
-.project-card .visual {
+/* image at top, full-width banner */
+.article-card .visual {
   position: relative;
-  aspect-ratio: 16 / 9;
-  background: #0a0a14;
+  aspect-ratio: 21 / 9;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(235,69,69,.18), transparent 65%),
+    #0d0306;
   overflow: hidden;
-  border-bottom: 1.5px solid rgba(235,69,69,.25);
+  border-bottom: 1.5px solid rgba(235,69,69,.22);
 }
-.project-card .visual img {
+.article-card .visual img {
   width: 100%; height: 100%;
   object-fit: cover;
   display: block;
 }
-.project-card .visual::after {
-  content:""; position: absolute; inset: 0;
-  background: linear-gradient(180deg, transparent 60%, rgba(26,8,8,.55));
+.article-card .visual::after {
+  content:""; position: absolute; left: 0; right: 0; bottom: 0; height: 50%;
+  background: linear-gradient(180deg, transparent, rgba(13,3,6,.85));
   pointer-events: none;
 }
-.project-card .status-chip {
+.article-card .visual .corner-chip {
   position: absolute;
-  top: 16px; left: 16px;
-  z-index: 3;
+  top: 18px; left: 18px;
+  z-index: 2;
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
   font-size: 11px; font-weight: 700;
   letter-spacing: .14em; text-transform: uppercase;
   color: var(--stamp-red);
-  background: rgba(13,17,23,.78);
+  background: rgba(8,2,4,.78);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(235,69,69,.40);
   padding: 6px 12px;
   border-radius: 100px;
 }
-.project-card .status-chip .pulse-dot {
-  width: 7px; height: 7px; border-radius: 50%;
+.article-card .visual .corner-chip .pulse-dot {
+  width: 6px; height: 6px; border-radius: 50%;
   background: var(--stamp-red);
   box-shadow: 0 0 8px var(--stamp-red);
-  animation: liveBlink 1.8s ease infinite;
+  animation: liveBlink 1.6s ease infinite;
 }
-.project-card .body { padding: 32px 36px 28px; }
-.project-card .name {
+.article-card .visual .corner-meta {
+  position: absolute;
+  top: 18px; right: 18px;
+  z-index: 2;
+  display: flex; gap: 6px;
+}
+.article-card .visual .corner-meta .m {
   font-family: var(--font-display);
-  font-size: clamp(36px, 5.5vw, 52px);
-  font-weight: 800;
-  letter-spacing: -1.4px;
-  line-height: 1;
-  margin-bottom: 8px;
+  font-size: 10.5px; font-weight: 800;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.7);
+  background: rgba(8,2,4,.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.10);
+  padding: 5px 10px;
+  border-radius: 100px;
 }
-.project-card .name .word {
+.article-card .visual .corner-meta .m b { color: var(--accent); }
+
+/* article body - magazine layout */
+.article-card .body {
+  padding: 44px clamp(28px, 5vw, 56px) 40px;
+}
+
+.project-title {
+  font-family: var(--font-display);
+  font-size: clamp(54px, 9vw, 108px);
+  font-weight: 800;
+  letter-spacing: -3.5px;
+  line-height: .9;
+  margin: 0 0 14px;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.project-card .tagline {
+.project-title .end-dot {
+  display: inline-block;
+  width: 16px; height: 16px;
+  background: var(--stamp-red);
+  border-radius: 50%;
+  margin-left: 6px;
+  vertical-align: 8px;
+  box-shadow: 0 0 18px var(--stamp-red-glow);
+  animation: pulse 2.2s ease infinite;
+  -webkit-text-fill-color: var(--stamp-red);
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.30); opacity: .80; }
+}
+.project-tagline {
   font-family: var(--font-display);
-  font-size: 16px; font-weight: 700;
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 700;
   color: #fff;
-  margin-bottom: 22px;
-  letter-spacing: -.3px;
+  letter-spacing: -.5px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(235,69,69,.18);
+  padding-bottom: 24px;
 }
-.project-card p {
-  font-size: 15.5px;
+
+/* two-column lead section: opening punch + the bullet rundown */
+.lead-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: clamp(20px, 4vw, 40px);
+  margin-bottom: 30px;
+}
+@media (max-width: 760px) { .lead-grid { grid-template-columns: 1fr; gap: 22px; } }
+
+.lead-text p {
+  font-size: 16.5px;
   color: var(--text);
-  line-height: 1.65;
-  margin-bottom: 18px;
+  line-height: 1.7;
+  margin-bottom: 14px;
 }
-.project-card .three-line {
+.lead-text p:last-child { margin-bottom: 0; }
+.lead-text p b { color: #fff; font-weight: 600; }
+.lead-text p .underline-red {
+  background: linear-gradient(transparent 60%, rgba(235,69,69,.35) 60%);
+  padding: 0 2px;
+}
+
+.lead-bullets {
+  background: rgba(235,69,69,.05);
+  border: 1px solid rgba(235,69,69,.20);
+  border-radius: 18px;
+  padding: 22px 22px 18px;
+}
+.lead-bullets .head {
   font-family: var(--font-display);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--stamp-red);
+  margin-bottom: 12px;
+}
+.lead-bullets ul { list-style: none; margin: 0; padding: 0; }
+.lead-bullets li {
   font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+  padding: 9px 0;
+  border-bottom: 1px dashed rgba(255,255,255,.06);
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.lead-bullets li:last-child { border-bottom: 0; padding-bottom: 0; }
+.lead-bullets li::before {
+  content: "✦";
+  color: var(--stamp-red);
+  font-size: 10px;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.lead-bullets li b { color: #fff; font-weight: 600; }
+
+/* closing beat */
+.beat {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 22px 24px;
+  background: linear-gradient(135deg, rgba(235,69,69,.06), rgba(235,69,69,.02));
+  border: 1px solid rgba(235,69,69,.22);
+  border-radius: 18px;
+  margin-bottom: 24px;
+}
+@media (max-width: 600px) { .beat { grid-template-columns: 1fr; } }
+.beat .three {
+  font-family: var(--font-display);
+  font-size: 15px;
   font-weight: 700;
   color: var(--muted-light);
   line-height: 1.5;
-  margin-bottom: 6px;
   letter-spacing: -.2px;
 }
-.project-card .three-line span { display: block; }
-.project-card .punchline {
+.beat .three span { display: block; }
+.beat .punch {
   font-family: var(--font-display);
-  font-size: 14.5px;
+  font-size: clamp(15px, 1.6vw, 18px);
   font-weight: 800;
-  color: var(--accent);
-  margin-bottom: 22px;
+  color: var(--stamp-red);
   letter-spacing: -.3px;
+  text-align: right;
+  line-height: 1.15;
 }
-.project-card .foot {
+@media (max-width: 600px) { .beat .punch { text-align: left; } }
+
+/* foot row */
+.article-card .foot {
   display: flex; align-items: center; gap: 14px;
   flex-wrap: wrap;
-  padding-top: 20px;
-  border-top: 1px solid rgba(235,69,69,.20);
+  padding-top: 22px;
+  border-top: 1px solid rgba(235,69,69,.18);
 }
-.project-card .foot .more {
+.article-card .foot .more {
   font-family: var(--font-display);
   font-size: 12px; font-weight: 700;
   letter-spacing: .14em; text-transform: uppercase;
-  color: rgba(255,255,255,.4);
+  color: rgba(255,255,255,.40);
   margin-left: auto;
 }
-@media (max-width: 720px) {
-  .project-card { transform: none; margin-top: 40px; }
-  .project-card .body { padding: 24px 22px 22px; }
+
+/* ───────── "more in the oven" mini grid ─────────
+   Replaces the chaotic scattered notes with a tidy 4-up grid. */
+.oven {
+  margin-top: 90px;
 }
-
-/* scattered floating ideas (unchanged) */
-.scatter { position: absolute; }
-.scatter .sticker { padding: 16px 20px; position: relative; }
-.scatter .sticker::after {
-  content:""; position: absolute;
-  top: -8px; left: 22px;
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #ff7a7a 0%, #d23a3a 55%, #7a1414 100%);
-  box-shadow: 0 1.5px 0 rgba(0,0,0,.35), inset 1px 1px 2px rgba(255,255,255,.5);
-  z-index: 4;
+.oven-head {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 22px;
 }
-.scatter.pin-blue .sticker::after { background: radial-gradient(circle at 30% 30%, #6dd3f0 0%, #2b95c4 55%, #134c66 100%); }
-.scatter.pin-mint .sticker::after { background: radial-gradient(circle at 30% 30%, #8eecaa 0%, #2da94a 55%, #155f25 100%); }
-.scatter.pin-yellow .sticker::after { background: radial-gradient(circle at 30% 30%, #fef083 0%, #c4a90b 55%, #6b5a04 100%); }
-.scatter.pin-lilac .sticker::after { background: radial-gradient(circle at 30% 30%, #d4c5fd 0%, #8b6dd6 55%, #3d2b6b 100%); }
-
-.scatter .label { font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: .14em; color: var(--muted-light); text-transform: uppercase; margin-bottom: 6px; }
-.scatter h4 { font-family: var(--font-display); font-size: 15px; font-weight: 800; letter-spacing: -.3px; }
-.scatter .strike { text-decoration: line-through; opacity: .5; }
-
-.scatter.s1 { top: 5%;  left: 4%;   width: 200px; transform: rotate(-9deg); animation: bobA 8s ease-in-out infinite; }
-.scatter.s2 { top: 10%; right: 6%;  width: 180px; transform: rotate(8deg);  animation: bobB 9s ease-in-out infinite; }
-.scatter.s3 { bottom: 12%; left: 6%;  width: 200px; transform: rotate(6deg);  animation: bobC 10s ease-in-out infinite; }
-.scatter.s4 { bottom: 6%;  right: 4%;  width: 180px; transform: rotate(-7deg); animation: bobA 11s ease-in-out infinite; }
-.scatter.s5 { top: 38%; left: 30%; width: 180px; transform: rotate(3deg); animation: bobB 12s ease-in-out infinite; }
-
-.thread {
-  position: absolute;
-  top: 16%; left: 18%;
-  width: 170px; height: 1px;
-  background: linear-gradient(90deg, rgba(196,181,253,.0), rgba(196,181,253,.45), rgba(196,181,253,.0));
-  transform: rotate(28deg);
-  pointer-events: none;
-  z-index: 0;
+.oven-head .label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--c-lilac);
+  background: rgba(196,181,253,.08);
+  border: 1px solid rgba(196,181,253,.22);
+  padding: 6px 14px;
+  border-radius: 100px;
 }
-
-.deco-l1 { top: 20%; left: 24%; width: 30px; height: 30px; color: var(--c-pink); --r: 18deg; }
-.deco-l2 { top: 36%; right: 18%; width: 24px; height: 24px; color: var(--c-mint); --r: -14deg; }
-.deco-l3 { bottom: 36%; left: 30%; width: 28px; height: 28px; color: var(--c-blue); --r: 22deg; }
-
-@media (max-width: 880px) {
-  .scatter, .thread, .deco-l1, .deco-l2, .deco-l3 { display: none; }
+.oven-head .line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(196,181,253,.30), transparent); }
+.oven-head .meta {
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--muted);
 }
+.oven-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+}
+@media (max-width: 980px) { .oven-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .oven-grid { grid-template-columns: 1fr; } }
+.idea {
+  position: relative;
+  background: linear-gradient(160deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  padding: 20px 18px 16px;
+  transition: border-color .2s, background .2s, transform .2s;
+}
+.idea:hover { border-color: rgba(196,181,253,.25); background: rgba(196,181,253,.04); transform: translateY(-2px); }
+.idea .num {
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--muted-light);
+  margin-bottom: 6px;
+}
+.idea h4 {
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 800;
+  letter-spacing: -.4px;
+  color: #fff;
+  margin-bottom: 12px;
+}
+.idea .state {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-display);
+  font-size: 10px; font-weight: 800;
+  letter-spacing: .14em; text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+.idea .state .d { width: 5px; height: 5px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
+.idea .state.cooking { color: var(--c-lilac); background: rgba(196,181,253,.08); border: 1px solid rgba(196,181,253,.22); }
+.idea .state.shelved { color: var(--c-blue); background: rgba(125,211,252,.08); border: 1px solid rgba(125,211,252,.22); }
+.idea .state.dreaming { color: var(--c-mint); background: rgba(134,239,172,.08); border: 1px solid rgba(134,239,172,.22); }
+.idea .state.killed { color: var(--stamp-red); background: rgba(235,69,69,.08); border: 1px solid rgba(235,69,69,.30); }
+.idea.killed h4 { text-decoration: line-through; color: var(--muted-light); }
 </style>
 </head>
 <body>
@@ -274,71 +414,96 @@
     <div class="eyebrow">the lab</div>
     <h1>where <span class="pop">weird</span><br>ideas grow up.</h1>
     <p class="lede">most don't make it out. the ones that do, you'll see here first.</p>
-  </div>
 
-  <div class="lab-stage container">
-    <div class="deco deco-l1 float-a"><svg><use href="#i-hashtag"/></svg></div>
-    <div class="deco deco-l2 float-b"><svg><use href="#i-fire"/></svg></div>
-    <div class="deco deco-l3 float-c"><svg><use href="#i-comments"/></svg></div>
+    <!-- ─── Featured project ─────────────────────────── -->
+    <div class="featured-wrap">
+      <div class="featured-rail">
+        <span class="label"><span class="dot"></span> currently featuring</span>
+        <span class="line"></span>
+        <span class="index">project · 047</span>
+      </div>
 
-    <div class="thread"></div>
-
-    <div class="scatter s1">
-      <div class="sticker tint-pink">
-        <div class="label strike">idea 014</div>
-        <h4 class="strike">RSS for friend groups</h4>
-      </div>
-    </div>
-    <div class="scatter s2 pin-blue">
-      <div class="sticker tint-blue">
-        <div class="label">idea 028</div>
-        <h4>shared moodboards</h4>
-      </div>
-    </div>
-    <div class="scatter s3 pin-mint">
-      <div class="sticker tint-mint">
-        <div class="label">idea 031</div>
-        <h4>a kinder DM client</h4>
-      </div>
-    </div>
-    <div class="scatter s4 pin-yellow">
-      <div class="sticker tint-yellow">
-        <div class="label strike">idea 007</div>
-        <h4 class="strike">browser pets</h4>
-      </div>
-    </div>
-    <div class="scatter s5 pin-lilac">
-      <div class="sticker tint-lilac">
-        <div class="label">idea 042</div>
-        <h4>profiles that feel like rooms</h4>
-      </div>
-    </div>
-
-    <article class="project-card reveal" id="stampled">
-      <div class="visual">
-        <span class="status-chip"><span class="pulse-dot"></span> currently · cooking</span>
-        <img src="/SwiftawLab-Stampled.png" alt="Stampled" loading="lazy">
-      </div>
-      <div class="body">
-        <div class="name"><span class="word">stampled</span>.</div>
-        <div class="tagline">some ideas deserve more than a like button.</div>
-
-        <p>a new social experiment growing inside the Lab. we're playing with new ways for people to collect, share, and leave their mark online.</p>
-
-        <div class="three-line">
-          <span>still early.</span>
-          <span>still weird.</span>
-          <span>still changing every week.</span>
+      <article class="article-card reveal" id="stampled">
+        <div class="visual">
+          <span class="corner-chip"><span class="pulse-dot"></span> in the oven</span>
+          <div class="corner-meta">
+            <span class="m">🇪🇺 <b>european</b></span>
+            <span class="m">v<b>0.0.3</b></span>
+          </div>
+          <img src="/SwiftawLab-Stampled.png" alt="Stampled" loading="lazy">
         </div>
-        <div class="punchline">that's usually a good sign.</div>
 
-        <div class="foot">
-          <a href="/newsroom" class="btn-3d sm">Follow along <svg class="i"><use href="#i-comments"/></svg></a>
-          <a href="/" class="btn-3d-ghost sm">Back home</a>
-          <span class="more">more soon</span>
+        <div class="body">
+          <h2 class="project-title">stampled<span class="end-dot"></span></h2>
+          <div class="project-tagline">some ideas deserve more than a like button.</div>
+
+          <div class="lead-grid">
+            <div class="lead-text">
+              <p>here's the thing. we, at <b>Swiftaw</b>, are building a new app. and we're not going to be quiet about it.</p>
+              <p>stampled is a <b>brand-new social app</b> made for the people who are quietly fed up with the apps already sitting on their phone. it's <b>european</b>, it's <b>private by default</b>, and it does more in one place than most of the apps you currently have to juggle between.</p>
+              <p>we think it's going to make you actually <span class="underline-red">happy to open it</span>. we think it's going to be the first thing you tap in the morning and the last thing you close at night, ahead of every other app you keep around mostly out of habit.</p>
+              <p>we're not telling you everything yet. you'll see it when it's ready. but here's the rough shape of it -</p>
+            </div>
+            <div class="lead-bullets">
+              <div class="head">what we will say</div>
+              <ul>
+                <li><b>social, but not draining.</b> built around small rooms, not infinite feeds.</li>
+                <li><b>expressive,</b> the way the early internet was, before everything became a grid of squares.</li>
+                <li><b>safe by default.</b> european hosting, no creepy data deals, no dark patterns.</li>
+                <li><b>about ten features</b> you've been quietly wishing one single app would just do for you.</li>
+                <li><b>free.</b> no monthly subscription holding good features hostage.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="beat">
+            <div class="three">
+              <span>still early.</span>
+              <span>still weird.</span>
+              <span>still changing every week.</span>
+            </div>
+            <div class="punch">that's usually a good sign.</div>
+          </div>
+
+          <div class="foot">
+            <a href="/newsroom" class="btn-3d sm">Follow along <svg class="i"><use href="#i-comments"/></svg></a>
+            <a href="/" class="btn-3d-ghost sm">Back home</a>
+            <span class="more">more soon</span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- ─── Other ideas in the lab ───────────────────── -->
+    <section class="oven">
+      <div class="oven-head">
+        <span class="label"><svg class="i" style="width:11px;height:11px;fill:var(--c-lilac);"><use href="#i-hashtag"/></svg> also on the bench</span>
+        <span class="line"></span>
+        <span class="meta">5 ideas · 2 killed this season</span>
+      </div>
+      <div class="oven-grid">
+        <div class="idea">
+          <div class="num">idea 042</div>
+          <h4>profiles that feel like rooms</h4>
+          <span class="state cooking"><span class="d"></span> cooking</span>
+        </div>
+        <div class="idea">
+          <div class="num">idea 031</div>
+          <h4>a kinder DM client</h4>
+          <span class="state dreaming"><span class="d"></span> dreaming</span>
+        </div>
+        <div class="idea">
+          <div class="num">idea 028</div>
+          <h4>shared moodboards</h4>
+          <span class="state shelved"><span class="d"></span> shelved</span>
+        </div>
+        <div class="idea killed">
+          <div class="num">idea 014</div>
+          <h4>RSS for friend groups</h4>
+          <span class="state killed"><span class="d"></span> killed</span>
         </div>
       </div>
-    </article>
+    </section>
   </div>
 </section>
 
