@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-:root { --stamp-red: #eb4545; --stamp-red-bright: #ff5a5a; --stamp-red-deep: #8a1d1d; --stamp-red-glow: rgba(235,69,69,.40); }
+:root { --stamp-red: #eb4545; --stamp-red-glow: rgba(235,69,69,.40); }
 
 .page-top { padding: 130px 0 80px; position: relative; }
 .eyebrow {
@@ -49,59 +49,52 @@
 }
 .page-top .lede { font-size: 18px; color: var(--text); max-width: 540px; line-height: 1.55; }
 
-/* ───────── FEATURED BANNER + ARTICLE ───────── */
-.featured-wrap { margin-top: 80px; position: relative; }
-
-.featured-rail {
+/* ───── Section rails (currently featuring / on the bench) ───── */
+.section-rail {
   display: flex; align-items: center; gap: 14px;
-  margin-bottom: 22px;
+  margin: 70px 0 22px;
 }
-.featured-rail .label {
+.section-rail .label {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
   font-size: 11px; font-weight: 800;
   letter-spacing: .18em; text-transform: uppercase;
-  color: var(--stamp-red);
-  background: rgba(235,69,69,.08);
-  border: 1px solid rgba(235,69,69,.30);
   padding: 6px 14px;
   border-radius: 100px;
 }
-.featured-rail .label .dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: var(--stamp-red);
-  box-shadow: 0 0 10px var(--stamp-red);
-  animation: liveBlink 1.6s ease infinite;
-}
-.featured-rail .line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(235,69,69,.40), transparent); }
-.featured-rail .index {
+.section-rail .label .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 10px currentColor; }
+.section-rail .label.red { color: var(--stamp-red); background: rgba(235,69,69,.08); border: 1px solid rgba(235,69,69,.30); }
+.section-rail .label.red .dot { animation: liveBlink 1.6s ease infinite; }
+.section-rail .label.lilac { color: var(--c-lilac); background: rgba(196,181,253,.08); border: 1px solid rgba(196,181,253,.22); }
+.section-rail .line { flex: 1; height: 1px; }
+.section-rail .label.red ~ .line { background: linear-gradient(90deg, rgba(235,69,69,.30), transparent); }
+.section-rail .label.lilac ~ .line { background: linear-gradient(90deg, rgba(196,181,253,.30), transparent); }
+.section-rail .meta {
   font-family: var(--font-display);
   font-size: 11px; font-weight: 700;
   letter-spacing: .18em; text-transform: uppercase;
   color: var(--muted);
 }
 
-/* The article itself */
-.article-card {
-  position: relative;
-  background: #15080a;
-  border: 1.5px solid rgba(235,69,69,.30);
-  border-radius: 26px;
-  overflow: hidden;
-  box-shadow: 0 14px 0 0 var(--ink), 0 30px 70px rgba(0,0,0,.55);
+/* ───── Project sticker card (uses Swiftaw's standard .sticker pattern,
+        with a Stampled-only red tint) ───── */
+.sticker.tint-red {
+  background: linear-gradient(160deg, #2a0e0e 0%, #1a0808 100%);
+  border-color: rgba(235,69,69,.32);
+  box-shadow: 0 8px 0 0 var(--ink), 0 22px 50px rgba(0,0,0,.45), 0 0 50px rgba(235,69,69,.08);
 }
-.article-card::before {
-  content:""; position: absolute; inset: 0; border-radius: 26px;
-  background:
-    radial-gradient(circle at 100% 0%, rgba(235,69,69,.18), transparent 55%),
-    radial-gradient(circle at 0% 100%, rgba(235,69,69,.08), transparent 55%);
-  pointer-events: none;
-  z-index: 0;
-}
-.article-card > * { position: relative; z-index: 1; }
 
-/* image at top, full-width banner */
-.article-card .visual {
+.project-sticker {
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+  transform: rotate(-1deg);
+  border-radius: 24px;
+}
+.project-sticker:hover { transform: rotate(0) translateY(-4px); }
+
+/* Visual at the top */
+.project-sticker .visual {
   position: relative;
   aspect-ratio: 21 / 9;
   background:
@@ -110,192 +103,125 @@
   overflow: hidden;
   border-bottom: 1.5px solid rgba(235,69,69,.22);
 }
-.article-card .visual img {
+.project-sticker .visual img {
   width: 100%; height: 100%;
   object-fit: cover;
   display: block;
 }
-.article-card .visual::after {
-  content:""; position: absolute; left: 0; right: 0; bottom: 0; height: 50%;
-  background: linear-gradient(180deg, transparent, rgba(13,3,6,.85));
+.project-sticker .visual::after {
+  content:""; position: absolute; left: 0; right: 0; bottom: 0; height: 45%;
+  background: linear-gradient(180deg, transparent, rgba(13,3,6,.78));
   pointer-events: none;
 }
-.article-card .visual .corner-chip {
+.project-sticker .visual .chip {
   position: absolute;
   top: 18px; left: 18px;
   z-index: 2;
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--font-display);
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .14em; text-transform: uppercase;
   color: var(--stamp-red);
   background: rgba(8,2,4,.78);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(235,69,69,.40);
-  padding: 6px 12px;
-  border-radius: 100px;
-}
-.article-card .visual .corner-chip .pulse-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--stamp-red);
-  box-shadow: 0 0 8px var(--stamp-red);
-  animation: liveBlink 1.6s ease infinite;
-}
-.article-card .visual .corner-meta {
-  position: absolute;
-  top: 18px; right: 18px;
-  z-index: 2;
-  display: flex; gap: 6px;
-}
-.article-card .visual .corner-meta .m {
-  font-family: var(--font-display);
-  font-size: 10.5px; font-weight: 800;
-  letter-spacing: .14em; text-transform: uppercase;
-  color: rgba(255,255,255,.7);
-  background: rgba(8,2,4,.65);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,.10);
-  padding: 5px 10px;
-  border-radius: 100px;
-}
-.article-card .visual .corner-meta .m b { color: var(--accent); }
-
-/* article body - magazine layout */
-.article-card .body {
-  padding: 44px clamp(28px, 5vw, 56px) 40px;
+  border-color: rgba(235,69,69,.40);
 }
 
-.project-title {
+/* Body */
+.project-sticker .body {
+  padding: 36px clamp(28px, 4vw, 48px) 34px;
+}
+.project-sticker h2.project-title {
   font-family: var(--font-display);
-  font-size: clamp(54px, 9vw, 108px);
+  font-size: clamp(56px, 9.5vw, 112px);
   font-weight: 800;
-  letter-spacing: -3.5px;
-  line-height: .9;
-  margin: 0 0 14px;
+  letter-spacing: -3.6px;
+  line-height: .88;
+  margin: 0 0 16px;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.project-title .end-dot {
+.project-sticker h2.project-title .end-dot {
   display: inline-block;
   width: 16px; height: 16px;
   background: var(--stamp-red);
   border-radius: 50%;
   margin-left: 6px;
-  vertical-align: 8px;
+  vertical-align: 10px;
   box-shadow: 0 0 18px var(--stamp-red-glow);
-  animation: pulse 2.2s ease infinite;
+  animation: stampPulse 2.2s ease infinite;
   -webkit-text-fill-color: var(--stamp-red);
 }
-@keyframes pulse {
+@keyframes stampPulse {
   0%,100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.30); opacity: .80; }
 }
-.project-tagline {
+.project-sticker .tagline {
   font-family: var(--font-display);
   font-size: clamp(18px, 2vw, 22px);
   font-weight: 700;
   color: #fff;
   letter-spacing: -.5px;
-  margin-bottom: 30px;
-  border-bottom: 1px solid rgba(235,69,69,.18);
-  padding-bottom: 24px;
+  margin: 0 0 26px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgba(235,69,69,.20);
 }
 
-/* two-column lead section: opening punch + the bullet rundown */
-.lead-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: clamp(20px, 4vw, 40px);
-  margin-bottom: 30px;
-}
-@media (max-width: 760px) { .lead-grid { grid-template-columns: 1fr; gap: 22px; } }
-
-.lead-text p {
-  font-size: 16.5px;
+.project-sticker .article-body p {
+  font-size: 16px;
   color: var(--text);
-  line-height: 1.7;
-  margin-bottom: 14px;
+  line-height: 1.75;
+  margin-bottom: 16px;
 }
-.lead-text p:last-child { margin-bottom: 0; }
-.lead-text p b { color: #fff; font-weight: 600; }
-.lead-text p .underline-red {
-  background: linear-gradient(transparent 60%, rgba(235,69,69,.35) 60%);
-  padding: 0 2px;
-}
-
-.lead-bullets {
-  background: rgba(235,69,69,.05);
-  border: 1px solid rgba(235,69,69,.20);
-  border-radius: 18px;
-  padding: 22px 22px 18px;
-}
-.lead-bullets .head {
+.project-sticker .article-body p:last-child { margin-bottom: 0; }
+.project-sticker .article-body p b { color: #fff; font-weight: 600; }
+.project-sticker .article-body .own-line {
   font-family: var(--font-display);
-  font-size: 11px; font-weight: 800;
-  letter-spacing: .18em; text-transform: uppercase;
-  color: var(--stamp-red);
-  margin-bottom: 12px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -.4px;
+  margin: 4px 0 16px;
 }
-.lead-bullets ul { list-style: none; margin: 0; padding: 0; }
-.lead-bullets li {
-  font-size: 14px;
+.project-sticker .article-body .principles {
+  font-size: 16px;
   color: var(--text);
-  line-height: 1.5;
-  padding: 9px 0;
-  border-bottom: 1px dashed rgba(255,255,255,.06);
-  display: flex; align-items: flex-start; gap: 10px;
+  line-height: 1.75;
+  margin: 4px 0 22px;
 }
-.lead-bullets li:last-child { border-bottom: 0; padding-bottom: 0; }
-.lead-bullets li::before {
-  content: "✦";
-  color: var(--stamp-red);
-  font-size: 10px;
-  margin-top: 4px;
-  flex-shrink: 0;
-}
-.lead-bullets li b { color: #fff; font-weight: 600; }
+.project-sticker .article-body .principles b { color: #fff; font-weight: 600; }
 
 /* closing beat */
 .beat {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 18px;
-  align-items: center;
-  padding: 22px 24px;
-  background: linear-gradient(135deg, rgba(235,69,69,.06), rgba(235,69,69,.02));
-  border: 1px solid rgba(235,69,69,.22);
+  margin: 26px 0 6px;
+  padding: 20px 22px;
+  background: rgba(235,69,69,.05);
+  border: 1px dashed rgba(235,69,69,.30);
   border-radius: 18px;
-  margin-bottom: 24px;
 }
-@media (max-width: 600px) { .beat { grid-template-columns: 1fr; } }
 .beat .three {
   font-family: var(--font-display);
   font-size: 15px;
   font-weight: 700;
   color: var(--muted-light);
-  line-height: 1.5;
   letter-spacing: -.2px;
+  line-height: 1.55;
 }
 .beat .three span { display: block; }
 .beat .punch {
   font-family: var(--font-display);
-  font-size: clamp(15px, 1.6vw, 18px);
+  font-size: 16px;
   font-weight: 800;
   color: var(--stamp-red);
   letter-spacing: -.3px;
-  text-align: right;
-  line-height: 1.15;
+  margin-top: 10px;
 }
-@media (max-width: 600px) { .beat .punch { text-align: left; } }
 
 /* foot row */
-.article-card .foot {
+.project-sticker .foot {
   display: flex; align-items: center; gap: 14px;
   flex-wrap: wrap;
+  margin-top: 26px;
   padding-top: 22px;
   border-top: 1px solid rgba(235,69,69,.18);
 }
-.article-card .foot .more {
+.project-sticker .foot .more {
   font-family: var(--font-display);
   font-size: 12px; font-weight: 700;
   letter-spacing: .14em; text-transform: uppercase;
@@ -303,33 +229,13 @@
   margin-left: auto;
 }
 
-/* ───────── "more in the oven" mini grid ─────────
-   Replaces the chaotic scattered notes with a tidy 4-up grid. */
-.oven {
-  margin-top: 90px;
+@media (max-width: 720px) {
+  .project-sticker { transform: none; }
+  .project-sticker .body { padding: 26px 22px 24px; }
+  .section-rail { margin: 50px 0 18px; }
 }
-.oven-head {
-  display: flex; align-items: center; gap: 14px;
-  margin-bottom: 22px;
-}
-.oven-head .label {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--font-display);
-  font-size: 11px; font-weight: 800;
-  letter-spacing: .18em; text-transform: uppercase;
-  color: var(--c-lilac);
-  background: rgba(196,181,253,.08);
-  border: 1px solid rgba(196,181,253,.22);
-  padding: 6px 14px;
-  border-radius: 100px;
-}
-.oven-head .line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(196,181,253,.30), transparent); }
-.oven-head .meta {
-  font-family: var(--font-display);
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .18em; text-transform: uppercase;
-  color: var(--muted);
-}
+
+/* ───── 4-up "also on the bench" grid (Swiftaw bento feel) ───── */
 .oven-grid {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
 }
@@ -416,94 +322,80 @@
     <p class="lede">most don't make it out. the ones that do, you'll see here first.</p>
 
     <!-- ─── Featured project ─────────────────────────── -->
-    <div class="featured-wrap">
-      <div class="featured-rail">
-        <span class="label"><span class="dot"></span> currently featuring</span>
-        <span class="line"></span>
-        <span class="index">project · 047</span>
-      </div>
-
-      <article class="article-card reveal" id="stampled">
-        <div class="visual">
-          <span class="corner-chip"><span class="pulse-dot"></span> in the oven</span>
-          <div class="corner-meta">
-            <span class="m">🇪🇺 <b>european</b></span>
-            <span class="m">v<b>0.0.3</b></span>
-          </div>
-          <img src="/SwiftawLab-Stampled.png" alt="Stampled" loading="lazy">
-        </div>
-
-        <div class="body">
-          <h2 class="project-title">stampled<span class="end-dot"></span></h2>
-          <div class="project-tagline">some ideas deserve more than a like button.</div>
-
-          <div class="lead-grid">
-            <div class="lead-text">
-              <p>here's the thing. we, at <b>Swiftaw</b>, are building a new app. and we're not going to be quiet about it.</p>
-              <p>stampled is a <b>brand-new social app</b> made for the people who are quietly fed up with the apps already sitting on their phone. it's <b>european</b>, it's <b>private by default</b>, and it does more in one place than most of the apps you currently have to juggle between.</p>
-              <p>we think it's going to make you actually <span class="underline-red">happy to open it</span>. we think it's going to be the first thing you tap in the morning and the last thing you close at night, ahead of every other app you keep around mostly out of habit.</p>
-              <p>we're not telling you everything yet. you'll see it when it's ready. but here's the rough shape of it -</p>
-            </div>
-            <div class="lead-bullets">
-              <div class="head">what we will say</div>
-              <ul>
-                <li><b>social, but not draining.</b> built around small rooms, not infinite feeds.</li>
-                <li><b>expressive,</b> the way the early internet was, before everything became a grid of squares.</li>
-                <li><b>safe by default.</b> european hosting, no creepy data deals, no dark patterns.</li>
-                <li><b>about ten features</b> you've been quietly wishing one single app would just do for you.</li>
-                <li><b>free.</b> no monthly subscription holding good features hostage.</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="beat">
-            <div class="three">
-              <span>still early.</span>
-              <span>still weird.</span>
-              <span>still changing every week.</span>
-            </div>
-            <div class="punch">that's usually a good sign.</div>
-          </div>
-
-          <div class="foot">
-            <a href="/newsroom" class="btn-3d sm">Follow along <svg class="i"><use href="#i-comments"/></svg></a>
-            <a href="/" class="btn-3d-ghost sm">Back home</a>
-            <span class="more">more soon</span>
-          </div>
-        </div>
-      </article>
+    <div class="section-rail">
+      <span class="label red"><span class="dot"></span> currently featuring</span>
+      <span class="line"></span>
+      <span class="meta">project · 047</span>
     </div>
 
+    <article class="sticker tint-red project-sticker reveal" id="stampled">
+      <div class="visual">
+        <span class="chip"><span class="dot"></span> in the oven</span>
+        <img src="/SwiftawLab-Stampled.png" alt="Stampled" loading="lazy">
+      </div>
+
+      <div class="body">
+        <h2 class="project-title">stampled<span class="end-dot"></span></h2>
+        <div class="tagline">some ideas deserve more than a like button.</div>
+
+        <div class="article-body">
+          <p>we're currently building a new social app inside the <b>Swiftaw Innovation Room</b>.</p>
+          <p class="own-line">it's called stampled.</p>
+
+          <p>we started working on it after getting tired of opening the same apps every day and feeling absolutely nothing from them. everything started looking the same. the same feeds, the same algorithms, the same endless walls of content pretending to be "social".</p>
+          <p class="own-line">so we decided to experiment a little.</p>
+
+          <p>stampled is built around <b>sharing, collecting and spreading ideas online</b> - without turning everything into noise. smaller spaces, more personality, less pressure to perform for an algorithm every time you post something.</p>
+
+          <p>we're also building it the way we think apps should be built:</p>
+          <p class="principles"><b>private by default,</b> hosted in europe, no creepy tracking, no dark patterns, no subscriptions locking half the app behind a paywall.</p>
+        </div>
+
+        <div class="beat">
+          <div class="three">
+            <span>still early.</span>
+            <span>still changing every week.</span>
+            <span>still slightly unstable.</span>
+          </div>
+          <div class="punch">which usually means we're onto something.</div>
+        </div>
+
+        <div class="foot">
+          <a href="/newsroom" class="btn-3d sm">Follow along <svg class="i"><use href="#i-comments"/></svg></a>
+          <a href="/" class="btn-3d-ghost sm">Back home</a>
+          <span class="more">more soon</span>
+        </div>
+      </div>
+    </article>
+
     <!-- ─── Other ideas in the lab ───────────────────── -->
-    <section class="oven">
-      <div class="oven-head">
-        <span class="label"><svg class="i" style="width:11px;height:11px;fill:var(--c-lilac);"><use href="#i-hashtag"/></svg> also on the bench</span>
-        <span class="line"></span>
-        <span class="meta">5 ideas · 2 killed this season</span>
+    <div class="section-rail">
+      <span class="label lilac"><span class="dot"></span> also on the bench</span>
+      <span class="line"></span>
+      <span class="meta">4 ideas · 1 killed</span>
+    </div>
+    <div class="oven-grid">
+      <div class="idea">
+        <div class="num">idea 042</div>
+        <h4>profiles that feel like rooms</h4>
+        <span class="state cooking"><span class="d"></span> cooking</span>
       </div>
-      <div class="oven-grid">
-        <div class="idea">
-          <div class="num">idea 042</div>
-          <h4>profiles that feel like rooms</h4>
-          <span class="state cooking"><span class="d"></span> cooking</span>
-        </div>
-        <div class="idea">
-          <div class="num">idea 031</div>
-          <h4>a kinder DM client</h4>
-          <span class="state dreaming"><span class="d"></span> dreaming</span>
-        </div>
-        <div class="idea">
-          <div class="num">idea 028</div>
-          <h4>shared moodboards</h4>
-          <span class="state shelved"><span class="d"></span> shelved</span>
-        </div>
-        <div class="idea killed">
-          <div class="num">idea 014</div>
-          <h4>RSS for friend groups</h4>
-          <span class="state killed"><span class="d"></span> killed</span>
-        </div>
+      <div class="idea">
+        <div class="num">idea 031</div>
+        <h4>a kinder DM client</h4>
+        <span class="state dreaming"><span class="d"></span> dreaming</span>
       </div>
-    </section>
+      <div class="idea">
+        <div class="num">idea 028</div>
+        <h4>shared moodboards</h4>
+        <span class="state shelved"><span class="d"></span> shelved</span>
+      </div>
+      <div class="idea killed">
+        <div class="num">idea 014</div>
+        <h4>RSS for friend groups</h4>
+        <span class="state killed"><span class="d"></span> killed</span>
+      </div>
+    </div>
   </div>
 </section>
 
