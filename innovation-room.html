@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lab - Swiftaw</title>
-<meta name="description" content="The Lab - where Swiftaw cooks up weird, ambitious, european-built software. Currently featuring: Stampled.">
+<meta name="description" content="The Lab - where Swiftaw cooks up weird, ambitious, european-built software. Currently featuring: Swiftign (our design system) and Stampled.">
 <link rel="canonical" href="https://swiftaw.com/innovation-room">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Swiftaw - Lab">
-<meta property="og:description" content="Where weird ideas grow up. Currently featuring: Stampled.">
-<meta property="og:image" content="https://swiftaw.com/SwiftawLab-Stampled.png">
+<meta property="og:description" content="Where weird ideas grow up. Currently featuring: Swiftign + Stampled.">
+<meta property="og:image" content="https://swiftaw.com/SwiftawLab-Swiftign.png">
 <meta property="og:url" content="https://swiftaw.com/innovation-room">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#fef83d">
@@ -333,6 +333,162 @@
 .idea .state.dreaming { color: var(--c-mint); background: rgba(134,239,172,.08); border: 1px solid rgba(134,239,172,.22); }
 .idea .state.killed { color: var(--stamp-red); background: rgba(235,69,69,.08); border: 1px solid rgba(235,69,69,.30); }
 .idea.killed h4 { text-decoration: line-through; color: var(--muted-light); }
+
+/* ───── Swiftign (yellow) variant of the project sticker ───── */
+.sticker.tint-yellow {
+  background: linear-gradient(160deg, #1f1d05 0%, #100f02 100%);
+  border-color: rgba(254,248,61,.30);
+  box-shadow: 0 8px 0 0 var(--ink), 0 22px 50px rgba(0,0,0,.45), 0 0 60px rgba(254,248,61,.10);
+}
+.section-rail .label.yellow { color: var(--accent); background: rgba(254,248,61,.08); border: 1px solid rgba(254,248,61,.30); }
+.section-rail .label.yellow ~ .line { background: linear-gradient(90deg, rgba(254,248,61,.30), transparent); }
+
+.project-sticker.swiftign { transform: rotate(-1deg); }
+.project-sticker.swiftign:hover { transform: rotate(0) translateY(-4px); }
+.project-sticker.swiftign .visual {
+  background:
+    radial-gradient(circle at 70% 30%, rgba(254,248,61,.18), transparent 65%),
+    #08080a;
+  border-bottom: 1.5px solid rgba(254,248,61,.22);
+}
+.project-sticker.swiftign .visual::after {
+  background: linear-gradient(180deg, transparent, rgba(8,8,10,.82));
+}
+.project-sticker.swiftign .visual .chip {
+  color: #050608;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-color: rgba(0,0,0,.18);
+  font-weight: 800;
+}
+.project-sticker.swiftign h2.project-title .end-dot {
+  background: var(--accent);
+  box-shadow: 0 0 18px var(--accent-glow);
+  -webkit-text-fill-color: var(--accent);
+}
+.project-sticker.swiftign .tagline { border-bottom-color: rgba(254,248,61,.22); }
+.project-sticker.swiftign .sec-head .num {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #050608;
+  box-shadow: 0 3px 0 0 var(--ink), 0 0 18px var(--accent-glow);
+}
+.project-sticker.swiftign .sub-label { color: var(--accent); }
+.project-sticker.swiftign .callout {
+  background: rgba(254,248,61,.05);
+  border: 1px solid rgba(254,248,61,.20);
+  border-left: 3px solid var(--accent);
+}
+.project-sticker.swiftign .callout.principles b { color: var(--accent); }
+.project-sticker.swiftign .foot { border-top-color: rgba(254,248,61,.20); }
+
+/* token chips - tiny swatches of the swiftign palette */
+.token-row {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin: 14px 0 22px;
+}
+.token {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 12px 7px 7px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 100px;
+  font-family: var(--font-display);
+  font-size: 12px; font-weight: 700;
+  color: var(--text);
+  letter-spacing: -.1px;
+}
+.token .sw {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.18);
+  flex-shrink: 0;
+}
+.token code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: var(--muted-light);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* spec list - compact key/value rows for tokens, type, motion */
+.spec-list {
+  display: grid; grid-template-columns: 140px 1fr; gap: 8px 18px;
+  margin: 10px 0 20px;
+  padding: 16px 18px;
+  background: rgba(254,248,61,.04);
+  border: 1px solid rgba(254,248,61,.18);
+  border-radius: 14px;
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.spec-list dt {
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--accent);
+  align-self: center;
+}
+.spec-list dd { color: var(--text); }
+.spec-list dd code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px;
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.08);
+  padding: 2px 7px;
+  border-radius: 6px;
+  color: #fff;
+}
+@media (max-width: 620px) {
+  .spec-list { grid-template-columns: 1fr; gap: 4px 0; padding: 14px 16px; }
+  .spec-list dt { margin-top: 8px; }
+  .spec-list dt:first-of-type { margin-top: 0; }
+}
+
+/* "for claude" block - a deliberate, slightly louder note */
+.claude-note {
+  position: relative;
+  margin: 28px 0 6px;
+  padding: 22px 24px 20px;
+  background: linear-gradient(140deg, rgba(254,248,61,.10), rgba(254,248,61,.03));
+  border: 1.5px solid rgba(254,248,61,.32);
+  border-radius: 18px;
+  transform: rotate(.5deg);
+  transition: transform .25s;
+}
+.claude-note:hover { transform: rotate(0); }
+.claude-note .head {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: #050608;
+  background: var(--accent);
+  padding: 5px 12px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+}
+.claude-note p {
+  font-size: 15.5px; line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.claude-note p:last-child { margin-bottom: 0; }
+.claude-note p b { color: #fff; font-weight: 600; }
+.claude-note .rules {
+  list-style: none; padding: 0; margin: 6px 0 0;
+  display: grid; gap: 6px;
+}
+.claude-note .rules li {
+  position: relative;
+  padding-left: 22px;
+  font-size: 14.5px;
+  color: var(--text);
+}
+.claude-note .rules li::before {
+  content: "→";
+  position: absolute; left: 0; top: 0;
+  color: var(--accent);
+  font-weight: 800;
+}
 </style>
 </head>
 <body>
@@ -376,9 +532,113 @@
     <h1>where <span class="pop">weird</span><br>ideas grow up.</h1>
     <p class="lede">most don't make it out. the ones that do, you'll see here first.</p>
 
-    <!-- ─── Featured project ─────────────────────────── -->
+    <!-- ─── Featured project: Swiftign (design system) ────────── -->
     <div class="section-rail">
-      <span class="label red"><span class="dot"></span> currently featuring</span>
+      <span class="label yellow"><span class="dot"></span> currently featuring</span>
+      <span class="line"></span>
+      <span class="meta">project · 048</span>
+    </div>
+
+    <article class="sticker tint-yellow project-sticker swiftign reveal" id="swiftign">
+      <div class="visual">
+        <span class="chip"><span class="dot"></span> the house style</span>
+        <img src="/SwiftawLab-Swiftign.png" alt="Swiftign - the Swiftaw design system" loading="lazy">
+      </div>
+
+      <div class="body">
+        <h2 class="project-title">swiftign<span class="end-dot"></span></h2>
+        <div class="tagline">the design language we build everything in.</div>
+
+        <div class="article-body">
+          <p>swiftign is the <b>internal design system</b> we use across every Swiftaw and Fortized surface. born in 2026 while we were rebuilding both sites at the same time and realised we kept reaching for the same little tricks.</p>
+          <p class="own-line">so we gave it a name and wrote it down.</p>
+
+          <div class="sec-head">
+            <div class="num">01</div>
+            <h3>the vibe, in one breath</h3>
+          </div>
+          <div class="sub-label">what swiftign feels like before it feels like anything else.</div>
+          <p>dark, slightly playful, mildly off-axis. things tilt. things wobble a little. nothing is perfectly aligned because perfectly aligned is boring. <b>stickers, capsules, soft chips, 3D buttons</b> - all sitting on a near-black background with a single warm yellow doing most of the heavy lifting.</p>
+          <div class="callout">
+            <strong>rule of thumb:</strong> if it looks like a SaaS dashboard, you went too far. if it looks like a sticker someone slapped on a laptop, you're close.
+          </div>
+
+          <div class="sec-head">
+            <div class="num">02</div>
+            <h3>the tokens</h3>
+          </div>
+          <div class="sub-label">colors, type, surfaces. swap freely per product.</div>
+          <p><b>backgrounds</b> stay dark and near-neutral. <b>one yellow accent</b> per product carries the brand. <b>six soft tints</b> (yellow / pink / blue / mint / lilac / peach) handle everything else - chips, callouts, status pills, sticker tints.</p>
+          <div class="token-row">
+            <span class="token"><span class="sw" style="background:#0d1117"></span><code>#0d1117</code> swiftaw bg</span>
+            <span class="token"><span class="sw" style="background:#080a0f"></span><code>#080a0f</code> fortized bg</span>
+            <span class="token"><span class="sw" style="background:linear-gradient(135deg,#fef83d,#fff000)"></span><code>#fef83d</code> swiftaw yellow</span>
+            <span class="token"><span class="sw" style="background:linear-gradient(135deg,#fff93e,#fff700)"></span><code>#fff93e</code> fortized yellow</span>
+            <span class="token"><span class="sw" style="background:#ff8ab4"></span>pink</span>
+            <span class="token"><span class="sw" style="background:#7dd3fc"></span>blue</span>
+            <span class="token"><span class="sw" style="background:#86efac"></span>mint</span>
+            <span class="token"><span class="sw" style="background:#c4b5fd"></span>lilac</span>
+            <span class="token"><span class="sw" style="background:#fdba74"></span>peach</span>
+          </div>
+          <dl class="spec-list">
+            <dt>display</dt><dd><code>Syne</code> 600 / 700 / 800 - letter-spacing tight (<code>-.5px</code> to <code>-3.6px</code>)</dd>
+            <dt>body</dt><dd><code>DM Sans</code> 300-600 - 15.5px base, line-height 1.55</dd>
+            <dt>radii</dt><dd>chips <code>100px</code> · cards <code>14-24px</code> · pills <code>999</code></dd>
+            <dt>shadows</dt><dd>hard offset: <code>0 8px 0 0 #050608</code> · soft glow only on accent</dd>
+            <dt>tilt</dt><dd><code>-3deg</code> to <code>+1.5deg</code> on cards · straighten on hover · soften <code>≤720px</code></dd>
+            <dt>motion</dt><dd>200-250ms easing · bob keyframes for floating decos · 1.6s pulse for live dots</dd>
+          </dl>
+
+          <div class="sec-head">
+            <div class="num">03</div>
+            <h3>the components</h3>
+          </div>
+          <div class="sub-label">the building blocks we lean on most.</div>
+          <p><b>floating capsule nav</b> - centered, blurred, rounded-999, logo handles home. yellow gradient active pill, mobile drawer with sliding "→". <b>3D buttons</b> (<code>.btn-3d</code> / <code>.btn-3d-ghost</code>) with hard offset shadows that press in on click. <b>sticker cards</b> with subtle tilts that straighten on hover. <b>soft chip tokens</b> in the six tints, used for status, eyebrows, callouts. <b>floating FontAwesome decos</b> that bob gently between sections. <b>Twemoji + Fortized custom emojis</b> (joyster, leafen, knight) used inline as real text.</p>
+          <div class="callout principles tilt-r">
+            <b>copy tone:</b> lowercase, conversational, no em-dashes (only "-"). short sentences. zero corporate. say "we build weird stuff", not "we are an innovative studio".
+          </div>
+
+          <div class="sec-head">
+            <div class="num">04</div>
+            <h3>how to use it</h3>
+          </div>
+          <div class="sub-label">a framework, not a cage.</div>
+          <p>swiftign is meant to be <b>remixed per product</b>. swap the accent. add a tint. invent your own sticker shape. the only fixed things are the <b>off-axis playfulness, the dark canvas, the typographic stack, and the tone of voice</b>. everything else is fair game.</p>
+
+          <div class="claude-note">
+            <span class="head">★ for claude code</span>
+            <p>when you're building a new Swiftaw or Fortized app, treat <b>swiftaw.com</b> and <b>fortized.com</b> as your reference textures. open them, scroll them, screenshot them, and <b>take inspiration</b> - don't trace them. you're allowed to invent.</p>
+            <ul class="rules">
+              <li>keep the dark canvas, the single-yellow-accent rule, and the Syne + DM Sans pairing.</li>
+              <li>use stickers, capsules and 3D buttons before you reach for anything generic.</li>
+              <li>let things tilt slightly. straighten on hover. never align everything to a perfect grid.</li>
+              <li>match the voice: lowercase, short, a little weird, never corporate.</li>
+              <li>everything else - layout, components, surprise moments - <b>invent freely</b>.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="beat">
+          <div class="three">
+            <span>still evolving every week.</span>
+            <span>still mostly undocumented.</span>
+            <span>still a system, not a stylesheet.</span>
+          </div>
+          <div class="punch">but consistent enough to build from. that's the point.</div>
+        </div>
+
+        <div class="foot">
+          <a href="https://fortized.com" class="btn-3d sm">See it on Fortized <svg class="i"><use href="#i-fire"/></svg></a>
+          <a href="/products" class="btn-3d-ghost sm">Our products</a>
+          <span class="more">v1 · 13 jun 2026</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ─── Still cooking: Stampled ───────────────────────────── -->
+    <div class="section-rail">
+      <span class="label red"><span class="dot"></span> still cooking</span>
       <span class="line"></span>
       <span class="meta">project · 047</span>
     </div>
