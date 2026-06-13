@@ -489,6 +489,35 @@
   color: var(--accent);
   font-weight: 800;
 }
+
+/* ───── Side-by-side featured grid ───── */
+.featured-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .featured-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+.featured-grid .project-sticker { margin: 0; }
+.featured-grid .project-sticker h2.project-title {
+  font-size: clamp(44px, 5.4vw, 76px);
+  letter-spacing: -2.6px;
+}
+.featured-grid .project-sticker .visual { aspect-ratio: 16 / 9; }
+.featured-grid .project-sticker .body { padding: 30px clamp(22px, 2.6vw, 36px) 28px; }
+.featured-grid .project-sticker .tagline { font-size: clamp(16px, 1.4vw, 19px); }
+
+/* combined rail above the grid showing both project numbers */
+.section-rail.dual .pair {
+  display: inline-flex; gap: 6px;
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--muted);
+}
+.section-rail.dual .pair b { color: var(--accent); font-weight: 800; }
 </style>
 </head>
 <body>
@@ -532,12 +561,14 @@
     <h1>where <span class="pop">weird</span><br>ideas grow up.</h1>
     <p class="lede">most don't make it out. the ones that do, you'll see here first.</p>
 
-    <!-- ─── Featured project: Swiftign (design system) ────────── -->
-    <div class="section-rail">
+    <!-- ─── Currently featuring: Swiftign + Stampled side by side ─── -->
+    <div class="section-rail dual">
       <span class="label yellow"><span class="dot"></span> currently featuring</span>
       <span class="line"></span>
-      <span class="meta">project · 048</span>
+      <span class="pair">projects <b>048</b> + <b>047</b></span>
     </div>
+
+    <div class="featured-grid">
 
     <article class="sticker tint-yellow project-sticker swiftign reveal" id="swiftign">
       <div class="visual">
@@ -567,7 +598,7 @@
             <div class="num">02</div>
             <h3>the tokens</h3>
           </div>
-          <div class="sub-label">colors, type, surfaces. swap freely per product.</div>
+          <div class="sub-label">colours, type, surfaces. swap freely per product.</div>
           <p><b>backgrounds</b> stay dark and near-neutral. <b>one yellow accent</b> per product carries the brand. <b>six soft tints</b> (yellow / pink / blue / mint / lilac / peach) handle everything else - chips, callouts, status pills, sticker tints.</p>
           <div class="token-row">
             <span class="token"><span class="sw" style="background:#0d1117"></span><code>#0d1117</code> swiftaw bg</span>
@@ -607,7 +638,7 @@
           <p>swiftign is meant to be <b>remixed per product</b>. swap the accent. add a tint. invent your own sticker shape. the only fixed things are the <b>off-axis playfulness, the dark canvas, the typographic stack, and the tone of voice</b>. everything else is fair game.</p>
 
           <div class="claude-note">
-            <span class="head">★ for claude code</span>
+            <span class="head">★ swiftign directives</span>
             <p>when you're building a new Swiftaw or Fortized app, treat <b>swiftaw.com</b> and <b>fortized.com</b> as your reference textures. open them, scroll them, screenshot them, and <b>take inspiration</b> - don't trace them. you're allowed to invent.</p>
             <ul class="rules">
               <li>keep the dark canvas, the single-yellow-accent rule, and the Syne + DM Sans pairing.</li>
@@ -635,13 +666,6 @@
         </div>
       </div>
     </article>
-
-    <!-- ─── Still cooking: Stampled ───────────────────────────── -->
-    <div class="section-rail">
-      <span class="label red"><span class="dot"></span> still cooking</span>
-      <span class="line"></span>
-      <span class="meta">project · 047</span>
-    </div>
 
     <article class="sticker tint-red project-sticker reveal" id="stampled">
       <div class="visual">
@@ -701,6 +725,8 @@
         </div>
       </div>
     </article>
+
+    </div><!-- /.featured-grid -->
 
     <!-- ─── Other ideas in the lab ───────────────────── -->
     <div class="section-rail">
