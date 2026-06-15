@@ -329,3 +329,61 @@ window.SwiftawReactions = (function () {
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-react-widget]').forEach(el => window.SwiftawReactions.init(el));
 });
+
+
+// ════════════════════════════════════════════
+//   PINBOARD - local "save this tile" interaction
+//   Works on any page: every [data-tile] inside
+//   [data-board] gets a click handler. Pinned IDs
+//   are kept in localStorage under SWFTW_pins.
+//   No network, no account.
+// ════════════════════════════════════════════
+(function(){
+  const KEY = 'SWFTW_pins';
+  function readPins() {
+    try { return new Set(JSON.parse(localStorage.getItem(KEY) || '[]')); }
+    catch { return new Set(); }
+  }
+  function writePins(set) {
+    try { localStorage.setItem(KEY, JSON.stringify([...set])); } catch {}
+  }
+  function refreshReadouts(pins) {
+    document.querySelectorAll('[data-pinned-count]').forEach(el => {
+      el.textContent = pins.size;
+    });
+    document.querySelectorAll('[data-pinned-readout]').forEach(el => {
+      el.classList.toggle('has-pins', pins.size > 0);
+    });
+  }
+  function applyState(tile, pinned) {
+    tile.classList.toggle('is-pinned', pinned);
+    const btn = tile.querySelector('[data-pin-btn]');
+    if (btn) btn.setAttribute('aria-pressed', pinned ? 'true' : 'false');
+  }
+  function init() {
+    const pins = readPins();
+    document.querySelectorAll('[data-board] [data-tile]').forEach(tile => {
+      const id = tile.getAttribute('data-tile');
+      if (!id) return;
+      applyState(tile, pins.has(id));
+      const btn = tile.querySelector('[data-pin-btn]');
+      if (!btn) return;
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const cur = readPins();
+        if (cur.has(id)) cur.delete(id);
+        else cur.add(id);
+        writePins(cur);
+        applyState(tile, cur.has(id));
+        refreshReadouts(cur);
+      });
+    });
+    refreshReadouts(pins);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
