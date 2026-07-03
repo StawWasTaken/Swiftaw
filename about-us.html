@@ -79,82 +79,125 @@
   letter-spacing: -.4px;
 }
 
-/* Launch teaser (origin story + animated ship) */
-.launch-row {
-  margin-top: 80px;
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 32px;
-  align-items: center;
+/* Ship - flies up next to the title, no box, no text */
+.ship-fly {
+  position: absolute;
+  top: 30px;
+  right: 8%;
+  width: 130px;
+  z-index: 3;
+  pointer-events: none;
 }
-@media (max-width: 880px) { .launch-row { grid-template-columns: 1fr; } }
-.launch-row .copy h3 {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 3.6vw, 42px); font-weight: 800;
-  letter-spacing: -1.4px; line-height: 1.05; margin-bottom: 14px;
+@media (max-width: 880px) {
+  .ship-fly { top: -10px; right: 4%; width: 90px; }
 }
-.launch-row .copy p { font-size: 16px; color: var(--text); max-width: 480px; line-height: 1.55; }
+@media (max-width: 560px) {
+  .ship-fly { top: -26px; right: 2%; width: 70px; }
+}
 
-.ship-stage {
+.ship-img {
   position: relative;
-  height: 300px;
-  background: var(--panel);
-  border: 1.5px solid var(--border);
-  border-radius: 24px;
-  box-shadow: 0 6px 0 0 var(--ink);
-  overflow: hidden;
-  transform: rotate(-1deg);
+  display: block;
+  width: 100%;
+  transform-origin: 50% 85%;
+  filter: drop-shadow(0 6px 8px rgba(0,0,0,.2));
 }
-.ship-blob {
+
+/* Ignition flash - one quick bloom at the base when the engine catches */
+.flash {
   position: absolute;
-  left: 50%; bottom: 34px;
-  transform: translateX(-50%);
-  width: 100px; height: 100px;
+  left: 50%; bottom: 22%;
+  transform: translate(-50%, 50%) scale(.3);
+  width: 70px; height: 70px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  filter: blur(20px);
+  background: radial-gradient(circle, rgba(255,255,255,.9) 0%, rgba(255,190,110,.55) 40%, rgba(255,190,110,0) 72%);
   opacity: 0;
-  transition: opacity .35s ease;
 }
-.ship-blob.on { opacity: .5; }
+.ship-fly.ignite .flash { animation: flashPulse .5s ease-out forwards; }
+@keyframes flashPulse {
+  0%   { opacity: 0; transform: translate(-50%, 50%) scale(.3); }
+  25%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, 50%) scale(1.7); }
+}
 
-.ship-logo {
+/* Engine flame - present through ignition and the full burn, flickering */
+.flame {
   position: absolute;
-  left: 50%; bottom: 40px;
+  left: 50%; bottom: 20%;
+  width: 10px; height: 26px;
   transform: translateX(-50%);
-  width: 110px;
-  transform-origin: center bottom;
-  filter: drop-shadow(0 6px 10px rgba(0,0,0,.18));
+  transform-origin: 50% 0%;
+  background: linear-gradient(to bottom, #fff7dd 0%, #ffd580 35%, #ff9a44 68%, rgba(255,138,61,0) 100%);
+  border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%;
+  filter: blur(.4px);
+  opacity: 0;
+}
+.ship-fly.ignite .flame, .ship-fly.launch .flame { opacity: 1; animation: flameFlicker .11s ease-in-out infinite alternate; }
+
+@keyframes flameFlicker {
+  0%   { transform: translateX(-50%) scaleY(1) scaleX(1); }
+  100% { transform: translateX(-50%) scaleY(1.18) scaleX(.88); }
 }
 
-@keyframes shipCharge {
-  0%, 100% { transform: translateX(-50%) scale(1,1) rotate(0deg); }
-  15%      { transform: translateX(-50%) scale(1.04,.93) rotate(-1.5deg); }
-  30%      { transform: translateX(-50%) scale(.94,1.07) rotate(1.5deg); }
-  45%      { transform: translateX(-50%) scale(1.05,.92) rotate(-2deg); }
-  60%      { transform: translateX(-50%) scale(.93,1.08) rotate(2deg); }
-  75%      { transform: translateX(-50%) scale(1.03,.95) rotate(-1deg); }
-  90%      { transform: translateX(-50%) scale(.98,1.02) rotate(.5deg); }
+/* Smoke / exhaust plume - soft, blurred, drifts down and widens like real thrust */
+.exhaust { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+.exhaust .p {
+  position: absolute;
+  left: 50%; bottom: 18%;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,241,214,.55) 0%, rgba(190,190,190,.4) 45%, rgba(190,190,190,0) 75%);
+  filter: blur(1.5px);
+  opacity: 0;
 }
-.ship-logo.charge { animation: shipCharge 1.6s ease-in-out; }
-
-@keyframes shipLaunch {
-  0%   { transform: translateX(-50%) translateY(0) scale(.94,1.1) rotate(0deg); }
-  25%  { transform: translateX(-50%) translateY(-55px) scale(.83,1.26) rotate(-3deg); }
-  60%  { transform: translateX(-50%) translateY(-115px) scale(.96,1.06) rotate(2deg); }
-  100% { transform: translateX(-50%) translateY(-130px) scale(1,1) rotate(0deg); }
+.ship-fly.ignite .p, .ship-fly.launch .p { animation: exhaustPuff 1.1s ease-out infinite; }
+.ship-fly.ignite .p1, .ship-fly.launch .p1 { animation-delay: 0s;   left: 50%; }
+.ship-fly.ignite .p2, .ship-fly.launch .p2 { animation-delay: .1s;  left: 45%; width: 9px; height: 9px; }
+.ship-fly.ignite .p3, .ship-fly.launch .p3 { animation-delay: .2s;  left: 55%; width: 9px; height: 9px; }
+.ship-fly.ignite .p4, .ship-fly.launch .p4 { animation-delay: .32s; left: 48%; width: 14px; height: 14px; }
+.ship-fly.ignite .p5, .ship-fly.launch .p5 { animation-delay: .46s; left: 52%; }
+.ship-fly.ignite .p6, .ship-fly.launch .p6 { animation-delay: .6s;  left: 42%; width: 8px; height: 8px; }
+.ship-fly.ignite .p7, .ship-fly.launch .p7 { animation-delay: .75s; left: 58%; width: 16px; height: 16px; }
+@keyframes exhaustPuff {
+  0%   { opacity: .55; transform: translate(-50%, 0) scale(.4); }
+  100% { opacity: 0; transform: translate(-50%, 64px) scale(2.4); }
 }
-.ship-logo.launch { animation: shipLaunch 1.3s cubic-bezier(.4,0,.2,1) forwards; }
 
+/* Ignition: engine catches, structure trembles, no real displacement yet */
+@keyframes shipIgnite {
+  0%, 100% { transform: translate(0, 240px) rotate(0deg); }
+  15% { transform: translate(-.6px, 239px) rotate(-.2deg); }
+  30% { transform: translate(.6px, 240px) rotate(.25deg); }
+  45% { transform: translate(-.5px, 241px) rotate(-.3deg); }
+  60% { transform: translate(.5px, 240px) rotate(.15deg); }
+  75% { transform: translate(-.4px, 239px) rotate(-.15deg); }
+  90% { transform: translate(.3px, 240px) rotate(.1deg); }
+}
+.ship-img.ignite { animation: shipIgnite .8s ease-in-out; }
+
+/* Liftoff: slow to break inertia, real acceleration through the middle, clean deceleration into place - no bounce */
+@keyframes shipLiftoff {
+  0%   { transform: translateY(240px) scale(1,1) rotate(0deg); filter: blur(0px) drop-shadow(0 6px 8px rgba(0,0,0,.2)); }
+  10%  { transform: translateY(234px) scale(1,1.015) rotate(-.3deg); filter: blur(0px) drop-shadow(0 6px 8px rgba(0,0,0,.2)); }
+  28%  { transform: translateY(205px) scale(.99,1.03) rotate(.4deg); filter: blur(.3px) drop-shadow(0 6px 8px rgba(0,0,0,.2)); }
+  50%  { transform: translateY(140px) scale(.98,1.045) rotate(-.35deg); filter: blur(.9px) drop-shadow(0 6px 8px rgba(0,0,0,.2)); }
+  72%  { transform: translateY(72px) scale(.985,1.03) rotate(.2deg); filter: blur(.6px) drop-shadow(0 6px 8px rgba(0,0,0,.2)); }
+  90%  { transform: translateY(18px) scale(1,1.01) rotate(-.1deg); filter: blur(.15px) drop-shadow(0 6px 8px rgba(0,0,0,.2)); }
+  100% { transform: translateY(0) scale(1,1) rotate(0deg); filter: blur(0px) drop-shadow(0 6px 8px rgba(0,0,0,.2)); }
+}
+.ship-img.launch { animation: shipLiftoff 2s cubic-bezier(.45,0,.4,1) forwards; }
+
+/* Arrived: minute drift, like it's actually holding station in vacuum */
 @keyframes shipFloat {
-  0%, 100% { transform: translateX(-50%) translateY(-130px) rotate(-3deg); }
-  50%      { transform: translateX(-50%) translateY(-145px) rotate(3deg); }
+  0%, 100% { transform: translateY(0) rotate(-.7deg); }
+  50%      { transform: translateY(-4px) rotate(.7deg); }
 }
-.ship-logo.float { animation: shipFloat 4.2s ease-in-out infinite; }
+.ship-img.float { animation: shipFloat 7s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ship-logo.charge, .ship-logo.launch, .ship-logo.float { animation: none; }
-  .ship-logo { transform: translateX(-50%) translateY(-130px); }
+  .ship-img.ignite, .ship-img.launch, .ship-img.float { animation: none; }
+  .ship-img { transform: translateY(0); }
+  .exhaust, .flame, .flash { display: none; }
 }
 
 /* Leadership cards */
@@ -275,6 +318,15 @@
     <div class="deco deco-a1 float-a"><svg><use href="#i-people"/></svg></div>
     <div class="deco deco-a2 float-b"><svg><use href="#i-fire"/></svg></div>
 
+    <div class="ship-fly" id="shipFly">
+      <div class="flash"></div>
+      <div class="exhaust">
+        <span class="p p1"></span><span class="p p2"></span><span class="p p3"></span><span class="p p4"></span><span class="p p5"></span><span class="p p6"></span><span class="p p7"></span>
+      </div>
+      <div class="flame"></div>
+      <img id="shipImg" class="ship-img" src="https://raw.githubusercontent.com/StawWasTaken/Swiftaw/refs/heads/main/SwiftawLogo.png" alt="">
+    </div>
+
     <div class="eyebrow">a little about us</div>
     <h1>a <span class="scribbled">company</span><br>that builds weird stuff.</h1>
     <p class="lede">independent, european, based in Île-de-France. building social tools and community apps. started in August 2025 with Fortized.</p>
@@ -284,19 +336,6 @@
       <div class="fact t2 reveal"><div class="lbl">Country</div><div class="val">France · EU</div></div>
       <div class="fact t3 reveal"><div class="lbl">Founded</div><div class="val">Aug 2025</div></div>
       <div class="fact t4 reveal"><div class="lbl">Status</div><div class="val">Independent</div></div>
-    </div>
-
-    <!-- Launch story -->
-    <div class="launch-row">
-      <div class="copy reveal">
-        <span class="chip yellow"><span class="dot"></span> the origin story</span>
-        <h3>we launched once. we're still in orbit.</h3>
-        <p>swiftaw got off the ground in Île-de-France with one shot to make it work. it did. now we build steady, out here, still moving.</p>
-      </div>
-      <div class="ship-stage reveal" id="shipStage">
-        <div class="ship-blob" id="shipBlob"></div>
-        <img id="shipLogo" class="ship-logo" src="https://raw.githubusercontent.com/StawWasTaken/Swiftaw/refs/heads/main/SwiftawLogo.png" alt="Swiftaw logo, illustrated launching into orbit">
-      </div>
     </div>
 
     <!-- Leadership -->
@@ -391,40 +430,29 @@
 <script src="/css/swiftaw.js"></script>
 <script>
 (function () {
-  var stage = document.getElementById('shipStage');
-  var ship = document.getElementById('shipLogo');
-  var blob = document.getElementById('shipBlob');
-  if (!stage || !ship) return;
+  var fly = document.getElementById('shipFly');
+  var ship = document.getElementById('shipImg');
+  if (!fly || !ship) return;
 
-  function playLaunch() {
-    ship.classList.add('charge');
-    blob.classList.add('on');
+  function start() {
+    fly.classList.add('ignite');
+    ship.classList.add('ignite');
   }
 
   ship.addEventListener('animationend', function (e) {
-    if (e.animationName === 'shipCharge') {
-      ship.classList.remove('charge');
+    if (e.animationName === 'shipIgnite') {
+      fly.classList.remove('ignite');
+      ship.classList.remove('ignite');
+      fly.classList.add('launch');
       ship.classList.add('launch');
-    } else if (e.animationName === 'shipLaunch') {
+    } else if (e.animationName === 'shipLiftoff') {
+      fly.classList.remove('launch');
       ship.classList.remove('launch');
       ship.classList.add('float');
-      blob.classList.remove('on');
     }
   });
 
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries, obs) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          playLaunch();
-          obs.disconnect();
-        }
-      });
-    }, { threshold: 0.4 });
-    io.observe(stage);
-  } else {
-    playLaunch();
-  }
+  window.setTimeout(start, 250);
 })();
 </script>
 </body>
