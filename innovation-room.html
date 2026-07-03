@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lab - Swiftaw</title>
-<meta name="description" content="The Lab - where Swiftaw cooks up weird, ambitious, european-built software. Currently featuring: Swiftign, our design system.">
+<meta name="description" content="The Lab - where Swiftaw cooks up weird, ambitious, european-built software.">
 <link rel="canonical" href="https://swiftaw.com/innovation-room">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Swiftaw - Lab">
-<meta property="og:description" content="Where weird ideas grow up. Currently featuring: Swiftign.">
+<meta property="og:description" content="Where weird ideas grow up.">
 <meta property="og:image" content="https://swiftaw.com/SwiftawLab-Swiftign.png">
 <meta property="og:url" content="https://swiftaw.com/innovation-room">
 <meta name="twitter:card" content="summary_large_image">
@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-.page-top { padding: 130px 0 80px; position: relative; }
+.page-top { padding: 130px 0 44px; position: relative; }
 .eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
@@ -33,11 +33,11 @@
 }
 .page-top h1 {
   font-family: var(--font-display);
-  font-size: clamp(40px, 7vw, 96px);
+  font-size: clamp(40px, 7vw, 92px);
   font-weight: 800;
   letter-spacing: -2.5px;
   line-height: .92;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
   max-width: 900px;
 }
 .page-top h1 .pop {
@@ -47,286 +47,193 @@
 }
 .page-top .lede { font-size: 18px; color: var(--text); max-width: 540px; line-height: 1.55; }
 
-/* ───── Section rail ───── */
-.section-rail {
-  display: flex; align-items: center; gap: 14px;
-  margin: 70px 0 22px;
-}
-.section-rail .label {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--font-display);
-  font-size: 11px; font-weight: 800;
-  letter-spacing: .18em; text-transform: uppercase;
-  padding: 6px 14px;
-  border-radius: 100px;
-}
-.section-rail .label .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 10px currentColor; }
-.section-rail .label.yellow { color: var(--accent); background: rgba(254,248,61,.08); border: 1px solid rgba(254,248,61,.30); }
-.section-rail .label.yellow .dot { animation: liveBlink 1.6s ease infinite; }
-.section-rail .label.lilac { color: var(--c-lilac); background: rgba(196,181,253,.08); border: 1px solid rgba(196,181,253,.22); }
-.section-rail .line { flex: 1; height: 1px; }
-.section-rail .label.yellow ~ .line { background: linear-gradient(90deg, rgba(254,248,61,.30), transparent); }
-.section-rail .label.lilac ~ .line { background: linear-gradient(90deg, rgba(196,181,253,.30), transparent); }
-.section-rail .meta {
-  font-family: var(--font-display);
-  font-size: 11px; font-weight: 700;
-  letter-spacing: .18em; text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* ───── Spotlight: sticky spec sidebar + reading column ───── */
-.spotlight {
+/* ───── Shell: sticky status rail + card grid ───── */
+.lab-wrap { padding: 0 28px; }
+.lab-shell {
+  max-width: 1240px;
+  margin: 36px auto 0;
   display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 48px;
-  align-items: start;
+  grid-template-columns: 230px 1fr;
+  gap: 30px;
 }
-@media (max-width: 980px) {
-  .spotlight { grid-template-columns: 1fr; gap: 30px; }
-}
+@media (max-width: 880px) { .lab-shell { grid-template-columns: 1fr; gap: 18px; } }
 
-.spotlight-side { position: sticky; top: 104px; }
-@media (max-width: 980px) { .spotlight-side { position: static; } }
-
-.side-visual {
-  position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  background: radial-gradient(circle at 70% 30%, rgba(254,248,61,.18), transparent 65%), #08080a;
-  border: 1.5px solid rgba(254,248,61,.22);
-  margin-bottom: 20px;
-  transform: rotate(-1.1deg);
-  transition: transform .25s;
-}
-.side-visual:hover { transform: rotate(0); }
-.side-visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.side-visual::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 45%;
-  background: linear-gradient(180deg, transparent, rgba(8,8,10,.82));
-  pointer-events: none;
-}
-.side-visual .chip {
-  position: absolute; top: 14px; left: 14px; z-index: 2;
-  color: #050608;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  border-color: rgba(0,0,0,.18);
-  font-weight: 800;
-}
-
-.side-specs {
-  padding: 18px 20px;
-  background: rgba(254,248,61,.04);
-  border: 1px solid rgba(254,248,61,.18);
-  border-radius: 16px;
-  margin-bottom: 18px;
-}
-.side-specs dt {
-  font-family: var(--font-display);
-  font-size: 10.5px; font-weight: 800;
-  letter-spacing: .16em; text-transform: uppercase;
-  color: var(--accent);
-  margin-top: 14px;
-}
-.side-specs dt:first-child { margin-top: 0; }
-.side-specs dd {
-  font-size: 13.5px; color: var(--text);
-  margin: 3px 0 0; line-height: 1.5;
-}
-.side-specs dd code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
-  background: rgba(0,0,0,.35);
-  border: 1px solid rgba(255,255,255,.08);
-  padding: 2px 6px;
-  border-radius: 6px;
-  color: #fff;
-}
-
-.side-tokens { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; }
-.side-tokens .sw {
-  width: 26px; height: 26px; border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.14);
-  flex-shrink: 0;
-}
-
-.side-foot { display: flex; flex-direction: column; gap: 10px; }
-.side-foot .more {
-  font-family: var(--font-display);
-  font-size: 11.5px; font-weight: 700;
-  letter-spacing: .12em; text-transform: uppercase;
-  color: rgba(255,255,255,.40);
-  text-align: center;
-}
-
-/* ───── Reading column ───── */
-.spotlight-main h2.project-title {
-  font-family: var(--font-display);
-  font-size: clamp(52px, 8vw, 104px);
-  font-weight: 800;
-  letter-spacing: -3.4px;
-  line-height: .88;
-  margin: 0 0 14px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.spotlight-main h2.project-title .end-dot {
-  display: inline-block;
-  width: 15px; height: 15px;
-  background: var(--accent);
-  border-radius: 50%;
-  margin-left: 6px;
-  vertical-align: 10px;
-  box-shadow: 0 0 18px var(--accent-glow);
-  animation: stampPulse 2.2s ease infinite;
-}
-@keyframes stampPulse {
-  0%,100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.30); opacity: .80; }
-}
-.spotlight-main .tagline {
-  font-family: var(--font-display);
-  font-size: clamp(17px, 1.8vw, 20px);
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -.4px;
-  margin: 0 0 26px;
-  padding-bottom: 22px;
-  border-bottom: 1px solid rgba(254,248,61,.20);
-}
-
-.article-body p {
-  font-size: 16px; color: var(--text); line-height: 1.75; margin-bottom: 16px;
-}
-.article-body p:last-child { margin-bottom: 0; }
-.article-body p b { color: #fff; font-weight: 600; }
-.article-body .own-line {
-  font-family: var(--font-display);
-  font-size: 17px; font-weight: 700; color: #fff;
-  letter-spacing: -.4px; margin: 8px 0 18px;
-}
-
-.sec-head {
-  display: flex; align-items: center; gap: 14px;
-  margin: 36px 0 10px;
+.lab-cats {
+  position: sticky; top: 100px; align-self: flex-start;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 18px;
+  background: #0f1015;
+  border: 1.5px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  box-shadow: 0 6px 0 0 #000;
   transform: rotate(-.4deg);
 }
-.sec-head:first-child { margin-top: 8px; }
-.sec-head .num {
-  width: 38px; height: 38px; border-radius: 10px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: #050608;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-size: 14px; font-weight: 800;
-  flex-shrink: 0;
-  box-shadow: 0 3px 0 0 var(--ink), 0 0 18px var(--accent-glow);
+@media (max-width: 880px) {
+  .lab-cats { position: static; flex-direction: row; flex-wrap: wrap; padding: 12px; transform: none; }
 }
-.sec-head h3 {
-  font-family: var(--font-display); font-size: 22px; font-weight: 800;
-  letter-spacing: -.6px; color: #fff; margin: 0; line-height: 1.1;
-}
-.sub-label {
-  font-family: var(--font-display); font-size: 12.5px; font-weight: 700;
-  letter-spacing: -.1px; color: var(--accent);
-  margin: 4px 0 12px; display: inline-block;
-}
-
-.callout {
-  position: relative;
-  background: rgba(254,248,61,.05);
-  border: 1px solid rgba(254,248,61,.20);
-  border-left: 3px solid var(--accent);
-  border-radius: 14px;
-  padding: 18px 22px;
-  margin: 16px 0 22px;
-  font-size: 15.5px; line-height: 1.7; color: var(--text);
-  transform: rotate(-.6deg);
-  transition: transform .25s;
-}
-.callout:hover { transform: rotate(0); }
-.callout.tilt-r { transform: rotate(.7deg); }
-.callout strong { color: #fff; font-weight: 600; }
-.callout.principles {
-  font-family: var(--font-display); font-size: 15.5px; font-weight: 600; letter-spacing: -.2px;
-}
-.callout.principles b { color: var(--accent); font-weight: 800; }
-
-.claude-note {
-  position: relative;
-  margin: 28px 0 6px;
-  padding: 22px 24px 20px;
-  background: linear-gradient(140deg, rgba(254,248,61,.10), rgba(254,248,61,.03));
-  border: 1.5px solid rgba(254,248,61,.32);
-  border-radius: 18px;
-  transform: rotate(.5deg);
-  transition: transform .25s;
-}
-.claude-note:hover { transform: rotate(0); }
-.claude-note .head {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--font-display); font-size: 11px; font-weight: 800;
-  letter-spacing: .18em; text-transform: uppercase;
-  color: #050608; background: var(--accent);
-  padding: 5px 12px; border-radius: 100px; margin-bottom: 14px;
-}
-.claude-note p { font-size: 15.5px; line-height: 1.7; color: var(--text); margin-bottom: 10px; }
-.claude-note p:last-child { margin-bottom: 0; }
-.claude-note p b { color: #fff; font-weight: 600; }
-.claude-note .rules { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; }
-.claude-note .rules li { position: relative; padding-left: 22px; font-size: 14.5px; color: var(--text); }
-.claude-note .rules li::before { content: "→"; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 800; }
-
-.spotlight-main .foot {
-  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-  margin-top: 30px; padding-top: 22px;
-  border-top: 1px solid rgba(254,248,61,.18);
-}
-.spotlight-main .foot .more {
-  font-family: var(--font-display); font-size: 12px; font-weight: 700;
-  letter-spacing: .14em; text-transform: uppercase;
-  color: rgba(255,255,255,.40); margin-left: auto;
-}
-
-@media (max-width: 720px) {
-  .section-rail { margin: 50px 0 18px; }
-}
-
-/* ───── Bench: editorial log list instead of a card grid ───── */
-.lab-log { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(255,255,255,.08); }
-.log-row {
-  display: flex; align-items: center; gap: 20px;
-  padding: 20px 6px;
+.lab-cats-head {
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--muted-light, #8a8f9c);
+  padding: 4px 10px 10px;
   border-bottom: 1px solid rgba(255,255,255,.08);
-  transition: background .2s, padding-left .2s;
+  margin-bottom: 4px;
 }
-.log-row:hover { background: rgba(196,181,253,.04); padding-left: 12px; }
-.log-num {
-  font-family: var(--font-display); font-size: 12px; font-weight: 800;
-  letter-spacing: .1em; color: var(--muted-light);
-  width: 52px; flex-shrink: 0;
+@media (max-width: 880px) { .lab-cats-head { display: none; } }
+.lab-cat {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-family: var(--font-display);
+  font-size: 13px; font-weight: 700;
+  color: var(--muted-light, #8a8f9c);
+  padding: 9px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: color .15s, background .15s, border-color .15s;
+  background: none;
+  width: 100%;
+  text-align: left;
 }
-.log-title {
-  font-family: var(--font-display); font-size: 18px; font-weight: 800;
-  letter-spacing: -.4px; color: #fff; flex: 1;
+.lab-cat .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; box-shadow: 0 0 6px currentColor; }
+.lab-cat:hover { color: #fff; background: rgba(255,255,255,.04); }
+.lab-cat.active {
+  color: #050608;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 3px 0 0 #000;
 }
-.log-row.killed .log-title { text-decoration: line-through; color: var(--muted-light); }
-.state {
-  display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
-  font-family: var(--font-display); font-size: 10px; font-weight: 800;
-  letter-spacing: .14em; text-transform: uppercase;
-  padding: 4px 10px; border-radius: 100px;
+.lab-cat.active .dot { background: #050608; box-shadow: none; }
+.lab-cat .count {
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 800;
+  background: rgba(255,255,255,.08);
+  padding: 2px 8px; border-radius: 100px;
+  margin-left: auto;
 }
+.lab-cat.active .count { background: rgba(0,0,0,.18); }
+
+.lab-main { min-width: 0; }
+.lab-controls {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.lab-cat-label {
+  font-family: var(--font-display);
+  font-size: 21px; font-weight: 800;
+  letter-spacing: -.5px;
+}
+.lab-search { position: relative; flex: 1; max-width: 340px; min-width: 220px; }
+.lab-search svg { position: absolute; top: 50%; left: 14px; transform: translateY(-50%); width: 15px; height: 15px; fill: var(--muted-light,#8a8f9c); pointer-events: none; }
+.lab-search input {
+  width: 100%; padding: 11px 14px 11px 38px;
+  background: #12131a;
+  border: 1.5px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  font-family: var(--font-body); font-size: 13.5px; color: #fff;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.lab-search input::placeholder { color: var(--muted-light,#8a8f9c); }
+.lab-search input:focus { border-color: rgba(254,248,61,.45); box-shadow: 0 0 0 3px rgba(254,248,61,.10); }
+
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 18px;
+}
+.lab-card {
+  position: relative;
+  background: linear-gradient(160deg, #14151c 0%, #0e0f14 100%);
+  border: 1.5px solid rgba(255,255,255,.08);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex; flex-direction: column;
+  transition: transform .22s cubic-bezier(.22,1,.36,1), border-color .22s;
+}
+.lab-card:nth-child(odd) { transform: rotate(-.5deg); }
+.lab-card:nth-child(even) { transform: rotate(.5deg); }
+.lab-card:hover { transform: rotate(0) translateY(-3px); border-color: rgba(254,248,61,.30); }
+.lab-card-img { height: 148px; background-size: cover; background-position: center; position: relative; display:flex; align-items:center; justify-content:center; font-size: 42px; }
+.lab-card-body { padding: 17px 19px 19px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.lab-card-top { display:flex; align-items:center; justify-content: space-between; gap: 8px; }
+.lab-card-num { font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--muted-light,#8a8f9c); }
+.lab-card-title { font-family: var(--font-display); font-size: 17px; font-weight: 800; letter-spacing: -.4px; line-height: 1.25; color: #fff; }
+.lab-card-tagline { font-size: 12.5px; color: var(--muted-light,#8a8f9c); line-height: 1.5; }
+.lab-card-meta { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.05); }
+.lab-card-readmore { font-family: var(--font-display); font-size: 12px; font-weight: 700; color: var(--accent); margin-left: auto; transition: transform .2s; }
+.lab-card:hover .lab-card-readmore { transform: translateX(4px); }
+
+.state { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; font-family: var(--font-display); font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; }
 .state .d { width: 5px; height: 5px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
+.state.live { color: var(--accent); background: rgba(254,248,61,.10); border: 1px solid rgba(254,248,61,.30); }
+.state.live .d { animation: liveBlink 1.6s ease infinite; }
 .state.cooking { color: var(--c-lilac); background: rgba(196,181,253,.08); border: 1px solid rgba(196,181,253,.22); }
 .state.shelved { color: var(--c-blue); background: rgba(125,211,252,.08); border: 1px solid rgba(125,211,252,.22); }
 .state.dreaming { color: var(--c-mint); background: rgba(134,239,172,.08); border: 1px solid rgba(134,239,172,.22); }
-.state.killed { color: var(--stamp-red, #eb4545); background: rgba(235,69,69,.08); border: 1px solid rgba(235,69,69,.30); }
+.state.killed { color: #eb4545; background: rgba(235,69,69,.08); border: 1px solid rgba(235,69,69,.30); text-decoration: line-through; }
+@keyframes liveBlink { 0%,100%{opacity:1} 50%{opacity:.35} }
 
-@media (max-width: 560px) {
-  .log-row { gap: 12px; }
-  .log-title { font-size: 15px; }
-  .state span:not(.d) { display: none; }
+.lab-empty { text-align: center; padding: 60px 20px; font-size: 15px; color: var(--muted-light,#8a8f9c); grid-column: 1 / -1; }
+.lab-empty span { display: block; font-size: 38px; margin-bottom: 12px; }
+
+/* ───── Project detail view ───── */
+#project-view { display: none; max-width: 860px; margin: 0 auto; padding: 130px 28px 80px; }
+#project-view.open { display: block; }
+#lab-list-view.hidden { display: none; }
+
+.lab-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  color: var(--muted-light,#8a8f9c);
+  padding: 9px 14px; border-radius: 100px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.03);
+  margin-bottom: 26px; cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
 }
+.lab-back:hover { color: #fff; border-color: rgba(254,248,61,.30); background: rgba(254,248,61,.06); }
+
+.proj-banner-card {
+  border-radius: 24px; overflow: hidden;
+  border: 1.5px solid rgba(254,248,61,.22);
+  background: #0f1015;
+  margin-bottom: 24px;
+  transform: rotate(-.6deg);
+  box-shadow: 0 8px 0 0 #000, 0 24px 60px rgba(0,0,0,.5);
+}
+.proj-banner-img { width: 100%; height: 240px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; font-size: 64px; }
+.proj-banner-meta { padding: 26px 30px; }
+.proj-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--muted-light,#8a8f9c); margin-bottom: 12px; }
+.proj-title {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 5vw, 54px); font-weight: 800;
+  letter-spacing: -1.4px; line-height: 1.02;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 10px;
+}
+.proj-tagline { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -.3px; margin-bottom: 14px; }
+.proj-meta-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+
+.proj-works { display: flex; align-items: center; gap: 10px; padding: 16px 20px; background: rgba(254,248,61,.04); border: 1px solid rgba(254,248,61,.16); border-radius: 16px; margin-bottom: 30px; flex-wrap: wrap; }
+.proj-works .lbl { font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-right: 4px; }
+.proj-works .logo-chip { display: inline-flex; align-items: center; gap: 7px; background: #14151c; border: 1px solid rgba(255,255,255,.10); padding: 6px 12px 6px 8px; border-radius: 100px; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: #fff; }
+.proj-works .logo-chip img { width: 18px; height: 18px; border-radius: 5px; object-fit: contain; background:#fff; padding: 1px; }
+
+.proj-body p { font-size: 15.5px; color: var(--text); line-height: 1.8; margin-bottom: 16px; }
+.proj-body p b { color: #fff; font-weight: 600; }
+.proj-body h3 { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -.4px; color: #fff; margin: 32px 0 12px; display: flex; align-items: center; gap: 10px; }
+.proj-body h3::before { content:""; width: 5px; height: 20px; flex-shrink: 0; background: linear-gradient(180deg, var(--accent), var(--accent-2)); border-radius: 3px; }
+.proj-body ul { list-style: none; margin: 12px 0 22px; display: flex; flex-direction: column; gap: 8px; }
+.proj-body ul li { display: flex; align-items: flex-start; gap: 11px; font-size: 14.5px; color: var(--text); line-height: 1.6; padding: 12px 15px; background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.05); border-radius: 12px; }
+.proj-body ul li::before { content: "✦"; color: var(--accent); font-size: 9px; flex-shrink: 0; margin-top: 5px; }
+.proj-body ul li b { color: #fff; font-weight: 600; }
+.proj-callout { position: relative; background: rgba(254,248,61,.05); border: 1px solid rgba(254,248,61,.20); border-left: 3px solid var(--accent); border-radius: 14px; padding: 17px 21px; margin: 20px 0; font-size: 14.5px; line-height: 1.7; color: var(--text); transform: rotate(-.5deg); }
+.proj-callout strong { color: #fff; font-weight: 600; }
+.proj-callout.dead { border-left-color: #eb4545; background: rgba(235,69,69,.05); border-color: rgba(235,69,69,.20); }
+.proj-callout.dead strong { color: #eb4545; }
+.proj-signoff { color: var(--muted-light,#8a8f9c); font-size: 13.5px; font-style: italic; border-top: 1px solid rgba(255,255,255,.08); padding-top: 18px; margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -362,147 +269,36 @@
   <a href="https://fortized.com">Fortized →</a>
 </div>
 
-<section class="page-top">
-  <div class="container">
-    <div class="eyebrow">the lab</div>
-    <h1>where <span class="pop">weird</span><br>ideas grow up.</h1>
-    <p class="lede">most don't make it out. the ones that do, you'll see here first.</p>
-
-    <!-- ─── Currently featuring: Swiftign ─── -->
-    <div class="section-rail">
-      <span class="label yellow"><span class="dot"></span> currently featuring</span>
-      <span class="line"></span>
-      <span class="meta">project 048</span>
+<div id="lab-list-view">
+  <section class="page-top">
+    <div class="container">
+      <div class="eyebrow">the lab</div>
+      <h1>where <span class="pop">weird</span><br>ideas grow up.</h1>
+      <p class="lede">most don't make it out. the ones that do, you'll see here first — browse everything cooking, shipped, and shelved.</p>
     </div>
+  </section>
 
-    <div class="spotlight">
-
-      <aside class="spotlight-side reveal">
-        <div class="side-visual">
-          <span class="chip"><span class="dot"></span> the house style</span>
-          <img src="/SwiftawLab-Swiftign.png" alt="Swiftign - the Swiftaw design system" loading="lazy">
-        </div>
-
-        <dl class="side-specs">
-          <dt>display</dt><dd><code>Syne</code> 600/700/800, tight tracking</dd>
-          <dt>body</dt><dd><code>DM Sans</code> 300-600, 15.5px base</dd>
-          <dt>radii</dt><dd>chips <code>100px</code> · cards <code>14-24px</code></dd>
-          <dt>shadows</dt><dd>hard offset <code>0 8px 0 0</code></dd>
-          <dt>tilt</dt><dd><code>-3deg</code> to <code>+1.5deg</code>, straighten on hover</dd>
-          <dt>motion</dt><dd>200-250ms ease · slow bob and pulse loops</dd>
-        </dl>
-
-        <div class="side-tokens">
-          <span class="sw" style="background:#0d1117" title="#0d1117 swiftaw bg"></span>
-          <span class="sw" style="background:#080a0f" title="#080a0f fortized bg"></span>
-          <span class="sw" style="background:linear-gradient(135deg,#fef83d,#fff000)" title="#fef83d swiftaw yellow"></span>
-          <span class="sw" style="background:linear-gradient(135deg,#fff93e,#fff700)" title="#fff93e fortized yellow"></span>
-          <span class="sw" style="background:#ff8ab4" title="pink"></span>
-          <span class="sw" style="background:#7dd3fc" title="blue"></span>
-          <span class="sw" style="background:#86efac" title="mint"></span>
-          <span class="sw" style="background:#c4b5fd" title="lilac"></span>
-          <span class="sw" style="background:#fdba74" title="peach"></span>
-        </div>
-
-        <div class="side-foot">
-          <a href="https://fortized.com" class="btn-3d sm">See it on Fortized <svg class="i"><use href="#i-fire"/></svg></a>
-          <a href="/products" class="btn-3d-ghost sm">Our products</a>
-          <span class="more">v1 · 13 jun 2026</span>
-        </div>
-      </aside>
-
-      <article class="spotlight-main reveal">
-        <h2 class="project-title">swiftign<span class="end-dot"></span></h2>
-        <div class="tagline">the design language we build everything in.</div>
-
-        <div class="article-body">
-          <p>swiftign is the <b>internal design system</b> we use across every Swiftaw and Fortized surface. born in 2026 while we were rebuilding both sites at the same time and realised we kept reaching for the same little tricks.</p>
-          <p class="own-line">so we gave it a name and wrote it down.</p>
-
-          <div class="sec-head">
-            <div class="num">01</div>
-            <h3>the vibe, in one breath</h3>
-          </div>
-          <div class="sub-label">what swiftign feels like before it feels like anything else.</div>
-          <p>dark, slightly playful, mildly off-axis. things tilt. things wobble a little. nothing is perfectly aligned because perfectly aligned is boring. <b>stickers, capsules, soft chips, 3D buttons</b> - all sitting on a near-black background with a single warm yellow doing most of the heavy lifting.</p>
-          <div class="callout">
-            <strong>rule of thumb:</strong> if it looks like a SaaS dashboard, you went too far. if it looks like a sticker someone slapped on a laptop, you're close.
-          </div>
-
-          <div class="sec-head">
-            <div class="num">02</div>
-            <h3>the tokens</h3>
-          </div>
-          <div class="sub-label">colours, type, surfaces. swap freely per product.</div>
-          <p><b>backgrounds</b> stay dark and near-neutral. <b>one yellow accent</b> per product carries the brand. <b>six soft tints</b> (yellow / pink / blue / mint / lilac / peach) handle everything else - chips, callouts, status pills, sticker tints. see the swatches on the left.</p>
-
-          <div class="sec-head">
-            <div class="num">03</div>
-            <h3>the components</h3>
-          </div>
-          <div class="sub-label">the building blocks we lean on most.</div>
-          <p><b>floating capsule nav</b> - centered, blurred, rounded-999, logo handles home. yellow gradient active pill, mobile drawer with sliding "→". <b>3D buttons</b> (<code>.btn-3d</code> / <code>.btn-3d-ghost</code>) with hard offset shadows that press in on click. <b>sticker cards</b> with subtle tilts that straighten on hover. <b>soft chip tokens</b> in the six tints, used for status, eyebrows, callouts. <b>floating FontAwesome decos</b> that bob gently between sections. <b>Twemoji + Fortized custom emojis</b> (joyster, leafen, knight) used inline as real text.</p>
-          <div class="callout principles tilt-r">
-            <b>copy tone:</b> lowercase, conversational, no em-dashes (only "-"). short sentences. zero corporate. say "we build weird stuff", not "we are an innovative studio".
-          </div>
-
-          <div class="sec-head">
-            <div class="num">04</div>
-            <h3>how to use it</h3>
-          </div>
-          <div class="sub-label">a framework, not a cage.</div>
-          <p>swiftign is meant to be <b>remixed per product</b>. swap the accent. add a tint. invent your own sticker shape. the only fixed things are the <b>off-axis playfulness, the dark canvas, the typographic stack, and the tone of voice</b>. everything else is fair game.</p>
-
-          <div class="claude-note">
-            <span class="head">★ swiftign directives</span>
-            <p>when you're building a new Swiftaw or Fortized app, treat <b>swiftaw.com</b> and <b>fortized.com</b> as your reference textures. open them, scroll them, screenshot them, and <b>take inspiration</b> - don't trace them. you're allowed to invent.</p>
-            <ul class="rules">
-              <li>keep the dark canvas, the single-yellow-accent rule, and the Syne + DM Sans pairing.</li>
-              <li>use stickers, capsules and 3D buttons before you reach for anything generic.</li>
-              <li>let things tilt slightly. straighten on hover. never align everything to a perfect grid.</li>
-              <li>match the voice: lowercase, short, a little weird, never corporate.</li>
-              <li>everything else - layout, components, surprise moments - <b>invent freely</b>.</li>
-            </ul>
+  <div class="lab-wrap">
+    <div class="lab-shell">
+      <aside class="lab-cats" id="lab-cats" aria-label="Project status"></aside>
+      <main class="lab-main">
+        <div class="lab-controls">
+          <div class="lab-cat-label" id="lab-cat-label">All Projects</div>
+          <div class="lab-search">
+            <svg viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+            <input id="lab-search-input" type="text" placeholder="Search the bench" oninput="filterLab(this.value)">
           </div>
         </div>
-
-        <div class="foot">
-          <span class="more">that's the whole system</span>
-        </div>
-      </article>
-
-    </div><!-- /.spotlight -->
-
-    <!-- ─── Other ideas in the lab ───────────────────── -->
-    <div class="section-rail">
-      <span class="label lilac"><span class="dot"></span> also on the bench</span>
-      <span class="line"></span>
-      <span class="meta">4 ideas · 1 killed</span>
+        <div class="lab-grid" id="lab-grid"></div>
+      </main>
     </div>
-    <ul class="lab-log">
-      <li class="log-row reveal">
-        <span class="log-num">042</span>
-        <span class="log-title">profiles that feel like rooms</span>
-        <span class="state cooking"><span class="d"></span> cooking</span>
-      </li>
-      <li class="log-row reveal">
-        <span class="log-num">031</span>
-        <span class="log-title">a kinder DM client</span>
-        <span class="state dreaming"><span class="d"></span> dreaming</span>
-      </li>
-      <li class="log-row reveal">
-        <span class="log-num">028</span>
-        <span class="log-title">shared moodboards</span>
-        <span class="state shelved"><span class="d"></span> shelved</span>
-      </li>
-      <li class="log-row killed reveal">
-        <span class="log-num">014</span>
-        <span class="log-title">RSS for friend groups</span>
-        <span class="state killed"><span class="d"></span> killed</span>
-      </li>
-    </ul>
   </div>
-</section>
+</div>
+
+<div id="project-view">
+  <div class="lab-back" onclick="closeProject()">← Back to the Lab</div>
+  <div id="project-content"></div>
+</div>
 
 <footer class="site-footer">
   <div class="footer-inner">
@@ -516,6 +312,236 @@
   </div>
 </footer>
 
+<script>
+const LOGO = {
+  fortized: 'https://www.fortized.com/Fortized%20icon.png',
+  discord: 'https://static.wikia.nocookie.net/dcpfr/images/0/09/Discordicon.png/revision/latest/scale-to-width-down/1000?cb=20230511153016&path-prefix=fr',
+  roblox: 'https://upload.wikimedia.org/wikipedia/commons/7/70/Roblox_Corporation_2025_logo.svg'
+};
+
+const PROJECTS = {
+  swiftign: {
+    number: '048', status: 'live', statusLabel: 'shipped · v1',
+    title: 'swiftign', tagline: 'the internal design language we build everything in.',
+    date: '13 jun 2026', icon: '🎨',
+    banner: '/SwiftawLab-Swiftign.png',
+    content: `
+      <p>swiftign is the design system we use across every Swiftaw and Fortized surface. it was born in 2026 while we were rebuilding both sites at the same time and realised we kept reaching for the same little tricks — so we gave it a name and wrote it down.</p>
+      <h3>the vibe, in one breath</h3>
+      <p>dark, slightly playful, mildly off-axis. things tilt. things wobble a little. nothing is perfectly aligned, because perfectly aligned is boring. <b>stickers, capsules, soft chips, 3D buttons</b> — all sitting on a near-black background with a single warm yellow doing most of the heavy lifting.</p>
+      <div class="proj-callout"><strong>rule of thumb:</strong> if it looks like a SaaS dashboard, you went too far. if it looks like a sticker someone slapped on a laptop, you're close.</div>
+      <h3>the components</h3>
+      <ul>
+        <li><b>floating capsule nav</b> — centered, blurred, rounded-999, logo handles home.</li>
+        <li><b>3D buttons</b> with hard offset shadows that press in on click.</li>
+        <li><b>sticker cards</b> with subtle tilts that straighten on hover.</li>
+        <li><b>soft chip tokens</b> in six tints — yellow, pink, blue, mint, lilac, peach.</li>
+      </ul>
+      <h3>how to use it</h3>
+      <p>swiftign is meant to be <b>remixed per product</b>. swap the accent, add a tint, invent your own sticker shape. the only fixed things are the off-axis playfulness, the dark canvas, the typographic stack, and the tone of voice.</p>
+      <p class="proj-signoff">this is the page you're on right now. it practices what it preaches.</p>
+    `
+  },
+  soundboard: {
+    number: '049', status: 'cooking', statusLabel: 'cooking',
+    title: 'a soundboard for voice chat', tagline: 'clips, jingles and stings you can drop mid-call without breaking the conversation.',
+    date: 'started jun 2026', icon: '🔊',
+    works: ['fortized', 'discord', 'roblox'],
+    content: `
+      <p>we spend a lot of time in voice chat — Fortized Party Rooms, Discord calls, Roblox games with friends — and every time someone says "wait I have the perfect sound for this" and then fumbles to find an mp3, a little piece of us dies. so we're building the fix.</p>
+      <p>the idea is a small always-on-top panel with a grid of clips. tap one, it plays into your mic through a virtual audio device, everyone in the call hears it, you never had to alt-tab.</p>
+      <h3>what it does</h3>
+      <ul>
+        <li><b>hotkey grid</b> — bind any clip to a keyboard shortcut, trigger it without touching the panel.</li>
+        <li><b>mic passthrough mixing</b> — your voice and the clip blend live, no need to mute yourself.</li>
+        <li><b>drag-and-drop boards</b> — build a board per game, per friend group, per mood.</li>
+        <li><b>clip trimming</b> — grab any short audio, trim it in-app, done in seconds.</li>
+      </ul>
+      <div class="proj-callout"><strong>not a Fortized-only tool.</strong> it's built to sit underneath whatever you're already using to talk — that's the whole point.</div>
+      <h3>where it fits</h3>
+      <p>it works as a standalone app that routes into any voice platform, and it'll get a native, tighter integration inside Fortized Party Rooms once the core is solid.</p>
+      <p class="proj-signoff">still early. mixer routing is the hard part and we're taking our time with it.</p>
+    `
+  },
+  roomprofiles: {
+    number: '042', status: 'cooking', statusLabel: 'cooking',
+    title: 'profiles that feel like rooms', tagline: 'a profile page you can rearrange like furniture instead of a form you fill out.',
+    date: 'started apr 2026', icon: '🛋️',
+    content: `
+      <p>most profile pages are a form: avatar here, bio there, a few badges nobody looks at. we wanted something you could actually decorate — drag widgets around, resize a section, make it look like <em>your</em> corner of the internet instead of a template.</p>
+      <h3>what we're exploring</h3>
+      <ul>
+        <li><b>a real layout grid</b> — widgets snap into place, resize, and reflow.</li>
+        <li><b>ambient backgrounds</b> — subtle motion tied to your Fortized activity, not a static image.</li>
+        <li><b>guest mode</b> — visitors see a slightly different arrangement than you do while editing.</li>
+      </ul>
+      <p class="proj-signoff">this is the natural next step after profile widgets shipped on Fortized. we're seeing how far "room" as a metaphor can actually go before it gets gimmicky.</p>
+    `
+  },
+  kinderdm: {
+    number: '031', status: 'dreaming', statusLabel: 'dreaming',
+    title: 'a kinder DM client', tagline: 'what if a messaging inbox actively discouraged doomscrolling instead of rewarding it?',
+    date: 'first sketch feb 2026', icon: '💌',
+    content: `
+      <p>most DM inboxes are engineered to keep you scrolling. we've been sketching the opposite: an inbox with no infinite scroll, no unread-count anxiety spiral, no read receipts unless both people opt in.</p>
+      <p>it's early — mostly notes and a handful of low-fidelity mockups. no code yet. we're not in a rush to build this one, we just want to make sure we understand the problem before we do.</p>
+      <p class="proj-signoff">if this ever leaves the sketchbook, it'll probably start as an experimental mode inside Fortized DMs rather than a separate app.</p>
+    `
+  },
+  moodboards: {
+    number: '028', status: 'shelved', statusLabel: 'shelved',
+    title: 'shared moodboards', tagline: 'a Pinterest-style board that a whole Bastion could pin to together.',
+    date: 'built mar–apr 2026', icon: '🖼️',
+    content: `
+      <p>we got a working prototype — drag images in, arrange them freely, invite people to co-pin. it was fun. the problem was scope: it wanted to become its own product, not a feature, and that wasn't the bet we were ready to make.</p>
+      <div class="proj-callout"><strong>shelved, not dead.</strong> the prototype still exists internally. if enough communities ask for something like it, we know exactly where to pick it back up.</div>
+    `
+  },
+  friendrss: {
+    number: '014', status: 'killed', statusLabel: 'killed',
+    title: 'RSS for friend groups', tagline: 'a private feed of everything your friends were up to, pulled from an RSS-style subscription model.',
+    date: 'built dec 2025', icon: '📡',
+    content: `
+      <p>the pitch was neat: subscribe to your friends the way you'd subscribe to a blog, get a clean chronological feed with none of the algorithm. we shipped a rough version internally and used it for three weeks.</p>
+      <div class="proj-callout dead"><strong>why it died:</strong> nobody posted to it. a feed needs a reason to open every day, and "your friends' RSS" wasn't one. the underlying idea — a noise-free, non-algorithmic feed — is still one we believe in, we just haven't found the right shape for it yet.</div>
+    `
+  }
+};
+
+function statusOrder(s){ return {live:0, cooking:1, dreaming:2, shelved:3, killed:4}[s] ?? 9; }
+
+function escAttr(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+let activeStatus = 'All';
+let labSearch = '';
+
+function getStatuses(){
+  return [
+    {key:'All', label:'All Projects'},
+    {key:'live', label:'Live'},
+    {key:'cooking', label:'Cooking'},
+    {key:'dreaming', label:'Dreaming'},
+    {key:'shelved', label:'Shelved'},
+    {key:'killed', label:'Killed'}
+  ];
+}
+
+function renderCats(){
+  const cont = document.getElementById('lab-cats');
+  const counts = {};
+  Object.values(PROJECTS).forEach(p => { counts[p.status] = (counts[p.status]||0) + 1; });
+  const total = Object.values(PROJECTS).length;
+  cont.innerHTML = `<div class="lab-cats-head">status</div>` + getStatuses().map(s => {
+    const count = s.key === 'All' ? total : (counts[s.key] || 0);
+    return `<a class="lab-cat${s.key===activeStatus?' active':''}" data-status="${s.key}"><span class="dot"></span>${s.label}<span class="count">${count}</span></a>`;
+  }).join('');
+  cont.querySelectorAll('.lab-cat').forEach(el => el.addEventListener('click', () => {
+    activeStatus = el.dataset.status;
+    document.getElementById('lab-cat-label').textContent = activeStatus === 'All' ? 'All Projects' : getStatuses().find(s=>s.key===activeStatus).label + ' Projects';
+    renderCats(); renderGrid();
+  }));
+}
+
+function buildCard(id, p){
+  const img = p.banner
+    ? `<div class="lab-card-img" style="background-image:url('${escAttr(p.banner)}');"></div>`
+    : `<div class="lab-card-img">${p.icon||'🧪'}</div>`;
+  return `
+    <article class="lab-card" onclick="openProject('${escAttr(id)}')">
+      ${img}
+      <div class="lab-card-body">
+        <div class="lab-card-top">
+          <span class="lab-card-num">№ ${escAttr(p.number)}</span>
+          <span class="state ${p.status}"><span class="d"></span>${escAttr(p.statusLabel)}</span>
+        </div>
+        <div class="lab-card-title">${escAttr(p.title)}</div>
+        <div class="lab-card-tagline">${escAttr(p.tagline)}</div>
+        <div class="lab-card-meta"><span class="lab-card-readmore">Read more →</span></div>
+      </div>
+    </article>`;
+}
+
+function renderGrid(){
+  const grid = document.getElementById('lab-grid');
+  const q = labSearch.toLowerCase().trim();
+  const entries = Object.entries(PROJECTS)
+    .filter(([id,p]) => activeStatus === 'All' || p.status === activeStatus)
+    .filter(([id,p]) => !q || p.title.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q))
+    .sort((a,b) => statusOrder(a[1].status) - statusOrder(b[1].status) || b[1].number.localeCompare(a[1].number));
+  if (!entries.length){
+    grid.innerHTML = `<div class="lab-empty"><span>🧪</span>Nothing here yet.</div>`;
+    return;
+  }
+  grid.innerHTML = entries.map(([id,p]) => buildCard(id,p)).join('');
+}
+
+function filterLab(v){ labSearch = v || ''; renderGrid(); }
+
+function renderProject(id){
+  const p = PROJECTS[id]; if (!p) return false;
+  const banner = p.banner
+    ? `<div class="proj-banner-img" style="background-image:url('${escAttr(p.banner)}');"></div>`
+    : `<div class="proj-banner-img">${p.icon||'🧪'}</div>`;
+  const works = (p.works||[]).length ? `
+    <div class="proj-works">
+      <span class="lbl">works with</span>
+      ${p.works.map(k => `<span class="logo-chip"><img src="${LOGO[k]}" alt="">${k.charAt(0).toUpperCase()+k.slice(1)}</span>`).join('')}
+    </div>` : '';
+  document.getElementById('project-content').innerHTML = `
+    <div class="proj-banner-card">
+      ${banner}
+      <div class="proj-banner-meta">
+        <div class="proj-eyebrow">project № ${escAttr(p.number)} · <span class="state ${p.status}"><span class="d"></span>${escAttr(p.statusLabel)}</span></div>
+        <div class="proj-title">${escAttr(p.title)}</div>
+        <div class="proj-tagline">${escAttr(p.tagline)}</div>
+        <div class="proj-meta-row" style="color:var(--muted-light,#8a8f9c); font-size:12.5px;">${escAttr(p.date)}</div>
+      </div>
+    </div>
+    ${works}
+    <div class="proj-body">${p.content}</div>
+  `;
+  document.title = `${p.title} - Swiftaw Lab`;
+  document.getElementById('lab-list-view').classList.add('hidden');
+  document.getElementById('project-view').classList.add('open');
+  return true;
+}
+
+function openProject(id){
+  if (!PROJECTS[id]) return;
+  const url = new URL(window.location.href);
+  url.searchParams.set('project', id);
+  history.pushState({projectId:id}, '', url.toString());
+  renderProject(id);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function closeProject(){
+  const url = new URL(window.location.href);
+  url.searchParams.delete('project');
+  history.pushState({projectId:null}, '', url.toString());
+  document.getElementById('lab-list-view').classList.remove('hidden');
+  document.getElementById('project-view').classList.remove('open');
+  document.title = 'Lab - Swiftaw';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+window.addEventListener('popstate', e => {
+  const id = e.state && e.state.projectId;
+  if (id && PROJECTS[id]) renderProject(id);
+  else {
+    document.getElementById('lab-list-view').classList.remove('hidden');
+    document.getElementById('project-view').classList.remove('open');
+    document.title = 'Lab - Swiftaw';
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+renderCats();
+renderGrid();
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('project');
+  if (id && PROJECTS[id]) { renderProject(id); history.replaceState({projectId:id}, '', window.location.href); }
+})();
+</script>
 <script src="/css/swiftaw.js"></script>
 </body>
 </html>
