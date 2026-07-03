@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-.page-top { padding: 140px 0 40px; position: relative; }
+.page-top { padding: 130px 0 44px; position: relative; }
 .eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
@@ -33,11 +33,11 @@
 }
 .page-top h1 {
   font-family: var(--font-display);
-  font-size: clamp(44px, 6.4vw, 96px);
+  font-size: clamp(40px, 6.4vw, 88px);
   font-weight: 800;
-  letter-spacing: -3px;
+  letter-spacing: -2.5px;
   line-height: .92;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   max-width: 800px;
 }
 .page-top h1 .pop {
@@ -47,76 +47,220 @@
 }
 .page-top .lede { font-size: 18px; color: var(--text); max-width: 540px; line-height: 1.55; }
 
-/* News stack - tilted note cards */
-.news-stack {
-  margin-top: 60px;
-  position: relative;
-  display: flex; flex-direction: column;
-  gap: 22px;
-  max-width: 880px;
-}
-.note {
-  position: relative;
-  background: linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%);
-  border: 1.5px solid var(--border);
-  border-radius: 22px;
-  padding: 24px 28px;
-  box-shadow: 0 6px 0 0 var(--ink), 0 18px 40px rgba(0,0,0,.4);
+/* ───── Shell: sticky category rail + card grid ───── */
+.news-wrap { padding: 0 28px; }
+.news-shell {
+  max-width: 1240px;
+  margin: 36px auto 0;
   display: grid;
-  grid-template-columns: 140px 1fr auto;
-  gap: 20px;
-  align-items: center;
-  transition: transform .25s, box-shadow .25s;
+  grid-template-columns: 230px 1fr;
+  gap: 30px;
 }
-.note.t1 { transform: rotate(-1deg); margin-left: 0; }
-.note.t2 { transform: rotate(1deg); margin-left: 30px; }
-.note.t3 { transform: rotate(-.7deg); margin-left: -10px; }
-.note.t4 { transform: rotate(.6deg); margin-left: 20px; }
-.note:hover { transform: rotate(0) translateY(-3px); box-shadow: 0 10px 0 0 var(--ink), 0 24px 50px rgba(0,0,0,.5); }
-.note.tint-yellow { background: linear-gradient(160deg, #2a2912 0%, #1c1a08 100%); border-color: rgba(254,248,61,.25); }
-.note.tint-pink   { background: linear-gradient(160deg, #2a1822 0%, #1c0e16 100%); border-color: rgba(255,138,180,.25); }
-.note.tint-blue   { background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(125,211,252,.25); }
-.note .when {
+@media (max-width: 880px) { .news-shell { grid-template-columns: 1fr; gap: 18px; } }
+
+.news-cats {
+  position: sticky; top: 100px; align-self: flex-start;
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 18px;
+  background: #0f1015;
+  border: 1.5px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  box-shadow: 0 6px 0 0 #000;
+  transform: rotate(.4deg);
+}
+@media (max-width: 880px) {
+  .news-cats { position: static; flex-direction: row; flex-wrap: wrap; padding: 12px; transform: none; }
+}
+.news-cats-head {
   font-family: var(--font-display);
-  font-size: 13px; font-weight: 700; letter-spacing: .04em;
-  color: var(--accent);
-}
-.note .body h3 {
-  font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -.4px;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--muted-light,#8a8f9c);
+  padding: 4px 10px 10px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
   margin-bottom: 4px;
 }
-.note .body p { font-size: 14px; color: var(--muted-light); line-height: 1.55; }
-.note .tag {
-  display: inline-flex; align-items: center; gap: 6px;
+@media (max-width: 880px) { .news-cats-head { display: none; } }
+.news-cat {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
   font-family: var(--font-display);
-  font-size: 10.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--muted-light);
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--border);
-  padding: 5px 12px; border-radius: 100px;
+  font-size: 13px; font-weight: 700;
+  color: var(--muted-light,#8a8f9c);
+  padding: 9px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: color .15s, background .15s, border-color .15s;
+  background: none;
+  width: 100%;
+  text-align: left;
 }
-.note .tag svg { width: 12px; height: 12px; fill: currentColor; }
-@media (max-width: 720px) {
-  .note { grid-template-columns: 1fr; gap: 10px; }
-  .note .tag { justify-self: start; }
-  .note.t1, .note.t2, .note.t3, .note.t4 { margin-left: 0; }
+.news-cat:hover { color: #fff; background: rgba(255,255,255,.04); }
+.news-cat.active {
+  color: #050608;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 3px 0 0 #000;
 }
+.news-cat .count {
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 800;
+  background: rgba(255,255,255,.08);
+  padding: 2px 8px; border-radius: 100px;
+  margin-left: auto;
+}
+.news-cat.active .count { background: rgba(0,0,0,.18); }
 
-.more-soon {
-  margin-top: 40px;
-  padding: 32px;
-  border: 2px dashed rgba(254,248,61,.30);
-  border-radius: 24px;
-  text-align: center;
-  background: linear-gradient(160deg, #2a2912 0%, #1c1a08 100%);
-  transform: rotate(-.7deg);
-  max-width: 880px;
+.news-main { min-width: 0; }
+.news-controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.news-cat-label { font-family: var(--font-display); font-size: 21px; font-weight: 800; letter-spacing: -.5px; }
+.news-search { position: relative; flex: 1; max-width: 340px; min-width: 220px; }
+.news-search svg { position: absolute; top: 50%; left: 14px; transform: translateY(-50%); width: 15px; height: 15px; fill: var(--muted-light,#8a8f9c); pointer-events: none; }
+.news-search input {
+  width: 100%; padding: 11px 14px 11px 38px;
+  background: #12131a;
+  border: 1.5px solid rgba(255,255,255,.08);
+  border-radius: 12px;
+  font-family: var(--font-body); font-size: 13.5px; color: #fff;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
 }
-.more-soon h3 { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -.4px; margin-bottom: 6px; }
-.more-soon p { font-size: 14px; color: var(--muted-light); }
+.news-search input::placeholder { color: var(--muted-light,#8a8f9c); }
+.news-search input:focus { border-color: rgba(254,248,61,.45); box-shadow: 0 0 0 3px rgba(254,248,61,.10); }
 
-.deco-n1 { top: 100px; right: 4%; width: 36px; height: 36px; color: var(--c-pink); --r: 14deg; }
-.deco-n2 { top: 360px; left: -2%; width: 28px; height: 28px; color: var(--c-blue); --r: -16deg; }
+.news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 18px; }
+.news-card {
+  position: relative;
+  background: linear-gradient(160deg, #14151c 0%, #0e0f14 100%);
+  border: 1.5px solid rgba(255,255,255,.08);
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex; flex-direction: column;
+  transition: transform .22s cubic-bezier(.22,1,.36,1), border-color .22s;
+}
+.news-card:nth-child(3n+1) { transform: rotate(-.5deg); }
+.news-card:nth-child(3n+2) { transform: rotate(.5deg); }
+.news-card:nth-child(3n) { transform: rotate(-.2deg); }
+.news-card:hover { transform: rotate(0) translateY(-3px); border-color: rgba(254,248,61,.30); }
+.news-card-img { height: 148px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; font-size: 42px; }
+.news-card-body { padding: 17px 19px 19px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.news-card-tag {
+  align-self: flex-start;
+  font-family: var(--font-display); font-size: 10.5px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(254,248,61,.08);
+  border: 1px solid rgba(254,248,61,.22);
+  padding: 4px 10px; border-radius: 100px;
+}
+.news-card-title { font-family: var(--font-display); font-size: 17px; font-weight: 800; letter-spacing: -.4px; line-height: 1.25; color: #fff; }
+.news-card-excerpt { font-size: 12.5px; color: var(--muted-light,#8a8f9c); line-height: 1.5; }
+.news-card-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted-light,#8a8f9c); margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.05); }
+.news-card-pfp {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(254,248,61,.30), rgba(254,248,61,.08));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 10px; font-weight: 800;
+  color: var(--accent); flex-shrink: 0;
+}
+.news-card-author { font-weight: 600; color: #fff; }
+.news-card-dot { color: var(--muted-light,#8a8f9c); }
+.news-card-readmore { font-family: var(--font-display); font-size: 12px; font-weight: 700; color: var(--accent); margin-left: auto; transition: transform .2s; }
+.news-card:hover .news-card-readmore { transform: translateX(4px); }
+
+.news-empty { text-align: center; padding: 60px 20px; font-size: 15px; color: var(--muted-light,#8a8f9c); grid-column: 1 / -1; }
+.news-empty span { display: block; font-size: 38px; margin-bottom: 12px; }
+
+/* ───── Article view ───── */
+#article-view { display: none; max-width: 860px; margin: 0 auto; padding: 130px 28px 80px; }
+#article-view.open { display: block; }
+#news-list-view.hidden { display: none; }
+
+.article-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-size: 13px; font-weight: 700;
+  color: var(--muted-light,#8a8f9c);
+  padding: 9px 14px; border-radius: 100px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.03);
+  margin-bottom: 26px; cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.article-back:hover { color: #fff; border-color: rgba(254,248,61,.30); background: rgba(254,248,61,.06); }
+
+.article-banner-card {
+  border-radius: 24px; overflow: hidden;
+  border: 1.5px solid rgba(254,248,61,.22);
+  background: #0f1015;
+  margin-bottom: 24px;
+  transform: rotate(.5deg);
+  box-shadow: 0 8px 0 0 #000, 0 24px 60px rgba(0,0,0,.5);
+}
+.article-banner-img { width: 100%; height: 240px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; font-size: 64px; }
+.article-banner-meta { padding: 26px 30px; }
+.article-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-display); font-size: 10.5px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(254,248,61,.08);
+  border: 1px solid rgba(254,248,61,.22);
+  border-radius: 100px; padding: 5px 12px; margin-bottom: 14px;
+}
+.article-eyebrow::before { content:""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.article-full-title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 42px); font-weight: 800;
+  letter-spacing: -1.2px; line-height: 1.05; color: #fff;
+  margin-bottom: 12px;
+}
+.article-full-meta { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; font-size: 12.5px; color: var(--muted-light,#8a8f9c); }
+
+.article-byline {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px;
+  background: #12131a;
+  border: 1.5px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  margin-bottom: 34px;
+  box-shadow: 0 5px 0 0 #000;
+}
+.byline-av {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(254,248,61,.30), rgba(254,248,61,.08));
+  border: 2px solid rgba(254,248,61,.30);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 16px; font-weight: 800;
+  color: var(--accent); flex-shrink: 0;
+}
+.byline-info .byline-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 3px; letter-spacing: -.2px; }
+.byline-info .byline-role { font-size: 12.5px; color: var(--muted-light,#8a8f9c); }
+.byline-org { margin-left: auto; font-size: 11.5px; color: var(--muted-light,#8a8f9c); letter-spacing: .04em; }
+
+.article-prose p { font-size: 15.5px; color: var(--text); line-height: 1.8; margin-bottom: 17px; }
+.article-prose p.lead { font-size: 17px; color: #fff; line-height: 1.7; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,.08); font-weight: 500; }
+.article-prose p b { color: #fff; font-weight: 600; }
+.article-prose h3 {
+  font-family: var(--font-display); font-size: 21px; font-weight: 800; letter-spacing: -.4px; color: #fff;
+  margin: 34px 0 12px; display: flex; align-items: center; gap: 10px;
+}
+.article-prose h3::before { content:""; width: 5px; height: 20px; flex-shrink: 0; background: linear-gradient(180deg, var(--accent), var(--accent-2)); border-radius: 3px; }
+.article-prose ul { list-style: none; margin: 12px 0 24px; display: flex; flex-direction: column; gap: 8px; }
+.article-prose ul li { display: flex; align-items: flex-start; gap: 11px; font-size: 14.5px; color: var(--text); line-height: 1.6; padding: 12px 15px; background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.05); border-radius: 12px; }
+.article-prose ul li::before { content: "✦"; color: var(--accent); font-size: 9px; flex-shrink: 0; margin-top: 5px; }
+.article-prose ul li b { color: #fff; font-weight: 600; }
+.article-prose .highlight-box {
+  background: rgba(254,248,61,.05);
+  border: 1px solid rgba(254,248,61,.20);
+  border-left: 3px solid var(--accent);
+  border-radius: 14px; padding: 18px 22px; margin: 24px 0;
+  font-size: 14.5px; color: var(--text); line-height: 1.7;
+  transform: rotate(-.4deg);
+}
+.article-prose .highlight-box strong { color: var(--accent); }
+.article-prose .sign-off { color: var(--muted-light,#8a8f9c); font-size: 13.5px; font-style: italic; border-top: 1px solid rgba(255,255,255,.08); padding-top: 20px; margin-top: 8px; }
+.article-prose .logo-chip { display: inline-flex; align-items: center; gap: 7px; background: #14151c; border: 1px solid rgba(255,255,255,.10); padding: 5px 12px 5px 8px; border-radius: 100px; font-size: 13px; font-weight: 500; color: #fff; margin: 3px 6px 3px 0; }
+.article-prose .logo-chip img { width: 16px; height: 16px; border-radius: 4px; object-fit: contain; background:#fff; padding: 1px; }
 </style>
 </head>
 <body>
@@ -126,10 +270,6 @@
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
   <symbol id="i-fire" viewBox="0 0 448 512"><path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2zM225.7 416c25.3 0 47.7-7 68.8-21 42.1-29.4 53.4-88.2 28.1-134.4-4.5-9-16-9.6-22.5-2l-25.2 29.3c-6.6 7.6-18.5 7.4-24.7-.5-17.3-22.1-49.1-62.4-65.3-83-5.4-6.9-15.2-8-21.5-1.9-18.3 17.8-51.5 56.8-51.5 104.3 0 68.6 50.6 109.2 113.7 109.2z"/></symbol>
-  <symbol id="i-people" viewBox="0 0 576 512"><path d="M64 128a112 112 0 1 1 224 0 112 112 0 1 1 -224 0zM0 464c0-97.2 78.8-176 176-176s176 78.8 176 176l0 6c0 23.2-18.8 42-42 42L42 512c-23.2 0-42-18.8-42-42l0-6zM432 64a96 96 0 1 1 0 192 96 96 0 1 1 0-192zm0 240c79.5 0 144 64.5 144 144l0 22.4c0 23-18.6 41.6-41.6 41.6l-144.8 0c6.6-12.5 10.4-26.8 10.4-42l0-6c0-51.5-17.4-98.9-46.5-136.7 22.6-14.7 49.6-23.3 78.5-23.3z"/></symbol>
-  <symbol id="i-trophy" viewBox="0 0 384 512"><path d="M32 32C32 14.3 46.3 0 64 0L320 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-29.5 0 10.3 134.1c37.1 21.2 65.8 56.4 78.2 99.7l3.8 13.4c2.8 9.7 .8 20-5.2 28.1S362 352 352 352L32 352c-10 0-19.5-4.7-25.5-12.7s-8-18.4-5.2-28.1L5 297.8c12.4-43.3 41-78.5 78.2-99.7L93.5 64 64 64C46.3 64 32 49.7 32 32zM160 400l64 0 0 112c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-112z"/></symbol>
-  <symbol id="i-calendar" viewBox="0 0 448 512"><path d="M128 0C110.3 0 96 14.3 96 32l0 32-32 0C28.7 64 0 92.7 0 128l0 48 448 0 0-48c0-35.3-28.7-64-64-64l-32 0 0-32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 32-128 0 0-32c0-17.7-14.3-32-32-32zM0 224L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-192-448 0z"/></symbol>
-  <symbol id="i-hashtag" viewBox="0 0 512 512"><path d="M214.7 .7c17.3 3.7 28.3 20.7 24.6 38l-19.1 89.3 126.5 0 22-102.7C372.4 8 389.4-3 406.7 .7s28.3 20.7 24.6 38L412.2 128 480 128c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-27.4 128 67.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38l19.1-89.3-126.5 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38L99.8 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 27.4-128-67.8 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 22-102.7C180.4 8 197.4-3 214.7 .7zM206.4 192l-27.4 128 126.5 0 27.4-128-126.5 0z"/></symbol>
 </svg>
 
 <nav class="nav-root">
@@ -156,48 +296,36 @@
   <a href="https://fortized.com">Fortized →</a>
 </div>
 
-<section class="page-top">
-  <div class="container">
-    <div class="deco deco-n1 float-a"><svg><use href="#i-trophy"/></svg></div>
-    <div class="deco deco-n2 float-b"><svg><use href="#i-hashtag"/></svg></div>
-
-    <div class="eyebrow">the news</div>
-    <h1>small wins,<br>quiet <span class="pop">updates</span>.</h1>
-    <p class="lede">we post when there's something worth posting. no noise, no filler.</p>
-
-    <div class="news-stack">
-      <div class="note t1 tint-pink reveal">
-        <div class="when">Feb 2026</div>
-        <div class="body">
-          <h3>Weaverdant joins as CCO</h3>
-          <p>a new voice for Swiftaw - how we talk about what we build just got a lot better.</p>
-        </div>
-        <div class="tag"><svg><use href="#i-people"/></svg> team</div>
-      </div>
-      <div class="note t2 tint-blue reveal">
-        <div class="when">Dec 2025</div>
-        <div class="body">
-          <h3>Tyrianum joins as Chief R&amp;D Officer</h3>
-          <p>research and engineering get a dedicated home inside Swiftaw.</p>
-        </div>
-        <div class="tag"><svg><use href="#i-people"/></svg> team</div>
-      </div>
-      <div class="note t3 tint-yellow reveal">
-        <div class="when">Aug 2025</div>
-        <div class="body">
-          <h3>Swiftaw is founded</h3>
-          <p>a European tech company begins. Fortized becomes the first product.</p>
-        </div>
-        <div class="tag"><svg><use href="#i-trophy"/></svg> milestone</div>
-      </div>
+<div id="news-list-view">
+  <section class="page-top">
+    <div class="container">
+      <div class="eyebrow">the news</div>
+      <h1>small wins,<br>quiet <span class="pop">updates</span>.</h1>
+      <p class="lede">we post when there's something worth posting. no noise, no filler.</p>
     </div>
+  </section>
 
-    <div class="more-soon reveal">
-      <h3>more on the way</h3>
-      <p>we don't ship news for its own sake. only when something's worth saying.</p>
+  <div class="news-wrap">
+    <div class="news-shell">
+      <aside class="news-cats" id="news-cats" aria-label="Categories"></aside>
+      <main class="news-main">
+        <div class="news-controls">
+          <div class="news-cat-label" id="news-cat-label">All News</div>
+          <div class="news-search">
+            <svg viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+            <input id="news-search-input" type="text" placeholder="Search by keyword" oninput="filterSwNews(this.value)">
+          </div>
+        </div>
+        <div class="news-grid" id="news-grid"></div>
+      </main>
     </div>
   </div>
-</section>
+</div>
+
+<div id="article-view">
+  <div class="article-back" onclick="closeSwArticle()">← Back to News</div>
+  <div id="article-content"></div>
+</div>
 
 <footer class="site-footer">
   <div class="footer-inner">
@@ -211,6 +339,165 @@
   </div>
 </footer>
 
+<script>
+const LOGO = {
+  fortized: 'https://www.fortized.com/Fortized%20icon.png',
+  discord: 'https://static.wikia.nocookie.net/dcpfr/images/0/09/Discordicon.png/revision/latest/scale-to-width-down/1000?cb=20230511153016&path-prefix=fr',
+  roblox: 'https://upload.wikimedia.org/wikipedia/commons/7/70/Roblox_Corporation_2025_logo.svg'
+};
+
+const SW_ARTICLES = {
+  soundboard_teaser: {
+    category: 'Product', date: 'June 18, 2026', readTime: '2 min read', createdAt: new Date('2026-06-18').getTime(),
+    icon: '🔊', bylineName: 'Tyrianum', bylineRole: 'Chief R&D Officer, Swiftaw', authorInitial: 'T',
+    title: 'New in the Lab: a soundboard for voice chat',
+    content: `<p class="lead">We just opened a new project on the bench — a lightweight soundboard panel built for voice calls, wherever they happen.</p><p>The idea is simple: a small grid of clips you can trigger with a hotkey, mixed straight into your mic. No alt-tabbing, no dead air while you look for the file.</p><h3>Where it's headed</h3><p>We're building it as a standalone tool first, one that routes into whatever you're already using to talk to people:</p><p>${['fortized','discord','roblox'].map(k=>`<span class="logo-chip"><img src="${LOGO[k]}" alt="">${k.charAt(0).toUpperCase()+k.slice(1)}</span>`).join('')}</p><div class="highlight-box"><strong>Fortized-native later.</strong> Once the mixing core is solid, it'll get a tighter, built-in version inside Fortized Party Rooms.</div><p>It's early — mixer routing is the hard part and we're not rushing it. You can follow progress on the <a href="/innovation-room" style="color:var(--accent);text-decoration:underline;">Lab page</a>.</p><p class="sign-off">— Tyrianum, Chief R&D Officer · Swiftaw</p>`
+  },
+  weaverdant_cco: {
+    category: 'Team', date: 'February 14, 2026', readTime: '2 min read', createdAt: new Date('2026-02-14').getTime(),
+    icon: '🧭', bylineName: 'Staw', bylineRole: 'Chief Executive Officer, Swiftaw', authorInitial: 'S',
+    title: 'Weaverdant joins Swiftaw as Chief Community Officer',
+    content: `<p class="lead">We're bringing on a dedicated voice for how Swiftaw talks about what it builds — and for how our communities get heard back.</p><p>Weaverdant joins Swiftaw as Chief Community Officer, moving from a background in community moderation and platform safety into a role built around one question: are the people using our products actually being listened to?</p><h3>What changes</h3><ul><li><b>A direct line from community to roadmap</b> — feedback from Fortized Bastions now has a clear owner inside the company.</li><li><b>Public-facing security and trust updates</b> — the kind of transparent reporting we think this space needs more of.</li><li><b>A steadier hand on how we communicate</b> — fewer silent changes, more explanations.</li></ul><div class="highlight-box"><strong>Why it matters.</strong> A two-person team can wing communication. A growing one can't. This is us growing up a little.</div><p class="sign-off">— Staw, Chief Executive Officer · Swiftaw</p>`
+  },
+  tyrianum_rd: {
+    category: 'Team', date: 'December 3, 2025', readTime: '2 min read', createdAt: new Date('2025-12-03').getTime(),
+    icon: '🧪', bylineName: 'Staw', bylineRole: 'Chief Executive Officer, Swiftaw', authorInitial: 'S',
+    title: 'Tyrianum joins Swiftaw as Chief R&D Officer',
+    content: `<p class="lead">Research and engineering get a dedicated home inside Swiftaw, and a person to run it who's spent years building things nobody asked for yet — until they did.</p><p>Tyrianum takes over as Chief R&D Officer, splitting time between shipping features on Fortized and running the Lab — our space for the ideas that aren't ready for a roadmap.</p><h3>The mandate</h3><ul><li><b>Ship what's ready.</b> Bastions 2.0, Living Bastions, and the Atelier economy all came out of this team.</li><li><b>Shelve what isn't.</b> Not every experiment needs to become a feature — some just need an honest write-up and a rest.</li><li><b>Say which is which, in public.</b> That's what the Lab is for.</li></ul><p class="sign-off">— Staw, Chief Executive Officer · Swiftaw</p>`
+  },
+  founding: {
+    category: 'Milestone', date: 'August 11, 2025', readTime: '2 min read', createdAt: new Date('2025-08-11').getTime(),
+    icon: '🏁', bylineName: 'Staw', bylineRole: 'Chief Executive Officer, Swiftaw', authorInitial: 'S',
+    title: 'Swiftaw is founded',
+    content: `<p class="lead">A European tech company begins. Fortized becomes the first product.</p><p>Swiftaw started as a conversation between friends frustrated with existing platforms — too many ads, too little sovereignty for the people actually running communities. We wanted to build something different, and we wanted to build it from Europe.</p><h3>The first bet</h3><p>Fortized was the first thing we built: a community platform where servers — we call them Bastions — are genuinely owned by the people who run them, and where status is earned through participation instead of bought with a card.</p><div class="highlight-box"><strong>Small on purpose.</strong> We're not chasing headcount. We're chasing a platform we'd actually want to use.</div><p class="sign-off">— Staw, Chief Executive Officer · Swiftaw</p>`
+  }
+};
+
+function escAttr(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function getExcerpt(html){
+  const tmp = document.createElement('div'); tmp.innerHTML = html;
+  const lead = tmp.querySelector('.lead');
+  const t = lead ? lead.textContent : tmp.textContent;
+  return t.slice(0,120) + (t.length > 120 ? '…' : '');
+}
+
+let swActiveCategory = 'All';
+let swSearch = '';
+
+function getSwCategories(){
+  const set = new Set(['All']);
+  Object.values(SW_ARTICLES).forEach(a => set.add(a.category));
+  return ['All', ...[...set].filter(c=>c!=='All').sort()];
+}
+function renderSwCats(){
+  const cont = document.getElementById('news-cats');
+  const counts = {};
+  Object.values(SW_ARTICLES).forEach(a => { counts[a.category] = (counts[a.category]||0)+1; });
+  const total = Object.values(SW_ARTICLES).length;
+  cont.innerHTML = `<div class="news-cats-head">category</div>` + getSwCategories().map(c => {
+    const count = c === 'All' ? total : (counts[c]||0);
+    return `<a class="news-cat${c===swActiveCategory?' active':''}" data-cat="${escAttr(c)}">${escAttr(c)}<span class="count">${count}</span></a>`;
+  }).join('');
+  cont.querySelectorAll('.news-cat').forEach(el => el.addEventListener('click', () => {
+    swActiveCategory = el.dataset.cat;
+    document.getElementById('news-cat-label').textContent = swActiveCategory === 'All' ? 'All News' : swActiveCategory;
+    renderSwCats(); renderSwGrid();
+  }));
+}
+
+function buildSwCard(id, a){
+  return `
+    <article class="news-card" onclick="openSwArticle('${escAttr(id)}')">
+      <div class="news-card-img">${a.icon||'📰'}</div>
+      <div class="news-card-body">
+        <div class="news-card-tag">${escAttr(a.category)}</div>
+        <div class="news-card-title">${escAttr(a.title)}</div>
+        <div class="news-card-excerpt">${getExcerpt(a.content)}</div>
+        <div class="news-card-meta">
+          <span class="news-card-pfp">${escAttr((a.bylineName||'?').charAt(0))}</span>
+          <span class="news-card-author">${escAttr(a.bylineName)}</span>
+          <span class="news-card-dot">·</span>
+          <span>${escAttr(a.date)}</span>
+          <span class="news-card-readmore">Read →</span>
+        </div>
+      </div>
+    </article>`;
+}
+
+function renderSwGrid(){
+  const grid = document.getElementById('news-grid');
+  const q = swSearch.toLowerCase().trim();
+  const entries = Object.entries(SW_ARTICLES)
+    .filter(([id,a]) => swActiveCategory === 'All' || a.category === swActiveCategory)
+    .filter(([id,a]) => !q || a.title.toLowerCase().includes(q) || a.bylineName.toLowerCase().includes(q) || a.category.toLowerCase().includes(q))
+    .sort((a,b) => b[1].createdAt - a[1].createdAt);
+  if (!entries.length){ grid.innerHTML = `<div class="news-empty"><span>🔍</span>No posts found.</div>`; return; }
+  grid.innerHTML = entries.map(([id,a]) => buildSwCard(id,a)).join('');
+}
+function filterSwNews(v){ swSearch = v || ''; renderSwGrid(); }
+
+function renderSwArticle(id){
+  const a = SW_ARTICLES[id]; if (!a) return false;
+  document.getElementById('article-content').innerHTML = `
+    <div class="article-banner-card">
+      <div class="article-banner-img">${a.icon||'📰'}</div>
+      <div class="article-banner-meta">
+        <div class="article-eyebrow">${escAttr(a.category)}</div>
+        <div class="article-full-title">${escAttr(a.title)}</div>
+        <div class="article-full-meta"><span>${escAttr(a.date)}</span><span>·</span><span>${escAttr(a.readTime)}</span></div>
+      </div>
+    </div>
+    <div class="article-byline">
+      <div class="byline-av">${escAttr(a.authorInitial)}</div>
+      <div class="byline-info">
+        <div class="byline-name">${escAttr(a.bylineName)}</div>
+        <div class="byline-role">${escAttr(a.bylineRole)}</div>
+      </div>
+      <div class="byline-org">Swiftaw</div>
+    </div>
+    <div class="article-prose">${a.content}</div>
+  `;
+  document.title = `${a.title} - Swiftaw News`;
+  document.getElementById('news-list-view').classList.add('hidden');
+  document.getElementById('article-view').classList.add('open');
+  return true;
+}
+function openSwArticle(id){
+  if (!SW_ARTICLES[id]) return;
+  const url = new URL(window.location.href);
+  url.searchParams.set('article', id);
+  history.pushState({articleId:id}, '', url.toString());
+  renderSwArticle(id);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function closeSwArticle(){
+  const url = new URL(window.location.href);
+  url.searchParams.delete('article');
+  history.pushState({articleId:null}, '', url.toString());
+  document.getElementById('news-list-view').classList.remove('hidden');
+  document.getElementById('article-view').classList.remove('open');
+  document.title = 'News - Swiftaw';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+window.addEventListener('popstate', e => {
+  const id = e.state && e.state.articleId;
+  if (id && SW_ARTICLES[id]) renderSwArticle(id);
+  else {
+    document.getElementById('news-list-view').classList.remove('hidden');
+    document.getElementById('article-view').classList.remove('open');
+    document.title = 'News - Swiftaw';
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+renderSwCats();
+renderSwGrid();
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('article');
+  if (id && SW_ARTICLES[id]) { renderSwArticle(id); history.replaceState({articleId:id}, '', window.location.href); }
+})();
+</script>
 <script src="/css/swiftaw.js"></script>
 </body>
 </html>
