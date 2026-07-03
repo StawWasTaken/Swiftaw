@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-.page-top { padding: 140px 0 0; position: relative; }
+.page-top { padding: 140px 0 30px; position: relative; }
 .page-top .eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
@@ -45,114 +45,94 @@
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.page-top .lede { font-size: 18px; max-width: 560px; color: var(--text); line-height: 1.55; }
+.page-top .lede { font-size: 18px; max-width: 560px; color: var(--text); line-height: 1.55; margin-bottom: 26px; }
 
-/* ───── Shell: sticky company card + roster column ───── */
-.about-wrap { padding: 0 28px; margin-top: 50px; }
-.about-shell {
-  max-width: 1180px; margin: 0 auto;
-  display: grid; grid-template-columns: 300px 1fr; gap: 40px; align-items: start;
-}
-@media (max-width: 900px) { .about-shell { grid-template-columns: 1fr; gap: 26px; } }
-
-.about-side { position: sticky; top: 104px; }
-@media (max-width: 900px) { .about-side { position: static; } }
-
-.co-card {
-  background: linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%);
+.meta-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.meta-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-display); font-size: 12.5px; font-weight: 700;
+  color: var(--text);
+  background: var(--panel);
   border: 1.5px solid var(--border);
-  border-radius: 22px;
-  padding: 24px 24px 22px;
-  box-shadow: 0 7px 0 0 var(--ink);
-  transform: rotate(-1deg);
-  margin-bottom: 18px;
+  padding: 7px 14px 7px 12px; border-radius: 100px;
 }
-.co-card .mark { width: 42px; height: 42px; margin-bottom: 16px; display: block; }
-.co-card dt {
-  font-family: var(--font-display); font-size: 10.5px; font-weight: 800;
-  letter-spacing: .16em; text-transform: uppercase; color: var(--accent);
-  margin-top: 16px;
-}
-.co-card dt:first-of-type { margin-top: 0; }
-.co-card dd { font-family: var(--font-display); font-size: 16px; font-weight: 700; letter-spacing: -.2px; margin: 3px 0 0; }
+.meta-pill .k { color: var(--muted-light); font-weight: 500; }
+.meta-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 
-.co-quote {
-  background: linear-gradient(160deg, #2a2912 0%, #1c1a08 100%);
-  border: 1.5px solid rgba(254,248,61,.28);
-  border-radius: 20px;
-  padding: 22px 22px 20px;
-  box-shadow: 0 7px 0 0 var(--ink);
-  transform: rotate(1.2deg);
-  font-family: var(--font-display); font-size: 16px; line-height: 1.4; letter-spacing: -.3px;
-}
-.co-quote img { width: 18px; vertical-align: -3px; }
-.co-quote .attr { display: block; margin-top: 14px; font-family: var(--font-body); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-light); }
-
-.about-side .btn-3d.sm { display: flex; justify-content: center; margin-top: 18px; }
-
-/* ───── Main column ───── */
-.about-main { min-width: 0; }
-.section-eyebrow {
+/* ───── Timeline ───── */
+.timeline-wrap { padding: 0 28px; margin-top: 70px; }
+.timeline-head { max-width: 1000px; margin: 0 auto 40px; }
+.timeline-head .section-eyebrow {
   font-family: var(--font-display); font-size: 13px; font-weight: 700;
   color: var(--muted-light); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px;
 }
-.section-eyebrow svg { width: 15px; height: 15px; fill: var(--c-mint); }
-.about-main h2 {
+.timeline-head .section-eyebrow svg { width: 15px; height: 15px; fill: var(--c-mint); }
+.timeline-head h2 {
   font-family: var(--font-display);
   font-size: clamp(30px, 3.6vw, 44px); font-weight: 800;
-  letter-spacing: -1.4px; line-height: 1; margin-bottom: 8px;
+  letter-spacing: -1.4px; line-height: 1;
 }
-.about-main .h2-note { font-size: 14.5px; color: var(--muted-light); max-width: 480px; margin-bottom: 30px; }
 
-/* org roster */
-.roster { display: flex; flex-direction: column; gap: 12px; }
-.org-row {
-  display: grid; grid-template-columns: 52px 1fr auto; gap: 18px; align-items: center;
-  padding: 16px 20px;
+.timeline { max-width: 1000px; margin: 0 auto; position: relative; padding-left: 34px; }
+.timeline::before {
+  content: ""; position: absolute; left: 5px; top: 6px; bottom: 6px; width: 2px;
+  background: linear-gradient(180deg, rgba(254,248,61,.5), rgba(255,255,255,.08) 85%);
+}
+.tl-item { position: relative; padding-bottom: 34px; }
+.tl-item:last-child { padding-bottom: 0; }
+.tl-item .node {
+  position: absolute; left: -34px; top: 4px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent); border: 3px solid var(--ink);
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.tl-item.vacant .node { background: transparent; border: 2px dashed var(--muted-light); box-shadow: none; width: 10px; height: 10px; left: -33px; }
+.tl-item .date {
+  font-family: var(--font-display); font-size: 11.5px; font-weight: 800;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+}
+.tl-item.vacant .date { color: var(--muted-light); }
+.tl-card {
   background: var(--panel);
   border: 1.5px solid var(--border);
   border-radius: 18px;
-  transition: transform .2s, border-color .2s, background .2s;
+  padding: 20px 24px;
+  box-shadow: 0 5px 0 0 var(--ink);
+  transition: transform .2s, border-color .2s;
 }
-.org-row:nth-child(odd) { transform: rotate(-.4deg); }
-.org-row:nth-child(even) { transform: rotate(.4deg); }
-.org-row:hover { transform: rotate(0) translateX(3px); border-color: rgba(254,248,61,.30); background: var(--panel-2); }
-.org-row .av {
-  width: 52px; height: 52px; border-radius: 15px;
+.tl-item:nth-child(odd) .tl-card { transform: rotate(-.4deg); }
+.tl-item:nth-child(even) .tl-card { transform: rotate(.4deg); }
+.tl-card:hover { transform: rotate(0) translateX(4px); border-color: rgba(254,248,61,.28); }
+.tl-card h3 { font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -.4px; margin-bottom: 6px; }
+.tl-card p { font-size: 14.5px; color: var(--text); line-height: 1.65; }
+.tl-card .who {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+  font-family: var(--font-display); font-size: 12.5px; font-weight: 700;
+}
+.tl-card .who .chip-av {
+  width: 24px; height: 24px; border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-weight: 800; font-size: 19px;
-  color: var(--ink); box-shadow: 0 4px 0 0 var(--ink); flex-shrink: 0;
+  font-size: 11px; font-weight: 800; color: var(--ink); flex-shrink: 0;
 }
-.org-row.vacant .av { background: linear-gradient(135deg, #2a3242, #1d2330) !important; color: var(--muted-light); box-shadow: 0 4px 0 0 var(--ink); }
-.org-row .info .dept { font-family: var(--font-display); font-size: 10.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px; }
-.org-row.vacant .info .dept { color: var(--muted-light); }
-.org-row .info .who { font-family: var(--font-display); font-size: 18px; font-weight: 800; letter-spacing: -.3px; }
-.org-row .info .role { font-size: 12.5px; color: var(--muted-light); margin-top: 2px; }
-.org-row .since { font-family: var(--font-display); font-size: 11.5px; font-weight: 700; color: var(--muted-light); text-align: right; white-space: nowrap; }
-.org-row.vacant .since { color: var(--c-blue); }
-@media (max-width: 560px) {
-  .org-row { grid-template-columns: 44px 1fr; }
-  .org-row .since { grid-column: 2; text-align: left; margin-top: 2px; }
-}
+.tl-item.vacant .who { color: var(--muted-light); }
 
-/* mission banner */
-.mission-banner {
-  margin-top: 56px;
-  padding: 44px 40px;
-  background: linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%);
-  border: 1.5px solid var(--border);
+/* ───── Mission close ───── */
+.mission-close { padding: 0 28px; margin-top: 80px; }
+.mission-close .inner {
+  max-width: 780px; margin: 0 auto; text-align: center;
+  padding: 46px 36px;
+  background: linear-gradient(160deg, #2a2912 0%, #1c1a08 100%);
+  border: 1.5px solid rgba(254,248,61,.28);
   border-radius: 26px;
   box-shadow: 0 8px 0 0 var(--ink);
-  text-align: center;
   transform: rotate(-.5deg);
 }
-.mission-banner .q {
-  font-family: var(--font-display); font-size: clamp(22px, 3.2vw, 32px); font-weight: 800;
-  letter-spacing: -.8px; line-height: 1.25; max-width: 720px; margin: 0 auto 10px;
+.mission-close .q {
+  font-family: var(--font-display); font-size: clamp(22px, 3.2vw, 30px); font-weight: 800;
+  letter-spacing: -.7px; line-height: 1.3; margin-bottom: 10px;
 }
-.mission-banner .q img { width: 24px; vertical-align: -5px; }
-.mission-banner .attr { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-light); margin-bottom: 24px; }
-.mission-banner .btn-3d { display: inline-flex; }
+.mission-close .q img.fmoji { vertical-align: -4px; }
+.mission-close .attr { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-light); margin-bottom: 26px; }
 
 /* deco */
 .deco-a1 { top: 100px; right: 4%; width: 36px; height: 36px; color: var(--c-pink); --r: 14deg; }
@@ -201,65 +181,82 @@
 
     <div class="eyebrow">a little about us</div>
     <h1>a <span class="scribbled">company</span><br>that builds weird stuff.</h1>
-    <p class="lede">independent, european, based in Île-de-France. building social tools and community apps. started in August 2025 with Fortized.</p>
+    <p class="lede">independent, european, based in Île-de-France. building social tools and community apps.</p>
+
+    <div class="meta-row reveal">
+      <span class="meta-pill"><span class="dot"></span><span class="k">HQ</span> Île-de-France</span>
+      <span class="meta-pill"><span class="dot"></span><span class="k">Country</span> France · EU</span>
+      <span class="meta-pill"><span class="dot"></span><span class="k">Founded</span> Aug 2025</span>
+      <span class="meta-pill"><span class="dot"></span><span class="k">Status</span> Independent</span>
+    </div>
   </div>
 </section>
 
-<div class="about-wrap">
-  <div class="about-shell">
-
-    <aside class="about-side reveal">
-      <div class="co-card">
-        <img class="mark" src="/SWFTW_Logomark.png" alt="Swiftaw">
-        <dt>HQ</dt><dd>Île-de-France</dd>
-        <dt>Country</dt><dd>France · EU</dd>
-        <dt>Founded</dt><dd>August 2025</dd>
-        <dt>Status</dt><dd>Independent</dd>
-      </div>
-      <div class="co-quote">
-        "tech for the people inside it, not the people watching the graph." <img src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_heart.png" alt="">
-        <span class="attr">- our compass</span>
-      </div>
-      <a href="/mission" class="btn-3d sm">Read our mission <svg class="i" style="width:14px;height:14px;"><use href="#i-compass"/></svg></a>
-    </aside>
-
-    <main class="about-main">
-      <div class="section-eyebrow"><svg><use href="#i-people"/></svg> who's running things</div>
-      <h2>Leadership &amp; departments.</h2>
-      <p class="h2-note">Swiftaw stays small on purpose. Four seats at the table, one still open.</p>
-
-      <div class="roster">
-        <div class="org-row reveal">
-          <div class="av" style="background: linear-gradient(135deg, var(--accent), var(--accent-2));">S</div>
-          <div class="info"><div class="dept">Executive · Founder</div><div class="who">Staw</div><div class="role">Chief Executive Officer</div></div>
-          <div class="since">since Aug 2025</div>
-        </div>
-        <div class="org-row reveal">
-          <div class="av" style="background: linear-gradient(135deg, var(--c-blue), #38bdf8);">T</div>
-          <div class="info"><div class="dept">R&amp;D Department</div><div class="who">Tyrianum</div><div class="role">Chief R&amp;D Officer</div></div>
-          <div class="since">since Dec 2025</div>
-        </div>
-        <div class="org-row reveal">
-          <div class="av" style="background: linear-gradient(135deg, var(--c-pink), #f472b6);">W</div>
-          <div class="info"><div class="dept">Communication Department</div><div class="who">Weaverdant</div><div class="role">Chief Communication Officer</div></div>
-          <div class="since">since Feb 2026</div>
-        </div>
-        <div class="org-row vacant reveal">
-          <div class="av">?</div>
-          <div class="info"><div class="dept">Safety Department</div><div class="who">Vacant</div><div class="role">Chief Safety Officer</div></div>
-          <div class="since">open since Feb 2026</div>
-        </div>
-      </div>
-
-      <div class="mission-banner reveal">
-        <div class="q">"tech for the people inside it, not the people watching the graph." <img src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_heart.png" alt=""></div>
-        <div class="attr">- our compass</div>
-        <a href="/mission" class="btn-3d">Read our mission <svg class="i"><use href="#i-compass"/></svg></a>
-      </div>
-    </main>
-
+<section class="timeline-wrap">
+  <div class="timeline-head">
+    <div class="section-eyebrow"><svg><use href="#i-people"/></svg> how we got here</div>
+    <h2>The story so far.</h2>
   </div>
-</div>
+
+  <div class="timeline">
+    <div class="tl-item reveal">
+      <span class="node"></span>
+      <div class="date">August 2025</div>
+      <div class="tl-card">
+        <h3>Swiftaw is founded</h3>
+        <p>Started from Île-de-France as an independent company. Fortized becomes the first product - a community platform built around ownership instead of algorithms.</p>
+        <span class="who"><span class="chip-av" style="background:linear-gradient(135deg,var(--accent),var(--accent-2));">S</span>Staw becomes Chief Executive Officer</span>
+      </div>
+    </div>
+
+    <div class="tl-item reveal">
+      <span class="node"></span>
+      <div class="date">December 2025</div>
+      <div class="tl-card">
+        <h3>R&amp;D gets a dedicated lead</h3>
+        <p>Research and engineering get their own home inside the company, separate from day-to-day product work.</p>
+        <span class="who"><span class="chip-av" style="background:linear-gradient(135deg,var(--c-blue),#38bdf8);">T</span>Tyrianum becomes Chief R&amp;D Officer</span>
+      </div>
+    </div>
+
+    <div class="tl-item reveal">
+      <span class="node"></span>
+      <div class="date">February 2026</div>
+      <div class="tl-card">
+        <h3>Communication finds a voice</h3>
+        <p>A dedicated seat for how Swiftaw talks about what it builds, and for making sure community feedback actually reaches the roadmap.</p>
+        <span class="who"><span class="chip-av" style="background:linear-gradient(135deg,var(--c-pink),#f472b6);">W</span>Weaverdant becomes Chief Communication Officer</span>
+      </div>
+    </div>
+
+    <div class="tl-item vacant reveal">
+      <span class="node"></span>
+      <div class="date">February 2026</div>
+      <div class="tl-card">
+        <h3>The Safety seat opens</h3>
+        <p>Still hiring for this one. Until it's filled, security and platform safety are handled directly by the founding team.</p>
+        <span class="who"><span class="chip-av" style="background:linear-gradient(135deg,#2a3242,#1d2330);">?</span>Chief Safety Officer - vacant</span>
+      </div>
+    </div>
+
+    <div class="tl-item reveal">
+      <span class="node"></span>
+      <div class="date">June 2026</div>
+      <div class="tl-card">
+        <h3>swiftign ships, the Lab opens</h3>
+        <p>The internal design system behind every Swiftaw and Fortized surface goes live, and the <a href="/innovation-room" style="color:var(--accent);">Lab</a> opens to the public - a place to watch what we're building before it's finished.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mission-close">
+  <div class="inner reveal">
+    <div class="q">"tech for the people inside it, not the people watching the graph." <img class="fmoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_heart.png" alt=""></div>
+    <div class="attr">- our compass</div>
+    <a href="/mission" class="btn-3d">Read our mission <svg class="i"><use href="#i-compass"/></svg></a>
+  </div>
+</section>
 
 <footer class="site-footer" style="margin-top:80px;">
   <div class="footer-inner">
