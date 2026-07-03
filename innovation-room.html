@@ -155,7 +155,7 @@
 .lab-card:nth-child(even) { transform: rotate(.5deg); }
 .lab-card:hover { transform: rotate(0) translateY(-3px); border-color: rgba(254,248,61,.30); }
 .lab-card-img { height: 148px; background-size: cover; background-position: center; position: relative; display:flex; align-items:center; justify-content:center; background-color:#12161f; }
-.lab-card-img.placeholder img { width: 40px; height: 40px; opacity: .38; filter: grayscale(1); }
+.lab-card-img.placeholder img { width: 56px; height: auto; }
 .lab-card-body { padding: 17px 19px 19px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .lab-card-top { display:flex; align-items:center; justify-content: space-between; gap: 8px; }
 .lab-card-num { font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--muted-light,#8a8f9c); }
@@ -177,7 +177,7 @@
 @keyframes liveBlink { 0%,100%{opacity:1} 50%{opacity:.35} }
 
 .lab-empty { text-align: center; padding: 50px 20px; font-size: 14.5px; color: var(--muted-light,#8a8f9c); grid-column: 1 / -1; background: #171d28; border: 1.5px dashed rgba(255,255,255,.10); border-radius: 20px; }
-.lab-empty img { width: 46px; height: 46px; display: block; margin: 0 auto 14px; opacity: .55; filter: grayscale(1); }
+.lab-empty img { width: 60px; height: auto; display: block; margin: 0 auto 14px; }
 
 /* ───── Project detail view ───── */
 #project-view { display: none; max-width: 860px; margin: 0 auto; padding: 130px 28px 80px; }
@@ -205,7 +205,7 @@
   box-shadow: 0 8px 0 0 #000, 0 24px 60px rgba(0,0,0,.5);
 }
 .proj-banner-img { width: 100%; height: 240px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; background-color:#12161f; }
-.proj-banner-img.placeholder img { width: 60px; height: 60px; opacity: .38; filter: grayscale(1); }
+.proj-banner-img.placeholder img { width: 84px; height: auto; }
 .proj-banner-meta { padding: 26px 30px; }
 .proj-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--muted-light,#8a8f9c); margin-bottom: 12px; }
 .proj-title {
@@ -218,11 +218,23 @@
 }
 .proj-tagline { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -.3px; margin-bottom: 14px; }
 .proj-meta-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.innoproject-tag { font-family: var(--font-display); font-weight: 800; color: var(--c-lilac); }
+.inno-note {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: rgba(196,181,253,.06); border: 1px solid rgba(196,181,253,.22);
+  border-radius: 14px; padding: 15px 19px; margin: 0 0 26px;
+  font-size: 14px; line-height: 1.65; color: var(--text);
+}
+.inno-note .ico { font-size: 18px; flex-shrink: 0; line-height: 1.3; }
+.inno-note b { color: #fff; font-weight: 600; }
+.inno-note a { color: var(--c-lilac); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(196,181,253,.4); }
+.lede-note { font-size: 14px; color: var(--muted-light,#8a8f9c); max-width: 560px; line-height: 1.6; margin-top: 12px; }
+.lede-note b { color: var(--c-lilac); }
 
 .proj-works { display: flex; align-items: center; gap: 10px; padding: 16px 20px; background: rgba(254,248,61,.04); border: 1px solid rgba(254,248,61,.16); border-radius: 16px; margin-bottom: 30px; flex-wrap: wrap; }
 .proj-works .lbl { font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-right: 4px; }
 .proj-works .logo-chip { display: inline-flex; align-items: center; gap: 7px; background: #171d28; border: 1px solid rgba(255,255,255,.10); padding: 6px 12px 6px 8px; border-radius: 100px; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: #fff; }
-.proj-works .logo-chip img { width: 18px; height: 18px; border-radius: 5px; object-fit: contain; background:#fff; padding: 1px; }
+.proj-works .logo-chip img { width: 18px; height: 18px; object-fit: contain; background: transparent; }
 
 .proj-body p { font-size: 15.5px; color: var(--text); line-height: 1.8; margin-bottom: 16px; }
 .proj-body p b { color: #fff; font-weight: 600; }
@@ -288,6 +300,7 @@
       <div class="eyebrow">the lab</div>
       <h1>where <span class="pop">weird</span><br>ideas grow up.</h1>
       <p class="lede">most don't make it out. the ones that do, you'll see here first.</p>
+      <p class="lede-note">everything below is an <b>Innoproject</b> - something we're tinkering with because we like building it, not an announced product. when one graduates, the full story goes on the <a href="/newsroom" style="color:var(--c-lilac);">News</a> page.</p>
     </div>
   </section>
 
@@ -335,7 +348,7 @@ const LOGO = {
 
 const PROJECTS = {
   soundboard: {
-    number: '049', status: 'cooking', statusLabel: 'cooking',
+    innoLabel: 'Innoproject-2', sortIndex: 2, status: 'cooking', statusLabel: 'cooking',
     title: 'a soundboard for voice chat', tagline: 'clips and stings you can drop mid-call without alt-tabbing for them.',
     date: 'started jun 2026',
     banner: 'https://raw.githubusercontent.com/StawWasTaken/Swiftaw/refs/heads/main/SwiftawLab-Soundboard.png',
@@ -359,7 +372,7 @@ const PROJECTS = {
     `
   },
   swiftign: {
-    number: '048', status: 'live', statusLabel: 'shipped · v1',
+    innoLabel: 'Innoproject-1', sortIndex: 1, status: 'live', statusLabel: 'shipped · v1',
     title: 'swiftign', tagline: 'the internal design language we build everything in.',
     date: '13 jun 2026',
     banner: '/SwiftawLab-Swiftign.png',
@@ -438,7 +451,7 @@ function renderCats(){
 function imgOrPlaceholder(banner, cls){
   return banner
     ? `<div class="${cls}" style="background-image:url('${escAttr(banner)}');"></div>`
-    : `<div class="${cls} placeholder"><img src="${HELMET}" alt="image coming soon"></div>`;
+    : `<div class="${cls} placeholder"><img src="${HELMET}" alt=""></div>`;
 }
 
 function buildCard(id, p){
@@ -447,7 +460,7 @@ function buildCard(id, p){
       ${imgOrPlaceholder(p.banner, 'lab-card-img')}
       <div class="lab-card-body">
         <div class="lab-card-top">
-          <span class="lab-card-num">№ ${escAttr(p.number)}</span>
+          <span class="lab-card-num">${escAttr(p.innoLabel)}</span>
           <span class="state ${p.status}"><span class="d"></span>${escAttr(p.statusLabel)}</span>
         </div>
         <div class="lab-card-title">${escAttr(p.title)}</div>
@@ -463,7 +476,7 @@ function renderGrid(){
   const entries = Object.entries(PROJECTS)
     .filter(([id,p]) => activeStatus === 'All' || p.status === activeStatus)
     .filter(([id,p]) => !q || p.title.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q))
-    .sort((a,b) => statusOrder(a[1].status) - statusOrder(b[1].status) || b[1].number.localeCompare(a[1].number));
+    .sort((a,b) => statusOrder(a[1].status) - statusOrder(b[1].status) || a[1].sortIndex - b[1].sortIndex);
   if (!entries.length){
     grid.innerHTML = `<div class="lab-empty"><img src="${HELMET}" alt="">still under construction in this category. check back soon.</div>`;
     return;
@@ -484,12 +497,13 @@ function renderProject(id){
     <div class="proj-banner-card">
       ${imgOrPlaceholder(p.banner, 'proj-banner-img')}
       <div class="proj-banner-meta">
-        <div class="proj-eyebrow">project № ${escAttr(p.number)} · <span class="state ${p.status}"><span class="d"></span>${escAttr(p.statusLabel)}</span></div>
+        <div class="proj-eyebrow"><span class="innoproject-tag">${escAttr(p.innoLabel)}</span> · <span class="state ${p.status}"><span class="d"></span>${escAttr(p.statusLabel)}</span></div>
         <div class="proj-title">${escAttr(p.title)}</div>
         <div class="proj-tagline">${escAttr(p.tagline)}</div>
         <div class="proj-meta-row" style="color:var(--muted-light,#8a8f9c); font-size:12.5px;">${escAttr(p.date)}</div>
       </div>
     </div>
+    ${p.status !== 'live' ? `<div class="inno-note"><span class="ico">🧪</span><span>this is an <b>Innoproject</b> - we're exploring this corner of tech because we like building in it, not because it's an announced Swiftaw product. it isn't official yet. once it is, the full announcement goes up on the <a href="/newsroom">Newsroom - learn more →</a></span></div>` : ''}
     ${works}
     <div class="proj-body">${p.content}</div>
   `;
@@ -502,14 +516,14 @@ function renderProject(id){
 function openProject(id){
   if (!PROJECTS[id]) return;
   const url = new URL(window.location.href);
-  url.searchParams.set('project', id);
+  url.searchParams.set('innoproject', id);
   history.pushState({projectId:id}, '', url.toString());
   renderProject(id);
   window.scrollTo({top:0, behavior:'smooth'});
 }
 function closeProject(){
   const url = new URL(window.location.href);
-  url.searchParams.delete('project');
+  url.searchParams.delete('innoproject');
   history.pushState({projectId:null}, '', url.toString());
   document.getElementById('lab-list-view').classList.remove('hidden');
   document.getElementById('project-view').classList.remove('open');
@@ -531,7 +545,7 @@ renderCats();
 renderGrid();
 (function(){
   const params = new URLSearchParams(window.location.search);
-  const id = params.get('project');
+  const id = params.get('innoproject');
   if (id && PROJECTS[id]) { renderProject(id); history.replaceState({projectId:id}, '', window.location.href); }
 })();
 </script>
