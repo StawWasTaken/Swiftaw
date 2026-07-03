@@ -79,6 +79,84 @@
   letter-spacing: -.4px;
 }
 
+/* Launch teaser (origin story + animated ship) */
+.launch-row {
+  margin-top: 80px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+@media (max-width: 880px) { .launch-row { grid-template-columns: 1fr; } }
+.launch-row .copy h3 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.6vw, 42px); font-weight: 800;
+  letter-spacing: -1.4px; line-height: 1.05; margin-bottom: 14px;
+}
+.launch-row .copy p { font-size: 16px; color: var(--text); max-width: 480px; line-height: 1.55; }
+
+.ship-stage {
+  position: relative;
+  height: 300px;
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 6px 0 0 var(--ink);
+  overflow: hidden;
+  transform: rotate(-1deg);
+}
+.ship-blob {
+  position: absolute;
+  left: 50%; bottom: 34px;
+  transform: translateX(-50%);
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  filter: blur(20px);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.ship-blob.on { opacity: .5; }
+
+.ship-logo {
+  position: absolute;
+  left: 50%; bottom: 40px;
+  transform: translateX(-50%);
+  width: 110px;
+  transform-origin: center bottom;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.18));
+}
+
+@keyframes shipCharge {
+  0%, 100% { transform: translateX(-50%) scale(1,1) rotate(0deg); }
+  15%      { transform: translateX(-50%) scale(1.04,.93) rotate(-1.5deg); }
+  30%      { transform: translateX(-50%) scale(.94,1.07) rotate(1.5deg); }
+  45%      { transform: translateX(-50%) scale(1.05,.92) rotate(-2deg); }
+  60%      { transform: translateX(-50%) scale(.93,1.08) rotate(2deg); }
+  75%      { transform: translateX(-50%) scale(1.03,.95) rotate(-1deg); }
+  90%      { transform: translateX(-50%) scale(.98,1.02) rotate(.5deg); }
+}
+.ship-logo.charge { animation: shipCharge 1.6s ease-in-out; }
+
+@keyframes shipLaunch {
+  0%   { transform: translateX(-50%) translateY(0) scale(.94,1.1) rotate(0deg); }
+  25%  { transform: translateX(-50%) translateY(-55px) scale(.83,1.26) rotate(-3deg); }
+  60%  { transform: translateX(-50%) translateY(-115px) scale(.96,1.06) rotate(2deg); }
+  100% { transform: translateX(-50%) translateY(-130px) scale(1,1) rotate(0deg); }
+}
+.ship-logo.launch { animation: shipLaunch 1.3s cubic-bezier(.4,0,.2,1) forwards; }
+
+@keyframes shipFloat {
+  0%, 100% { transform: translateX(-50%) translateY(-130px) rotate(-3deg); }
+  50%      { transform: translateX(-50%) translateY(-145px) rotate(3deg); }
+}
+.ship-logo.float { animation: shipFloat 4.2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ship-logo.charge, .ship-logo.launch, .ship-logo.float { animation: none; }
+  .ship-logo { transform: translateX(-50%) translateY(-130px); }
+}
+
 /* Leadership cards */
 .team-row {
   margin-top: 80px;
@@ -208,6 +286,19 @@
       <div class="fact t4 reveal"><div class="lbl">Status</div><div class="val">Independent</div></div>
     </div>
 
+    <!-- Launch story -->
+    <div class="launch-row">
+      <div class="copy reveal">
+        <span class="chip yellow"><span class="dot"></span> the origin story</span>
+        <h3>we launched once. we're still in orbit.</h3>
+        <p>swiftaw got off the ground in Île-de-France with one shot to make it work. it did. now we build steady, out here, still moving.</p>
+      </div>
+      <div class="ship-stage reveal" id="shipStage">
+        <div class="ship-blob" id="shipBlob"></div>
+        <img id="shipLogo" class="ship-logo" src="https://raw.githubusercontent.com/StawWasTaken/Swiftaw/refs/heads/main/SwiftawLogo.png" alt="Swiftaw logo, illustrated launching into orbit">
+      </div>
+    </div>
+
     <!-- Leadership -->
     <div class="team-row">
       <div class="section-eyebrow"><svg><use href="#i-people"/></svg> who's running things</div>
@@ -298,5 +389,43 @@
 </footer>
 
 <script src="/css/swiftaw.js"></script>
+<script>
+(function () {
+  var stage = document.getElementById('shipStage');
+  var ship = document.getElementById('shipLogo');
+  var blob = document.getElementById('shipBlob');
+  if (!stage || !ship) return;
+
+  function playLaunch() {
+    ship.classList.add('charge');
+    blob.classList.add('on');
+  }
+
+  ship.addEventListener('animationend', function (e) {
+    if (e.animationName === 'shipCharge') {
+      ship.classList.remove('charge');
+      ship.classList.add('launch');
+    } else if (e.animationName === 'shipLaunch') {
+      ship.classList.remove('launch');
+      ship.classList.add('float');
+      blob.classList.remove('on');
+    }
+  });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          playLaunch();
+          obs.disconnect();
+        }
+      });
+    }, { threshold: 0.4 });
+    io.observe(stage);
+  } else {
+    playLaunch();
+  }
+})();
+</script>
 </body>
 </html>
