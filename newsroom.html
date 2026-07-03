@@ -62,7 +62,7 @@
   position: sticky; top: 100px; align-self: flex-start;
   display: flex; flex-direction: column; gap: 6px;
   padding: 18px;
-  background: #0f1015;
+  background: #171d28;
   border: 1.5px solid rgba(255,255,255,.08);
   border-radius: 18px;
   box-shadow: 0 6px 0 0 #000;
@@ -117,7 +117,7 @@
 .news-search svg { position: absolute; top: 50%; left: 14px; transform: translateY(-50%); width: 15px; height: 15px; fill: var(--muted-light,#8a8f9c); pointer-events: none; }
 .news-search input {
   width: 100%; padding: 11px 14px 11px 38px;
-  background: #12131a;
+  background: #171d28;
   border: 1.5px solid rgba(255,255,255,.08);
   border-radius: 12px;
   font-family: var(--font-body); font-size: 13.5px; color: #fff;
@@ -130,7 +130,7 @@
 .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 18px; }
 .news-card {
   position: relative;
-  background: linear-gradient(160deg, #14151c 0%, #0e0f14 100%);
+  background: #171d28;
   border: 1.5px solid rgba(255,255,255,.08);
   border-radius: 20px;
   overflow: hidden;
@@ -142,7 +142,8 @@
 .news-card:nth-child(3n+2) { transform: rotate(.5deg); }
 .news-card:nth-child(3n) { transform: rotate(-.2deg); }
 .news-card:hover { transform: rotate(0) translateY(-3px); border-color: rgba(254,248,61,.30); }
-.news-card-img { height: 148px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; font-size: 42px; }
+.news-card-img { height: 148px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; background-color:#12161f; }
+.news-card-img.placeholder img { width: 40px; height: 40px; opacity: .38; filter: grayscale(1); }
 .news-card-body { padding: 17px 19px 19px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .news-card-tag {
   align-self: flex-start;
@@ -168,8 +169,8 @@
 .news-card-readmore { font-family: var(--font-display); font-size: 12px; font-weight: 700; color: var(--accent); margin-left: auto; transition: transform .2s; }
 .news-card:hover .news-card-readmore { transform: translateX(4px); }
 
-.news-empty { text-align: center; padding: 60px 20px; font-size: 15px; color: var(--muted-light,#8a8f9c); grid-column: 1 / -1; }
-.news-empty span { display: block; font-size: 38px; margin-bottom: 12px; }
+.news-empty { text-align: center; padding: 50px 20px; font-size: 14.5px; color: var(--muted-light,#8a8f9c); grid-column: 1 / -1; background: #171d28; border: 1.5px dashed rgba(255,255,255,.10); border-radius: 20px; }
+.news-empty img { width: 46px; height: 46px; display: block; margin: 0 auto 14px; opacity: .55; filter: grayscale(1); }
 
 /* ───── Article view ───── */
 #article-view { display: none; max-width: 860px; margin: 0 auto; padding: 130px 28px 80px; }
@@ -191,12 +192,13 @@
 .article-banner-card {
   border-radius: 24px; overflow: hidden;
   border: 1.5px solid rgba(254,248,61,.22);
-  background: #0f1015;
+  background: #171d28;
   margin-bottom: 24px;
   transform: rotate(.5deg);
   box-shadow: 0 8px 0 0 #000, 0 24px 60px rgba(0,0,0,.5);
 }
-.article-banner-img { width: 100%; height: 240px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; font-size: 64px; }
+.article-banner-img { width: 100%; height: 240px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; background-color:#12161f; }
+.article-banner-img.placeholder img { width: 60px; height: 60px; opacity: .38; filter: grayscale(1); }
 .article-banner-meta { padding: 26px 30px; }
 .article-eyebrow {
   display: inline-flex; align-items: center; gap: 7px;
@@ -219,7 +221,7 @@
 .article-byline {
   display: flex; align-items: center; gap: 14px;
   padding: 16px 20px;
-  background: #12131a;
+  background: #171d28;
   border: 1.5px solid rgba(255,255,255,.08);
   border-radius: 18px;
   margin-bottom: 34px;
@@ -259,7 +261,7 @@
 }
 .article-prose .highlight-box strong { color: var(--accent); }
 .article-prose .sign-off { color: var(--muted-light,#8a8f9c); font-size: 13.5px; font-style: italic; border-top: 1px solid rgba(255,255,255,.08); padding-top: 20px; margin-top: 8px; }
-.article-prose .logo-chip { display: inline-flex; align-items: center; gap: 7px; background: #14151c; border: 1px solid rgba(255,255,255,.10); padding: 5px 12px 5px 8px; border-radius: 100px; font-size: 13px; font-weight: 500; color: #fff; margin: 3px 6px 3px 0; }
+.article-prose .logo-chip { display: inline-flex; align-items: center; gap: 7px; background: #171d28; border: 1px solid rgba(255,255,255,.10); padding: 5px 12px 5px 8px; border-radius: 100px; font-size: 13px; font-weight: 500; color: #fff; margin: 3px 6px 3px 0; }
 .article-prose .logo-chip img { width: 16px; height: 16px; border-radius: 4px; object-fit: contain; background:#fff; padding: 1px; }
 </style>
 </head>
@@ -340,38 +342,11 @@
 </footer>
 
 <script>
-const LOGO = {
-  fortized: 'https://www.fortized.com/Fortized%20icon.png',
-  discord: 'https://static.wikia.nocookie.net/dcpfr/images/0/09/Discordicon.png/revision/latest/scale-to-width-down/1000?cb=20230511153016&path-prefix=fr',
-  roblox: 'https://upload.wikimedia.org/wikipedia/commons/7/70/Roblox_Corporation_2025_logo.svg'
-};
+const HELMET = 'https://www.fortized.com/Icons/FortizedHelmet.png';
 
-const SW_ARTICLES = {
-  soundboard_teaser: {
-    category: 'Product', date: 'June 18, 2026', readTime: '2 min read', createdAt: new Date('2026-06-18').getTime(),
-    icon: '🔊', bylineName: 'Tyrianum', bylineRole: 'Chief R&D Officer, Swiftaw', authorInitial: 'T',
-    title: 'New in the Lab: a soundboard for voice chat',
-    content: `<p class="lead">We just opened a new project on the bench — a lightweight soundboard panel built for voice calls, wherever they happen.</p><p>The idea is simple: a small grid of clips you can trigger with a hotkey, mixed straight into your mic. No alt-tabbing, no dead air while you look for the file.</p><h3>Where it's headed</h3><p>We're building it as a standalone tool first, one that routes into whatever you're already using to talk to people:</p><p>${['fortized','discord','roblox'].map(k=>`<span class="logo-chip"><img src="${LOGO[k]}" alt="">${k.charAt(0).toUpperCase()+k.slice(1)}</span>`).join('')}</p><div class="highlight-box"><strong>Fortized-native later.</strong> Once the mixing core is solid, it'll get a tighter, built-in version inside Fortized Party Rooms.</div><p>It's early — mixer routing is the hard part and we're not rushing it. You can follow progress on the <a href="/innovation-room" style="color:var(--accent);text-decoration:underline;">Lab page</a>.</p><p class="sign-off">— Tyrianum, Chief R&D Officer · Swiftaw</p>`
-  },
-  weaverdant_cco: {
-    category: 'Team', date: 'February 14, 2026', readTime: '2 min read', createdAt: new Date('2026-02-14').getTime(),
-    icon: '🧭', bylineName: 'Staw', bylineRole: 'Chief Executive Officer, Swiftaw', authorInitial: 'S',
-    title: 'Weaverdant joins Swiftaw as Chief Community Officer',
-    content: `<p class="lead">We're bringing on a dedicated voice for how Swiftaw talks about what it builds — and for how our communities get heard back.</p><p>Weaverdant joins Swiftaw as Chief Community Officer, moving from a background in community moderation and platform safety into a role built around one question: are the people using our products actually being listened to?</p><h3>What changes</h3><ul><li><b>A direct line from community to roadmap</b> — feedback from Fortized Bastions now has a clear owner inside the company.</li><li><b>Public-facing security and trust updates</b> — the kind of transparent reporting we think this space needs more of.</li><li><b>A steadier hand on how we communicate</b> — fewer silent changes, more explanations.</li></ul><div class="highlight-box"><strong>Why it matters.</strong> A two-person team can wing communication. A growing one can't. This is us growing up a little.</div><p class="sign-off">— Staw, Chief Executive Officer · Swiftaw</p>`
-  },
-  tyrianum_rd: {
-    category: 'Team', date: 'December 3, 2025', readTime: '2 min read', createdAt: new Date('2025-12-03').getTime(),
-    icon: '🧪', bylineName: 'Staw', bylineRole: 'Chief Executive Officer, Swiftaw', authorInitial: 'S',
-    title: 'Tyrianum joins Swiftaw as Chief R&D Officer',
-    content: `<p class="lead">Research and engineering get a dedicated home inside Swiftaw, and a person to run it who's spent years building things nobody asked for yet — until they did.</p><p>Tyrianum takes over as Chief R&D Officer, splitting time between shipping features on Fortized and running the Lab — our space for the ideas that aren't ready for a roadmap.</p><h3>The mandate</h3><ul><li><b>Ship what's ready.</b> Bastions 2.0, Living Bastions, and the Atelier economy all came out of this team.</li><li><b>Shelve what isn't.</b> Not every experiment needs to become a feature — some just need an honest write-up and a rest.</li><li><b>Say which is which, in public.</b> That's what the Lab is for.</li></ul><p class="sign-off">— Staw, Chief Executive Officer · Swiftaw</p>`
-  },
-  founding: {
-    category: 'Milestone', date: 'August 11, 2025', readTime: '2 min read', createdAt: new Date('2025-08-11').getTime(),
-    icon: '🏁', bylineName: 'Staw', bylineRole: 'Chief Executive Officer, Swiftaw', authorInitial: 'S',
-    title: 'Swiftaw is founded',
-    content: `<p class="lead">A European tech company begins. Fortized becomes the first product.</p><p>Swiftaw started as a conversation between friends frustrated with existing platforms — too many ads, too little sovereignty for the people actually running communities. We wanted to build something different, and we wanted to build it from Europe.</p><h3>The first bet</h3><p>Fortized was the first thing we built: a community platform where servers — we call them Bastions — are genuinely owned by the people who run them, and where status is earned through participation instead of bought with a card.</p><div class="highlight-box"><strong>Small on purpose.</strong> We're not chasing headcount. We're chasing a platform we'd actually want to use.</div><p class="sign-off">— Staw, Chief Executive Officer · Swiftaw</p>`
-  }
-};
+// Newsroom is intentionally empty for now — add real posts to SW_ARTICLES as they happen.
+// Each entry needs a real `banner` image url; leave it out and the helmet placeholder shows instead.
+const SW_ARTICLES = {};
 
 function escAttr(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function getExcerpt(html){
@@ -379,6 +354,11 @@ function getExcerpt(html){
   const lead = tmp.querySelector('.lead');
   const t = lead ? lead.textContent : tmp.textContent;
   return t.slice(0,120) + (t.length > 120 ? '…' : '');
+}
+function imgOrPlaceholder(banner, cls){
+  return banner
+    ? `<div class="${cls}" style="background-image:url('${escAttr(banner)}');"></div>`
+    : `<div class="${cls} placeholder"><img src="${HELMET}" alt="image coming soon"></div>`;
 }
 
 let swActiveCategory = 'All';
@@ -408,7 +388,7 @@ function renderSwCats(){
 function buildSwCard(id, a){
   return `
     <article class="news-card" onclick="openSwArticle('${escAttr(id)}')">
-      <div class="news-card-img">${a.icon||'📰'}</div>
+      ${imgOrPlaceholder(a.banner, 'news-card-img')}
       <div class="news-card-body">
         <div class="news-card-tag">${escAttr(a.category)}</div>
         <div class="news-card-title">${escAttr(a.title)}</div>
@@ -431,7 +411,10 @@ function renderSwGrid(){
     .filter(([id,a]) => swActiveCategory === 'All' || a.category === swActiveCategory)
     .filter(([id,a]) => !q || a.title.toLowerCase().includes(q) || a.bylineName.toLowerCase().includes(q) || a.category.toLowerCase().includes(q))
     .sort((a,b) => b[1].createdAt - a[1].createdAt);
-  if (!entries.length){ grid.innerHTML = `<div class="news-empty"><span>🔍</span>No posts found.</div>`; return; }
+  if (!entries.length){
+    grid.innerHTML = `<div class="news-empty"><img src="${HELMET}" alt="">nothing published yet. check back soon.</div>`;
+    return;
+  }
   grid.innerHTML = entries.map(([id,a]) => buildSwCard(id,a)).join('');
 }
 function filterSwNews(v){ swSearch = v || ''; renderSwGrid(); }
@@ -440,7 +423,7 @@ function renderSwArticle(id){
   const a = SW_ARTICLES[id]; if (!a) return false;
   document.getElementById('article-content').innerHTML = `
     <div class="article-banner-card">
-      <div class="article-banner-img">${a.icon||'📰'}</div>
+      ${imgOrPlaceholder(a.banner, 'article-banner-img')}
       <div class="article-banner-meta">
         <div class="article-eyebrow">${escAttr(a.category)}</div>
         <div class="article-full-title">${escAttr(a.title)}</div>
