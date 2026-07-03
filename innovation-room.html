@@ -225,11 +225,11 @@
   border-radius: 14px; padding: 15px 19px; margin: 0 0 26px;
   font-size: 14px; line-height: 1.65; color: var(--text);
 }
-.inno-note .ico { font-size: 18px; flex-shrink: 0; line-height: 1.3; }
+.inno-note .ico { flex-shrink: 0; line-height: 1.3; }
+.inno-note .ico svg { width: 17px; height: 17px; fill: var(--c-lilac); margin-top: 2px; }
 .inno-note b { color: #fff; font-weight: 600; }
 .inno-note a { color: var(--c-lilac); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(196,181,253,.4); }
-.lede-note { font-size: 14px; color: var(--muted-light,#8a8f9c); max-width: 560px; line-height: 1.6; margin-top: 12px; }
-.lede-note b { color: var(--c-lilac); }
+
 
 .proj-works { display: flex; align-items: center; gap: 10px; padding: 16px 20px; background: rgba(254,248,61,.04); border: 1px solid rgba(254,248,61,.16); border-radius: 16px; margin-bottom: 30px; flex-wrap: wrap; }
 .proj-works .lbl { font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-right: 4px; }
@@ -300,7 +300,6 @@
       <div class="eyebrow">the lab</div>
       <h1>where <span class="pop">weird</span><br>ideas grow up.</h1>
       <p class="lede">most don't make it out. the ones that do, you'll see here first.</p>
-      <p class="lede-note">everything below is an <b>Innoproject</b> - something we're tinkering with because we like building it, not an announced product. when one graduates, the full story goes on the <a href="/newsroom" style="color:var(--c-lilac);">News</a> page.</p>
     </div>
   </section>
 
@@ -503,7 +502,7 @@ function renderProject(id){
         <div class="proj-meta-row" style="color:var(--muted-light,#8a8f9c); font-size:12.5px;">${escAttr(p.date)}</div>
       </div>
     </div>
-    ${p.status !== 'live' ? `<div class="inno-note"><span class="ico">🧪</span><span>this is an <b>Innoproject</b> - we're exploring this corner of tech because we like building in it, not because it's an announced Swiftaw product. it isn't official yet. once it is, the full announcement goes up on the <a href="/newsroom">Newsroom - learn more →</a></span></div>` : ''}
+    ${p.status !== 'live' ? `<div class="inno-note"><span class="ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M342.6 9.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L306.7 64 28.1 342.6C10.1 360.6 0 385 0 410.5L0 416c0 53 43 96 96 96l5.5 0c25.5 0 49.9-10.1 67.9-28.1l278.6-278.6 9.4 9.4c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zM205.3 256l146.7-146.7 50.7 50.7-96 96-101.5 0z"/></svg></span><span>this is an <b>Innoproject</b> - we're exploring this corner of tech because we like building in it, not because it's an announced Swiftaw product. it isn't official yet. once it is, the full announcement goes up on the <a href="/newsroom">Newsroom - learn more →</a></span></div>` : ''}
     ${works}
     <div class="proj-body">${p.content}</div>
   `;
