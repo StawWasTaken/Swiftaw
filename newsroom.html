@@ -143,7 +143,7 @@
 .news-card:nth-child(3n) { transform: rotate(-.2deg); }
 .news-card:hover { transform: rotate(0) translateY(-3px); border-color: rgba(254,248,61,.30); }
 .news-card-img { height: 148px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; background-color:#12161f; }
-.news-card-img.placeholder img { width: 40px; height: 40px; opacity: .38; filter: grayscale(1); }
+.news-card-img.placeholder img { width: 56px; height: auto; }
 .news-card-body { padding: 17px 19px 19px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .news-card-tag {
   align-self: flex-start;
@@ -170,7 +170,7 @@
 .news-card:hover .news-card-readmore { transform: translateX(4px); }
 
 .news-empty { text-align: center; padding: 50px 20px; font-size: 14.5px; color: var(--muted-light,#8a8f9c); grid-column: 1 / -1; background: #171d28; border: 1.5px dashed rgba(255,255,255,.10); border-radius: 20px; }
-.news-empty img { width: 46px; height: 46px; display: block; margin: 0 auto 14px; opacity: .55; filter: grayscale(1); }
+.news-empty img { width: 64px; height: auto; display: block; margin: 0 auto 14px; }
 
 /* ───── Article view ───── */
 #article-view { display: none; max-width: 860px; margin: 0 auto; padding: 130px 28px 80px; }
@@ -198,7 +198,7 @@
   box-shadow: 0 8px 0 0 #000, 0 24px 60px rgba(0,0,0,.5);
 }
 .article-banner-img { width: 100%; height: 240px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; background-color:#12161f; }
-.article-banner-img.placeholder img { width: 60px; height: 60px; opacity: .38; filter: grayscale(1); }
+.article-banner-img.placeholder img { width: 84px; height: auto; }
 .article-banner-meta { padding: 26px 30px; }
 .article-eyebrow {
   display: inline-flex; align-items: center; gap: 7px;
@@ -358,7 +358,7 @@ function getExcerpt(html){
 function imgOrPlaceholder(banner, cls){
   return banner
     ? `<div class="${cls}" style="background-image:url('${escAttr(banner)}');"></div>`
-    : `<div class="${cls} placeholder"><img src="${HELMET}" alt="image coming soon"></div>`;
+    : `<div class="${cls} placeholder"><img src="${HELMET}" alt=""></div>`;
 }
 
 let swActiveCategory = 'All';
