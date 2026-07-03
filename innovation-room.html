@@ -62,7 +62,7 @@
   position: sticky; top: 100px; align-self: flex-start;
   display: flex; flex-direction: column; gap: 6px;
   padding: 18px;
-  background: #0f1015;
+  background: #171d28;
   border: 1.5px solid rgba(255,255,255,.08);
   border-radius: 18px;
   box-shadow: 0 6px 0 0 #000;
@@ -126,7 +126,7 @@
 .lab-search svg { position: absolute; top: 50%; left: 14px; transform: translateY(-50%); width: 15px; height: 15px; fill: var(--muted-light,#8a8f9c); pointer-events: none; }
 .lab-search input {
   width: 100%; padding: 11px 14px 11px 38px;
-  background: #12131a;
+  background: #171d28;
   border: 1.5px solid rgba(255,255,255,.08);
   border-radius: 12px;
   font-family: var(--font-body); font-size: 13.5px; color: #fff;
@@ -143,7 +143,7 @@
 }
 .lab-card {
   position: relative;
-  background: linear-gradient(160deg, #14151c 0%, #0e0f14 100%);
+  background: #171d28;
   border: 1.5px solid rgba(255,255,255,.08);
   border-radius: 20px;
   overflow: hidden;
@@ -154,7 +154,8 @@
 .lab-card:nth-child(odd) { transform: rotate(-.5deg); }
 .lab-card:nth-child(even) { transform: rotate(.5deg); }
 .lab-card:hover { transform: rotate(0) translateY(-3px); border-color: rgba(254,248,61,.30); }
-.lab-card-img { height: 148px; background-size: cover; background-position: center; position: relative; display:flex; align-items:center; justify-content:center; font-size: 42px; }
+.lab-card-img { height: 148px; background-size: cover; background-position: center; position: relative; display:flex; align-items:center; justify-content:center; background-color:#12161f; }
+.lab-card-img.placeholder img { width: 40px; height: 40px; opacity: .38; filter: grayscale(1); }
 .lab-card-body { padding: 17px 19px 19px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .lab-card-top { display:flex; align-items:center; justify-content: space-between; gap: 8px; }
 .lab-card-num { font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--muted-light,#8a8f9c); }
@@ -166,6 +167,7 @@
 
 .state { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; font-family: var(--font-display); font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; }
 .state .d { width: 5px; height: 5px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
+.state img.d { width: 12px; height: 12px; border-radius: 0; box-shadow: none; }
 .state.live { color: var(--accent); background: rgba(254,248,61,.10); border: 1px solid rgba(254,248,61,.30); }
 .state.live .d { animation: liveBlink 1.6s ease infinite; }
 .state.cooking { color: var(--c-lilac); background: rgba(196,181,253,.08); border: 1px solid rgba(196,181,253,.22); }
@@ -174,8 +176,8 @@
 .state.killed { color: #eb4545; background: rgba(235,69,69,.08); border: 1px solid rgba(235,69,69,.30); text-decoration: line-through; }
 @keyframes liveBlink { 0%,100%{opacity:1} 50%{opacity:.35} }
 
-.lab-empty { text-align: center; padding: 60px 20px; font-size: 15px; color: var(--muted-light,#8a8f9c); grid-column: 1 / -1; }
-.lab-empty span { display: block; font-size: 38px; margin-bottom: 12px; }
+.lab-empty { text-align: center; padding: 50px 20px; font-size: 14.5px; color: var(--muted-light,#8a8f9c); grid-column: 1 / -1; background: #171d28; border: 1.5px dashed rgba(255,255,255,.10); border-radius: 20px; }
+.lab-empty img { width: 46px; height: 46px; display: block; margin: 0 auto 14px; opacity: .55; filter: grayscale(1); }
 
 /* ───── Project detail view ───── */
 #project-view { display: none; max-width: 860px; margin: 0 auto; padding: 130px 28px 80px; }
@@ -197,12 +199,13 @@
 .proj-banner-card {
   border-radius: 24px; overflow: hidden;
   border: 1.5px solid rgba(254,248,61,.22);
-  background: #0f1015;
+  background: #171d28;
   margin-bottom: 24px;
   transform: rotate(-.6deg);
   box-shadow: 0 8px 0 0 #000, 0 24px 60px rgba(0,0,0,.5);
 }
-.proj-banner-img { width: 100%; height: 240px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; font-size: 64px; }
+.proj-banner-img { width: 100%; height: 240px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; background-color:#12161f; }
+.proj-banner-img.placeholder img { width: 60px; height: 60px; opacity: .38; filter: grayscale(1); }
 .proj-banner-meta { padding: 26px 30px; }
 .proj-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--muted-light,#8a8f9c); margin-bottom: 12px; }
 .proj-title {
@@ -218,21 +221,31 @@
 
 .proj-works { display: flex; align-items: center; gap: 10px; padding: 16px 20px; background: rgba(254,248,61,.04); border: 1px solid rgba(254,248,61,.16); border-radius: 16px; margin-bottom: 30px; flex-wrap: wrap; }
 .proj-works .lbl { font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-right: 4px; }
-.proj-works .logo-chip { display: inline-flex; align-items: center; gap: 7px; background: #14151c; border: 1px solid rgba(255,255,255,.10); padding: 6px 12px 6px 8px; border-radius: 100px; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: #fff; }
+.proj-works .logo-chip { display: inline-flex; align-items: center; gap: 7px; background: #171d28; border: 1px solid rgba(255,255,255,.10); padding: 6px 12px 6px 8px; border-radius: 100px; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: #fff; }
 .proj-works .logo-chip img { width: 18px; height: 18px; border-radius: 5px; object-fit: contain; background:#fff; padding: 1px; }
 
 .proj-body p { font-size: 15.5px; color: var(--text); line-height: 1.8; margin-bottom: 16px; }
 .proj-body p b { color: #fff; font-weight: 600; }
 .proj-body h3 { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -.4px; color: #fff; margin: 32px 0 12px; display: flex; align-items: center; gap: 10px; }
 .proj-body h3::before { content:""; width: 5px; height: 20px; flex-shrink: 0; background: linear-gradient(180deg, var(--accent), var(--accent-2)); border-radius: 3px; }
+.proj-body .sub-label { font-family: var(--font-display); font-size: 12.5px; font-weight: 700; color: var(--accent); margin: -4px 0 12px; display: block; }
 .proj-body ul { list-style: none; margin: 12px 0 22px; display: flex; flex-direction: column; gap: 8px; }
 .proj-body ul li { display: flex; align-items: flex-start; gap: 11px; font-size: 14.5px; color: var(--text); line-height: 1.6; padding: 12px 15px; background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.05); border-radius: 12px; }
 .proj-body ul li::before { content: "✦"; color: var(--accent); font-size: 9px; flex-shrink: 0; margin-top: 5px; }
 .proj-body ul li b { color: #fff; font-weight: 600; }
 .proj-callout { position: relative; background: rgba(254,248,61,.05); border: 1px solid rgba(254,248,61,.20); border-left: 3px solid var(--accent); border-radius: 14px; padding: 17px 21px; margin: 20px 0; font-size: 14.5px; line-height: 1.7; color: var(--text); transform: rotate(-.5deg); }
 .proj-callout strong { color: #fff; font-weight: 600; }
-.proj-callout.dead { border-left-color: #eb4545; background: rgba(235,69,69,.05); border-color: rgba(235,69,69,.20); }
-.proj-callout.dead strong { color: #eb4545; }
+.proj-directive {
+  position: relative; margin: 28px 0 6px; padding: 22px 24px 20px;
+  background: linear-gradient(140deg, rgba(254,248,61,.10), rgba(254,248,61,.03));
+  border: 1.5px solid rgba(254,248,61,.32); border-radius: 18px; transform: rotate(.5deg);
+}
+.proj-directive .head { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #050608; background: var(--accent); padding: 5px 12px; border-radius: 100px; margin-bottom: 14px; }
+.proj-directive p { font-size: 15px; line-height: 1.7; color: var(--text); margin-bottom: 10px; }
+.proj-directive p b { color: #fff; font-weight: 600; }
+.proj-directive ul { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; }
+.proj-directive ul li { position: relative; padding-left: 22px; font-size: 14px; color: var(--text); background: none; border: none; }
+.proj-directive ul li::before { content: "→"; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 800; }
 .proj-signoff { color: var(--muted-light,#8a8f9c); font-size: 13.5px; font-style: italic; border-top: 1px solid rgba(255,255,255,.08); padding-top: 18px; margin-top: 6px; }
 </style>
 </head>
@@ -274,7 +287,7 @@
     <div class="container">
       <div class="eyebrow">the lab</div>
       <h1>where <span class="pop">weird</span><br>ideas grow up.</h1>
-      <p class="lede">most don't make it out. the ones that do, you'll see here first — browse everything cooking, shipped, and shelved.</p>
+      <p class="lede">most don't make it out. the ones that do, you'll see here first.</p>
     </div>
   </section>
 
@@ -313,103 +326,54 @@
 </footer>
 
 <script>
-const LOGO = {
-  fortized: 'https://www.fortized.com/Fortized%20icon.png',
-  discord: 'https://static.wikia.nocookie.net/dcpfr/images/0/09/Discordicon.png/revision/latest/scale-to-width-down/1000?cb=20230511153016&path-prefix=fr',
-  roblox: 'https://upload.wikimedia.org/wikipedia/commons/7/70/Roblox_Corporation_2025_logo.svg'
-};
+const HELMET = 'https://www.fortized.com/Icons/FortizedHelmet.png';
 
 const PROJECTS = {
   swiftign: {
     number: '048', status: 'live', statusLabel: 'shipped · v1',
     title: 'swiftign', tagline: 'the internal design language we build everything in.',
-    date: '13 jun 2026', icon: '🎨',
+    date: '13 jun 2026',
     banner: '/SwiftawLab-Swiftign.png',
     content: `
-      <p>swiftign is the design system we use across every Swiftaw and Fortized surface. it was born in 2026 while we were rebuilding both sites at the same time and realised we kept reaching for the same little tricks — so we gave it a name and wrote it down.</p>
+      <p>swiftign is the internal design system we use across every Swiftaw and Fortized surface. born in 2026 while we were rebuilding both sites at the same time and realised we kept reaching for the same little tricks.</p>
+      <p>so we gave it a name and wrote it down.</p>
       <h3>the vibe, in one breath</h3>
-      <p>dark, slightly playful, mildly off-axis. things tilt. things wobble a little. nothing is perfectly aligned, because perfectly aligned is boring. <b>stickers, capsules, soft chips, 3D buttons</b> — all sitting on a near-black background with a single warm yellow doing most of the heavy lifting.</p>
+      <p>dark, slightly playful, mildly off-axis. things tilt. things wobble a little. nothing is perfectly aligned because perfectly aligned is boring. <b>stickers, capsules, soft chips, 3D buttons</b> - all sitting on a near-black background with a single warm yellow doing most of the heavy lifting.</p>
       <div class="proj-callout"><strong>rule of thumb:</strong> if it looks like a SaaS dashboard, you went too far. if it looks like a sticker someone slapped on a laptop, you're close.</div>
+      <h3>the tokens</h3>
+      <span class="sub-label">colours, type, surfaces. swap freely per product.</span>
+      <p><b>backgrounds</b> stay dark and near-neutral. <b>one yellow accent</b> per product carries the brand. <b>six soft tints</b> (yellow / pink / blue / mint / lilac / peach) handle everything else - chips, callouts, status pills, sticker tints.</p>
       <h3>the components</h3>
+      <span class="sub-label">the building blocks we lean on most.</span>
       <ul>
-        <li><b>floating capsule nav</b> — centered, blurred, rounded-999, logo handles home.</li>
-        <li><b>3D buttons</b> with hard offset shadows that press in on click.</li>
+        <li><b>floating capsule nav</b> - centered, blurred, rounded-999, logo handles home. yellow gradient active pill, mobile drawer with sliding "→".</li>
+        <li><b>3D buttons</b> (<code>.btn-3d</code> / <code>.btn-3d-ghost</code>) with hard offset shadows that press in on click.</li>
         <li><b>sticker cards</b> with subtle tilts that straighten on hover.</li>
-        <li><b>soft chip tokens</b> in six tints — yellow, pink, blue, mint, lilac, peach.</li>
+        <li><b>soft chip tokens</b> in the six tints, used for status, eyebrows, callouts.</li>
+        <li><b>floating FontAwesome decos</b> that bob gently between sections.</li>
+        <li><b>Twemoji + Fortized custom emojis</b> (joyster, leafen, knight) used inline as real text.</li>
       </ul>
+      <div class="proj-callout"><strong>copy tone:</strong> lowercase, conversational, no em-dashes (only "-"). short sentences. zero corporate. say "we build weird stuff", not "we are an innovative studio".</div>
       <h3>how to use it</h3>
-      <p>swiftign is meant to be <b>remixed per product</b>. swap the accent, add a tint, invent your own sticker shape. the only fixed things are the off-axis playfulness, the dark canvas, the typographic stack, and the tone of voice.</p>
-      <p class="proj-signoff">this is the page you're on right now. it practices what it preaches.</p>
-    `
-  },
-  soundboard: {
-    number: '049', status: 'cooking', statusLabel: 'cooking',
-    title: 'a soundboard for voice chat', tagline: 'clips, jingles and stings you can drop mid-call without breaking the conversation.',
-    date: 'started jun 2026', icon: '🔊',
-    works: ['fortized', 'discord', 'roblox'],
-    content: `
-      <p>we spend a lot of time in voice chat — Fortized Party Rooms, Discord calls, Roblox games with friends — and every time someone says "wait I have the perfect sound for this" and then fumbles to find an mp3, a little piece of us dies. so we're building the fix.</p>
-      <p>the idea is a small always-on-top panel with a grid of clips. tap one, it plays into your mic through a virtual audio device, everyone in the call hears it, you never had to alt-tab.</p>
-      <h3>what it does</h3>
-      <ul>
-        <li><b>hotkey grid</b> — bind any clip to a keyboard shortcut, trigger it without touching the panel.</li>
-        <li><b>mic passthrough mixing</b> — your voice and the clip blend live, no need to mute yourself.</li>
-        <li><b>drag-and-drop boards</b> — build a board per game, per friend group, per mood.</li>
-        <li><b>clip trimming</b> — grab any short audio, trim it in-app, done in seconds.</li>
-      </ul>
-      <div class="proj-callout"><strong>not a Fortized-only tool.</strong> it's built to sit underneath whatever you're already using to talk — that's the whole point.</div>
-      <h3>where it fits</h3>
-      <p>it works as a standalone app that routes into any voice platform, and it'll get a native, tighter integration inside Fortized Party Rooms once the core is solid.</p>
-      <p class="proj-signoff">still early. mixer routing is the hard part and we're taking our time with it.</p>
-    `
-  },
-  roomprofiles: {
-    number: '042', status: 'cooking', statusLabel: 'cooking',
-    title: 'profiles that feel like rooms', tagline: 'a profile page you can rearrange like furniture instead of a form you fill out.',
-    date: 'started apr 2026', icon: '🛋️',
-    content: `
-      <p>most profile pages are a form: avatar here, bio there, a few badges nobody looks at. we wanted something you could actually decorate — drag widgets around, resize a section, make it look like <em>your</em> corner of the internet instead of a template.</p>
-      <h3>what we're exploring</h3>
-      <ul>
-        <li><b>a real layout grid</b> — widgets snap into place, resize, and reflow.</li>
-        <li><b>ambient backgrounds</b> — subtle motion tied to your Fortized activity, not a static image.</li>
-        <li><b>guest mode</b> — visitors see a slightly different arrangement than you do while editing.</li>
-      </ul>
-      <p class="proj-signoff">this is the natural next step after profile widgets shipped on Fortized. we're seeing how far "room" as a metaphor can actually go before it gets gimmicky.</p>
-    `
-  },
-  kinderdm: {
-    number: '031', status: 'dreaming', statusLabel: 'dreaming',
-    title: 'a kinder DM client', tagline: 'what if a messaging inbox actively discouraged doomscrolling instead of rewarding it?',
-    date: 'first sketch feb 2026', icon: '💌',
-    content: `
-      <p>most DM inboxes are engineered to keep you scrolling. we've been sketching the opposite: an inbox with no infinite scroll, no unread-count anxiety spiral, no read receipts unless both people opt in.</p>
-      <p>it's early — mostly notes and a handful of low-fidelity mockups. no code yet. we're not in a rush to build this one, we just want to make sure we understand the problem before we do.</p>
-      <p class="proj-signoff">if this ever leaves the sketchbook, it'll probably start as an experimental mode inside Fortized DMs rather than a separate app.</p>
-    `
-  },
-  moodboards: {
-    number: '028', status: 'shelved', statusLabel: 'shelved',
-    title: 'shared moodboards', tagline: 'a Pinterest-style board that a whole Bastion could pin to together.',
-    date: 'built mar–apr 2026', icon: '🖼️',
-    content: `
-      <p>we got a working prototype — drag images in, arrange them freely, invite people to co-pin. it was fun. the problem was scope: it wanted to become its own product, not a feature, and that wasn't the bet we were ready to make.</p>
-      <div class="proj-callout"><strong>shelved, not dead.</strong> the prototype still exists internally. if enough communities ask for something like it, we know exactly where to pick it back up.</div>
-    `
-  },
-  friendrss: {
-    number: '014', status: 'killed', statusLabel: 'killed',
-    title: 'RSS for friend groups', tagline: 'a private feed of everything your friends were up to, pulled from an RSS-style subscription model.',
-    date: 'built dec 2025', icon: '📡',
-    content: `
-      <p>the pitch was neat: subscribe to your friends the way you'd subscribe to a blog, get a clean chronological feed with none of the algorithm. we shipped a rough version internally and used it for three weeks.</p>
-      <div class="proj-callout dead"><strong>why it died:</strong> nobody posted to it. a feed needs a reason to open every day, and "your friends' RSS" wasn't one. the underlying idea — a noise-free, non-algorithmic feed — is still one we believe in, we just haven't found the right shape for it yet.</div>
+      <span class="sub-label">a framework, not a cage.</span>
+      <p>swiftign is meant to be <b>remixed per product</b>. swap the accent. add a tint. invent your own sticker shape. the only fixed things are the <b>off-axis playfulness, the dark canvas, the typographic stack, and the tone of voice</b>. everything else is fair game.</p>
+      <div class="proj-directive">
+        <span class="head">★ swiftign directives</span>
+        <p>when you're building a new Swiftaw or Fortized app, treat <b>swiftaw.com</b> and <b>fortized.com</b> as your reference textures. open them, scroll them, screenshot them, and <b>take inspiration</b> - don't trace them. you're allowed to invent.</p>
+        <ul>
+          <li>keep the dark canvas, the single-yellow-accent rule, and the Syne + DM Sans pairing.</li>
+          <li>use stickers, capsules and 3D buttons before you reach for anything generic.</li>
+          <li>let things tilt slightly. straighten on hover. never align everything to a perfect grid.</li>
+          <li>match the voice: lowercase, short, a little weird, never corporate.</li>
+          <li>everything else - layout, components, surprise moments - invent freely.</li>
+        </ul>
+      </div>
+      <p class="proj-signoff">that's the whole system. this page is built with it.</p>
     `
   }
 };
 
 function statusOrder(s){ return {live:0, cooking:1, dreaming:2, shelved:3, killed:4}[s] ?? 9; }
-
 function escAttr(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 let activeStatus = 'All';
@@ -442,13 +406,16 @@ function renderCats(){
   }));
 }
 
+function imgOrPlaceholder(banner, cls){
+  return banner
+    ? `<div class="${cls}" style="background-image:url('${escAttr(banner)}');"></div>`
+    : `<div class="${cls} placeholder"><img src="${HELMET}" alt="image coming soon"></div>`;
+}
+
 function buildCard(id, p){
-  const img = p.banner
-    ? `<div class="lab-card-img" style="background-image:url('${escAttr(p.banner)}');"></div>`
-    : `<div class="lab-card-img">${p.icon||'🧪'}</div>`;
   return `
     <article class="lab-card" onclick="openProject('${escAttr(id)}')">
-      ${img}
+      ${imgOrPlaceholder(p.banner, 'lab-card-img')}
       <div class="lab-card-body">
         <div class="lab-card-top">
           <span class="lab-card-num">№ ${escAttr(p.number)}</span>
@@ -469,7 +436,7 @@ function renderGrid(){
     .filter(([id,p]) => !q || p.title.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q))
     .sort((a,b) => statusOrder(a[1].status) - statusOrder(b[1].status) || b[1].number.localeCompare(a[1].number));
   if (!entries.length){
-    grid.innerHTML = `<div class="lab-empty"><span>🧪</span>Nothing here yet.</div>`;
+    grid.innerHTML = `<div class="lab-empty"><img src="${HELMET}" alt="">still under construction in this category. check back soon.</div>`;
     return;
   }
   grid.innerHTML = entries.map(([id,p]) => buildCard(id,p)).join('');
@@ -479,17 +446,14 @@ function filterLab(v){ labSearch = v || ''; renderGrid(); }
 
 function renderProject(id){
   const p = PROJECTS[id]; if (!p) return false;
-  const banner = p.banner
-    ? `<div class="proj-banner-img" style="background-image:url('${escAttr(p.banner)}');"></div>`
-    : `<div class="proj-banner-img">${p.icon||'🧪'}</div>`;
   const works = (p.works||[]).length ? `
     <div class="proj-works">
       <span class="lbl">works with</span>
-      ${p.works.map(k => `<span class="logo-chip"><img src="${LOGO[k]}" alt="">${k.charAt(0).toUpperCase()+k.slice(1)}</span>`).join('')}
+      ${p.works.map(w => `<span class="logo-chip"><img src="${w.logo}" alt="">${escAttr(w.label)}</span>`).join('')}
     </div>` : '';
   document.getElementById('project-content').innerHTML = `
     <div class="proj-banner-card">
-      ${banner}
+      ${imgOrPlaceholder(p.banner, 'proj-banner-img')}
       <div class="proj-banner-meta">
         <div class="proj-eyebrow">project № ${escAttr(p.number)} · <span class="state ${p.status}"><span class="d"></span>${escAttr(p.statusLabel)}</span></div>
         <div class="proj-title">${escAttr(p.title)}</div>
