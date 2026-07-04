@@ -22,7 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-.page-top { padding: 140px 0 40px; position: relative; }
+.page-top { padding: 150px 0 10px; position: relative; text-align: center; }
 .page-top .eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
@@ -31,17 +31,17 @@
   background: rgba(255,138,180,.08);
   border: 1.5px solid rgba(255,138,180,.25);
   padding: 7px 14px; border-radius: 100px;
-  margin-bottom: 22px;
-  transform: rotate(-2deg);
+  margin-bottom: 26px;
+  transform: rotate(-1.5deg);
 }
 .page-top h1 {
   font-family: var(--font-display);
-  font-size: clamp(44px, 6.4vw, 96px);
+  font-size: clamp(40px, 7.4vw, 108px);
   font-weight: 800;
-  letter-spacing: -3px;
-  line-height: .92;
-  margin-bottom: 24px;
-  max-width: 900px;
+  letter-spacing: -3.2px;
+  line-height: .96;
+  max-width: 920px;
+  margin: 0 auto;
 }
 .page-top h1 .pop {
   display: inline-block;
@@ -49,82 +49,71 @@
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   transform: rotate(-1.5deg);
 }
-.page-top .lede { font-size: 19px; max-width: 600px; color: var(--text); line-height: 1.55; }
-.page-top .lede b { color: #fff; font-weight: 600; }
 
-/* pinned stickers cluster */
-.cluster {
-  margin-top: 70px;
-  position: relative;
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 40px;
+/* ───── Manifesto column ───── */
+.manifesto-wrap { padding: 0 28px; margin-top: 76px; }
+.m-intro { max-width: 640px; margin: 0 auto 64px; text-align: center; }
+.m-intro p { font-size: 19px; color: var(--text); line-height: 1.6; }
+.m-intro p b { color: #fff; font-weight: 600; }
+
+.manifesto { max-width: 900px; margin: 0 auto; }
+.m-row {
+  display: grid; grid-template-columns: 1fr 230px; gap: 42px;
   align-items: start;
+  margin-bottom: 54px;
+  padding-bottom: 54px;
+  border-bottom: 1px solid var(--border);
 }
-@media (max-width: 980px) { .cluster { grid-template-columns: 1fr; } }
+.manifesto .m-row:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+@media (max-width: 780px) { .m-row { grid-template-columns: 1fr; gap: 18px; } }
 
-.cluster .left .sticker { margin-bottom: 18px; }
-.cluster .left .sticker-quote {
-  padding: 36px;
-  font-family: var(--font-display);
-  font-size: 22px; line-height: 1.3; letter-spacing: -.6px;
-  transform: rotate(-1.2deg);
+.m-row .num {
+  font-family: var(--font-display); font-size: 60px; font-weight: 800;
+  letter-spacing: -2px; color: transparent;
+  -webkit-text-stroke: 1.5px rgba(254,248,61,.35);
+  line-height: 1; margin-bottom: 10px;
 }
-.cluster .left .sticker-quote::before {
-  content: "“"; display: block;
-  font-size: 80px; line-height: .5; color: var(--accent);
-  margin-bottom: 12px;
-}
-.cluster .left .sticker-quote em {
-  font-style: normal;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.cluster .left .sticker-quote .who {
-  display: block; margin-top: 18px;
-  font-family: var(--font-body); font-size: 12.5px; color: var(--muted-light);
-  letter-spacing: .14em; text-transform: uppercase;
-}
+.m-row h3 { font-family: var(--font-display); font-size: clamp(24px, 2.6vw, 32px); font-weight: 800; letter-spacing: -.8px; margin-bottom: 12px; }
+.m-row p { font-size: 16px; color: var(--text); line-height: 1.75; }
+.m-row p b { color: #fff; font-weight: 600; }
 
-.cluster .right { position: relative; }
-.cluster .pillar {
-  margin-bottom: 16px;
-  padding: 22px 24px;
+.m-note {
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px 16px 16px 4px;
+  padding: 16px 18px;
+  font-size: 13.5px; color: var(--muted-light); line-height: 1.6;
+  transform: rotate(.8deg);
 }
-.cluster .pillar.p1 { transform: rotate(1.5deg); }
-.cluster .pillar.p2 { transform: rotate(-1deg); margin-left: 22px; }
-.cluster .pillar.p3 { transform: rotate(.8deg); margin-left: -10px; }
-.cluster .pillar .num {
-  font-family: var(--font-display);
-  font-size: 12px; font-weight: 700; letter-spacing: .14em;
-  color: var(--accent); margin-bottom: 6px;
+.m-row:nth-child(even) .m-note { transform: rotate(-.8deg); border-left-color: var(--c-lilac); }
+.m-note b { color: #fff; font-weight: 600; }
+
+.m-close {
+  max-width: 620px; margin: 60px auto 0; text-align: center;
 }
-.cluster .pillar h3 { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -.4px; margin-bottom: 6px; }
-.cluster .pillar p { font-size: 14px; color: var(--muted-light); line-height: 1.55; }
+.m-close p { font-family: var(--font-display); font-size: clamp(20px,2.4vw,26px); font-weight: 700; letter-spacing: -.5px; line-height: 1.4; color: #fff; }
+.m-close img.fmoji { vertical-align: -4px; }
 
 /* Deco */
-.deco-m1 { top: 60px; right: 6%; width: 36px; height: 36px; color: var(--c-blue); --r: 12deg; }
-.deco-m2 { bottom: -20px; left: -2%; width: 30px; height: 30px; color: var(--c-pink); --r: -22deg; }
+.deco-m1 { top: 130px; right: 6%; width: 32px; height: 32px; color: var(--c-blue); --r: 12deg; }
+.deco-m2 { top: 400px; left: 3%; width: 26px; height: 26px; color: var(--c-mint); --r: -18deg; }
 
-/* React big section */
-.react-big { margin-top: 110px; padding: 0 28px; }
-.react-big-inner {
-  max-width: 1000px; margin: 0 auto;
-}
+/* React section */
+.react-big { margin-top: 100px; padding: 0 28px; }
+.react-big-inner { max-width: 1000px; margin: 0 auto; }
 .react-big-head { text-align: center; margin-bottom: 32px; }
 .react-big-head .chip { margin-bottom: 16px; }
 .react-big-head h2 {
   font-family: var(--font-display);
-  font-size: clamp(36px, 5vw, 64px);
+  font-size: clamp(32px, 4.6vw, 56px);
   font-weight: 800;
-  letter-spacing: -2.2px;
+  letter-spacing: -2px;
   line-height: 1;
   margin-bottom: 14px;
 }
-.react-big-head p { font-size: 16.5px; color: var(--text); max-width: 520px; margin: 0 auto; }
+.react-big-head p { font-size: 16px; color: var(--text); max-width: 500px; margin: 0 auto; }
 
-/* bigger emoji buttons - Fortized message-reaction style:
-   emoji sits to the LEFT, name + count stacked on the right */
 .react-big .react-widget { padding: 40px 36px 32px; }
 .react-big .react-btn {
   padding: 22px 24px;
@@ -144,11 +133,7 @@
   .react-big .react-count { font-size: 22px; }
 }
 
-.react-explainer {
-  margin-top: 26px;
-  display: grid; grid-template-columns: 1fr 1fr 1fr;
-  gap: 14px;
-}
+.react-explainer { margin-top: 26px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
 @media (max-width: 720px) { .react-explainer { grid-template-columns: 1fr; } }
 .explain {
   background: var(--panel);
@@ -173,7 +158,6 @@
   <symbol id="i-comments" viewBox="0 0 576 512"><path d="M384 144c0 97.2-86 176-192 176-26.7 0-52.1-5-75.2-14L35.2 349.2c-9.3 4.9-20.7 3.2-28.2-4.2s-9.2-18.9-4.2-28.2l35.6-67.2C14.3 220.2 0 183.6 0 144 0 46.8 86-32 192-32S384 46.8 384 144zm0 368c-94.1 0-172.4-62.1-188.8-144 120-1.5 224.3-86.9 235.8-202.7 83.3 19.2 145 88.3 145 170.7 0 39.6-14.3 76.2-38.4 105.6l35.6 67.2c4.9 9.3 3.2 20.7-4.2 28.2s-18.9 9.2-28.2 4.2L459.2 498c-23.1 9-48.5 14-75.2 14z"/></symbol>
   <symbol id="i-compass" viewBox="0 0 512 512"><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></symbol>
   <symbol id="i-hashtag" viewBox="0 0 512 512"><path d="M214.7 .7c17.3 3.7 28.3 20.7 24.6 38l-19.1 89.3 126.5 0 22-102.7C372.4 8 389.4-3 406.7 .7s28.3 20.7 24.6 38L412.2 128 480 128c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-27.4 128 67.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38l19.1-89.3-126.5 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38L99.8 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 27.4-128-67.8 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 22-102.7C180.4 8 197.4-3 214.7 .7zM206.4 192l-27.4 128 126.5 0 27.4-128-126.5 0z"/></symbol>
-  <symbol id="i-calendar" viewBox="0 0 448 512"><path d="M128 0C110.3 0 96 14.3 96 32l0 32-32 0C28.7 64 0 92.7 0 128l0 48 448 0 0-48c0-35.3-28.7-64-64-64l-32 0 0-32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 32-128 0 0-32c0-17.7-14.3-32-32-32zM0 224L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-192-448 0z"/></symbol>
   <symbol id="i-people" viewBox="0 0 576 512"><path d="M64 128a112 112 0 1 1 224 0 112 112 0 1 1 -224 0zM0 464c0-97.2 78.8-176 176-176s176 78.8 176 176l0 6c0 23.2-18.8 42-42 42L42 512c-23.2 0-42-18.8-42-42l0-6zM432 64a96 96 0 1 1 0 192 96 96 0 1 1 0-192zm0 240c79.5 0 144 64.5 144 144l0 22.4c0 23-18.6 41.6-41.6 41.6l-144.8 0c6.6-12.5 10.4-26.8 10.4-42l0-6c0-51.5-17.4-98.9-46.5-136.7 22.6-14.7 49.6-23.3 78.5-23.3z"/></symbol>
 </svg>
 
@@ -205,52 +189,55 @@
   <div class="container">
     <div class="eyebrow">our mission, in plain words</div>
     <h1>tech for the <span class="pop">people</span> inside it.</h1>
-    <p class="lede">we make stuff for communities, players, friend groups and online weirdos. not for metrics, not for noise, not for the graph.</p>
-
-    <div class="cluster">
-      <div class="left">
-        <div class="deco deco-m1 float-a"><svg><use href="#i-hashtag"/></svg></div>
-        <div class="sticker sticker-quote tint-yellow reveal">
-          we want tech to feel <em>fun, kind and useful</em> again.
-          <span class="who">- the whole reason</span>
-        </div>
-        <div class="sticker tilt-r-sm reveal" style="padding:24px;">
-          <p style="font-size:15px; color:var(--text); line-height:1.65;">We're a European tech company. <b style="color:#fff;">Fortized</b> was the first thing we shipped - a community platform built for gamers and the friend groups around them. Whatever ships next follows the same compass: <b style="color:#fff;">human-first, generously designed, built to stick around.</b></p>
-        </div>
-        <div class="sticker tilt-l-sm reveal" style="padding:24px; background: linear-gradient(160deg, #14242e 0%, #0e1a26 100%); border-color: rgba(125,211,252,.25);">
-          <p style="font-size:14.5px; color:var(--text); line-height:1.6;">We like soft edges, generous spacing and software that feels playful instead of corporate. Expect more of that in everything we ship - including the next thing we haven't shown you yet.</p>
-        </div>
-      </div>
-
-      <div class="right">
-        <div class="deco deco-m2 float-b"><svg><use href="#i-fire"/></svg></div>
-        <div class="sticker pillar p1 tint-pink reveal">
-          <div class="num">01 / for communities</div>
-          <h3>built around small rooms.</h3>
-          <p>the internet is at its best when it's a group chat. we design for the people inside the room - not the algorithm watching them.</p>
-        </div>
-        <div class="sticker pillar p2 tint-mint reveal">
-          <div class="num">02 / healthy by default</div>
-          <h3>calm, not loud.</h3>
-          <p>no dark patterns. no engagement traps. software that respects your attention because we'd want the same.</p>
-        </div>
-        <div class="sticker pillar p3 tint-lilac reveal">
-          <div class="num">03 / european-built</div>
-          <h3>independent, long-term.</h3>
-          <p>no quarterly graph to please, no investors breathing down our neck. we move at the speed of getting it right.</p>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
+
+<div class="manifesto-wrap">
+  <div class="m-intro reveal">
+    <p>we make stuff for communities, players, friend groups and online weirdos - <b>not for metrics, not for noise, not for the graph.</b> Fortized was the first thing we shipped. everything after follows the same three rules.</p>
+  </div>
+
+  <div class="manifesto">
+    <div class="m-row reveal">
+      <div>
+        <div class="num">01</div>
+        <h3>built around small rooms.</h3>
+        <p>the internet is at its best when it's a group chat. we design for <b>the people inside the room</b> - not the algorithm watching them from outside.</p>
+      </div>
+      <div class="m-note"><b>in practice:</b> Bastions instead of servers, feeds that don't rank you against strangers, profiles that feel like a room and not a résumé.</div>
+    </div>
+
+    <div class="m-row reveal">
+      <div>
+        <div class="num">02</div>
+        <h3>calm, not loud.</h3>
+        <p>no dark patterns, no engagement traps. software that respects your attention <b>because we'd want the same</b> from whatever we use.</p>
+      </div>
+      <div class="m-note"><b>in practice:</b> no infinite scroll bait, no fake urgency, notifications you can actually turn off and have them stay off.</div>
+    </div>
+
+    <div class="m-row reveal">
+      <div>
+        <div class="num">03</div>
+        <h3>independent, long-term.</h3>
+        <p>no quarterly graph to please, no investors breathing down our neck. <b>we move at the speed of getting it right</b>, not the speed of a fundraising deck.</p>
+      </div>
+      <div class="m-note"><b>in practice:</b> a small team, a tiny product shelf, and features that ship when they're ready instead of when a roadmap says so.</div>
+    </div>
+  </div>
+
+  <div class="m-close reveal">
+    <p>we want tech to feel <span style="background:linear-gradient(135deg,var(--accent),var(--accent-2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">fun, kind and useful</span> again.</p>
+  </div>
+</div>
 
 <!-- BIG reaction section -->
 <section class="react-big">
   <div class="react-big-inner">
     <div class="react-big-head reveal">
       <div class="chip yellow"><span class="dot"></span> react · in real time</div>
-      <h2>how are our projects landing? <img class="fmoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_nyancat.png" alt=""></h2>
-      <p>pick one. everyone else watching this page sees the number tick up. live, across every device.</p>
+      <h2>how's this landing? <img class="fmoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_nyancat.png" alt=""></h2>
+      <p>pick one. everyone else reading this page sees the number tick up. live, across every device.</p>
     </div>
 
     <div class="react-widget reveal" data-react-widget>
@@ -306,7 +293,7 @@
   </div>
 </section>
 
-<footer class="site-footer">
+<footer class="site-footer" style="margin-top:70px;">
   <div class="footer-inner">
     <a href="/" class="footer-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
     <div class="footer-copy">© 2026 Swiftaw</div>
