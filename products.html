@@ -47,36 +47,32 @@
 }
 .page-top .lede { font-size: 18px; color: var(--text); max-width: 500px; margin: 0 auto; line-height: 1.55; }
 
-/* ───── Trophy case ───── */
-.trophy-wrap { padding: 60px 28px 0; display: flex; justify-content: center; }
+/* ───── Fortized banner (wide, light) ───── */
+.trophy-wrap { padding: 50px 28px 0; }
 .trophy {
+  max-width: 900px; margin: 0 auto;
   position: relative;
-  max-width: 560px; width: 100%;
   background:
-    linear-gradient(140deg, rgba(42,41,18,.92) 0%, rgba(13,17,23,.82) 60%, rgba(13,17,23,.94) 100%),
+    linear-gradient(100deg, rgba(42,41,18,.90) 0%, rgba(13,17,23,.78) 70%),
     url('https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20banner.png');
   background-size: cover; background-position: center;
-  border: 2.5px solid rgba(254,248,61,.45);
-  border-radius: 32px;
-  box-shadow: 0 12px 0 0 var(--ink), 0 0 80px rgba(254,248,61,.12), 0 30px 70px rgba(0,0,0,.5);
-  padding: 40px 40px 34px;
-  text-align: center;
-  transform: rotate(-1deg);
+  border: 2px solid rgba(254,248,61,.4);
+  border-radius: 26px;
+  box-shadow: 0 8px 0 0 var(--ink);
+  padding: 26px 32px;
+  display: flex; align-items: center; gap: 26px;
+  transform: rotate(-.6deg);
   text-decoration: none; color: inherit;
-  display: block;
 }
-.trophy .badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
-  color: #4ade80; background: rgba(74,222,128,.10); border: 1px solid rgba(74,222,128,.25);
-  padding: 5px 12px; border-radius: 100px; margin-bottom: 22px;
+.trophy img.mark { height: 46px; width: auto; max-width: 150px; object-fit: contain; flex-shrink: 0; }
+.trophy .body { flex: 1; min-width: 0; }
+.trophy h2 { font-family: var(--font-display); font-size: clamp(18px, 2.2vw, 22px); font-weight: 800; letter-spacing: -.4px; line-height: 1.2; margin-bottom: 4px; }
+.trophy p { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+.trophy .actions { display: flex; gap: 10px; flex-shrink: 0; }
+@media (max-width: 700px) {
+  .trophy { flex-direction: column; align-items: flex-start; text-align: left; padding: 26px; }
+  .trophy .actions { flex-wrap: wrap; }
 }
-.trophy .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px #4ade80; animation: liveBlink 1.6s ease infinite; }
-.trophy img.mark { max-width: 68%; max-height: 100px; object-fit: contain; margin: 0 auto 22px; display: block; filter: drop-shadow(0 20px 40px rgba(254,248,61,.30)); animation: floatY 7s ease-in-out infinite; }
-@keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-.trophy h2 { font-family: var(--font-display); font-size: clamp(24px, 3.2vw, 32px); font-weight: 800; letter-spacing: -.8px; line-height: 1.15; margin-bottom: 12px; }
-.trophy p { font-size: 15px; color: var(--text); line-height: 1.6; max-width: 400px; margin: 0 auto 26px; }
-.trophy .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
 /* ───── Fanned cascade ───── */
 .cascade-wrap { padding: 70px 28px 0; }
@@ -173,11 +169,12 @@
 <div class="trophy-wrap">
   <a href="https://fortized.com" class="trophy reveal">
     <img class="mark" src="https://www.fortized.com/Fortized%20logo2026.png?v=2026" alt="Fortized">
-    <h2>build your fortress, your way.</h2>
-    <p>spin up a Bastion, rally your squad, and shape the space however you want - no paywall, ever. calendars for raid nights, full voice rooms, 100MB file sharing, and Rampart defenses to keep the trolls out. works just as well for a massive public hub as it does for a DM with your best friend.</p>
+    <div class="body">
+      <h2>build your fortress, your way.</h2>
+      <p>spin up a Bastion and rally your squad - free, forever.</p>
+    </div>
     <div class="actions">
-      <span class="btn-3d">Open Fortized <svg class="i"><use href="#i-fire"/></svg></span>
-      <span class="btn-3d-ghost">See features <svg class="i"><use href="#i-compass"/></svg></span>
+      <span class="btn-3d sm">Open <svg class="i" style="width:13px;height:13px;"><use href="#i-fire"/></svg></span>
     </div>
   </a>
 </div>
