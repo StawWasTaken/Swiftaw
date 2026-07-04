@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-.page-top { padding: 140px 0 40px; position: relative; }
+.page-top { padding: 140px 0 20px; position: relative; }
 .eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
@@ -37,7 +37,7 @@
   font-weight: 800;
   letter-spacing: -3px;
   line-height: .92;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   max-width: 900px;
 }
 .page-top h1 .pop {
@@ -46,121 +46,114 @@
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   transform: rotate(-2deg);
 }
-.page-top .lede { font-size: 19px; color: var(--text); max-width: 580px; line-height: 1.55; }
+.page-top .lede { font-size: 18px; color: var(--text); max-width: 560px; line-height: 1.55; }
 
-/* Hero product */
-.fortized-hero {
-  margin-top: 70px;
-  position: relative;
-  background:
-    linear-gradient(140deg, rgba(42,41,18,.92) 0%, rgba(13,17,23,.82) 60%, rgba(13,17,23,.92) 100%),
-    url('https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20banner.png');
-  background-size: cover;
-  background-position: center;
-  border: 2px solid rgba(254,248,61,.4);
-  border-radius: 32px;
-  box-shadow: 0 10px 0 0 var(--ink), 0 30px 70px rgba(0,0,0,.5);
-  padding: 56px 56px 48px;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 40px;
-  align-items: center;
-  transform: rotate(-.6deg);
+/* ───── stat strip ───── */
+.stat-strip {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-top: 28px;
 }
-.fortized-hero::before {
-  content:""; position: absolute; right: -100px; top: -100px;
-  width: 400px; height: 400px; border-radius: 50%;
-  background: radial-gradient(circle, rgba(254,248,61,.25), transparent 60%);
-  pointer-events: none;
-}
-@media (max-width: 880px) { .fortized-hero { grid-template-columns: 1fr; padding: 36px 28px; } }
-
-.fortized-hero .brand {
-  display: flex; align-items: center; gap: 14px;
-  margin-bottom: 20px;
-}
-.fortized-hero .brand .mark {
-  width: 64px; height: 64px; border-radius: 18px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 0 0 var(--ink);
-}
-.fortized-hero .brand .mark img { width: 40px; height: 40px; filter: brightness(0); }
-.fortized-hero .brand .name { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -.7px; }
-.fortized-hero .brand .live {
-  display: inline-flex; align-items: center; gap: 6px;
-  margin-left: 10px;
-  font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: #4ade80;
-  background: rgba(74,222,128,.10);
-  border: 1px solid rgba(74,222,128,.25);
-  padding: 4px 10px; border-radius: 100px;
-}
-.fortized-hero .brand .live .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px #4ade80; animation: liveBlink 1.6s ease infinite; }
-.fortized-hero h2 {
-  font-family: var(--font-display);
-  font-size: clamp(32px, 4.4vw, 52px); font-weight: 800;
-  letter-spacing: -1.8px; line-height: 1;
-  margin-bottom: 16px;
-}
-.fortized-hero p { font-size: 17px; color: var(--text); line-height: 1.55; margin-bottom: 26px; max-width: 480px; }
-.fortized-hero .actions { display: flex; gap: 12px; flex-wrap: wrap; }
-
-.fortized-visual {
-  position: relative;
-  height: 320px;
-  display: flex; align-items: center; justify-content: center;
-}
-.fortized-visual img {
-  max-height: 80%; max-width: 80%;
-  object-fit: contain;
-  filter: drop-shadow(0 30px 50px rgba(254,248,61,.30));
-  animation: floatY 7s ease-in-out infinite;
-}
-@keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
-
-/* Smaller product cards */
-.more {
-  margin-top: 80px;
-}
-.more-head {
-  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
-  margin-bottom: 30px;
-}
-.more-head h2 {
-  font-family: var(--font-display); font-size: clamp(28px, 3.6vw, 42px); font-weight: 800;
-  letter-spacing: -1.4px;
-}
-.more-head .meta { font-size: 13.5px; color: var(--muted-light); }
-.more-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
-}
-@media (max-width: 980px) { .more-grid { grid-template-columns: 1fr; } }
-.mini {
-  position: relative;
+.stat-chip {
+  font-family: var(--font-display); font-size: 12.5px; font-weight: 700;
+  color: var(--text);
   background: var(--panel);
   border: 1.5px solid var(--border);
-  border-radius: 22px;
-  padding: 26px;
-  box-shadow: 0 6px 0 0 var(--ink);
-  display: flex; flex-direction: column;
-  transition: transform .25s, box-shadow .25s;
+  padding: 7px 14px; border-radius: 100px;
+  display: inline-flex; align-items: center; gap: 7px;
 }
-.mini.t1 { transform: rotate(-1.5deg); }
-.mini.t2 { transform: rotate(1.2deg); }
-.mini.t3 { transform: rotate(-1deg); }
-.mini:hover { transform: rotate(0) translateY(-4px); box-shadow: 0 10px 0 0 var(--ink); }
-.mini.tint-lilac { background: linear-gradient(160deg, #1c1a2c 0%, #13111e 100%); border-color: rgba(196,181,253,.25); }
-.mini.tint-pink  { background: linear-gradient(160deg, #2a1822 0%, #1c0e16 100%); border-color: rgba(255,138,180,.25); }
-.mini.tint-blue  { background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(125,211,252,.25); }
-.mini .chip { align-self: flex-start; margin-bottom: 14px; }
-.mini h3 { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -.5px; line-height: 1.1; margin-bottom: 8px; }
-.mini p { font-size: 14px; color: var(--muted-light); line-height: 1.55; flex: 1; }
-.mini .foot { margin-top: 18px; font-size: 12.5px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.stat-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+/* ───── The shelf ───── */
+.shelf-wrap { margin-top: 60px; padding: 0 28px; }
+.shelf-head {
+  max-width: 1240px; margin: 0 auto 20px;
+  display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.shelf-head h2 { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -.4px; }
+.shelf-head .hint { font-family: var(--font-display); font-size: 11.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted-light); display: flex; align-items: center; gap: 6px; }
+.shelf-head .hint svg { width: 13px; height: 13px; fill: var(--muted-light); }
+
+.shelf {
+  max-width: 1240px; margin: 0 auto;
+  display: flex; gap: 22px;
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  padding: 6px 6px 22px;
+  scrollbar-width: thin;
+}
+.shelf::-webkit-scrollbar { height: 8px; }
+.shelf::-webkit-scrollbar-thumb { background: var(--border); border-radius: 100px; }
+
+/* anchor tile - Fortized */
+.anchor-tile {
+  scroll-snap-align: start;
+  flex: 0 0 min(560px, 82vw);
+  position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 2px solid rgba(254,248,61,.35);
+  background:
+    linear-gradient(140deg, rgba(42,41,18,.90) 0%, rgba(13,17,23,.86) 55%, rgba(13,17,23,.95) 100%),
+    url('https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20banner.png');
+  background-size: cover; background-position: center;
+  box-shadow: 0 10px 0 0 var(--ink);
+  padding: 34px 32px 30px;
+  display: flex; flex-direction: column;
+  text-decoration: none; color: inherit;
+  transition: transform .2s;
+}
+.anchor-tile:hover { transform: translateY(-4px); }
+.anchor-tile .top { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+.anchor-tile .top img.mark { height: 34px; width: auto; }
+.anchor-tile .live {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-display); font-size: 10.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: #4ade80; background: rgba(74,222,128,.10); border: 1px solid rgba(74,222,128,.25);
+  padding: 4px 10px; border-radius: 100px;
+}
+.anchor-tile .live .dot { width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px #4ade80; animation: liveBlink 1.6s ease infinite; }
+.anchor-tile h3 { font-family: var(--font-display); font-size: clamp(26px, 3.4vw, 36px); font-weight: 800; letter-spacing: -1px; line-height: 1.05; margin-bottom: 12px; }
+.anchor-tile p { font-size: 15px; color: var(--text); line-height: 1.6; margin-bottom: 24px; }
+.anchor-tile .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: auto; }
+
+/* ticket tiles - queued ideas */
+.ticket {
+  scroll-snap-align: start;
+  flex: 0 0 260px;
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 22px 20px 20px;
+  display: flex; flex-direction: column;
+  position: relative;
+  text-decoration: none; color: inherit;
+  transition: transform .2s, border-color .2s;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+.ticket:hover { transform: translateY(-4px); border-color: rgba(254,248,61,.28); }
+.ticket .notch { position: absolute; left: -9px; width: 18px; height: 18px; border-radius: 50%; background: var(--bg, #0d1117); border: 1.5px solid var(--border); }
+.ticket .notch.top { top: -9px; }
+.ticket .notch.bottom { bottom: -9px; }
+.ticket .stub {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 14px; margin-bottom: 14px;
+  border-bottom: 1.5px dashed var(--border);
+}
+.ticket .stub .status {
+  font-family: var(--font-display); font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.ticket .stub .status .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.ticket.tint-lilac .stub .status { color: var(--c-lilac); }
+.ticket.tint-pink .stub .status { color: var(--c-pink); }
+.ticket.tint-blue .stub .status { color: var(--c-blue); }
+.ticket .stub .no { font-family: var(--font-display); font-size: 10.5px; color: var(--muted-light); }
+.ticket h3 { font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -.4px; margin-bottom: 8px; }
+.ticket p { font-size: 13px; color: var(--muted-light); line-height: 1.55; flex: 1; }
+.ticket .foot { margin-top: 16px; padding-top: 14px; border-top: 1.5px dashed var(--border); font-family: var(--font-display); font-size: 11.5px; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 7px; }
+.ticket .foot svg { width: 13px; height: 13px; fill: currentColor; }
 
 .deco-p1 { top: 100px; right: 4%; width: 36px; height: 36px; color: var(--c-pink); --r: 14deg; }
-.deco-p2 { top: 300px; left: -1%; width: 28px; height: 28px; color: var(--c-blue); --r: -16deg; }
+.deco-p2 { top: 260px; left: -1%; width: 28px; height: 28px; color: var(--c-blue); --r: -16deg; }
 </style>
 </head>
 <body>
@@ -174,6 +167,7 @@
   <symbol id="i-comments" viewBox="0 0 576 512"><path d="M384 144c0 97.2-86 176-192 176-26.7 0-52.1-5-75.2-14L35.2 349.2c-9.3 4.9-20.7 3.2-28.2-4.2s-9.2-18.9-4.2-28.2l35.6-67.2C14.3 220.2 0 183.6 0 144 0 46.8 86-32 192-32S384 46.8 384 144zm0 368c-94.1 0-172.4-62.1-188.8-144 120-1.5 224.3-86.9 235.8-202.7 83.3 19.2 145 88.3 145 170.7 0 39.6-14.3 76.2-38.4 105.6l35.6 67.2c4.9 9.3 3.2 20.7-4.2 28.2s-18.9 9.2-28.2 4.2L459.2 498c-23.1 9-48.5 14-75.2 14z"/></symbol>
   <symbol id="i-hashtag" viewBox="0 0 512 512"><path d="M214.7 .7c17.3 3.7 28.3 20.7 24.6 38l-19.1 89.3 126.5 0 22-102.7C372.4 8 389.4-3 406.7 .7s28.3 20.7 24.6 38L412.2 128 480 128c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-27.4 128 67.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38l19.1-89.3-126.5 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38L99.8 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 27.4-128-67.8 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 22-102.7C180.4 8 197.4-3 214.7 .7zM206.4 192l-27.4 128 126.5 0 27.4-128-126.5 0z"/></symbol>
   <symbol id="i-trophy" viewBox="0 0 384 512"><path d="M32 32C32 14.3 46.3 0 64 0L320 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-29.5 0 10.3 134.1c37.1 21.2 65.8 56.4 78.2 99.7l3.8 13.4c2.8 9.7 .8 20-5.2 28.1S362 352 352 352L32 352c-10 0-19.5-4.7-25.5-12.7s-8-18.4-5.2-28.1L5 297.8c12.4-43.3 41-78.5 78.2-99.7L93.5 64 64 64C46.3 64 32 49.7 32 32zM160 400l64 0 0 112c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-112z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0-105.4 105.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></symbol>
 </svg>
 
 <nav class="nav-root">
@@ -206,58 +200,65 @@
     <div class="deco deco-p2 float-b"><svg><use href="#i-comments"/></svg></div>
 
     <div class="eyebrow">stuff we ship</div>
-    <h1>one flagship.<br>a few <span class="pop">experiments</span>.</h1>
-    <p class="lede">tiny library on purpose. we'd rather get one thing right than ship five half-baked.</p>
+    <h1>one flagship.<br>a few <span class="pop">sparks</span>.</h1>
+    <p class="lede">tiny shelf on purpose. we'd rather get one thing right than ship five half-baked.</p>
 
-    <a href="https://fortized.com" class="fortized-hero reveal" style="text-decoration:none; color:inherit;">
-      <div>
-        <div class="brand">
-          <div class="mark"><img src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20logo.png" alt="Fortized"></div>
-          <div class="name">Fortized</div>
-          <div class="live"><span class="dot"></span> live</div>
-        </div>
-        <h2>the community platform for players.</h2>
-        <p>bastions instead of servers. healthy feeds. a profile that actually feels like yours. built ground-up for gaming communities and the friend groups inside them.</p>
-        <div class="actions">
-          <span class="btn-3d">Open Fortized <svg class="i"><use href="#i-fire"/></svg></span>
-          <span class="btn-3d-ghost">See features <svg class="i"><use href="#i-compass"/></svg></span>
-        </div>
-      </div>
-      <div class="fortized-visual">
-        <img src="https://www.fortized.com/Fortized%20logo2026.png?v=2026" alt="">
-      </div>
-    </a>
-
-    <div class="more">
-      <div class="more-head">
-        <h2>what else is brewing.</h2>
-        <div class="meta">3 ideas · 1 will probably ship</div>
-      </div>
-      <div class="more-grid">
-        <a href="/innovation-room" class="mini tint-lilac t1 reveal" style="text-decoration:none; color:inherit;">
-          <span class="chip lilac"><span class="dot"></span> Lab</span>
-          <h3>digital infrastructure.</h3>
-          <p>communication tools and experimental tech in the wings. quiet research, loud ambitions.</p>
-          <div class="foot"><svg class="i" style="width:14px;height:14px;fill:var(--c-lilac);"><use href="#i-compass"/></svg> peek inside the lab</div>
-        </a>
-        <div class="mini tint-pink t2 reveal">
-          <span class="chip pink"><span class="dot"></span> concept</span>
-          <h3>research projects.</h3>
-          <p>early experiments in design, software, and how people talk to each other online.</p>
-          <div class="foot"><svg class="i" style="width:14px;height:14px;fill:var(--c-pink);"><use href="#i-hashtag"/></svg> opens up when it's ready</div>
-        </div>
-        <div class="mini tint-blue t3 reveal">
-          <span class="chip blue"><span class="dot"></span> ???</span>
-          <h3>surprise me.</h3>
-          <p>slot reserved for the next idea that won't leave us alone. could be anything.</p>
-          <div class="foot"><svg class="i" style="width:14px;height:14px;fill:var(--c-blue);"><use href="#i-comments"/></svg> we'll let you know</div>
-        </div>
-      </div>
+    <div class="stat-strip reveal">
+      <span class="stat-chip"><span class="dot"></span>1 shipped</span>
+      <span class="stat-chip"><span class="dot"></span>2 queued in the Lab</span>
+      <span class="stat-chip"><span class="dot"></span>0 investors telling us to hurry</span>
     </div>
   </div>
 </section>
 
-<footer class="site-footer">
+<div class="shelf-wrap">
+  <div class="shelf-head">
+    <h2>the shelf</h2>
+    <span class="hint"><svg><use href="#i-arrow"/></svg> scroll for what's next</span>
+  </div>
+  <div class="shelf">
+
+    <a href="https://fortized.com" class="anchor-tile reveal">
+      <div class="top">
+        <img class="mark" src="https://www.fortized.com/Fortized%20logo2026.png?v=2026" alt="Fortized">
+        <span class="live"><span class="dot"></span> live</span>
+      </div>
+      <h3>the community platform for players.</h3>
+      <p>bastions instead of servers. healthy feeds. a profile that actually feels like yours. built ground-up for gaming communities and the friend groups inside them.</p>
+      <div class="actions">
+        <span class="btn-3d">Open Fortized <svg class="i"><use href="#i-fire"/></svg></span>
+        <span class="btn-3d-ghost">See features <svg class="i"><use href="#i-compass"/></svg></span>
+      </div>
+    </a>
+
+    <a href="/innovation-room" class="ticket tint-lilac reveal">
+      <span class="notch top"></span><span class="notch bottom"></span>
+      <div class="stub"><span class="status"><span class="dot"></span> cooking</span><span class="no">Innoproject-2</span></div>
+      <h3>a soundboard for voice chat</h3>
+      <p>clips and stings you can drop mid-call without alt-tabbing for them. built to sit under Fortized, Discord, or Roblox.</p>
+      <div class="foot"><svg><use href="#i-compass"/></svg> peek inside the Lab</div>
+    </a>
+
+    <div class="ticket tint-pink reveal">
+      <span class="notch top"></span><span class="notch bottom"></span>
+      <div class="stub"><span class="status"><span class="dot"></span> dreaming</span><span class="no">concept</span></div>
+      <h3>research projects</h3>
+      <p>early experiments in design, software, and how people talk to each other online. nothing scheduled yet.</p>
+      <div class="foot"><svg><use href="#i-hashtag"/></svg> opens up when it's ready</div>
+    </div>
+
+    <div class="ticket tint-blue reveal">
+      <span class="notch top"></span><span class="notch bottom"></span>
+      <div class="stub"><span class="status"><span class="dot"></span> unknown</span><span class="no">???</span></div>
+      <h3>surprise me</h3>
+      <p>slot reserved for the next idea that won't leave us alone. could be anything.</p>
+      <div class="foot"><svg><use href="#i-comments"/></svg> we'll let you know</div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer" style="margin-top:70px;">
   <div class="footer-inner">
     <a href="/" class="footer-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
     <div class="footer-copy">© 2026 Swiftaw</div>
