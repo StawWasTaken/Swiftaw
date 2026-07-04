@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <style>
-.page-top { padding: 140px 0 30px; position: relative; }
+.page-top { padding: 140px 0 50px; position: relative; }
 .page-top .eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
@@ -45,96 +45,101 @@
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.page-top .lede { font-size: 18px; max-width: 560px; color: var(--text); line-height: 1.55; margin-bottom: 26px; }
+.page-top .lede { font-size: 18px; max-width: 560px; color: var(--text); line-height: 1.55; }
 
-.meta-row { display: flex; flex-wrap: wrap; gap: 10px; }
-.meta-pill {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-family: var(--font-display); font-size: 12.5px; font-weight: 700;
-  color: var(--text);
-  background: var(--panel);
+/* ───── Bento mosaic ───── */
+.bento-wrap { padding: 0 28px; }
+.bento {
+  max-width: 1180px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 148px;
+  gap: 16px;
+  grid-template-areas:
+    "story story hq    status"
+    "story story found quote"
+    "ceo   rd    comms safety"
+    "fortized fortized lab lab";
+}
+@media (max-width: 900px) {
+  .bento { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 150px;
+    grid-template-areas:
+      "story story"
+      "hq status"
+      "found quote"
+      "ceo rd"
+      "comms safety"
+      "fortized fortized"
+      "lab lab";
+  }
+}
+@media (max-width: 560px) {
+  .bento { grid-template-columns: 1fr; grid-auto-rows: auto;
+    grid-template-areas:
+      "story" "hq" "status" "found" "quote"
+      "ceo" "rd" "comms" "safety"
+      "fortized" "lab";
+  }
+}
+
+.cell {
+  position: relative;
+  border-radius: 22px;
   border: 1.5px solid var(--border);
-  padding: 7px 14px 7px 12px; border-radius: 100px;
-}
-.meta-pill .k { color: var(--muted-light); font-weight: 500; }
-.meta-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
-
-/* ───── Timeline ───── */
-.timeline-wrap { padding: 0 28px; margin-top: 70px; }
-.timeline-head { max-width: 1000px; margin: 0 auto 40px; }
-.timeline-head .section-eyebrow {
-  font-family: var(--font-display); font-size: 13px; font-weight: 700;
-  color: var(--muted-light); display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px;
-}
-.timeline-head .section-eyebrow svg { width: 15px; height: 15px; fill: var(--c-mint); }
-.timeline-head h2 {
-  font-family: var(--font-display);
-  font-size: clamp(30px, 3.6vw, 44px); font-weight: 800;
-  letter-spacing: -1.4px; line-height: 1;
-}
-
-.timeline { max-width: 1000px; margin: 0 auto; position: relative; padding-left: 34px; }
-.timeline::before {
-  content: ""; position: absolute; left: 5px; top: 6px; bottom: 6px; width: 2px;
-  background: linear-gradient(180deg, rgba(254,248,61,.5), rgba(255,255,255,.08) 85%);
-}
-.tl-item { position: relative; padding-bottom: 34px; }
-.tl-item:last-child { padding-bottom: 0; }
-.tl-item .node {
-  position: absolute; left: -34px; top: 4px;
-  width: 12px; height: 12px; border-radius: 50%;
-  background: var(--accent); border: 3px solid var(--ink);
-  box-shadow: 0 0 0 2px var(--accent);
-}
-.tl-item.vacant .node { background: transparent; border: 2px dashed var(--muted-light); box-shadow: none; width: 10px; height: 10px; left: -33px; }
-.tl-item .date {
-  font-family: var(--font-display); font-size: 11.5px; font-weight: 800;
-  letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
-}
-.tl-item.vacant .date { color: var(--muted-light); }
-.tl-card {
-  background: var(--panel);
-  border: 1.5px solid var(--border);
-  border-radius: 18px;
-  padding: 20px 24px;
+  padding: 22px;
+  display: flex; flex-direction: column;
+  overflow: hidden;
   box-shadow: 0 5px 0 0 var(--ink);
-  transition: transform .2s, border-color .2s;
+  transition: transform .2s, box-shadow .2s;
+  text-decoration: none; color: inherit;
 }
-.tl-item:nth-child(odd) .tl-card { transform: rotate(-.4deg); }
-.tl-item:nth-child(even) .tl-card { transform: rotate(.4deg); }
-.tl-card:hover { transform: rotate(0) translateX(4px); border-color: rgba(254,248,61,.28); }
-.tl-card h3 { font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -.4px; margin-bottom: 6px; }
-.tl-card p { font-size: 14.5px; color: var(--text); line-height: 1.65; }
-.tl-card .who {
-  display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
-  font-family: var(--font-display); font-size: 12.5px; font-weight: 700;
-}
-.tl-card .who .chip-av {
-  width: 24px; height: 24px; border-radius: 8px;
+.cell:hover { transform: translateY(-3px); box-shadow: 0 8px 0 0 var(--ink); }
+
+.c-story { grid-area: story; background: linear-gradient(150deg, var(--panel) 0%, var(--panel-2) 100%); justify-content: center; }
+.c-story .tag { font-family: var(--font-display); font-size: 10.5px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+.c-story h2 { font-family: var(--font-display); font-size: clamp(24px, 2.6vw, 32px); font-weight: 800; letter-spacing: -.8px; line-height: 1.15; margin-bottom: 12px; }
+.c-story p { font-size: 14.5px; color: var(--text); line-height: 1.65; max-width: 420px; }
+
+.c-hq, .c-status, .c-found { background: var(--panel); justify-content: center; }
+.c-hq { grid-area: hq; } .c-status { grid-area: status; } .c-found { grid-area: found; }
+.stat-lbl { font-family: var(--font-display); font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-light); margin-bottom: 8px; }
+.stat-val { font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -.3px; }
+
+.c-quote { grid-area: quote; background: linear-gradient(160deg, #2a2912 0%, #1c1a08 100%); border-color: rgba(254,248,61,.3); justify-content: center; }
+.c-quote p { font-family: var(--font-display); font-size: 14.5px; font-weight: 700; line-height: 1.35; letter-spacing: -.2px; }
+.c-quote img { vertical-align: -3px; }
+.c-quote .attr { display: block; margin-top: 8px; font-family: var(--font-body); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-light); }
+
+.c-person { justify-content: space-between; }
+.c-ceo { grid-area: ceo; background: linear-gradient(160deg, #2a2912 0%, #1c1a08 100%); border-color: rgba(254,248,61,.25); }
+.c-rd { grid-area: rd; background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(125,211,252,.25); }
+.c-comms { grid-area: comms; background: linear-gradient(160deg, #2a1822 0%, #1c0e16 100%); border-color: rgba(255,138,180,.25); }
+.c-safety { grid-area: safety; background: var(--panel); border-style: dashed; }
+.c-person .av {
+  width: 36px; height: 36px; border-radius: 11px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 800; color: var(--ink); flex-shrink: 0;
+  font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--ink);
+  box-shadow: 0 3px 0 0 var(--ink); margin-bottom: auto;
 }
-.tl-item.vacant .who { color: var(--muted-light); }
+.c-safety .av { background: linear-gradient(135deg, #2a3242, #1d2330); color: var(--muted-light); }
+.c-person .role { font-family: var(--font-display); font-size: 9.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted-light); margin-top: 12px; }
+.c-person .who { font-family: var(--font-display); font-size: 17px; font-weight: 800; letter-spacing: -.3px; }
+.c-person .since { font-size: 10.5px; color: var(--muted-light); margin-top: 2px; }
+.c-safety .since { color: var(--c-blue); font-weight: 700; }
 
-/* ───── Mission close ───── */
-.mission-close { padding: 0 28px; margin-top: 80px; }
-.mission-close .inner {
-  max-width: 780px; margin: 0 auto; text-align: center;
-  padding: 46px 36px;
-  background: linear-gradient(160deg, #2a2912 0%, #1c1a08 100%);
-  border: 1.5px solid rgba(254,248,61,.28);
-  border-radius: 26px;
-  box-shadow: 0 8px 0 0 var(--ink);
-  transform: rotate(-.5deg);
-}
-.mission-close .q {
-  font-family: var(--font-display); font-size: clamp(22px, 3.2vw, 30px); font-weight: 800;
-  letter-spacing: -.7px; line-height: 1.3; margin-bottom: 10px;
-}
-.mission-close .q img.fmoji { vertical-align: -4px; }
-.mission-close .attr { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-light); margin-bottom: 26px; }
+.c-fortized { grid-area: fortized; background: linear-gradient(150deg, #2a2912 0%, #14151c 60%); border-color: rgba(254,248,61,.3); flex-direction: row; align-items: center; gap: 20px; justify-content: space-between; }
+.c-fortized .left { display: flex; align-items: center; gap: 16px; }
+.c-fortized img.mark { height: 32px; width: auto; }
+.c-fortized h3 { font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -.4px; }
+.c-fortized p { font-size: 12.5px; color: var(--muted-light); margin-top: 2px; }
+.c-fortized .arrow { font-family: var(--font-display); font-size: 22px; color: var(--accent); flex-shrink: 0; }
+@media (max-width: 560px) { .c-fortized { flex-direction: column; align-items: flex-start; gap: 10px; } }
 
-/* deco */
+.c-lab { grid-area: lab; background: linear-gradient(150deg, #1c1a2c 0%, #13111e 100%); border-color: rgba(196,181,253,.25); flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
+.c-lab h3 { font-family: var(--font-display); font-size: 16px; font-weight: 800; letter-spacing: -.3px; }
+.c-lab p { font-size: 12px; color: var(--muted-light); margin-top: 2px; }
+.c-lab .arrow { font-family: var(--font-display); font-size: 20px; color: var(--c-lilac); flex-shrink: 0; }
+
 .deco-a1 { top: 100px; right: 4%; width: 36px; height: 36px; color: var(--c-pink); --r: 14deg; }
 .deco-a2 { bottom: -10px; left: 2%; width: 28px; height: 28px; color: var(--c-mint); --r: -10deg; }
 </style>
@@ -147,7 +152,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
   <symbol id="i-fire" viewBox="0 0 448 512"><path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2zM225.7 416c25.3 0 47.7-7 68.8-21 42.1-29.4 53.4-88.2 28.1-134.4-4.5-9-16-9.6-22.5-2l-25.2 29.3c-6.6 7.6-18.5 7.4-24.7-.5-17.3-22.1-49.1-62.4-65.3-83-5.4-6.9-15.2-8-21.5-1.9-18.3 17.8-51.5 56.8-51.5 104.3 0 68.6 50.6 109.2 113.7 109.2z"/></symbol>
   <symbol id="i-people" viewBox="0 0 576 512"><path d="M64 128a112 112 0 1 1 224 0 112 112 0 1 1 -224 0zM0 464c0-97.2 78.8-176 176-176s176 78.8 176 176l0 6c0 23.2-18.8 42-42 42L42 512c-23.2 0-42-18.8-42-42l0-6zM432 64a96 96 0 1 1 0 192 96 96 0 1 1 0-192zm0 240c79.5 0 144 64.5 144 144l0 22.4c0 23-18.6 41.6-41.6 41.6l-144.8 0c6.6-12.5 10.4-26.8 10.4-42l0-6c0-51.5-17.4-98.9-46.5-136.7 22.6-14.7 49.6-23.3 78.5-23.3z"/></symbol>
-  <symbol id="i-compass" viewBox="0 0 512 512"><path d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></symbol>
 </svg>
 
 <nav class="nav-root">
@@ -182,83 +186,97 @@
     <div class="eyebrow">a little about us</div>
     <h1>a <span class="scribbled">company</span><br>that builds weird stuff.</h1>
     <p class="lede">independent, european, based in Île-de-France. building social tools and community apps.</p>
-
-    <div class="meta-row reveal">
-      <span class="meta-pill"><span class="dot"></span><span class="k">HQ</span> Île-de-France</span>
-      <span class="meta-pill"><span class="dot"></span><span class="k">Country</span> France · EU</span>
-      <span class="meta-pill"><span class="dot"></span><span class="k">Founded</span> Aug 2025</span>
-      <span class="meta-pill"><span class="dot"></span><span class="k">Status</span> Independent</span>
-    </div>
   </div>
 </section>
 
-<section class="timeline-wrap">
-  <div class="timeline-head">
-    <div class="section-eyebrow"><svg><use href="#i-people"/></svg> how we got here</div>
-    <h2>The story so far.</h2>
+<div class="bento-wrap">
+  <div class="bento reveal">
+
+    <div class="cell c-story">
+      <div class="tag">the short version</div>
+      <h2>a small team, one flagship, and a habit of building things nobody asked for.</h2>
+      <p>Swiftaw started in August 2025. Fortized came first - a community platform we built because we wanted one to exist. Everything else grows from there.</p>
+    </div>
+
+    <div class="cell c-hq">
+      <div class="stat-lbl">HQ</div>
+      <div class="stat-val">Île-de-France, France</div>
+    </div>
+
+    <div class="cell c-status">
+      <div class="stat-lbl">Status</div>
+      <div class="stat-val">Independent</div>
+    </div>
+
+    <div class="cell c-found">
+      <div class="stat-lbl">Founded</div>
+      <div class="stat-val">August 2025</div>
+    </div>
+
+    <div class="cell c-quote">
+      <p>"tech for the people inside it, not the people watching the graph." <img class="fmoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_heart.png" alt=""></p>
+      <span class="attr">- our compass</span>
+    </div>
+
+    <div class="cell c-person c-ceo">
+      <div class="av" style="background: linear-gradient(135deg, var(--accent), var(--accent-2));">S</div>
+      <div>
+        <div class="role">Chief Executive Officer</div>
+        <div class="who">Staw</div>
+        <div class="since">founder · Aug 2025</div>
+      </div>
+    </div>
+
+    <div class="cell c-person c-rd">
+      <div class="av" style="background: linear-gradient(135deg, var(--c-blue), #38bdf8);">T</div>
+      <div>
+        <div class="role">Chief R&amp;D Officer</div>
+        <div class="who">Tyrianum</div>
+        <div class="since">since Dec 2025</div>
+      </div>
+    </div>
+
+    <div class="cell c-person c-comms">
+      <div class="av" style="background: linear-gradient(135deg, var(--c-pink), #f472b6);">W</div>
+      <div>
+        <div class="role">Chief Communication Officer</div>
+        <div class="who">Weaverdant</div>
+        <div class="since">since Feb 2026</div>
+      </div>
+    </div>
+
+    <div class="cell c-person c-safety">
+      <div class="av">?</div>
+      <div>
+        <div class="role">Chief Safety Officer</div>
+        <div class="who">Vacant</div>
+        <div class="since">open since Feb 2026</div>
+      </div>
+    </div>
+
+    <a href="https://fortized.com" class="cell c-fortized">
+      <div class="left">
+        <img class="mark" src="https://www.fortized.com/Fortized%20logo2026.png?v=2026" alt="Fortized">
+        <div>
+          <h3>Fortized</h3>
+          <p>our flagship, live now</p>
+        </div>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+
+    <a href="/innovation-room" class="cell c-lab">
+      <div>
+        <h3>the Lab</h3>
+        <p>watch what's next before it ships</p>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+
   </div>
+</div>
 
-  <div class="timeline">
-    <div class="tl-item reveal">
-      <span class="node"></span>
-      <div class="date">August 2025</div>
-      <div class="tl-card">
-        <h3>Swiftaw is founded</h3>
-        <p>Started from Île-de-France as an independent company. Fortized becomes the first product - a community platform built around ownership instead of algorithms.</p>
-        <span class="who"><span class="chip-av" style="background:linear-gradient(135deg,var(--accent),var(--accent-2));">S</span>Staw becomes Chief Executive Officer</span>
-      </div>
-    </div>
-
-    <div class="tl-item reveal">
-      <span class="node"></span>
-      <div class="date">December 2025</div>
-      <div class="tl-card">
-        <h3>R&amp;D gets a dedicated lead</h3>
-        <p>Research and engineering get their own home inside the company, separate from day-to-day product work.</p>
-        <span class="who"><span class="chip-av" style="background:linear-gradient(135deg,var(--c-blue),#38bdf8);">T</span>Tyrianum becomes Chief R&amp;D Officer</span>
-      </div>
-    </div>
-
-    <div class="tl-item reveal">
-      <span class="node"></span>
-      <div class="date">February 2026</div>
-      <div class="tl-card">
-        <h3>Communication finds a voice</h3>
-        <p>A dedicated seat for how Swiftaw talks about what it builds, and for making sure community feedback actually reaches the roadmap.</p>
-        <span class="who"><span class="chip-av" style="background:linear-gradient(135deg,var(--c-pink),#f472b6);">W</span>Weaverdant becomes Chief Communication Officer</span>
-      </div>
-    </div>
-
-    <div class="tl-item vacant reveal">
-      <span class="node"></span>
-      <div class="date">February 2026</div>
-      <div class="tl-card">
-        <h3>The Safety seat opens</h3>
-        <p>Still hiring for this one. Until it's filled, security and platform safety are handled directly by the founding team.</p>
-        <span class="who"><span class="chip-av" style="background:linear-gradient(135deg,#2a3242,#1d2330);">?</span>Chief Safety Officer - vacant</span>
-      </div>
-    </div>
-
-    <div class="tl-item reveal">
-      <span class="node"></span>
-      <div class="date">June 2026</div>
-      <div class="tl-card">
-        <h3>swiftign ships, the Lab opens</h3>
-        <p>The internal design system behind every Swiftaw and Fortized surface goes live, and the <a href="/innovation-room" style="color:var(--accent);">Lab</a> opens to the public - a place to watch what we're building before it's finished.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="mission-close">
-  <div class="inner reveal">
-    <div class="q">"tech for the people inside it, not the people watching the graph." <img class="fmoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_heart.png" alt=""></div>
-    <div class="attr">- our compass</div>
-    <a href="/mission" class="btn-3d">Read our mission <svg class="i"><use href="#i-compass"/></svg></a>
-  </div>
-</section>
-
-<footer class="site-footer" style="margin-top:80px;">
+<footer class="site-footer" style="margin-top:70px;">
   <div class="footer-inner">
     <a href="/" class="footer-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
     <div class="footer-copy">© 2026 Swiftaw</div>
