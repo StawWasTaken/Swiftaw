@@ -74,8 +74,9 @@
 
 /* ───── Pillar row ───── */
 .pillar-row-wrap { padding: 0 28px; margin-top: 60px; }
-.pillar-row { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-@media (max-width: 860px) { .pillar-row { grid-template-columns: 1fr; max-width: 460px; } }
+.pillar-row { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+@media (max-width: 980px) { .pillar-row { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .pillar-row { grid-template-columns: 1fr; max-width: 380px; } }
 
 .pillar-card {
   padding: 28px 26px;
@@ -86,18 +87,20 @@
 }
 .pillar-card:hover { transform: rotate(0) translateY(-5px); box-shadow: 0 10px 0 0 var(--ink); }
 .pillar-card.p1 { transform: rotate(-2deg); background: linear-gradient(160deg, #2a1822 0%, #1c0e16 100%); border-color: rgba(255,138,180,.25); }
-.pillar-card.p2 { transform: rotate(1.5deg); background: linear-gradient(160deg, #123326 0%, #0b1c17 100%); border-color: rgba(134,239,172,.25); }
-.pillar-card.p3 { transform: rotate(-1deg); background: linear-gradient(160deg, #1c1a2c 0%, #13111e 100%); border-color: rgba(196,181,253,.25); }
+.pillar-card.p2 { transform: rotate(1.5deg); background: linear-gradient(160deg, #1c1a2c 0%, #13111e 100%); border-color: rgba(196,181,253,.25); }
+.pillar-card.p3 { transform: rotate(-1deg); background: linear-gradient(160deg, #123326 0%, #0b1c17 100%); border-color: rgba(134,239,172,.25); }
+.pillar-card.p4 { transform: rotate(1.2deg); background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(125,211,252,.25); }
 .pillar-card .num {
   display: inline-flex; align-items: center; justify-content: center;
   width: 40px; height: 40px; border-radius: 12px;
-  font-family: var(--font-display); font-weight: 800; font-size: 16px; color: var(--ink);
+  font-size: 20px;
   box-shadow: 0 3px 0 0 var(--ink);
   margin-bottom: 16px;
 }
-.pillar-card.p1 .num { background: linear-gradient(135deg, var(--c-pink), #f472b6); }
-.pillar-card.p2 .num { background: linear-gradient(135deg, var(--c-mint), #4ade80); }
-.pillar-card.p3 .num { background: linear-gradient(135deg, var(--c-lilac), #a78bfa); }
+.pillar-card.p1 .num { background: rgba(255,138,180,.14); }
+.pillar-card.p2 .num { background: rgba(196,181,253,.14); }
+.pillar-card.p3 .num { background: rgba(134,239,172,.14); }
+.pillar-card.p4 .num { background: rgba(125,211,252,.14); }
 .pillar-card h3 { font-family: var(--font-display); font-size: 21px; font-weight: 800; letter-spacing: -.4px; margin-bottom: 10px; }
 .pillar-card p { font-size: 14.5px; color: var(--text); line-height: 1.6; }
 
@@ -226,18 +229,23 @@
 <div class="pillar-row-wrap">
   <div class="pillar-row">
     <div class="pillar-card p1 reveal">
-      <div class="num">01</div>
-      <h3>built around small rooms.</h3>
+      <div class="num">💬</div>
+      <h3>Social</h3>
       <p>the internet is at its best when it's a group chat. we design for the people inside the room - not the algorithm watching them.</p>
     </div>
     <div class="pillar-card p2 reveal">
-      <div class="num">02</div>
-      <h3>calm, not loud.</h3>
-      <p>no dark patterns. no engagement traps. software that respects your attention because we'd want the same.</p>
+      <div class="num">🎨</div>
+      <h3>Creative</h3>
+      <p>playful, colorful, a little weird on purpose. software should feel like someone actually cared while making it.</p>
     </div>
     <div class="pillar-card p3 reveal">
-      <div class="num">03</div>
-      <h3>european-built.</h3>
+      <div class="num">🛠️</div>
+      <h3>Practical</h3>
+      <p>no dark patterns. no engagement traps. tools that respect your attention because we'd want the same.</p>
+    </div>
+    <div class="pillar-card p4 reveal">
+      <div class="num">🇪🇺</div>
+      <h3>European</h3>
       <p>no quarterly graph to please, no investors breathing down our neck. we move at the speed of getting it right.</p>
     </div>
   </div>
@@ -245,8 +253,7 @@
 
 <div class="note-strip-wrap">
   <div class="note-strip">
-    <div class="sticky reveal"><b>Fortized was the first thing we shipped</b> - a community platform built for gamers and the friend groups around them. whatever ships next follows the same compass.</div>
-    <div class="sticky reveal"><b>We like soft edges and generous spacing.</b> software that feels playful instead of corporate. expect more of that in everything we build - including the next thing we haven't shown you yet.</div>
+    <div class="sticky reveal" style="max-width:600px;"><b>Fortized was the first thing we shipped</b> - a community platform made for gamers and the friend groups around them. whatever ships next follows the same compass.</div>
   </div>
 </div>
 
@@ -312,7 +319,11 @@
   </div>
 </section>
 
-<footer class="site-footer" style="margin-top:70px;">
+<div style="text-align:center; margin-top:56px; padding:0 28px;">
+  <p style="font-family:var(--font-display); font-size:14.5px; font-weight:700; color:var(--muted-light);">made with love by Swiftaw <img class="fmoji" style="vertical-align:-3px;" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_heart.png" alt=""></p>
+</div>
+
+<footer class="site-footer" style="margin-top:40px;">
   <div class="footer-inner">
     <a href="/" class="footer-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
     <div class="footer-copy">© 2026 Swiftaw</div>
