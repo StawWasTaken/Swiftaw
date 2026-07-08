@@ -408,69 +408,108 @@
   width: 280px; height: 280px;
 }
 
-/* ───── Trophy banner (wide, light) ───── */
-.trophy-wrap { padding: 50px 28px 0; }
-.trophy {
-  max-width: 1100px; margin: 0 auto;
-  position: relative;
-  background:
-    linear-gradient(100deg, rgba(42,41,18,.90) 0%, rgba(13,17,23,.78) 70%),
-    url('https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20banner.png');
-  background-size: cover; background-position: center;
-  border: 2px solid rgba(254,248,61,.4);
-  border-radius: 30px;
-  box-shadow: 0 10px 0 0 var(--ink);
-  padding: 46px 48px;
-  display: flex; align-items: center; gap: 36px;
-  transform: rotate(-.6deg);
-  text-decoration: none; color: inherit;
+/* ───── Projects grid ───── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-width: 800px;
+  margin: 40px auto 0;
 }
-.trophy img.mark { height: 68px; width: auto; max-width: 220px; object-fit: contain; flex-shrink: 0; }
-.trophy .body { flex: 1; min-width: 0; }
-.trophy h2 { font-family: var(--font-display); font-size: clamp(24px, 2.8vw, 30px); font-weight: 800; letter-spacing: -.6px; line-height: 1.2; margin-bottom: 8px; }
-.trophy p { font-size: 16px; color: var(--text); line-height: 1.5; }
-.trophy .actions { display: flex; gap: 10px; flex-shrink: 0; }
-@media (max-width: 700px) {
-  .trophy { flex-direction: column; align-items: flex-start; text-align: left; padding: 32px; }
-  .trophy .actions { flex-wrap: wrap; }
-}
-
-/* ───── Fanned cascade ───── */
-.cascade-wrap { padding: 70px 28px 0; }
-.cascade-head { text-align: center; margin-bottom: 10px; }
-.cascade-head h2 { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -.4px; }
-.cascade-head p { font-size: 13.5px; color: var(--muted-light); margin-top: 4px; }
-
-.cascade {
-  max-width: 900px; margin: 30px auto 0;
-  display: flex; justify-content: center; flex-wrap: wrap;
-  gap: 0;
-}
-.fan-card {
-  width: 260px;
+.project-card {
   background: var(--panel);
   border: 1.5px solid var(--border);
   border-radius: 20px;
-  padding: 22px 22px 20px;
+  padding: 24px;
   box-shadow: 0 6px 0 0 var(--ink);
-  transition: transform .25s ease, box-shadow .25s, z-index 0s;
-  position: relative;
+  transition: transform .2s ease, box-shadow .2s ease;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
 }
-.fan-card:nth-child(1) { transform: rotate(-6deg) translateY(10px); margin-right: -34px; z-index: 1; }
-.fan-card:nth-child(2) { transform: rotate(0deg) translateY(-6px); z-index: 2; }
-.fan-card:hover { transform: rotate(0deg) translateY(-14px) scale(1.04) !important; z-index: 5 !important; box-shadow: 0 12px 0 0 var(--ink); }
-.fan-card.tint-lilac { background: linear-gradient(160deg, #1c1a2c 0%, #13111e 100%); border-color: rgba(196,181,253,.28); }
-.fan-card.tint-blue  { background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(125,211,252,.28); }
-.fan-card .chip { align-self: flex-start; margin-bottom: 14px; }
-.fan-card h3 { font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -.4px; line-height: 1.15; margin-bottom: 8px; }
-.fan-card p { font-size: 13px; color: var(--muted-light); line-height: 1.55; }
-.fan-card .foot { margin-top: 16px; font-size: 12px; color: var(--muted-light); display: flex; align-items: center; gap: 7px; text-decoration: none; }
-.fan-card a.foot { color: inherit; }
-@media (max-width: 700px) {
-  .fan-card, .fan-card:nth-child(1), .fan-card:nth-child(2) {
-    transform: none !important; margin: 0 0 16px !important; width: 100%; max-width: 340px;
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 0 0 var(--ink);
+}
+.project-card.flagship {
+  grid-column: 1 / -1;
+  background: linear-gradient(160deg, #1f1c0f 0%, #14120a 100%);
+  border-color: rgba(254,248,61,.3);
+  padding: 32px;
+}
+.project-card.lab {
+  background: linear-gradient(160deg, #1c1a2c 0%, #13111e 100%);
+  border-color: rgba(196,181,253,.25);
+}
+.project-card.notes {
+  background: linear-gradient(160deg, #142433 0%, #0e1a26 100%);
+  border-color: rgba(125,211,252,.25);
+}
+.project-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.project-card.flagship .project-header {
+  margin-bottom: 20px;
+}
+.project-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: .8;
+}
+.project-brand {
+  margin-bottom: 16px;
+}
+.project-brand img {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+.project-card h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -.4px;
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.project-card.flagship h3 {
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+.project-card p {
+  font-size: 14px;
+  color: var(--muted-light);
+  line-height: 1.55;
+  margin-bottom: 16px;
+  flex: 1;
+}
+.project-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  opacity: .8;
+  transition: opacity .2s;
+}
+.project-card:hover .project-link {
+  opacity: 1;
+}
+@media (max-width: 600px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
   }
-  .cascade { flex-direction: column; align-items: center; }
+  .project-card.flagship {
+    grid-column: 1;
+  }
 }
 </style>
 </head>
@@ -596,41 +635,40 @@
 <section class="section">
   <div class="container">
     <div class="section-eyebrow"><svg><use href="#i-compass"/></svg> what we make</div>
-    <h2 class="head">one flagship, a Lab, and whatever shows up next.</h2>
-    <p class="lede">Tiny library on purpose. We'd rather get one thing right than ship five things half-baked.</p>
+    <h2 class="head">stuff we ship.</h2>
+    <p class="lede">one thing done right beats five things half-baked.</p>
 
-    <div class="trophy-wrap" style="padding: 50px 0 0;">
-      <a href="https://fortized.com" class="trophy reveal">
-        <img class="mark" src="https://www.fortized.com/Fortized%20logo2026.png?v=2026" alt="Fortized">
-        <div class="body">
-          <h2>The community platform for players.</h2>
-          <p>Bastions, profiles, healthy feeds. Built ground-up, not bolted on.</p>
+    <div class="projects-grid">
+      <a href="https://fortized.com" class="project-card flagship reveal">
+        <div class="project-header">
+          <span class="chip yellow"><span class="dot"></span> Live</span>
+          <span class="project-tag">flagship</span>
         </div>
-        <div class="actions">
-          <span class="btn-3d">Open Fortized <svg class="i" style="width:15px;height:15px;"><use href="#i-fire"/></svg></span>
+        <div class="project-brand">
+          <img src="https://www.fortized.com/Fortized%20logo2026.png?v=2026" alt="Fortized">
         </div>
+        <h3>The community platform for players.</h3>
+        <p>Bastions, profiles, healthy feeds. Built ground-up, not bolted on.</p>
+        <span class="project-link">Open Fortized <svg class="i" style="width:14px;height:14px;"><use href="#i-fire"/></svg></span>
       </a>
-    </div>
 
-    <div class="cascade-wrap" style="padding: 70px 0 0;">
-      <div class="cascade-head reveal">
-        <h2>what else is brewing.</h2>
-        <p>2 ideas · 1 will probably ship</p>
-      </div>
-      <div class="cascade">
-        <a href="/innovation-room" class="fan-card tint-lilac reveal" style="text-decoration:none; color:inherit;">
+      <a href="/innovation-room" class="project-card lab reveal">
+        <div class="project-header">
           <span class="chip lilac"><span class="dot"></span> Lab</span>
-          <h3>Innovation Room.</h3>
-          <p>Where weird ideas grow up.</p>
-          <span class="foot"><svg class="i" style="width:14px;height:14px;fill:var(--c-lilac);"><use href="#i-compass"/></svg> peek inside</span>
-        </a>
-        <a href="/newsroom" class="fan-card tint-blue reveal" style="text-decoration:none; color:inherit;">
+        </div>
+        <h3>Innovation Room.</h3>
+        <p>Where weird ideas grow up.</p>
+        <span class="project-link">peek inside <svg class="i" style="width:14px;height:14px;fill:var(--c-lilac);"><use href="#i-compass"/></svg></span>
+      </a>
+
+      <a href="/newsroom" class="project-card notes reveal">
+        <div class="project-header">
           <span class="chip blue"><span class="dot"></span> Notes</span>
-          <h3>Newsroom.</h3>
-          <p>The occasional party.</p>
-          <span class="foot"><svg class="i" style="width:14px;height:14px;fill:var(--c-blue);"><use href="#i-calendar"/></svg> read the latest</span>
-        </a>
-      </div>
+        </div>
+        <h3>Newsroom.</h3>
+        <p>The occasional party.</p>
+        <span class="project-link">read the latest <svg class="i" style="width:14px;height:14px;fill:var(--c-blue);"><use href="#i-calendar"/></svg></span>
+      </a>
     </div>
   </div>
 </section>
