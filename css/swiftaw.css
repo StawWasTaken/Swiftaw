@@ -148,22 +148,22 @@ body::before {
   position: absolute;
   background: var(--panel);
   border: 1.5px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 12px 32px rgba(0,0,0,.5);
-  min-width: 180px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  min-width: 150px;
   z-index: 100;
-  margin-top: 12px;
+  margin-top: 8px;
   overflow: hidden;
 }
 .nav-dropdown.open .nav-dropdown-content { display: block; }
 .nav-dropdown-content a {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 18px;
+  gap: 8px;
+  padding: 10px 14px;
   color: var(--text);
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
   transition: background .15s;
   border-bottom: 1px solid rgba(255,255,255,.05);
 }
@@ -172,17 +172,17 @@ body::before {
   background: rgba(255,255,255,.08);
 }
 .nav-dropdown-content a .nav-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: rgba(254,248,61,.1);
 }
 .nav-dropdown-content a .nav-icon svg {
-  width: 16px;
-  height: 16px;
+  width: 13px;
+  height: 13px;
   fill: var(--accent);
 }
 .nav-dropbtn { cursor: pointer; display: flex; align-items: center; gap: 4px; }
