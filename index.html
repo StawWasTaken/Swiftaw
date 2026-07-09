@@ -531,11 +531,17 @@
 <nav class="nav-root">
   <a href="/" class="nav-logo" aria-label="Swiftaw"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
   <div class="nav-pill-group">
-    <div class="nav-dropdown">
-      <span class="nav-pill nav-dropbtn">Company <svg style="width:10px;height:10px;margin-left:4px;vertical-align:middle;"><use href="#i-chevron"/></svg></span>
+    <div class="nav-dropdown" id="companyDropdown">
+      <span class="nav-pill nav-dropbtn">Company <svg class="chevron" style="width:10px;height:10px;margin-left:4px;vertical-align:middle;"><use href="#i-chevron"/></svg></span>
       <div class="nav-dropdown-content">
-        <a href="/about-us">About</a>
-        <a href="/mission">Mission</a>
+        <a href="/about-us">
+          <span class="nav-icon"><svg><use href="#i-people"/></svg></span>
+          <span>About</span>
+        </a>
+        <a href="/mission">
+          <span class="nav-icon"><svg><use href="#i-compass"/></svg></span>
+          <span>Mission</span>
+        </a>
       </div>
     </div>
     <a href="/products" class="nav-pill">Products</a>
@@ -792,6 +798,23 @@ window.SWIFTAW_CFG = {
 };
 </script>
 <script src="/css/swiftaw.js"></script>
+<script>
+// Dropdown click behavior
+document.addEventListener('DOMContentLoaded', function() {
+  var dropdown = document.getElementById('companyDropdown');
+  if (dropdown) {
+    dropdown.addEventListener('click', function(e) {
+      e.stopPropagation();
+      dropdown.classList.toggle('open');
+    });
+  }
+  document.addEventListener('click', function() {
+    document.querySelectorAll('.nav-dropdown.open').forEach(function(d) {
+      d.classList.remove('open');
+    });
+  });
+});
+</script>
 
 </body>
 </html>
