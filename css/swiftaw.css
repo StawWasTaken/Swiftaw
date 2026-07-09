@@ -172,6 +172,12 @@ body::before {
   background: rgba(255,255,255,.05);
 }
 .nav-dropbtn { cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.nav-dropdown .chevron {
+  transition: transform 0.2s ease;
+}
+.nav-dropdown.open .chevron {
+  transform: rotate(180deg);
+}
 .nav-spacer { width: 18px; }
 .nav-right { display: flex; align-items: center; gap: 6px; }
 .nav-btn-ghost {
