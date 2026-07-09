@@ -166,16 +166,25 @@ body::before {
   color: var(--muted-light);
   text-decoration: none;
   font-size: 13px;
+  border-radius: 6px;
+  margin: 2px 6px;
 }
 .nav-dropdown-content a:hover {
   color: #fff;
-  background: rgba(255,255,255,.05);
+  background: rgba(255,255,255,.08);
+}
+.nav-dropdown-content a.active {
+  color: #0d1117;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  font-family: var(--font-display);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(254,248,61,.2);
 }
 .nav-dropbtn { cursor: pointer; display: flex; align-items: center; gap: 4px; }
-.nav-dropdown .chevron {
+.nav-dropbtn .chevron {
   transition: transform 0.2s ease;
 }
-.nav-dropdown.open .chevron {
+.nav-dropdown.open .nav-dropbtn .chevron {
   transform: rotate(180deg);
 }
 .nav-spacer { width: 18px; }
