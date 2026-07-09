@@ -525,13 +525,19 @@
   <symbol id="i-house" viewBox="0 0 576 512"><path d="M352 264l0-200c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 200c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-185.9C90 109.8 32 191.8 32 288l0 64 512 0 0-64c-1-95.2-58.4-177.7-144-209.8L400 264c0 13.3-10.7 24-24 24s-24-10.7-24-24zM40 400c-22.1 0-40 17.9-40 40s17.9 40 40 40l496 0c22.1 0 40-17.9 40-40s-17.9-40-40-40L40 400z"/></symbol>
   <symbol id="i-building" viewBox="0 0 384 512"><path d="M162.4 6c-1.5-3.6-5-6-8.9-6l-19 0c-3.9 0-7.5 2.4-8.9 6L104.9 57.7c-3.2 8-14.6 8-17.8 0L66.4 6c-1.5-3.6-5-6-8.9-6L48 0C21.5 0 0 21.5 0 48l0 208 384 0 0-208c0-26.5-21.5-48-48-48L230.5 0c-3.9 0-7.5 2.4-8.9 6L200.9 57.7c-3.2 8-14.6 8-17.8 0L162.4 6zM0 304l0 16c0 35.3 28.7 64 64 64l64 0 0 64c0 35.3 28.7 64 64 64s64-28.7 64-64l0-64 64 0c35.3 0 64-28.7 64-64l0-16-384 0zM192 464c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16z"/></symbol>
   <symbol id="i-rocket" viewBox="0 0 640 512"><path d="M32 32C14.3 32 0 46.3 0 64L0 448c0 17.7 14.3 32 32 32s32-14.3 32-32L64 266.3 149.2 96 64 96 64 64c0-17.7-14.3-32-32-32zM405.2 96l-74.3 0-5.4 10.7-90.6 181.3 74.3 0 5.4-10.7 90.6-181.3zM362.8 288l74.3 0 5.4-10.7 90.6-181.3-74.3 0-5.4 10.7-90.6 181.3zM202.8 96l-5.4 10.7-90.6 181.3 74.3 0 5.4-10.7 90.6-181.3-74.3 0zm288 192l85.2 0 0 160c0 17.7 14.3 32 32 32s32-14.3 32-32l0-384c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 53.7-85.2 170.3z"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 320 512"><path d="M288 64L32 320l256 256" fill="none" stroke="currentColor" stroke-width="48" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
 <nav class="nav-root">
   <a href="/" class="nav-logo" aria-label="Swiftaw"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
   <div class="nav-pill-group">
-    <a href="/about-us" class="nav-pill">About</a>
-    <a href="/mission" class="nav-pill">Mission</a>
+    <div class="nav-dropdown">
+      <span class="nav-pill nav-dropbtn">Company <svg style="width:10px;height:10px;margin-left:4px;vertical-align:middle;"><use href="#i-chevron"/></svg></span>
+      <div class="nav-dropdown-content">
+        <a href="/about-us">About</a>
+        <a href="/mission">Mission</a>
+      </div>
+    </div>
     <a href="/products" class="nav-pill">Products</a>
     <a href="/innovation-room" class="nav-pill">Lab</a>
     <a href="/newsroom" class="nav-pill">News</a>

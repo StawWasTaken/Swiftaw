@@ -142,6 +142,33 @@ body::before {
   font-family: var(--font-display); font-weight: 700;
   box-shadow: 0 4px 14px rgba(254,248,61,.25);
 }
+.nav-dropdown { position: relative; display: inline-block; }
+.nav-dropdown-content {
+  display: none;
+  position: absolute;
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  min-width: 140px;
+  z-index: 100;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.nav-dropdown-content a {
+  display: block;
+  padding: 10px 16px;
+  color: var(--muted-light);
+  text-decoration: none;
+  font-size: 13px;
+  transition: background .15s, color .15s;
+}
+.nav-dropdown-content a:hover {
+  color: #fff;
+  background: rgba(255,255,255,.06);
+}
+.nav-dropdown:hover .nav-dropdown-content { display: block; }
+.nav-dropbtn { cursor: pointer; }
 .nav-spacer { width: 18px; }
 .nav-right { display: flex; align-items: center; gap: 6px; }
 .nav-btn-ghost {
