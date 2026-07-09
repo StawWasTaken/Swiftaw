@@ -113,6 +113,7 @@ body::before {
   box-shadow: 0 12px 40px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.02) inset;
   max-width: calc(100% - 24px);
   transition: box-shadow .3s, border-color .3s, background .3s;
+  overflow: visible;
 }
 .nav-root.scrolled {
   background: rgba(22,28,40,.92);
@@ -152,7 +153,9 @@ body::before {
   box-shadow: 0 6px 20px rgba(0,0,0,.4);
   min-width: 120px;
   z-index: 100;
-  margin-top: 6px;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
   overflow: hidden;
 }
 .nav-dropdown.open .nav-dropdown-content { display: block; }
