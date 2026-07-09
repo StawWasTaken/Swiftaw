@@ -143,6 +143,34 @@ body::before {
   font-family: var(--font-display); font-weight: 700;
   box-shadow: 0 4px 14px rgba(254,248,61,.25);
 }
+.nav-drop { position: relative; }
+.nav-dropmenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px 0;
+  min-width: 100px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  z-index: 100;
+}
+.nav-drop:hover .nav-dropmenu { display: block; }
+.nav-dropmenu a {
+  display: block;
+  padding: 8px 16px;
+  color: var(--muted-light);
+  text-decoration: none;
+  font-size: 13px;
+}
+.nav-dropmenu a:hover {
+  color: #fff;
+  background: rgba(255,255,255,.05);
+}
 .nav-spacer { width: 18px; }
 .nav-right { display: flex; align-items: center; gap: 6px; }
 .nav-btn-ghost {
