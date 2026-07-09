@@ -147,15 +147,16 @@ body::before {
 .nav-dropdown-content {
   display: none;
   position: absolute;
-  background: var(--panel);
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  box-shadow: 0 6px 20px rgba(0,0,0,.4);
-  min-width: 120px;
-  z-index: 100;
+  background: rgba(22,28,40,.78);
+  backdrop-filter: blur(22px) saturate(180%);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.02) inset;
+  min-width: 130px;
+  z-index: 400;
   top: 100%;
-  left: 0;
-  margin-top: 4px;
+  left: -10px;
+  margin-top: 8px;
   overflow: hidden;
 }
 .nav-dropdown.open .nav-dropdown-content { display: block; }
