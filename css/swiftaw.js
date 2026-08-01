@@ -28,6 +28,16 @@
 //   Swiftaw - shared site interactions
 // ════════════════════════════════════════════
 
+// Shared Swiftaw account system (auth + account switcher widget) on every page
+(function () {
+  if (window.SwiftawAccount || document.getElementById('swiftaw-acct-loader')) return;
+  const s = document.createElement('script');
+  s.id = 'swiftaw-acct-loader';
+  s.src = '/css/swiftaw-account.js';
+  s.defer = true;
+  document.head.appendChild(s);
+})();
+
 (function () {
   // Nav scroll polish
   const nav = document.querySelector('.nav-root');

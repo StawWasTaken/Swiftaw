@@ -25,8 +25,12 @@ create table if not exists public.profiles (
   email        text,
   username     text unique,
   display_name text,
+  avatar_url   text,
   created_at   timestamptz not null default now()
 );
+
+-- add avatar_url if you created this table before it existed
+alter table public.profiles add column if not exists avatar_url text;
 
 alter table public.profiles enable row level security;
 
@@ -47,6 +51,7 @@ grant usage on schema public to anon, authenticated;
 grant select, update on public.profiles to authenticated;
 
 -- Auto-create a profile row whenever someone signs up.
+-- Username / avatar come from the sign-up metadata (options.data).
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -54,8 +59,13 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, email)
-  values (new.id, new.email)
+  insert into public.profiles (id, email, username, avatar_url)
+  values (
+    new.id,
+    new.email,
+    nullif(new.raw_user_meta_data->>'username', ''),
+    nullif(new.raw_user_meta_data->>'avatar_url', '')
+  )
   on conflict (id) do nothing;
   return new;
 end;
@@ -65,6 +75,53 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- Public username availability check for the sign-up form.
+create or replace function public.username_available(u text)
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select not exists (
+    select 1 from public.profiles where lower(username) = lower(u)
+  );
+$$;
+
+grant execute on function public.username_available(text) to anon, authenticated;
+
+
+-- ════════════════════════════════════════════
+-- 1b. AVATARS  (Supabase Storage bucket for profile pictures)
+-- ════════════════════════════════════════════
+insert into storage.buckets (id, name, public)
+values ('avatars', 'avatars', true)
+on conflict (id) do nothing;
+
+-- anyone can view avatars; a user can only write files under their own uid/ folder
+drop policy if exists "avatars: public read" on storage.objects;
+create policy "avatars: public read"
+  on storage.objects for select
+  using (bucket_id = 'avatars');
+
+drop policy if exists "avatars: insert own" on storage.objects;
+create policy "avatars: insert own"
+  on storage.objects for insert
+  to authenticated
+  with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+
+drop policy if exists "avatars: update own" on storage.objects;
+create policy "avatars: update own"
+  on storage.objects for update
+  to authenticated
+  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
+
+drop policy if exists "avatars: delete own" on storage.objects;
+create policy "avatars: delete own"
+  on storage.objects for delete
+  to authenticated
+  using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
 
 
 -- ════════════════════════════════════════════
