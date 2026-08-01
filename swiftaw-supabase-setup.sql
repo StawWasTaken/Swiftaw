@@ -6,9 +6,11 @@
 --   (Dashboard → SQL Editor → New query → paste → Run).
 --   It's safe to re-run: everything uses IF NOT EXISTS / OR REPLACE.
 --
---   It sets up three things:
---     1. profiles        — a Swiftaw account row per auth user
---     2. lifecheck_keys  — each user's Lifecheck API key pairs
+--   It sets up:
+--     1. profiles          — a Swiftaw account row per auth user
+--     2. lifecheck_keys    — each user's Lifecheck API key pairs
+--     2b. lifecheck_tokens — server-issued verification tokens (v1.2)
+--     2c. lifecheck_events — widget interaction telemetry (v1.2, new)
 --     3. swiftaw_reactions — the live reaction counter used on the site
 --
 --   TIP: for instant sign-up (no email confirmation step) on the API
@@ -231,7 +233,7 @@ begin
     return null;
   end if;
 
-  new_token := 'LC1.1_' || replace(gen_random_uuid()::text, '-', '');
+  new_token := 'LC1.2_' || replace(gen_random_uuid()::text, '-', '');
   insert into public.lifecheck_tokens (token, key_id, site_key, host, passed)
   values (new_token, k.id, p_site_key, p_host, coalesce(p_passed, 'challenge'));
   return new_token;
@@ -251,22 +253,22 @@ declare
   t public.lifecheck_tokens%rowtype;
 begin
   if p_secret is null or p_secret = '' then
-    return jsonb_build_object('success', false, 'v', '1.1', 'error-codes', jsonb_build_array('missing-input-secret'));
+    return jsonb_build_object('success', false, 'v', '1.2', 'error-codes', jsonb_build_array('missing-input-secret'));
   end if;
   select * into k from public.lifecheck_keys where secret_key = p_secret limit 1;
   if not found then
-    return jsonb_build_object('success', false, 'v', '1.1', 'error-codes', jsonb_build_array('invalid-input-secret'));
+    return jsonb_build_object('success', false, 'v', '1.2', 'error-codes', jsonb_build_array('invalid-input-secret'));
   end if;
   if p_token is null or p_token = '' then
-    return jsonb_build_object('success', false, 'v', '1.1', 'error-codes', jsonb_build_array('missing-input-token'));
+    return jsonb_build_object('success', false, 'v', '1.2', 'error-codes', jsonb_build_array('missing-input-token'));
   end if;
 
   select * into t from public.lifecheck_tokens where token = p_token and key_id = k.id limit 1;
   if not found then
-    return jsonb_build_object('success', false, 'v', '1.1', 'error-codes', jsonb_build_array('invalid-input-token'));
+    return jsonb_build_object('success', false, 'v', '1.2', 'error-codes', jsonb_build_array('invalid-input-token'));
   end if;
   if t.used or t.expires_at < now() then
-    return jsonb_build_object('success', false, 'v', '1.1', 'error-codes', jsonb_build_array('timeout-or-duplicate'));
+    return jsonb_build_object('success', false, 'v', '1.2', 'error-codes', jsonb_build_array('timeout-or-duplicate'));
   end if;
 
   update public.lifecheck_tokens set used = true, used_at = now() where token = t.token;
@@ -277,7 +279,7 @@ begin
     'passed', t.passed,
     'challenge_ts', t.created_at,
     'hostname', t.host,
-    'v', '1.1',
+    'v', '1.2',
     'error-codes', jsonb_build_array()
   );
 end;
@@ -285,6 +287,92 @@ $$;
 
 grant execute on function public.lifecheck_issue_token(text, text, text) to anon, authenticated;
 grant execute on function public.lifecheck_verify_token(text, text) to anon, authenticated;
+
+
+-- ════════════════════════════════════════════
+-- 2c. LIFECHECK EVENTS  (interaction telemetry — v1.2)
+--     The widget records how a visitor interacts with the check and its
+--     mini-games (open, pass, fail, wrong/correct taps, suspicious/robotic
+--     signals) and streams it here in small batches. Swiftaw uses this data
+--     to run, improve and TRAIN its systems and AI — Lifecheck itself, the
+--     moderation AIs on Fortized, and Swiftaw's own AI models — and to build
+--     new products. Consent for this is shown in the widget itself, and the
+--     use is described (vaguely but plainly) in the Swiftaw policies.
+--
+--     Privacy: this is behavioural telemetry only (event names, challenge
+--     type, timings, aggregate cursor stats). No message content, no form
+--     data, and never sold to third parties — see the Privacy Policy at
+--     swiftaw.com/legal/privacy-policy.
+-- ════════════════════════════════════════════
+create table if not exists public.lifecheck_events (
+  id          bigint generated always as identity primary key,
+  session_id  text,
+  site_key    text,
+  host        text,
+  event_type  text not null,
+  challenge   text,
+  outcome     text,           -- pass | fail | info | suspicious
+  suspicious  boolean not null default false,
+  detail      jsonb not null default '{}'::jsonb,
+  created_at  timestamptz not null default now()
+);
+create index if not exists lifecheck_events_session_idx on public.lifecheck_events(session_id);
+create index if not exists lifecheck_events_site_idx    on public.lifecheck_events(site_key);
+create index if not exists lifecheck_events_created_idx  on public.lifecheck_events(created_at);
+create index if not exists lifecheck_events_susp_idx     on public.lifecheck_events(suspicious) where suspicious;
+
+alter table public.lifecheck_events enable row level security;
+-- no direct table access; the widget writes only through the RPC below,
+-- and only the service role (your dashboards) can read it back.
+revoke all on public.lifecheck_events from anon, authenticated;
+
+-- Called by the widget (browser, anon key) to append a small batch of
+-- interaction events. Field lengths + batch size are capped so the
+-- endpoint can't be used to dump large payloads.
+create or replace function public.lifecheck_log_events(
+  p_events   jsonb,
+  p_site_key text default null,
+  p_host     text default null,
+  p_session  text default null
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  e jsonb;
+  n int;
+  i int;
+begin
+  if p_events is null or jsonb_typeof(p_events) <> 'array' then
+    return;
+  end if;
+  n := jsonb_array_length(p_events);
+  if n > 50 then n := 50; end if;   -- cap batch size
+  i := 0;
+  while i < n loop
+    e := p_events -> i;
+    if jsonb_typeof(e) = 'object' then
+      insert into public.lifecheck_events
+        (session_id, site_key, host, event_type, challenge, outcome, suspicious, detail)
+      values (
+        left(coalesce(p_session, ''), 64),
+        left(coalesce(p_site_key, ''), 128),
+        left(coalesce(p_host, ''), 255),
+        left(coalesce(e ->> 't', 'unknown'), 48),
+        left(coalesce(e ->> 'challenge', ''), 32),
+        left(coalesce(e ->> 'outcome', ''), 16),
+        coalesce((e ->> 'suspicious')::boolean, false),
+        coalesce(e -> 'detail', '{}'::jsonb)
+      );
+    end if;
+    i := i + 1;
+  end loop;
+end;
+$$;
+
+grant execute on function public.lifecheck_log_events(jsonb, text, text, text) to anon, authenticated;
 
 
 -- ════════════════════════════════════════════
