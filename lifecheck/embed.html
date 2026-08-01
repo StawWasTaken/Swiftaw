@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>Lifecheck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --bg:#0d1117;
+    --card:#12171f;
+    --stroke:#232c39;
+    --stroke-soft:#1a212b;
+    --track:#181f29;
+    --yellow:#fff93e; --yellow-s:#ffde00;
+    --green:#3ecf6e;  --green-s:#289b4e;
+    --blue:#2caefc;   --blue-s:#2287e1;
+    --red:#ff0132;    --red-s:#c0052a;
+    --pink:#ff77e4;   --pink-s:#e065c8;
+    --ink:#0d1117;
+    --text:#f4f6fa;
+    --muted:#8b96a8;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    background:transparent;
+    font-family:'Syne', sans-serif;
+    color:var(--text);
+    padding:2px;
+    user-select:none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+  }
+
+  img{ -webkit-user-drag:none; user-drag:none; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001s !important; transition-duration:0.001s !important; }
+  }
+
+  .stage{ width:340px; max-width:100%; }
+
+  /* ================= COLLAPSED ================= */
+  .collapsed{
+    background:var(--card);
+    border:3px solid var(--stroke);
+    border-radius:16px;
+    padding:13px 16px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes popIn{
+    0%{ opacity:0; transform:scale(.94) translateY(8px); }
+    100%{ opacity:1; transform:scale(1) translateY(0); }
+  }
+
+  .chk-box{
+    width:28px; height:28px;
+    border-radius:8px;
+    border:2.5px solid var(--muted);
+    background:#0d1117;
+    flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition:border-color .2s ease, background .2s ease, transform .15s ease;
+  }
+  .chk-box:hover{ transform:scale(1.05); border-color:#aeb8c8; }
+  .chk-box i{ font-size:14px; color:var(--ink); transform:scale(0); opacity:0; }
+  .chk-box.spin i{ display:none; }
+  .spinner-ring{
+    display:none;
+    width:16px; height:16px;
+    border-radius:50%;
+    border:2.5px solid rgba(255,249,62,0.22);
+    border-top-color:var(--yellow);
+  }
+  .chk-box.spin .spinner-ring{ display:block; animation:spin .75s linear infinite; }
+  .chk-box.checked{ background:#0d1117; border-color:var(--yellow-s); animation:checkPop .45s cubic-bezier(.34,1.9,.64,1) both; }
+  .chk-box.checked i{ color:var(--yellow); transform:scale(1); opacity:1; transition:transform .3s cubic-bezier(.34,1.9,.64,1) .06s, opacity .2s ease .06s; }
+  .collapsed.is-verified .chk-box,
+  .collapsed.is-verified .chk-label{ cursor:default; pointer-events:none; }
+  .collapsed.is-verified .chk-box:hover{ transform:none; border-color:var(--yellow-s); }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  @keyframes checkPop{ 0%{transform:scale(1);} 45%{transform:scale(1.18);} 70%{transform:scale(.92);} 100%{transform:scale(1);} }
+
+  .chk-label{ flex:1 1 auto; font-weight:700; font-size:15px; color:var(--text); cursor:pointer; user-select:none; }
+  .chk-label .dots::after{ content:''; animation:dotting 1.2s steps(4,end) infinite; }
+  @keyframes dotting{ 0%{content:'';} 25%{content:'.';} 50%{content:'..';} 75%{content:'...';} 100%{content:'';} }
+
+  .badge{ flex:0 0 auto; text-align:right; line-height:1.15; }
+  .badge img{ height:16px; width:auto; display:inline-block; filter:brightness(0) invert(1); }
+  .badge-sub{ font-weight:600; font-size:9px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); margin-top:3px; }
+  .badge-sub b{ color:var(--yellow); font-weight:700; }
+
+  /* ================= EXPANDED ================= */
+  .expanded{
+    position:relative;
+    background:var(--card);
+    border:3px solid var(--stroke);
+    border-radius:20px;
+    overflow:hidden;
+    animation:expandIn .45s cubic-bezier(.34,1.5,.64,1) both;
+    background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1.5px);
+    background-size:16px 16px;
+  }
+  @keyframes expandIn{
+    0%{ opacity:0; transform:scale(.9) translateY(6px); }
+    100%{ opacity:1; transform:scale(1) translateY(0); }
+  }
+  .hidden{ display:none !important; }
+
+  .exp-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 16px 12px;
+  }
+  .exp-header .brand-mark{ display:flex; align-items:center; gap:8px; }
+  .exp-header img{ height:15px; width:auto; filter:brightness(0) invert(1); }
+  .exp-header .tag{ font-weight:600; font-size:9.5px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); }
+
+  .close-btn{
+    width:26px; height:26px;
+    border-radius:50%;
+    border:2px solid var(--stroke);
+    background:#0f141c;
+    color:var(--muted);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:11px;
+    transition:color .2s ease, border-color .2s ease, transform .2s ease;
+  }
+  .close-btn:hover{ color:var(--red); border-color:var(--red-s); transform:rotate(90deg); }
+
+  .test-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-weight:800; font-size:10px; letter-spacing:.5px; text-transform:uppercase;
+    padding:4px 9px; border-radius:100px;
+    border:1.5px solid var(--chip-s, var(--stroke));
+    color:var(--chip, var(--muted));
+    background:color-mix(in srgb, var(--chip, transparent) 12%, transparent);
+    width:fit-content;
+  }
+  .test-chip i{ font-size:9px; }
+
+  .exp-body{
+    border-top:2px solid var(--stroke);
+    padding:16px 16px 6px;
+    display:flex; flex-direction:column; gap:12px;
+  }
+
+  .prompt{ font-weight:700; font-size:15px; line-height:1.35; }
+  .prompt .sub{ display:block; font-weight:500; font-size:12px; color:var(--muted); margin-top:4px; }
+
+  /* ---- grid ---- */
+  .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+  .tile{
+    aspect-ratio:1/1; background:var(--track); border:2.5px solid var(--stroke); border-radius:12px;
+    display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--text); cursor:pointer;
+    transition:transform .15s cubic-bezier(.34,1.6,.64,1), border-color .15s ease, background .15s ease;
+  }
+  .tile:hover{ transform:translateY(-2px); }
+  .tile.selected{ border-color:var(--blue-s); background:rgba(44,174,252,0.16); color:var(--blue); animation:tileBounce .35s cubic-bezier(.34,1.9,.64,1); }
+  @keyframes tileBounce{ 0%{transform:scale(1);} 50%{transform:scale(1.14);} 100%{transform:scale(1);} }
+  .tile.wrong{ border-color:var(--red-s) !important; background:rgba(255,1,50,0.16) !important; color:var(--red) !important; }
+  .tile.correct-flash{ border-color:var(--green-s) !important; background:rgba(62,207,110,0.18) !important; color:var(--green) !important; }
+
+  /* ---- slider ---- */
+  .slide-wrap{ padding:6px 2px 2px; }
+  .track{ position:relative; height:44px; background:var(--track); border:2.5px solid var(--stroke); border-radius:22px; margin-top:24px; }
+  .target-zone{ position:absolute; top:-4px; bottom:-4px; background:rgba(62,207,110,0.18); border-left:2.5px dashed var(--green-s); border-right:2.5px dashed var(--green-s); border-radius:8px; }
+  .target-zone i{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:var(--green); font-size:13px; }
+  .handle{ position:absolute; top:50%; left:0; width:40px; height:40px; margin-top:-20px; border-radius:50%; background:var(--green); border:3px solid var(--green-s); display:flex; align-items:center; justify-content:center; cursor:grab; touch-action:none; }
+  .handle:active{ cursor:grabbing; }
+  .handle i{ color:#06210f; font-size:16px; }
+  .handle.bob{ animation:handleBob 1.8s ease-in-out infinite; }
+  @keyframes handleBob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-2px);} }
+
+  /* ---- rotate dial ---- */
+  .dial-wrap{ display:flex; justify-content:center; padding:6px 0 2px; }
+  .dial{ position:relative; width:150px; height:150px; touch-action:none; }
+  .dial svg{ width:100%; height:100%; display:block; }
+  .dial-handle{
+    position:absolute; width:30px; height:30px; margin:-15px;
+    border-radius:50%; background:var(--pink); border:3px solid var(--pink-s);
+    display:flex; align-items:center; justify-content:center; cursor:grab;
+    transition:box-shadow .15s ease;
+  }
+  .dial-handle i{ color:#3a0f30; font-size:13px; }
+  .dial-center{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:var(--muted); font-size:11px; font-weight:700; text-align:center; pointer-events:none; }
+
+  /* ---- sequence ---- */
+  .seq-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+  .beacon{
+    aspect-ratio:1/1; background:var(--track); border:2.5px solid var(--stroke); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; color:var(--text); cursor:pointer;
+    transition:transform .15s cubic-bezier(.34,1.6,.64,1), border-color .15s ease, background .15s ease;
+  }
+  .beacon:hover{ transform:translateY(-2px); }
+  .beacon.done{ border-color:var(--yellow-s); background:rgba(255,249,62,0.18); color:var(--yellow); animation:tileBounce .35s cubic-bezier(.34,1.9,.64,1); }
+  .beacon.bad{ border-color:var(--red-s); background:rgba(255,1,50,0.18); color:var(--red); animation:shakeSmall .4s ease; }
+  @keyframes shakeSmall{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-4px);} 75%{transform:translateX(4px);} }
+
+  /* ---- code entry ---- */
+  .code-box{
+    position:relative;
+    background:var(--track); border:2.5px solid var(--stroke); border-radius:14px;
+    height:70px; display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .code-box svg.noise{ position:absolute; inset:0; width:100%; height:100%; opacity:.5; }
+  .code-char{ display:inline-block; font-weight:800; font-size:28px; letter-spacing:1px; position:relative; z-index:1; }
+  .code-input{
+    width:100%; background:var(--track); border:2.5px solid var(--stroke); border-radius:12px;
+    color:var(--text); font-family:'Syne',sans-serif; font-weight:700; font-size:16px; letter-spacing:3px;
+    text-align:center; text-transform:uppercase; padding:10px; outline:none;
+  }
+  .code-input:focus{ border-color:var(--red-s); }
+
+  .exp-footer{
+    padding:12px 16px 18px;
+    display:flex; align-items:center; justify-content:flex-end; gap:10px;
+    border-top:2px solid var(--stroke);
+  }
+
+  .verify-btn{
+    appearance:none; border:none; cursor:pointer;
+    background:var(--green); border:2.5px solid var(--green-s); color:#06210f;
+    font-family:'Syne', sans-serif; font-weight:800; font-size:13px;
+    padding:10px 18px; border-radius:12px;
+    transition:transform .15s cubic-bezier(.34,1.9,.64,1), filter .15s ease;
+  }
+  .verify-btn:hover{ filter:brightness(1.06); transform:translateY(-1px); }
+  .verify-btn:active{ transform:translateY(1px) scale(.97); }
+  .verify-btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+
+  .status{
+    margin:0 16px 16px; border-radius:14px; padding:12px 14px;
+    display:flex; align-items:center; gap:10px; font-weight:700; font-size:13px;
+    animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes bounceIn{ 0%{ opacity:0; transform:scale(.7) translateY(6px);} 55%{ opacity:1; transform:scale(1.05) translateY(-2px);} 100%{ opacity:1; transform:scale(1) translateY(0);} }
+  .status.pass{ background:rgba(62,207,110,0.14); border:2px solid var(--green-s); color:var(--green); }
+  .status.fail{ background:rgba(255,1,50,0.14); border:2px solid var(--red-s); color:var(--red); animation:shake .5s ease both; }
+  .status i{ font-size:16px; flex:0 0 auto; }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-7px);} 40%{transform:translateX(6px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(3px);} }
+  .status span.d{ font-weight:400; font-size:10.5px; opacity:.85; display:block; margin-top:2px; }
+
+  .retry-btn{
+    margin-top:8px; appearance:none; border:none; cursor:pointer;
+    background:var(--yellow); border:2.5px solid var(--yellow-s); color:#2a2600;
+    font-family:'Syne', sans-serif; font-weight:800; font-size:12.5px;
+    padding:9px 14px; border-radius:11px;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <!-- COLLAPSED -->
+  <div class="collapsed" id="collapsed">
+    <div class="chk-box" id="chkBox"><i class="fa-solid fa-check"></i><span class="spinner-ring"></span></div>
+    <div class="chk-label" id="chkLabel">I'm not a robot</div>
+    <div class="badge">
+      <img src="https://swiftaw.com/SWFTW_Logomark.png" alt="Swiftaw" draggable="false" />
+      <div class="badge-sub">life&#8209;check <b>v1.1</b></div>
+    </div>
+  </div>
+
+  <!-- EXPANDED -->
+  <div class="expanded hidden" id="expanded">
+    <div class="exp-header">
+      <div class="brand-mark">
+        <img src="https://swiftaw.com/SWFTW_Logomark.png" alt="Swiftaw" draggable="false" />
+        <span class="tag">life&#8209;check&nbsp;·&nbsp;v1.1</span>
+      </div>
+      <button class="close-btn" id="closeBtn" title="Close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="exp-body">
+      <div class="test-chip" id="testChip"></div>
+      <div class="prompt" id="promptText"></div>
+      <div id="challengeArea"></div>
+    </div>
+
+    <div class="status hidden" id="statusBox"></div>
+
+    <div class="exp-footer" id="expFooter">
+      <button class="verify-btn hidden" id="verifyBtn">Verify</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  /* ---------------- host bridge ---------------- */
+  // Lifecheck is served from swiftaw.com and embedded via <iframe>. The
+  // challenge logic never touches the host page — the only thing that
+  // crosses the boundary is a one-way "verified" message + token.
+  function post(event, extra){
+    try{
+      parent.postMessage(Object.assign({ source:'swiftaw-lifecheck', v:'1.1', event:event }, extra||{}), '*');
+    }catch(e){}
+  }
+  function reportSize(){
+    const h = document.querySelector('.stage').offsetHeight + 8;
+    post('resize', { height:h });
+  }
+  const ro = ('ResizeObserver' in window) ? new ResizeObserver(reportSize) : null;
+
+  // A verification token. In production this is minted + signed server-side;
+  // here it is a short-lived opaque handle the host forwards to /v1/verify.
+  function mintToken(){
+    const rnd = () => Math.random().toString(36).slice(2, 12);
+    return 'LC1.1_' + rnd() + rnd() + '.' + Date.now().toString(36);
+  }
+
+  // light tamper friction (does not stop a determined dev, just discourages
+  // casual copy/scrape of the challenge surface)
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('dragstart', e => e.preventDefault());
+
+  const collapsed = document.getElementById('collapsed');
+  const chkBox = document.getElementById('chkBox');
+  const chkLabel = document.getElementById('chkLabel');
+
+  const expanded = document.getElementById('expanded');
+  const testChip = document.getElementById('testChip');
+  const promptText = document.getElementById('promptText');
+  const challengeArea = document.getElementById('challengeArea');
+  const verifyBtn = document.getElementById('verifyBtn');
+  const statusBox = document.getElementById('statusBox');
+  const expFooter = document.getElementById('expFooter');
+  const closeBtn = document.getElementById('closeBtn');
+
+  const LOADING_PHRASES = [
+    'Detecting life forms',
+    'Scanning biosignals',
+    'Calibrating sensors',
+    'Reading heat signature',
+    'Checking pulse'
+  ];
+  const LIFE = ['fa-dog','fa-cat','fa-frog','fa-fish','fa-dove','fa-paw','fa-leaf','fa-dna','fa-worm'];
+  const MACHINE = ['fa-robot','fa-microchip','fa-satellite','fa-rocket','fa-gear','fa-plug','fa-server','fa-wifi','fa-toolbox'];
+
+  const TEST_META = {
+    grid:     { label:'Signal test · 01', icon:'fa-satellite-dish', color:'var(--blue)',  colorS:'var(--blue-s)'  },
+    slider:   { label:'Signal test · 02', icon:'fa-ufo',            color:'var(--green)', colorS:'var(--green-s)' },
+    rotate:   { label:'Signal test · 03', icon:'fa-compass',        color:'var(--pink)',  colorS:'var(--pink-s)'  },
+    sequence: { label:'Signal test · 04', icon:'fa-list-ol',        color:'var(--yellow)',colorS:'var(--yellow-s)'},
+    code:     { label:'Signal test · 05', icon:'fa-keyboard',       color:'var(--red)',   colorS:'var(--red-s)'   }
+  };
+  const TEST_TYPES = Object.keys(TEST_META);
+  let lastType = null;
+
+  /* ---------------- real cursor tracking ---------------- */
+  let samples = [];
+  let touchUsed = false;
+  let loadedAt = Date.now();
+
+  document.addEventListener('pointermove', (e) => {
+    if(e.pointerType === 'touch') touchUsed = true;
+    samples.push({ x:e.clientX, y:e.clientY, t:Date.now() });
+    if(samples.length > 300) samples.shift();
+  }, { passive:true });
+  document.addEventListener('touchstart', () => { touchUsed = true; }, { passive:true });
+
+  function analyzeCursor(){
+    const elapsed = Date.now() - loadedAt;
+
+    if(touchUsed){
+      // no real cursor trail on touch devices — fall back to a timing check
+      return elapsed > 220;
+    }
+
+    const n = samples.length;
+    if(n < 5) return false;              // essentially no mouse movement recorded
+    if(elapsed < 300) return false;      // impossibly fast overall
+
+    let dist = 0;
+    for(let i=1;i<n;i++){
+      dist += Math.hypot(samples[i].x-samples[i-1].x, samples[i].y-samples[i-1].y);
+    }
+    if(dist < 40) return false;          // barely moved
+
+    let dirChanges = 0;
+    for(let i=2;i<n;i++){
+      const a = Math.atan2(samples[i-1].y-samples[i-2].y, samples[i-1].x-samples[i-2].x);
+      const b = Math.atan2(samples[i].y-samples[i-1].y, samples[i].x-samples[i-1].x);
+      let diff = Math.abs(a-b);
+      if(diff > Math.PI) diff = 2*Math.PI - diff;
+      if(diff > 0.15) dirChanges++;
+    }
+    const jitterRatio = dirChanges / n;
+    if(jitterRatio < 0.04) return false; // suspiciously straight / robotic path
+
+    return true;
+  }
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+  function pick(arr,n){ return shuffle(arr).slice(0,n); }
+
+  function resetCollapsed(){
+    loadedAt = Date.now();
+    samples = [];
+    chkBox.className = 'chk-box';
+    chkBox.querySelector('i').className = 'fa-solid fa-check';
+    chkLabel.textContent = "I'm not a robot";
+    expanded.classList.add('hidden');
+    collapsed.classList.remove('hidden');
+    collapsed.style.animation = 'none';
+    void collapsed.offsetWidth;
+    collapsed.style.animation = '';
+    reportSize();
+  }
+
+  let locked = false;
+  chkBox.addEventListener('click', startVerify);
+  chkLabel.addEventListener('click', startVerify);
+
+  function startVerify(){
+    if(locked) return;
+    locked = true;
+    chkBox.classList.add('spin');
+    const phrase = LOADING_PHRASES[Math.floor(Math.random()*LOADING_PHRASES.length)];
+    chkLabel.innerHTML = `${phrase}<span class="dots"></span>`;
+
+    setTimeout(()=>{
+      const human = analyzeCursor();
+      // Even a clean read still gets spot-checked sometimes — real
+      // verification systems don't rely on one signal alone.
+      const spotCheck = human && Math.random() < 0.25;
+      if(human && !spotCheck){
+        passCollapsed();
+      } else {
+        openChallenge();
+      }
+    }, 700);
+  }
+
+  function passCollapsed(){
+    chkBox.classList.remove('spin');
+    chkBox.classList.add('checked');
+    chkLabel.textContent = 'Verified';
+    collapsed.classList.add('is-verified');
+    post('verified', { token: mintToken() });
+  }
+
+  function openChallenge(){
+    let type = TEST_TYPES[Math.floor(Math.random()*TEST_TYPES.length)];
+    if(type === lastType) type = TEST_TYPES[(TEST_TYPES.indexOf(type)+1) % TEST_TYPES.length];
+    lastType = type;
+
+    collapsed.classList.add('hidden');
+    expanded.classList.remove('hidden');
+    statusBox.classList.add('hidden');
+    statusBox.className = 'status hidden';
+    expFooter.classList.remove('hidden');
+    verifyBtn.classList.remove('hidden');
+    verifyBtn.disabled = false;
+    verifyBtn.textContent = 'Verify';
+
+    const meta = TEST_META[type];
+    testChip.style.setProperty('--chip', meta.color);
+    testChip.style.setProperty('--chip-s', meta.colorS);
+    testChip.innerHTML = `<i class="fa-solid ${meta.icon}"></i> ${meta.label}`;
+
+    if(type === 'grid') buildGrid();
+    if(type === 'slider') buildSlider();
+    if(type === 'rotate') buildRotate();
+    if(type === 'sequence') buildSequence();
+    if(type === 'code') buildCode();
+    reportSize();
+  }
+
+  closeBtn.addEventListener('click', ()=>{ locked = false; resetCollapsed(); });
+
+  /* ---------------- 1. GRID ---------------- */
+  function buildGrid(){
+    promptText.innerHTML = `Select every life form<span class="sub">Tap all organic signals, then verify.</span>`;
+    const lifeCount = 4 + Math.floor(Math.random()*2);
+    const chosenLife = pick(LIFE, lifeCount);
+    const chosenMachine = pick(MACHINE, 9 - lifeCount);
+    const tiles = shuffle(chosenLife.map(c=>({icon:c,life:true})).concat(chosenMachine.map(c=>({icon:c,life:false}))));
+    const correctSet = new Set(tiles.map((t,i)=>t.life ? i : null).filter(v=>v!==null));
+    const selected = new Set();
+
+    challengeArea.innerHTML = `<div class="grid" id="gridEl"></div>`;
+    const gridEl = document.getElementById('gridEl');
+    tiles.forEach((t,i)=>{
+      const el = document.createElement('div');
+      el.className = 'tile';
+      el.innerHTML = `<i class="fa-solid ${t.icon}"></i>`;
+      el.addEventListener('click', ()=>{
+        if(selected.has(i)){ selected.delete(i); el.classList.remove('selected'); }
+        else { selected.add(i); el.classList.add('selected'); }
+      });
+      gridEl.appendChild(el);
+    });
+
+    verifyBtn.onclick = () => {
+      const correct = selected.size === correctSet.size && [...selected].every(i=>correctSet.has(i));
+      if(!correct){
+        [...gridEl.children].forEach((el,i)=>{
+          if(selected.has(i) && !correctSet.has(i)) el.classList.add('wrong');
+          if(correctSet.has(i) && !selected.has(i)) el.classList.add('correct-flash');
+        });
+      }
+      decide(correct, correct ? '' : 'Some signals were misread.');
+    };
+  }
+
+  /* ---------------- 2. SLIDER ---------------- */
+  function buildSlider(){
+    promptText.innerHTML = `Guide the visitor home<span class="sub">Drag the craft into the landing zone.</span>`;
+    const zoneWidthPct = 16;
+    const startPct = 15 + Math.random()*(85-15-zoneWidthPct);
+    const target = { start:startPct, end:startPct+zoneWidthPct };
+    let value = 0;
+
+    challengeArea.innerHTML = `
+      <div class="slide-wrap">
+        <div class="track" id="trackEl">
+          <div class="target-zone" id="zoneEl"><i class="fa-solid fa-house-chimney"></i></div>
+          <div class="handle bob" id="handleEl"><i class="fa-solid fa-rocket"></i></div>
+        </div>
+      </div>`;
+    const trackEl = document.getElementById('trackEl');
+    const zoneEl = document.getElementById('zoneEl');
+    const handleEl = document.getElementById('handleEl');
+
+    requestAnimationFrame(()=>{
+      zoneEl.style.left = target.start + '%';
+      zoneEl.style.width = zoneWidthPct + '%';
+    });
+
+    function setHandle(pct){
+      pct = Math.max(0, Math.min(100, pct));
+      value = pct;
+      handleEl.style.left = `calc(${pct}% - ${pct/100*40}px)`;
+    }
+    setHandle(0);
+
+    function pctFromClientX(clientX){
+      const rect = trackEl.getBoundingClientRect();
+      return ((clientX - rect.left) / rect.width) * 100;
+    }
+    let dragging = false;
+    function onDown(e){ dragging = true; handleEl.classList.remove('bob'); e.preventDefault(); }
+    function onMove(e){
+      if(!dragging) return;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      setHandle(pctFromClientX(clientX));
+    }
+    function onUp(){ dragging = false; }
+    handleEl.addEventListener('mousedown', onDown);
+    handleEl.addEventListener('touchstart', onDown, {passive:false});
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('touchmove', onMove, {passive:false});
+    window.addEventListener('mouseup', onUp);
+    window.addEventListener('touchend', onUp);
+
+    verifyBtn.onclick = () => {
+      const correct = value >= target.start-2 && value <= target.end+2 && value > 3;
+      decide(correct, correct ? '' : 'The craft drifted off course.');
+    };
+  }
+
+  /* ---------------- 3. ROTATE DIAL ---------------- */
+  function buildRotate(){
+    promptText.innerHTML = `Aim the dish<span class="sub">Rotate the marker into the highlighted arc.</span>`;
+    const r = 58, cx = 75, cy = 75;
+    const targetStart = Math.floor(Math.random()*360);
+    const targetSpan = 40;
+    const circumference = 2*Math.PI*r;
+    const arcLen = (targetSpan/360)*circumference;
+
+    challengeArea.innerHTML = `
+      <div class="dial-wrap">
+        <div class="dial" id="dialEl">
+          <svg viewBox="0 0 150 150">
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--stroke)" stroke-width="10"/>
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--green)" stroke-width="10"
+              stroke-dasharray="${arcLen} ${circumference-arcLen}"
+              stroke-dashoffset="${-(targetStart/360)*circumference}"
+              transform="rotate(-90 ${cx} ${cy})" stroke-linecap="round" opacity="0.85"/>
+          </svg>
+          <div class="dial-center">Line up<br>the marker</div>
+          <div class="dial-handle" id="dialHandle"><i class="fa-solid fa-satellite-dish"></i></div>
+        </div>
+      </div>`;
+
+    const dialEl = document.getElementById('dialEl');
+    const handle = document.getElementById('dialHandle');
+    let angle = 0;
+
+    function place(deg){
+      angle = ((deg % 360) + 360) % 360;
+      const rad = (angle-90) * Math.PI/180;
+      const x = cx + r*Math.cos(rad);
+      const y = cy + r*Math.sin(rad);
+      handle.style.left = x + 'px';
+      handle.style.top = y + 'px';
+    }
+    place(targetStart+180);
+
+    let dragging = false;
+    function angleFromEvent(clientX, clientY){
+      const rect = dialEl.getBoundingClientRect();
+      const dx = clientX - (rect.left+rect.width/2);
+      const dy = clientY - (rect.top+rect.height/2);
+      return (Math.atan2(dy,dx)*180/Math.PI) + 90;
+    }
+    function onDown(e){ dragging = true; e.preventDefault(); }
+    function onMove(e){
+      if(!dragging) return;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      place(angleFromEvent(clientX, clientY));
+    }
+    function onUp(){ dragging = false; }
+    handle.addEventListener('mousedown', onDown);
+    handle.addEventListener('touchstart', onDown, {passive:false});
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('touchmove', onMove, {passive:false});
+    window.addEventListener('mouseup', onUp);
+    window.addEventListener('touchend', onUp);
+
+    verifyBtn.onclick = () => {
+      let diff = ((angle - (targetStart+targetSpan/2) + 540) % 360) - 180;
+      const correct = Math.abs(diff) <= targetSpan/2 + 3;
+      decide(correct, correct ? '' : 'The dish missed the signal.');
+    };
+  }
+
+  /* ---------------- 4. SEQUENCE ---------------- */
+  function buildSequence(){
+    promptText.innerHTML = `Tap the beacons in order<span class="sub">Lowest signal number first.</span>`;
+    const order = shuffle([1,2,3,4,5]);
+    let next = 1;
+
+    challengeArea.innerHTML = `<div class="seq-grid" id="seqEl"></div>`;
+    const seqEl = document.getElementById('seqEl');
+    order.forEach(num=>{
+      const el = document.createElement('div');
+      el.className = 'beacon';
+      el.textContent = num;
+      el.addEventListener('click', ()=>{
+        if(el.classList.contains('done')) return;
+        if(num === next){
+          el.classList.add('done');
+          next++;
+          if(next === 6){
+            setTimeout(()=> decide(true, ''), 250);
+          }
+        } else {
+          el.classList.add('bad');
+          setTimeout(()=>{
+            [...seqEl.children].forEach(c=>c.classList.remove('done','bad'));
+            next = 1;
+          }, 400);
+        }
+      });
+      seqEl.appendChild(el);
+    });
+    verifyBtn.classList.add('hidden'); // self-validating
+  }
+
+  /* ---------------- 5. CODE ---------------- */
+  function buildCode(){
+    promptText.innerHTML = `Type the signal code<span class="sub">Case doesn't matter.</span>`;
+    const charset = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for(let i=0;i<5;i++) code += charset[Math.floor(Math.random()*charset.length)];
+    const colors = ['var(--blue)','var(--green)','var(--pink)','var(--yellow)','var(--red)'];
+
+    let spans = '';
+    for(let i=0;i<code.length;i++){
+      const rot = (Math.random()*32-16).toFixed(1);
+      const ty = (Math.random()*10-5).toFixed(1);
+      const col = colors[i % colors.length];
+      spans += `<span class="code-char" style="transform:rotate(${rot}deg) translateY(${ty}px); color:${col};">${code[i]}</span>`;
+    }
+
+    challengeArea.innerHTML = `
+      <div class="code-box">
+        <svg class="noise" viewBox="0 0 300 70" preserveAspectRatio="none">
+          ${Array.from({length:6}).map(()=>{
+            const y1=Math.random()*70, y2=Math.random()*70;
+            return `<line x1="0" y1="${y1.toFixed(1)}" x2="300" y2="${y2.toFixed(1)}" stroke="var(--stroke)" stroke-width="2"/>`;
+          }).join('')}
+        </svg>
+        ${spans}
+      </div>
+      <input class="code-input" id="codeInput" maxlength="8" autocomplete="off" spellcheck="false" placeholder="Enter code" />
+    `;
+
+    verifyBtn.onclick = () => {
+      const val = document.getElementById('codeInput').value.trim().toUpperCase();
+      const correct = val === code;
+      decide(correct, correct ? '' : "That code didn't match.");
+    };
+  }
+
+  /* ---------------- DECIDE ---------------- */
+  function decide(pass, reason){
+    verifyBtn.disabled = true;
+    expFooter.classList.add('hidden');
+    statusBox.classList.remove('hidden');
+
+    if(pass){
+      statusBox.className = 'status pass';
+      statusBox.innerHTML = `<i class="fa-solid fa-circle-check"></i><div>Verified — life form confirmed.<span class="d">You may proceed.</span></div>`;
+      reportSize();
+      setTimeout(()=>{
+        resetCollapsed();
+        chkBox.classList.add('checked');
+        chkLabel.textContent = 'Verified';
+        collapsed.classList.add('is-verified');
+        locked = true;
+        post('verified', { token: mintToken() });
+      }, 1100);
+    } else {
+      statusBox.className = 'status fail';
+      statusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i><div>Not verified.${reason ? ' '+reason : ''}<span class="d">Try a new challenge.</span></div>`;
+      const retry = document.createElement('button');
+      retry.className = 'retry-btn';
+      retry.textContent = 'Try again';
+      retry.onclick = openChallenge;
+      statusBox.appendChild(retry);
+      reportSize();
+    }
+  }
+
+  // announce ready + start size reporting
+  if(ro) ro.observe(document.querySelector('.stage'));
+  window.addEventListener('load', reportSize);
+  post('ready');
+  reportSize();
+})();
+</script>
+
+</body>
+</html>

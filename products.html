@@ -116,6 +116,12 @@
 
 .deco-p1 { top: 100px; right: 4%; width: 36px; height: 36px; color: var(--c-pink); --r: 14deg; }
 .deco-p2 { top: 260px; left: -1%; width: 28px; height: 28px; color: var(--c-blue); --r: -16deg; }
+
+/* ───── Lifecheck product badge (on products page) ───── */
+.lc-badge { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; flex-shrink: 0; }
+.lc-badge-name { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: -.5px; color: #fff; }
+.lc-badge-ver { font-family: var(--font-display); font-weight: 800; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); background: rgba(254,248,61,.10); border: 1px solid rgba(254,248,61,.28); padding: 3px 8px; border-radius: 100px; }
+@media (max-width: 700px) { .lc-badge { flex-direction: row; align-items: center; } }
 </style>
 </head>
 <body>
@@ -142,7 +148,13 @@
         <a href="/mission">Mission</a>
       </div>
     </div>
-    <a href="/products" class="nav-pill active">Products</a>
+    <div class="nav-dropdown" id="productsDropdown">
+      <span class="nav-pill nav-dropbtn active">Products <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
+      <div class="nav-dropdown-content">
+        <a href="https://fortized.com">Fortized</a>
+        <a href="/lifecheck/">Lifecheck</a>
+      </div>
+    </div>
     <a href="/innovation-room" class="nav-pill">Lab</a>
     <a href="/newsroom" class="nav-pill">News</a>
   </div>
@@ -156,6 +168,7 @@
   <a href="/about-us">About</a>
   <a href="/mission">Mission</a>
   <a href="/products">Products</a>
+  <a href="/lifecheck/">Lifecheck</a>
   <a href="/innovation-room">Lab</a>
   <a href="/newsroom">News</a>
   <a href="https://fortized.com">Fortized →</a>
@@ -181,6 +194,23 @@
     </div>
     <div class="actions">
       <span class="btn-3d">Open <svg class="i" style="width:15px;height:15px;"><use href="#i-fire"/></svg></span>
+    </div>
+  </a>
+</div>
+
+<div class="trophy-wrap" style="padding-top:26px;">
+  <a href="/lifecheck/" class="trophy reveal" style="background:linear-gradient(120deg,#161c28 0%,#1a2233 100%); border-color:rgba(254,248,61,.35); transform:rotate(.5deg);">
+    <div class="lc-badge">
+      <img src="/SWFTW_Logomark.png" alt="Swiftaw" style="height:26px; width:auto; filter:brightness(0) invert(1); opacity:.92;">
+      <span class="lc-badge-name">Lifecheck</span>
+      <span class="lc-badge-ver">v1.1</span>
+    </div>
+    <div class="body">
+      <h2>prove you're a life form, not a bot.</h2>
+      <p>our reCAPTCHA-style human check - reads real cursor behaviour, layers five quick challenges, hands your server a token to verify.</p>
+    </div>
+    <div class="actions">
+      <span class="btn-3d">Explore <svg class="i" style="width:15px;height:15px;"><use href="#i-compass"/></svg></span>
     </div>
   </a>
 </div>
@@ -231,13 +261,15 @@
 <script src="/css/swiftaw.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  var dropdown = document.getElementById('companyDropdown');
-  if (dropdown) {
+  document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
     dropdown.addEventListener('click', function(e) {
       e.stopPropagation();
+      document.querySelectorAll('.nav-dropdown.open').forEach(function(d) {
+        if (d !== dropdown) d.classList.remove('open');
+      });
       dropdown.classList.toggle('open');
     });
-  }
+  });
   document.addEventListener('click', function() {
     document.querySelectorAll('.nav-dropdown.open').forEach(function(d) {
       d.classList.remove('open');

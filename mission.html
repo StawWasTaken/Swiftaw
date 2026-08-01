@@ -215,7 +215,13 @@
         <a href="/mission" class="active">Mission</a>
       </div>
     </div>
-    <a href="/products" class="nav-pill">Products</a>
+    <div class="nav-dropdown" id="productsDropdown">
+      <span class="nav-pill nav-dropbtn">Products <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
+      <div class="nav-dropdown-content">
+        <a href="https://fortized.com">Fortized</a>
+        <a href="/lifecheck/">Lifecheck</a>
+      </div>
+    </div>
     <a href="/innovation-room" class="nav-pill">Lab</a>
     <a href="/newsroom" class="nav-pill">News</a>
   </div>
@@ -229,6 +235,7 @@
   <a href="/about-us">About</a>
   <a href="/mission">Mission</a>
   <a href="/products">Products</a>
+  <a href="/lifecheck/">Lifecheck</a>
   <a href="/innovation-room">Lab</a>
   <a href="/newsroom">News</a>
   <a href="https://fortized.com">Fortized →</a>
@@ -357,13 +364,15 @@ window.SWIFTAW_CFG = {
 <script src="/css/swiftaw.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  var dropdown = document.getElementById('companyDropdown');
-  if (dropdown) {
+  document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
     dropdown.addEventListener('click', function(e) {
       e.stopPropagation();
+      document.querySelectorAll('.nav-dropdown.open').forEach(function(d) {
+        if (d !== dropdown) d.classList.remove('open');
+      });
       dropdown.classList.toggle('open');
     });
-  }
+  });
   document.addEventListener('click', function() {
     document.querySelectorAll('.nav-dropdown.open').forEach(function(d) {
       d.classList.remove('open');
