@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lifecheck Docs &amp; API — integration guide (v1.1) · Swiftaw</title>
+<title>Lifecheck Docs &amp; API · integration guide (v1.1) · Swiftaw</title>
 <meta name="description" content="How to integrate Swiftaw Lifecheck v1.1: add the widget, read the token client-side, and verify it on your server. Full data-attribute, JavaScript API and verify-endpoint reference.">
 <link rel="canonical" href="https://swiftaw.com/lifecheck/docs">
 <meta property="og:type" content="website">
@@ -19,11 +19,11 @@
 <link rel="stylesheet" href="/css/swiftaw.css">
 <link rel="stylesheet" href="/lifecheck/lc.css">
 <style>
-.docs-shell { max-width: 1160px; margin: 0 auto; padding: 40px 28px 0; display: grid; grid-template-columns: 220px 1fr; gap: 44px; align-items: start; }
+.docs-shell { max-width: 1160px; margin: 0 auto; padding: 120px 28px 0; display: grid; grid-template-columns: 220px 1fr; gap: 44px; align-items: start; }
 @media (max-width: 900px) { .docs-shell { grid-template-columns: 1fr; gap: 0; } }
 
 /* sidebar TOC */
-.docs-side { position: sticky; top: 86px; align-self: start; }
+.docs-side { position: sticky; top: 96px; align-self: start; }
 @media (max-width: 900px) { .docs-side { display: none; } }
 .docs-side .grp { font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 20px 0 8px; }
 .docs-side a { display: block; font-size: 13.5px; color: var(--muted-light); padding: 6px 12px; border-radius: 9px; border-left: 2px solid transparent; transition: color .15s, background .15s, border-color .15s; }
@@ -87,7 +87,7 @@ td .opt { font-size: 10px; font-weight: 700; color: var(--muted); text-transform
 .changelog ul { margin-top: 8px; }
 </style>
 </head>
-<body class="lc-body">
+<body>
 
 <div class="bg-blob b1"></div>
 <div class="bg-blob b2"></div>
@@ -99,31 +99,30 @@ td .opt { font-size: 10px; font-weight: 700; color: var(--muted); text-transform
   <symbol id="i-compass" viewBox="0 0 640 512"><path d="M246.9 18.3L271 3.8c21.6-13 46.3-19.8 71.5-19.8 36.8 0 72.2 14.6 98.2 40.7l63.9 63.9c15 15 23.4 35.4 23.4 56.6l0 30.9 19.7 19.7 0 0c15.6-15.6 40.9-15.6 56.6 0s15.6 40.9 0 56.6l-64 64c-15.6 15.6-40.9 15.6-56.6 0s-15.6-40.9 0-56.6L464 240 433.1 240c-21.2 0-41.6-8.4-56.6-23.4l-49.1-49.1c-15-15-23.4-35.4-23.4-56.6l0-12.7c0-11.2-5.9-21.7-15.5-27.4l-41.6-25c-10.4-6.2-10.4-21.2 0-27.4zM50.7 402.7l222.1-222.1 90.5 90.5-222.1 222.1c-25 25-65.5 25-90.5 0s-25-65.5 0-90.5z"/></symbol>
 </svg>
 
-<!-- Lifecheck nav -->
-<nav class="lc-nav" id="lcNav">
-  <a href="/lifecheck/" class="lc-brand" aria-label="Swiftaw Lifecheck">
+<!-- Lifecheck capsule nav -->
+<nav class="nav-root">
+  <a href="/lifecheck/" class="nav-logo lc-brand" aria-label="Swiftaw Lifecheck">
     <img src="/SWFTW_Logomark.png" alt="Swiftaw">
-    <span class="div"></span>
-    <span class="name">Life<b>check</b></span>
+    <span class="lc-sep"></span>
+    <span class="lc-name">Life<b>check</b></span>
+    <span class="lc-vchip">v1.1</span>
   </a>
-  <span class="lc-ver">v1.1</span>
-  <div class="lc-links">
-    <a href="/lifecheck/" class="lc-link">Overview</a>
-    <a href="/lifecheck/docs" class="lc-link active">Docs &amp; API</a>
+  <div class="nav-pill-group">
+    <a href="/lifecheck/" class="nav-pill">Overview</a>
+    <a href="/lifecheck/docs" class="nav-pill active">Docs</a>
+    <a href="/lifecheck/keys" class="nav-pill">API keys</a>
   </div>
-  <div class="lc-spacer"></div>
-  <div class="lc-right">
-    <a href="https://swiftaw.com" class="lc-back">← by Swiftaw</a>
-    <a href="#quickstart" class="lc-cta">Quickstart</a>
-    <div class="lc-burger" id="lcBurger"><span></span><span></span><span></span></div>
+  <div class="nav-spacer"></div>
+  <div class="nav-right">
+    <a href="/lifecheck/keys" class="nav-btn-cta">Get a key</a>
+    <div class="nav-hamburger" aria-label="Menu"><span></span><span></span><span></span></div>
   </div>
 </nav>
-<div class="lc-mobile" id="lcMobile">
+<div class="mobile-menu">
   <a href="/lifecheck/">Overview</a>
-  <a href="#quickstart">Quickstart</a>
-  <a href="#verify">Server verify</a>
-  <a href="#api">API reference</a>
-  <a href="https://swiftaw.com">Back to Swiftaw</a>
+  <a href="/lifecheck/docs">Docs</a>
+  <a href="/lifecheck/keys">API keys</a>
+  <a href="https://swiftaw.com">Swiftaw</a>
 </div>
 
 <div class="docs-shell">
@@ -170,7 +169,7 @@ td .opt { font-size: 10px; font-weight: 700; color: var(--muted); text-transform
   <span class="tag">&lt;button</span> <span class="at">type</span>=<span class="st">"submit"</span><span class="tag">&gt;</span>Create account<span class="tag">&lt;/button&gt;</span>
 <span class="tag">&lt;/form&gt;</span></code></pre>
       <p>Lifecheck auto-renders the <code>.lifecheck</code> element, sizes its own frame, and injects a hidden <code>&lt;input name="lifecheck-token"&gt;</code> so the token rides along with a normal form POST. Then <a href="#verify">verify it on your server</a>. That's the entire integration.</p>
-      <div class="callout tip"><svg><use href="#i-bulb"/></svg><div><b>Just want to see it?</b> The <a href="/lifecheck/">overview page</a> embeds the real widget as a live demo — the same code you're pasting here.</div></div>
+      <div class="callout tip"><svg><use href="#i-bulb"/></svg><div><b>Just want to see it?</b> The <a href="/lifecheck/">overview page</a> embeds the real widget as a live demo, the same code you're pasting here.</div></div>
     </section>
 
     <!-- KEYS -->
@@ -183,7 +182,7 @@ td .opt { font-size: 10px; font-weight: 700; color: var(--muted); text-transform
         <tr><td><code>Secret key</code></td><td>On your server only</td><td>Private. Signs the call that verifies a token. Never ship it to the browser.</td></tr>
       </table></div>
       <p>Register your domain with Swiftaw to receive a pair. Keys look like <code>lc_site_xxx</code> and <code>lc_secret_xxx</code>.</p>
-      <div class="callout warn"><svg><use href="#i-warn"/></svg><div>Treat the <b>secret key</b> like a password. If it leaks, rotate it — anyone with it can forge verifications.</div></div>
+      <div class="callout warn"><svg><use href="#i-warn"/></svg><div>Treat the <b>secret key</b> like a password. If it leaks, rotate it. Anyone who has it can forge verifications.</div></div>
     </section>
 
     <!-- INSTALL -->
@@ -194,7 +193,7 @@ td .opt { font-size: 10px; font-weight: 700; color: var(--muted); text-transform
      <span class="at">data-sitekey</span>=<span class="st">"YOUR_SITE_KEY"</span>
      <span class="at">data-callback</span>=<span class="st">"onLifecheckPass"</span>
      <span class="at">data-expired-callback</span>=<span class="st">"onLifecheckExpired"</span><span class="tag">&gt;&lt;/div&gt;</span></code></pre>
-      <p>See every attribute in the <a href="#api">data-attribute reference</a>. Prefer to render manually — e.g. inside a modal that opens later? Skip the auto-render and call the API yourself:</p>
+      <p>See every attribute in the <a href="#api">data-attribute reference</a>. Prefer to render manually, say inside a modal that opens later? Skip the auto-render and call the API yourself:</p>
       <pre class="code"><code><span class="tag">&lt;div</span> <span class="at">id</span>=<span class="st">"check"</span><span class="tag">&gt;&lt;/div&gt;</span>
 
 <span class="tag">&lt;script&gt;</span>
@@ -208,11 +207,11 @@ td .opt { font-size: 10px; font-weight: 700; color: var(--muted); text-transform
     <!-- CLIENT SIDE -->
     <section id="clientside">
       <h2><span class="step">2</span> Read the token</h2>
-      <p>On a successful check, Lifecheck gives you the token three ways — use whichever fits:</p>
+      <p>On a successful check, Lifecheck gives you the token three ways. Use whichever fits:</p>
       <ul>
-        <li><b>Hidden field</b> — a <code>&lt;input name="lifecheck-token"&gt;</code> is added inside the container, so a plain form POST already carries it.</li>
-        <li><b>Callback</b> — your <code>data-callback</code> function is invoked as <code>callback(token, widget)</code>.</li>
-        <li><b>DOM event</b> — the container emits a bubbling <code>lifecheck:verified</code> event with <code>detail.token</code>.</li>
+        <li><b>Hidden field.</b> A <code>&lt;input name="lifecheck-token"&gt;</code> is added inside the container, so a plain form POST already carries it.</li>
+        <li><b>Callback.</b> Your <code>data-callback</code> function is invoked as <code>callback(token, widget)</code>.</li>
+        <li><b>DOM event.</b> The container emits a bubbling <code>lifecheck:verified</code> event with <code>detail.token</code>.</li>
       </ul>
       <p>Or pull it on demand:</p>
       <pre class="code"><code><span class="kw">const</span> token = <span class="nm">Lifecheck</span>.<span class="fn">getResponse</span>();   <span class="cm">// "" until verified</span>
@@ -228,7 +227,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
     <!-- VERIFY -->
     <section id="verify">
       <h2><span class="step">3</span> Verify on your server</h2>
-      <p>The client token proves nothing on its own — always confirm it server-side before you act. POST the token and your secret key to the verify endpoint:</p>
+      <p>The client token proves nothing on its own. Always confirm it server-side before you act. POST the token and your secret key to the verify endpoint:</p>
       <div class="pill-row">
         <span class="pill"><span class="method-post">POST</span> https://api.swiftaw.com/lifecheck/v1/verify</span>
         <span class="pill">Content-Type: application/x-www-form-urlencoded</span>
@@ -280,7 +279,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
   <span class="at">"v"</span>:            <span class="st">"1.1"</span>,
   <span class="at">"error-codes"</span>:  []
 }</code></pre>
-      <div class="callout tip"><svg><use href="#i-bulb"/></svg><div>Gate your action on <code>success === true</code>. The <code>score</code> is advisory — raise your own threshold (e.g. <code>&gt;= 0.5</code>) for higher-risk endpoints.</div></div>
+      <div class="callout tip"><svg><use href="#i-bulb"/></svg><div>Gate your action on <code>success === true</code>. The <code>score</code> is advisory, so raise your own threshold (say <code>&gt;= 0.5</code>) for higher-risk endpoints.</div></div>
     </section>
 
     <!-- API: data attributes -->
@@ -312,7 +311,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
     <!-- API: endpoint -->
     <section id="endpoint">
       <h2>Verify endpoint</h2>
-      <p><span class="method-post">POST</span> <code>https://api.swiftaw.com/lifecheck/v1/verify</code> — request parameters:</p>
+      <p><span class="method-post">POST</span> <code>https://api.swiftaw.com/lifecheck/v1/verify</code> request parameters:</p>
       <div class="tbl-wrap"><table>
         <tr><th>Param</th><th></th><th>Description</th></tr>
         <tr><td><code>secret</code></td><td><span class="req">required</span></td><td>Your secret key.</td></tr>
@@ -349,7 +348,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
     <!-- frame events -->
     <section id="events">
       <h2>Frame events (advanced)</h2>
-      <p>Under the hood the sandboxed widget talks to the loader over <code>postMessage</code>. You normally never touch this — the loader translates it into the callbacks above — but for custom hosts, messages are shaped:</p>
+      <p>Under the hood the sandboxed widget talks to the loader over <code>postMessage</code>. You normally never touch this (the loader turns it into the callbacks above), but for custom hosts, messages are shaped:</p>
       <pre class="code"><code>{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.1"</span>, <span class="at">event</span>: <span class="st">"verified"</span>, <span class="at">token</span>: <span class="st">"LC1.1_…"</span> }
 { <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.1"</span>, <span class="at">event</span>: <span class="st">"resize"</span>,   <span class="at">height</span>: <span class="nm">74</span> }
 { <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.1"</span>, <span class="at">event</span>: <span class="st">"ready"</span> }</code></pre>
@@ -362,11 +361,11 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
       <p>People ask how they can integrate Lifecheck without being able to just copy it. Here's the honest answer:</p>
       <ul>
         <li>The detection logic and the five challenges live in <code>embed.html</code>, served only from <b>swiftaw.com</b> and loaded inside a sandboxed <code>&lt;iframe&gt;</code>.</li>
-        <li>Integrators reference a <b>URL and an API</b> — the script tag and a <code>&lt;div&gt;</code>. They never receive a standalone, re-hostable copy of the checks.</li>
-        <li>The only thing that crosses the frame boundary into a customer's page is a one-way <b>"verified" message and a token</b> — not the code that produced it.</li>
+        <li>Integrators reference a <b>URL and an API</b>: the script tag and a <code>&lt;div&gt;</code>. They never receive a standalone, re-hostable copy of the checks.</li>
+        <li>The only thing that crosses the frame boundary into a customer's page is a one-way <b>"verified" message and a token</b>, not the code that produced it.</li>
         <li>The token is meaningless until <b>your secret key</b> validates it against Swiftaw. A stolen widget shell can't mint tokens that pass verification.</li>
       </ul>
-      <div class="callout warn"><svg><use href="#i-warn"/></svg><div>Client-side friction (disabled selection, context menu, minification) discourages casual scraping but is <b>not</b> the security boundary. The real guarantee is server-side token verification — never skip step 3.</div></div>
+      <div class="callout warn"><svg><use href="#i-warn"/></svg><div>Client-side friction (disabled selection, context menu, minification) discourages casual scraping but is <b>not</b> the security boundary. The real guarantee is server-side token verification, so never skip step 3.</div></div>
     </section>
 
     <!-- changelog -->
@@ -376,7 +375,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
         <div class="rel">
           <span class="v">v1.1</span><span class="d">current</span>
           <ul>
-            <li><b>Spot-checks.</b> Even clean behavioural passes now have a 25% chance of a challenge — signals are layered, never trusted alone.</li>
+            <li><b>Spot-checks.</b> Even clean behavioural passes now have a 25% chance of a challenge. Signals are layered, never trusted alone.</li>
             <li>Self-sizing frame via <code>resize</code> messages, so the box never clips.</li>
             <li>Hidden-field auto-injection for zero-JS form submits.</li>
             <li><code>lifecheck:verified</code> DOM event + dotted-path callbacks.</li>
@@ -413,19 +412,9 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
   </div>
 </footer>
 
+<script src="/css/swiftaw.js"></script>
 <script>
 (function(){
-  var nav = document.getElementById('lcNav');
-  var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 6); };
-  onScroll(); window.addEventListener('scroll', onScroll, { passive:true });
-
-  var burger = document.getElementById('lcBurger');
-  var menu = document.getElementById('lcMobile');
-  if(burger && menu){
-    burger.addEventListener('click', function(){ menu.classList.toggle('open'); });
-    menu.addEventListener('click', function(e){ if(e.target.tagName === 'A') menu.classList.remove('open'); });
-  }
-
   // code tabs
   document.querySelectorAll('.tabs').forEach(function(tabs){
     var section = tabs.closest('section');

@@ -31,6 +31,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://swiftaw.com/lifecheck/keys</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://swiftaw.com/innovation-room</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

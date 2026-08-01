@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lifecheck by Swiftaw — prove you're alive, not a robot</title>
-<meta name="description" content="Lifecheck is Swiftaw's human-verification widget — a friendlier, weirder take on the &quot;I'm not a robot&quot; box. Reads real cursor behaviour, layers five quick challenges, and hands your server a token to verify. Now on v1.1.">
+<title>Lifecheck by Swiftaw · the friendlier robot check</title>
+<meta name="description" content="Lifecheck is Swiftaw's take on the 'I'm not a robot' box. It watches how your cursor moves, throws a quick challenge if it's unsure, and hands your server a token to verify. On v1.1.">
 <link rel="canonical" href="https://swiftaw.com/lifecheck/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Swiftaw">
 <meta property="og:title" content="Lifecheck by Swiftaw">
-<meta property="og:description" content="The reCAPTCHA-style human check, Swiftaw-flavoured. Prove you're a life form. Now on v1.1.">
+<meta property="og:description" content="The friendlier robot check. Prove you're a life form. On v1.1.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/lifecheck/">
 <meta name="twitter:card" content="summary_large_image">
@@ -22,12 +22,12 @@
 <link rel="stylesheet" href="/lifecheck/lc.css">
 <style>
 /* ─── hero ─── */
-.lc-hero { position: relative; padding: 70px 0 40px; overflow: hidden; }
+.lc-hero { position: relative; padding: 130px 0 30px; overflow: hidden; }
 .lc-hero-grid {
   max-width: 1120px; margin: 0 auto; padding: 0 28px;
   display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center;
 }
-@media (max-width: 920px) { .lc-hero-grid { grid-template-columns: 1fr; gap: 40px; } }
+@media (max-width: 920px) { .lc-hero-grid { grid-template-columns: 1fr; gap: 40px; } .lc-hero { padding: 110px 0 20px; } }
 
 .lc-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
@@ -40,20 +40,19 @@
 .lc-eyebrow .v { color: #0d1117; background: var(--accent); padding: 1px 6px; border-radius: 100px; font-size: 10.5px; }
 .lc-hero h1 {
   font-family: var(--font-display); font-weight: 800;
-  font-size: clamp(40px, 6vw, 78px); letter-spacing: -3px; line-height: .95;
-  margin-bottom: 22px;
+  font-size: clamp(42px, 6.2vw, 82px); letter-spacing: -3px; line-height: .95;
+  margin-bottom: 20px;
 }
 .lc-hero h1 .pop {
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   display: inline-block; transform: rotate(-1.5deg);
 }
-.lc-hero .sub { font-size: 18px; color: var(--text); max-width: 500px; line-height: 1.55; margin-bottom: 28px; }
+.lc-hero .sub { font-size: 18px; color: var(--text); max-width: 460px; line-height: 1.55; margin-bottom: 26px; }
 .lc-hero .sub b { color: #fff; font-weight: 600; }
 .lc-hero .actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-.lc-hero .mini-facts { display: flex; gap: 22px; margin-top: 30px; flex-wrap: wrap; }
-.lc-mini { }
+.lc-hero .mini-facts { display: flex; gap: 26px; margin-top: 30px; flex-wrap: wrap; }
 .lc-mini .n { font-family: var(--font-display); font-weight: 800; font-size: 26px; letter-spacing: -1px;
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -84,10 +83,6 @@
 }
 .lc-demo .demo-head .live .d { width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; animation: liveBlink 1.6s ease infinite; }
 .lc-demo .lifecheck { display: flex; justify-content: center; min-height: 74px; }
-.lc-demo .demo-note {
-  margin-top: 16px; font-size: 12px; color: var(--muted); text-align: center; line-height: 1.5;
-}
-.lc-demo .demo-note code { color: var(--accent); font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 11px; }
 .lc-demo .demo-out {
   margin-top: 14px; padding: 10px 12px; border-radius: 12px;
   background: var(--bg-2); border: 1px solid var(--border);
@@ -95,31 +90,30 @@
   word-break: break-all; min-height: 20px; transition: border-color .2s, color .2s;
 }
 .lc-demo .demo-out.ok { border-color: rgba(62,207,110,.4); color: var(--c-mint); }
+.lc-demo .demo-note { margin-top: 14px; font-size: 12px; color: var(--muted); text-align: center; line-height: 1.5; }
 
-.lc-deco1 { position: absolute; top: 40px; right: 8%; width: 30px; height: 30px; color: var(--c-blue); --r: 12deg; }
-.lc-deco2 { position: absolute; bottom: 20px; left: 3%; width: 26px; height: 26px; color: var(--c-pink); --r: -16deg; }
+.lc-deco1 { position: absolute; top: 90px; right: 8%; width: 30px; height: 30px; color: var(--c-blue); --r: 12deg; }
+.lc-deco2 { position: absolute; bottom: 10px; left: 3%; width: 26px; height: 26px; color: var(--c-pink); --r: -16deg; }
 
 /* ─── generic section ─── */
-.lc-section { max-width: 1080px; margin: 0 auto; padding: 70px 28px 0; }
+.lc-section { max-width: 1080px; margin: 0 auto; padding: 66px 28px 0; }
 .lc-section .eye {
   font-family: var(--font-display); font-size: 12.5px; font-weight: 700; color: var(--muted-light);
   display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px;
 }
 .lc-section .eye svg { width: 15px; height: 15px; fill: var(--accent); }
-.lc-section h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 4vw, 46px); letter-spacing: -1.6px; line-height: 1.02; margin-bottom: 14px; max-width: 700px; }
-.lc-section .lede { font-size: 16.5px; color: var(--text); max-width: 620px; line-height: 1.6; }
+.lc-section h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 4vw, 46px); letter-spacing: -1.6px; line-height: 1.02; margin-bottom: 12px; max-width: 640px; }
+.lc-section .lede { font-size: 16.5px; color: var(--text); max-width: 560px; line-height: 1.55; }
 
-/* how it works — 3 honest signals */
-.signals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 40px; }
+/* how it works */
+.signals { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
 @media (max-width: 860px) { .signals { grid-template-columns: 1fr; } }
 .signal {
   position: relative; padding: 26px; border-radius: 22px;
   background: var(--panel); border: 1.5px solid var(--border);
   box-shadow: 0 6px 0 0 var(--ink); transition: transform .25s;
 }
-.signal.t1 { transform: rotate(-1.2deg); }
-.signal.t2 { transform: rotate(1deg); }
-.signal.t3 { transform: rotate(-.6deg); }
+.signal.t1 { transform: rotate(-1.2deg); } .signal.t2 { transform: rotate(1deg); } .signal.t3 { transform: rotate(-.6deg); }
 .signal:hover { transform: rotate(0) translateY(-4px); }
 .signal .ic { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
 .signal .ic svg { width: 20px; height: 20px; }
@@ -127,49 +121,41 @@
 .signal.t2 .ic { background: rgba(255,138,180,.12); } .signal.t2 .ic svg { fill: var(--c-pink); }
 .signal.t3 .ic { background: rgba(134,239,172,.12); } .signal.t3 .ic svg { fill: var(--c-mint); }
 .signal h3 { font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -.4px; margin-bottom: 8px; }
-.signal p { font-size: 14px; color: var(--muted-light); line-height: 1.6; }
+.signal p { font-size: 14px; color: var(--muted-light); line-height: 1.55; }
 .signal .num { position: absolute; top: 20px; right: 22px; font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--muted); opacity: .5; }
 
 .honest-note {
-  margin-top: 26px; padding: 18px 20px; border-radius: 16px;
+  margin-top: 24px; padding: 18px 20px; border-radius: 16px;
   background: linear-gradient(160deg, #14242e 0%, #0e1a26 100%);
   border: 1.5px solid rgba(125,211,252,.25);
-  font-size: 14px; color: var(--text); line-height: 1.6; display: flex; gap: 14px; align-items: flex-start;
+  font-size: 14px; color: var(--text); line-height: 1.55; display: flex; gap: 14px; align-items: flex-start;
 }
 .honest-note svg { width: 20px; height: 20px; fill: var(--c-blue); flex-shrink: 0; margin-top: 2px; }
 .honest-note b { color: #fff; }
 
-/* challenges preview */
-.chal-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 34px; }
+/* challenges */
+.chal-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 32px; }
 @media (max-width: 860px) { .chal-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 460px) { .chal-grid { grid-template-columns: 1fr; } }
-.chal {
-  padding: 18px 16px; border-radius: 16px; text-align: center;
-  background: var(--panel); border: 1.5px solid var(--border); box-shadow: 0 5px 0 0 var(--ink);
-  transition: transform .2s;
-}
+.chal { padding: 18px 16px; border-radius: 16px; text-align: center; background: var(--panel); border: 1.5px solid var(--border); box-shadow: 0 5px 0 0 var(--ink); transition: transform .2s; }
 .chal:hover { transform: translateY(-4px); }
 .chal .ic { width: 40px; height: 40px; margin: 0 auto 12px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-.chal .k { font-family: var(--font-display); font-size: 9px; font-weight: 800; letter-spacing: .1em; color: var(--muted); text-transform: uppercase; }
-.chal .n { font-family: var(--font-display); font-weight: 800; font-size: 14px; margin-top: 4px; letter-spacing: -.3px; }
-.chal.c1 .ic { background: rgba(44,174,252,.14); color: #2caefc; }
-.chal.c2 .ic { background: rgba(62,207,110,.14); color: #3ecf6e; }
-.chal.c3 .ic { background: rgba(255,119,228,.14); color: #ff77e4; }
-.chal.c4 .ic { background: rgba(255,249,62,.14); color: #fff93e; }
-.chal.c5 .ic { background: rgba(255,1,50,.14); color: #ff5b78; }
+.chal .n { font-family: var(--font-display); font-weight: 800; font-size: 14px; letter-spacing: -.3px; }
+.chal.c1 .ic { background: rgba(44,174,252,.14); } .chal.c2 .ic { background: rgba(62,207,110,.14); }
+.chal.c3 .ic { background: rgba(255,119,228,.14); } .chal.c4 .ic { background: rgba(255,249,62,.14); }
+.chal.c5 .ic { background: rgba(255,1,50,.14); }
 
-/* feature row */
-.feat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; margin-top: 40px; }
-@media (max-width: 860px) { .feat-grid { grid-template-columns: 1fr; } }
-.feat { padding: 24px; border-radius: 20px; background: var(--panel); border: 1.5px solid var(--border); box-shadow: 0 6px 0 0 var(--ink); }
-.feat h3 { font-family: var(--font-display); font-weight: 800; font-size: 17px; letter-spacing: -.3px; margin-bottom: 8px; display: flex; align-items: center; gap: 9px; }
-.feat h3 svg { width: 17px; height: 17px; fill: var(--accent); }
-.feat p { font-size: 13.5px; color: var(--muted-light); line-height: 1.6; }
+/* features */
+.feat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 36px; }
+@media (max-width: 900px) { .feat-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 520px) { .feat-grid { grid-template-columns: 1fr; } }
+.feat { padding: 22px; border-radius: 20px; background: var(--panel); border: 1.5px solid var(--border); box-shadow: 0 6px 0 0 var(--ink); }
+.feat h3 { font-family: var(--font-display); font-weight: 800; font-size: 16px; letter-spacing: -.3px; margin-bottom: 8px; display: flex; align-items: center; gap: 9px; }
+.feat h3 svg { width: 16px; height: 16px; fill: var(--accent); }
+.feat p { font-size: 13.5px; color: var(--muted-light); line-height: 1.55; }
 
-/* quick integrate strip */
-.integ {
-  max-width: 1080px; margin: 70px auto 0; padding: 0 28px;
-}
+/* quick integrate */
+.integ { max-width: 1080px; margin: 66px auto 0; padding: 0 28px; }
 .integ-card {
   background: linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%);
   border: 1.5px solid var(--border); border-radius: 26px;
@@ -177,44 +163,34 @@
 }
 @media (max-width: 860px) { .integ-card { grid-template-columns: 1fr; } }
 .integ-card h2 { font-family: var(--font-display); font-weight: 800; font-size: 28px; letter-spacing: -1px; margin-bottom: 10px; }
-.integ-card p { font-size: 15px; color: var(--muted-light); line-height: 1.6; margin-bottom: 18px; }
-.code-block {
-  background: #0a0e14; border: 1.5px solid var(--border-strong); border-radius: 16px;
-  padding: 18px 20px; overflow-x: auto;
-  font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 12.5px; line-height: 1.7; color: #cbd5e1;
-}
-.code-block .tag { color: #7dd3fc; }
-.code-block .at { color: #fbbf24; }
-.code-block .st { color: #86efac; }
-.code-block .cm { color: #5b6678; }
+.integ-card p { font-size: 15px; color: var(--muted-light); line-height: 1.55; margin-bottom: 18px; }
+.integ-card p code { color: var(--accent); font-family: 'Roboto Mono', monospace; font-size: 13px; }
+.code-block { background: #0a0e14; border: 1.5px solid var(--border-strong); border-radius: 16px; padding: 18px 20px; overflow-x: auto; font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 12.5px; line-height: 1.7; color: #cbd5e1; }
+.code-block .tag { color: #7dd3fc; } .code-block .at { color: #fbbf24; } .code-block .st { color: #86efac; } .code-block .cm { color: #5b6678; }
 
 /* outro */
-.lc-outro { max-width: 1080px; margin: 80px auto 0; padding: 0 28px; }
+.lc-outro { max-width: 1080px; margin: 76px auto 0; padding: 0 28px; }
 .lc-outro-card {
   background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--ink);
   border: 2px solid var(--ink); border-radius: 28px; box-shadow: 0 10px 0 0 var(--ink);
-  padding: 48px 42px; text-align: center; transform: rotate(-.5deg); position: relative; overflow: hidden;
+  padding: 46px 42px; text-align: center; transform: rotate(-.5deg); position: relative; overflow: hidden;
 }
-.lc-outro-card h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 4vw, 44px); letter-spacing: -1.4px; margin-bottom: 12px; }
-.lc-outro-card p { font-size: 16px; font-weight: 500; margin-bottom: 24px; max-width: 560px; margin-left: auto; margin-right: auto; }
+.lc-outro-card h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 4vw, 42px); letter-spacing: -1.4px; margin-bottom: 10px; }
+.lc-outro-card p { font-size: 16px; font-weight: 500; margin-bottom: 22px; }
 .lc-outro-card .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.lc-outro-card .b-dark, .lc-outro-card .b-ghost { font-family: var(--font-display); font-weight: 700; font-size: 14px; padding: 13px 22px; border-radius: 14px; display: inline-flex; align-items: center; gap: 8px; transition: transform .12s; }
 .lc-outro-card .b-dark { background: var(--ink); color: #fff; border: 2px solid var(--ink); box-shadow: 0 6px 0 0 rgba(0,0,0,.4); }
-.lc-outro-card .b-dark, .lc-outro-card .b-ghost {
-  font-family: var(--font-display); font-weight: 700; font-size: 14px; padding: 13px 22px; border-radius: 14px;
-  display: inline-flex; align-items: center; gap: 8px; transition: transform .12s;
-}
 .lc-outro-card .b-dark:hover { transform: translateY(-2px); }
 .lc-outro-card .b-ghost { background: transparent; color: var(--ink); border: 2px solid var(--ink); box-shadow: 0 6px 0 0 var(--ink); }
 .lc-outro-card .b-ghost:hover { transform: translateY(-2px); }
 </style>
 </head>
-<body class="lc-body">
+<body>
 
 <div class="bg-blob b1"></div>
 <div class="bg-blob b2"></div>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-  <symbol id="i-fire" viewBox="0 0 448 512"><path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2z"/></symbol>
   <symbol id="i-compass" viewBox="0 0 640 512"><path d="M246.9 18.3L271 3.8c21.6-13 46.3-19.8 71.5-19.8 36.8 0 72.2 14.6 98.2 40.7l63.9 63.9c15 15 23.4 35.4 23.4 56.6l0 30.9 19.7 19.7 0 0c15.6-15.6 40.9-15.6 56.6 0s15.6 40.9 0 56.6l-64 64c-15.6 15.6-40.9 15.6-56.6 0s-15.6-40.9 0-56.6L464 240 433.1 240c-21.2 0-41.6-8.4-56.6-23.4l-49.1-49.1c-15-15-23.4-35.4-23.4-56.6l0-12.7c0-11.2-5.9-21.7-15.5-27.4l-41.6-25c-10.4-6.2-10.4-21.2 0-27.4zM50.7 402.7l222.1-222.1 90.5 90.5-222.1 222.1c-25 25-65.5 25-90.5 0s-25-65.5 0-90.5z"/></symbol>
   <symbol id="i-cursor" viewBox="0 0 320 512"><path d="M0 55.2L0 426c0 12.2 9.9 22 22 22 6.3 0 12.4-2.7 16.6-7.5L121.2 346l58.1 116.3c7.9 15.8 27.1 22.2 42.9 14.3s22.2-27.1 14.3-42.9L179.8 320l118.4 0c12.2 0 22.1-9.9 22.1-22.1 0-6.3-2.7-12.3-7.4-16.5L38.6 37.9C34.3 34.1 28.9 32 23.2 32 10.4 32 0 42.4 0 55.2z"/></symbol>
   <symbol id="i-wave" viewBox="0 0 512 512"><path d="M0 256C0 114.6 114.6 0 256 0S512 114.6 512 256s-114.6 256-256 256S0 397.4 0 256zm352-96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM192 288c0 35.3 28.7 64 64 64s64-28.7 64-64c0-8.8-7.2-16-16-16l-96 0c-8.8 0-16 7.2-16 16zm-32-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></symbol>
@@ -223,32 +199,33 @@
   <symbol id="i-lock" viewBox="0 0 448 512"><path d="M144 144l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192l0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0z"/></symbol>
   <symbol id="i-code" viewBox="0 0 640 512"><path d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zM480 96c-12.5 12.5-12.5 32.8 0 45.3L562.7 224l-82.7 82.7c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l105.4-105.4c12.5-12.5 12.5-32.8 0-45.3L525.3 96c-12.5-12.5-32.8-12.5-45.3 0zM160 96c-12.5-12.5-32.8-12.5-45.3 0L9.4 201.4c-12.5 12.5-12.5 32.8 0 45.3L114.7 352c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 224 160 141.3c12.5-12.5 12.5-32.8 0-45.3z"/></symbol>
   <symbol id="i-bolt" viewBox="0 0 448 512"><path d="M349.4 44.6c5.9-13.7 1.5-29.7-10.6-38.5s-28.6-8-39.9 1.8l-256 224c-10 8.8-13.6 22.9-8.9 35.3S50.7 288 64 288l111.5 0L98.6 467.4c-5.9 13.7-1.5 29.7 10.6 38.5s28.6 8 39.9-1.8l256-224c10-8.8 13.6-22.9 8.9-35.3s-16.6-20.7-30-20.7L272 224 349.4 44.6z"/></symbol>
-  <symbol id="i-heart" viewBox="0 0 512 512"><path d="M225.8 468.2l-2.5-2.3L48.1 303.2C17.4 274.7 0 234.7 0 192.8v-3.3c0-70.4 50-130.8 119.2-144C158.6 37.9 198.9 47 231 69.6c9 6.4 17.4 13.8 25 22.3 4.2-4.8 8.7-9.2 13.5-13.3 3.7-3.2 7.5-6.2 11.5-9 32.1-22.6 72.4-31.7 111.8-24.1C461.5 58.6 512 119.2 512 189.5v3.3c0 41.9-17.4 81.9-48.1 110.4L288.7 465.9l-2.5 2.3c-8.2 7.6-19 11.9-30.2 11.9s-22-4.2-30.2-11.9z"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 384 512"><path d="M169.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L192 205.3 54.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/></symbol>
 </svg>
 
-<!-- Lifecheck nav -->
-<nav class="lc-nav" id="lcNav">
-  <a href="/lifecheck/" class="lc-brand" aria-label="Swiftaw Lifecheck">
+<!-- Lifecheck capsule nav -->
+<nav class="nav-root">
+  <a href="/lifecheck/" class="nav-logo lc-brand" aria-label="Swiftaw Lifecheck">
     <img src="/SWFTW_Logomark.png" alt="Swiftaw">
-    <span class="div"></span>
-    <span class="name">Life<b>check</b></span>
+    <span class="lc-sep"></span>
+    <span class="lc-name">Life<b>check</b></span>
+    <span class="lc-vchip">v1.1</span>
   </a>
-  <span class="lc-ver">v1.1</span>
-  <div class="lc-links">
-    <a href="/lifecheck/" class="lc-link active">Overview</a>
-    <a href="/lifecheck/docs" class="lc-link">Docs &amp; API</a>
+  <div class="nav-pill-group">
+    <a href="/lifecheck/" class="nav-pill active">Overview</a>
+    <a href="/lifecheck/docs" class="nav-pill">Docs</a>
+    <a href="/lifecheck/keys" class="nav-pill">API keys</a>
   </div>
-  <div class="lc-spacer"></div>
-  <div class="lc-right">
-    <a href="https://swiftaw.com" class="lc-back">← by Swiftaw</a>
-    <a href="/lifecheck/docs" class="lc-cta">Add to your site</a>
-    <div class="lc-burger" id="lcBurger"><span></span><span></span><span></span></div>
+  <div class="nav-spacer"></div>
+  <div class="nav-right">
+    <a href="/lifecheck/keys" class="nav-btn-cta">Get a key</a>
+    <div class="nav-hamburger" aria-label="Menu"><span></span><span></span><span></span></div>
   </div>
 </nav>
-<div class="lc-mobile" id="lcMobile">
+<div class="mobile-menu">
   <a href="/lifecheck/">Overview</a>
-  <a href="/lifecheck/docs">Docs &amp; API</a>
-  <a href="https://swiftaw.com">Back to Swiftaw</a>
+  <a href="/lifecheck/docs">Docs</a>
+  <a href="/lifecheck/keys">API keys</a>
+  <a href="https://swiftaw.com">Swiftaw</a>
 </div>
 
 <!-- HERO -->
@@ -257,15 +234,15 @@
   <div class="deco lc-deco2 float-b"><svg><use href="#i-shield"/></svg></div>
   <div class="lc-hero-grid">
     <div>
-      <div class="lc-eyebrow"><span class="v">v1.1</span> the reCAPTCHA, reimagined</div>
+      <div class="lc-eyebrow"><span class="v">v1.1</span> the friendlier robot check</div>
       <h1>Prove you're a <span class="pop">life form.</span></h1>
-      <p class="sub">Lifecheck is Swiftaw's human-verification widget — a friendlier, weirder <b>"I'm not a robot"</b> box. It reads how your cursor actually moves, layers five quick challenges when it's unsure, and hands your server a token to verify. That's it.</p>
+      <p class="sub">Lifecheck is Swiftaw's spin on the <b>"I'm not a robot"</b> box. It watches how your cursor moves, throws a quick game if it's unsure, and hands your server a token. That's the whole thing.</p>
       <div class="actions">
-        <a href="/lifecheck/docs" class="btn-3d">Integrate it <svg class="i"><use href="#i-code"/></svg></a>
+        <a href="/lifecheck/keys" class="btn-3d">Get a key <svg class="i"><use href="#i-bolt"/></svg></a>
         <a href="#how" class="btn-3d-ghost">How it works</a>
       </div>
       <div class="mini-facts">
-        <div class="lc-mini"><div class="n">5</div><div class="l">layered challenges</div></div>
+        <div class="lc-mini"><div class="n">5</div><div class="l">quick challenges</div></div>
         <div class="lc-mini"><div class="n">~300ms</div><div class="l">human reaction floor</div></div>
         <div class="lc-mini"><div class="n">0</div><div class="l">trackers or cookies</div></div>
       </div>
@@ -274,13 +251,12 @@
     <div class="lc-demo-wrap">
       <div class="lc-demo">
         <div class="demo-head">
-          <span class="t">Try it — it's real</span>
+          <span class="t">Try it, it's real</span>
           <span class="live"><span class="d"></span> live widget</span>
         </div>
-        <!-- dogfood: this is the actual product, rendered by lifecheck.js -->
         <div class="lifecheck" data-sitekey="lc_demo_public" data-callback="onLifecheckDemo"></div>
         <div class="demo-out" id="demoOut">awaiting verification…</div>
-        <div class="demo-note">This exact widget ships to your users. On pass it fires your <code>data-callback</code> with a token.</div>
+        <div class="demo-note">Same widget your users get. On a pass it fires your callback with a token.</div>
       </div>
     </div>
   </div>
@@ -288,80 +264,72 @@
 
 <!-- HOW IT WORKS -->
 <section class="lc-section" id="how">
-  <div class="eye"><svg><use href="#i-cursor"/></svg> how it genuinely works</div>
-  <h2>No magic. Just three honest signals.</h2>
-  <p class="lede">From the moment the widget loads it quietly records a rolling list of <b>{x, y, timestamp}</b> cursor samples — that's the entire "sensor." When you click the box, it runs three plain checks on that data.</p>
+  <div class="eye"><svg><use href="#i-cursor"/></svg> how it works</div>
+  <h2>Three checks. No magic.</h2>
+  <p class="lede">The second it loads, Lifecheck records where your cursor goes. When you click, it runs three quick checks on that trail.</p>
 
   <div class="signals">
     <div class="signal t1">
       <span class="num">01</span>
       <div class="ic"><svg><use href="#i-cursor"/></svg></div>
-      <h3>Distance travelled</h3>
-      <p>If your cursor barely moved — or a script fired a click with zero prior movement — that's suspicious. Humans drag their pointer around before they commit.</p>
+      <h3>Did it move?</h3>
+      <p>A cursor that barely twitched, or a click with no movement before it, reads as a script.</p>
     </div>
     <div class="signal t2">
       <span class="num">02</span>
       <div class="ic"><svg><use href="#i-wave"/></svg></div>
-      <h3>Jitter ratio</h3>
-      <p>We count how often direction changes between points. A real hand wobbles constantly; a script animating in a straight line or a simple tween has almost none.</p>
+      <h3>Does it wobble?</h3>
+      <p>Real hands jitter the whole time. A straight, tweened path barely changes direction.</p>
     </div>
     <div class="signal t3">
       <span class="num">03</span>
       <div class="ic"><svg><use href="#i-clock"/></svg></div>
-      <h3>Time since load</h3>
-      <p>A click within ~300ms of the page loading is faster than a human can realistically react. Too fast reads as a bot before any other signal even matters.</p>
+      <h3>Too fast?</h3>
+      <p>A click under 300ms after load is quicker than a person can actually react.</p>
     </div>
   </div>
 
   <div class="honest-note">
     <svg><use href="#i-shield"/></svg>
-    <div><b>Touch devices skip 1 &amp; 2</b> — there's no cursor trail to read — and fall back to a timing-only check. And even a perfectly human read isn't blindly trusted: <b>on v1.1 there's a 25% chance</b> Lifecheck still asks for one of the five challenges as a spot-check, the way real systems layer signals instead of leaning on any single one.</div>
+    <div>Phones skip the first two (no cursor to read) and fall back to timing. And on v1.1, even a clean pass has a <b>25% chance</b> of a challenge anyway, because one signal is never the whole story.</div>
   </div>
 </section>
 
 <!-- CHALLENGES -->
 <section class="lc-section">
   <div class="eye"><svg><use href="#i-bolt"/></svg> the five challenges</div>
-  <h2>When it's unsure, it plays a tiny game.</h2>
-  <p class="lede">Not blurry traffic lights. Quick, tactile little tasks — themed around "detecting life" — that a script can't fake but a person clears in seconds.</p>
+  <h2>Unsure? It plays a 5-second game.</h2>
+  <p class="lede">No blurry traffic lights. Small, tactile tasks a script can't fake but a person clears in seconds.</p>
 
   <div class="chal-grid">
-    <div class="chal c1"><div class="ic">📡</div><div class="k">Signal · 01</div><div class="n">Spot the life</div></div>
-    <div class="chal c2"><div class="ic">🛸</div><div class="k">Signal · 02</div><div class="n">Guide it home</div></div>
-    <div class="chal c3"><div class="ic">🧭</div><div class="k">Signal · 03</div><div class="n">Aim the dish</div></div>
-    <div class="chal c4"><div class="ic">🔢</div><div class="k">Signal · 04</div><div class="n">Beacon order</div></div>
-    <div class="chal c5"><div class="ic">⌨️</div><div class="k">Signal · 05</div><div class="n">Signal code</div></div>
+    <div class="chal c1"><div class="ic">📡</div><div class="n">Spot the life</div></div>
+    <div class="chal c2"><div class="ic">🛸</div><div class="n">Guide it home</div></div>
+    <div class="chal c3"><div class="ic">🧭</div><div class="n">Aim the dish</div></div>
+    <div class="chal c4"><div class="ic">🔢</div><div class="n">Beacon order</div></div>
+    <div class="chal c5"><div class="ic">⌨️</div><div class="n">Signal code</div></div>
   </div>
 </section>
 
 <!-- FEATURES -->
 <section class="lc-section">
-  <div class="eye"><svg><use href="#i-heart"/></svg> why teams pick it</div>
-  <h2>Small, kind, and hard to fake.</h2>
+  <div class="eye"><svg><use href="#i-shield"/></svg> why teams pick it</div>
+  <h2>Small, kind, hard to fake.</h2>
   <div class="feat-grid">
     <div class="feat">
       <h3><svg><use href="#i-bolt"/></svg> Passes instantly</h3>
-      <p>Clean human signals sail straight through — most real visitors never see a challenge at all. No friction tax on the people you actually want.</p>
+      <p>Real people usually sail straight through. No friction tax on the humans you want.</p>
     </div>
     <div class="feat">
       <h3><svg><use href="#i-lock"/></svg> Yours to verify</h3>
-      <p>Every pass mints a one-time token. Send it to your backend with your secret key and confirm it before you trust the request. Standard, boring, safe.</p>
+      <p>Every pass mints a token. Check it on your server with your secret key before you trust it.</p>
     </div>
     <div class="feat">
       <h3><svg><use href="#i-shield"/></svg> Can't be lifted</h3>
-      <p>The detection logic runs sandboxed in an iframe on Swiftaw's domain. Integrators embed a URL and an API — they never get a copyable copy of the checks.</p>
+      <p>The logic runs in a sandboxed frame on our domain. You embed a URL, not copyable code.</p>
     </div>
     <div class="feat">
       <h3><svg><use href="#i-cursor"/></svg> No tracking</h3>
-      <p>Cursor samples live and die in the browser for a few seconds. No cookies, no fingerprint database, no selling anyone's mouse path. Ever.</p>
-    </div>
-    <div class="feat">
-      <h3><svg><use href="#i-code"/></svg> Two-line drop-in</h3>
-      <p>One script tag, one <code>&lt;div&gt;</code>. It auto-renders, sizes itself, and drops a hidden field into your form so a plain POST just works.</p>
-    </div>
-    <div class="feat">
-      <h3><svg><use href="#i-heart"/></svg> Actually pleasant</h3>
-      <p>Springy, colourful, a little weird — built to the Swiftaw look. A bot wall your users won't groan at. Now on <b>v1.1</b>.</p>
+      <p>Cursor data lives a few seconds in the browser. No cookies, no profiles, nothing sold.</p>
     </div>
   </div>
 </section>
@@ -371,13 +339,16 @@
   <div class="integ-card reveal">
     <div>
       <h2>Two lines. That's the install.</h2>
-      <p>Add the script once, drop a <code>.lifecheck</code> element where you want the box, and read the token on your server. Full guide and API reference in the docs.</p>
-      <a href="/lifecheck/docs" class="btn-3d">Read the docs <svg class="i"><use href="#i-compass"/></svg></a>
+      <p>Grab a key, add the script once, drop a <code>.lifecheck</code> box in your form. The full guide is in the docs.</p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <a href="/lifecheck/keys" class="btn-3d">Get a key <svg class="i"><use href="#i-bolt"/></svg></a>
+        <a href="/lifecheck/docs" class="btn-3d-ghost">Read the docs</a>
+      </div>
     </div>
-    <div class="code-block"><span class="cm">&lt;!-- 1 · load Lifecheck v1.1 once --&gt;</span>
+    <div class="code-block"><span class="cm">&lt;!-- load Lifecheck once --&gt;</span>
 <span class="tag">&lt;script</span> <span class="at">src</span>=<span class="st">"https://swiftaw.com/lifecheck/lifecheck.js"</span> <span class="at">async defer</span><span class="tag">&gt;&lt;/script&gt;</span>
 
-<span class="cm">&lt;!-- 2 · drop the widget in your form --&gt;</span>
+<span class="cm">&lt;!-- drop it in your form --&gt;</span>
 <span class="tag">&lt;div</span> <span class="at">class</span>=<span class="st">"lifecheck"</span>
      <span class="at">data-sitekey</span>=<span class="st">"YOUR_SITE_KEY"</span>
      <span class="at">data-callback</span>=<span class="st">"onPass"</span><span class="tag">&gt;&lt;/div&gt;</span></div>
@@ -388,9 +359,9 @@
 <div class="lc-outro">
   <div class="lc-outro-card reveal">
     <h2>Put a friendlier wall on your forms.</h2>
-    <p>Lifecheck v1.1 is ready to drop in. Free to try, quick to wire up, and built by the people behind Fortized.</p>
+    <p>Lifecheck v1.1 is free to try and quick to wire up. Built by the people behind Fortized.</p>
     <div class="btns">
-      <a href="/lifecheck/docs" class="b-dark">Get started <svg class="i" style="fill:#fff;"><use href="#i-bolt"/></svg></a>
+      <a href="/lifecheck/keys" class="b-dark">Get a key <svg class="i" style="fill:#fff;"><use href="#i-bolt"/></svg></a>
       <a href="https://swiftaw.com/products" class="b-ghost">See all products</a>
     </div>
   </div>
@@ -407,40 +378,20 @@
     <div class="lc-footer-copy">© 2026 Swiftaw · Lifecheck v1.1</div>
     <div class="lc-footer-links">
       <a href="/lifecheck/">Overview</a>
-      <a href="/lifecheck/docs">Docs &amp; API</a>
+      <a href="/lifecheck/docs">Docs</a>
+      <a href="/lifecheck/keys">API keys</a>
       <a href="https://swiftaw.com">Swiftaw</a>
     </div>
   </div>
 </footer>
 
-<!-- Lifecheck loader (dogfooding the real product for the live demo) -->
 <script src="/lifecheck/lifecheck.js" async defer></script>
+<script src="/css/swiftaw.js"></script>
 <script>
-  // demo callback — shows the token the widget hands back
   function onLifecheckDemo(token){
     var out = document.getElementById('demoOut');
-    if(out){
-      out.classList.add('ok');
-      out.textContent = '✓ verified · token: ' + token;
-    }
+    if(out){ out.classList.add('ok'); out.textContent = '✓ verified · token: ' + token; }
   }
-  // nav polish
-  (function(){
-    var nav = document.getElementById('lcNav');
-    var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 6); };
-    onScroll(); window.addEventListener('scroll', onScroll, { passive:true });
-    var burger = document.getElementById('lcBurger');
-    var menu = document.getElementById('lcMobile');
-    if(burger && menu){
-      burger.addEventListener('click', function(){ menu.classList.toggle('open'); });
-      menu.addEventListener('click', function(e){ if(e.target.tagName === 'A') menu.classList.remove('open'); });
-    }
-    // reveal
-    var io = new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
-    }, { threshold:.12 });
-    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
-  })();
 </script>
 </body>
 </html>
