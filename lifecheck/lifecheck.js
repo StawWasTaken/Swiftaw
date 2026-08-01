@@ -70,7 +70,7 @@
     iframe.setAttribute('frameborder', '0');
     iframe.setAttribute('aria-label', "Lifecheck: I'm not a robot");
     iframe.style.cssText =
-      'width:100%;max-width:346px;height:74px;border:0;overflow:hidden;' +
+      'width:100%;max-width:402px;height:74px;border:0;overflow:hidden;' +
       'color-scheme:normal;display:block;';
 
     // hidden field so a plain <form> POST carries the token automatically
