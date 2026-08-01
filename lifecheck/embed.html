@@ -115,16 +115,16 @@
   .lc-badge .legal a{ color:var(--muted); text-decoration:none; }
   .lc-badge .legal a:hover{ color:var(--muted-2); text-decoration:underline; }
 
-  /* ---- consent strip ---- */
+  /* ---- consent strip (kept small + quiet, like a captcha footer) ---- */
   .consent{
-    margin-top:11px; padding-top:10px;
-    border-top:2px solid var(--stroke-soft);
-    display:flex; gap:7px; align-items:flex-start;
-    font-weight:500; font-size:8.8px; line-height:1.45; letter-spacing:.2px;
-    color:var(--muted);
+    margin-top:8px; padding-top:7px;
+    border-top:1.5px solid var(--stroke-soft);
+    display:flex; gap:5px; align-items:flex-start;
+    font-weight:500; font-size:7.6px; line-height:1.38; letter-spacing:.1px;
+    color:#6f7a8b;
   }
-  .consent .cshield{ color:var(--green); font-size:9px; margin-top:1px; flex:0 0 auto; }
-  .consent a{ color:var(--muted-2); text-decoration:underline; text-decoration-color:rgba(255,255,255,.22); text-underline-offset:1.5px; }
+  .consent .cshield{ color:var(--green); font-size:8px; margin-top:.5px; flex:0 0 auto; opacity:.9; }
+  .consent a{ color:#8b96a8; text-decoration:underline; text-decoration-color:rgba(255,255,255,.18); text-underline-offset:1px; }
   .consent a:hover{ color:var(--text); }
 
   /* ================= EXPANDED ================= */
@@ -308,10 +308,7 @@
     </div>
     <div class="consent">
       <i class="fa-solid fa-shield-halved cshield"></i>
-      <div>By checking the box you agree Swiftaw may record how you interact with this widget and use that data to run, improve and train its systems and AI, and to build new products, as set out in our
-        <a href="https://swiftaw.com/legal/terms-of-service" target="_blank" rel="noopener">Terms</a>,
-        <a href="https://swiftaw.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy</a> &amp;
-        <a href="https://swiftaw.com/legal/products-policy" target="_blank" rel="noopener">Products</a> policies.</div>
+      <div>Checking the box lets Swiftaw use your interaction data to improve its systems, AI &amp; products. <a href="https://swiftaw.com/legal/terms-of-service" target="_blank" rel="noopener">Terms</a> &middot; <a href="https://swiftaw.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy</a> &middot; <a href="https://swiftaw.com/legal/products-policy" target="_blank" rel="noopener">Products</a></div>
     </div>
   </div>
 
@@ -427,9 +424,17 @@
      Consent for this is shown in the collapsed card. */
   let _evQueue = [];
   let _flushT = null;
+  // running per-session tallies → rolled into one feature row at the end
+  let _shown = 0, _wrong = 0, _susp = 0, _spot = false, _summarySent = false;
   function logEvent(type, opts){
     try{
       opts = opts || {};
+      if(type !== 'session_summary'){
+        if(opts.suspicious) _susp++;
+        if(type === 'minigame_wrong' || type === 'challenge_fail') _wrong++;
+        if(type === 'challenge_open') _shown++;
+        if(type === 'spot_check') _spot = true;
+      }
       _evQueue.push({
         t: type,
         challenge: opts.challenge || '',
@@ -440,6 +445,32 @@
       if(_evQueue.length > 60) _evQueue.shift();
       scheduleFlush();
     }catch(e){}
+  }
+
+  // One tidy, labelled feature vector per session — this is the row you'd
+  // actually train a human/bot model on (or cluster for anomaly detection).
+  function sessionSummary(passed, via){
+    if(_summarySent) return;
+    _summarySent = true;
+    let stats = {}, reason = '';
+    try{ const a = analyzeCursor(); stats = a.stats; reason = a.reason; }catch(e){}
+    logEvent('session_summary', {
+      outcome: passed ? 'pass' : 'fail',
+      suspicious: _susp > 0,
+      detail: {
+        durationMs: Date.now() - loadedAt,
+        via: via || '',
+        passed: !!passed,
+        touch: touchUsed,
+        challengesShown: _shown,
+        wrongTaps: _wrong,
+        suspiciousSignals: _susp,
+        spotChecked: _spot,
+        cursorReason: reason,
+        cursor: stats
+      }
+    });
+    flushEvents();
   }
   function scheduleFlush(){ if(_flushT) return; _flushT = setTimeout(flushEvents, 1400); }
   async function flushEvents(){
@@ -456,7 +487,7 @@
       });
     }catch(e){ /* swallow — telemetry must never affect the check */ }
   }
-  window.addEventListener('beforeunload', () => { try{ flushEvents(); }catch(e){} });
+  window.addEventListener('beforeunload', () => { try{ sessionSummary(false, 'abandoned'); flushEvents(); }catch(e){} });
 
   // light tamper friction + a suspicious signal when someone pokes at it
   document.addEventListener('contextmenu', e => { e.preventDefault(); logEvent('tamper', { outcome:'suspicious', suspicious:true, detail:{ kind:'contextmenu' } }); });
@@ -661,6 +692,7 @@
       chkLabel.textContent = 'Verified';
       collapsed.classList.add('is-verified');
       logEvent('verified', { outcome:'pass', detail:{ via:'signals' } });
+      sessionSummary(true, 'signals');
       post('verified', { token: token });
     });
   }
@@ -1077,6 +1109,7 @@
           collapsed.classList.add('is-verified');
           locked = true;
           logEvent('verified', { challenge:lastType, outcome:'pass', detail:{ via:'challenge' } });
+          sessionSummary(true, 'challenge');
           post('verified', { token: token });
         }, 1100);
       });
