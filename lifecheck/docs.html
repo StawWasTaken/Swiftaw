@@ -288,6 +288,18 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
 }</code></pre>
       <div class="callout tip"><svg><use href="#i-bulb"/></svg><div>Gate your action on <code>success === true</code>. <code>apikey</code> is the public Lifecheck key (safe to ship); <code>p_secret</code> is your private secret and must stay server-side. Tokens are single-use and expire ~2 minutes after issue.</div></div>
       <div class="callout note"><svg><use href="#i-note"/></svg><div>Tokens are issued live against your key. <b>Delete a key and verification stops immediately</b> — existing pages can't mint new valid tokens, no redeploy needed.</div></div>
+
+      <h3>No backend? Verify in the browser safely</h3>
+      <p>A direct browser call to the verify RPC fails CORS on purpose — it stops you shipping your secret to the client. For a fully static site, deploy the <code>lifecheck-verify</code> Edge Function (in <code>/lifecheck/edge-functions/</code>): the browser sends only the <b>public</b> site key + token, and the function looks up the secret server-side and returns a CORS-enabled verdict. Your secret never leaves Supabase.</p>
+      <pre class="code"><code><span class="cm">// deploy once:  supabase functions deploy lifecheck-verify --no-verify-jwt</span>
+<span class="kw">const</span> r = <span class="kw">await</span> <span class="fn">fetch</span>(
+  <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/functions/v1/lifecheck-verify"</span>, {
+  <span class="at">method</span>: <span class="st">"POST"</span>,
+  <span class="at">headers</span>: { <span class="st">"Content-Type"</span>: <span class="st">"application/json"</span> },
+  <span class="at">body</span>: <span class="nm">JSON</span>.<span class="fn">stringify</span>({ <span class="at">sitekey</span>: <span class="st">"lc_site_..."</span>, <span class="at">token</span>: <span class="nm">Lifecheck</span>.<span class="fn">getResponse</span>() })
+});
+<span class="kw">const</span> verdict = <span class="kw">await</span> r.<span class="fn">json</span>();   <span class="cm">// { success:true, passed:"challenge", ... }</span></code></pre>
+      <div class="callout warn"><svg><use href="#i-warn"/></svg><div>Browser verification trades a little strictness for convenience: it takes the public key, so it's best for low-risk gates. For anything sensitive, verify server-side with the secret as shown above.</div></div>
     </section>
 
     <!-- API: data attributes -->
