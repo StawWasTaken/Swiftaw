@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lifecheck Docs &amp; API (v1.1) - Swiftaw</title>
-<meta name="description" content="How to integrate Swiftaw Lifecheck v1.1: add the widget, read the token client-side, and verify it on your server. Full data-attribute, JavaScript API and verify-endpoint reference.">
+<title>Lifecheck Docs &amp; API (v1.2) - Swiftaw</title>
+<meta name="description" content="How to integrate Swiftaw Lifecheck v1.2: add the widget, read the token client-side, and verify it on your server. Full data-attribute, JavaScript API and verify-endpoint reference.">
 <link rel="canonical" href="https://swiftaw.com/lifecheck/docs">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Lifecheck Docs &amp; API (v1.1)">
+<meta property="og:title" content="Lifecheck Docs &amp; API (v1.2)">
 <meta property="og:description" content="Integrate Lifecheck in two lines, then verify the token on your server. Full API reference.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/lifecheck/docs">
@@ -102,10 +102,8 @@ td .opt { font-size: 10px; font-weight: 700; color: var(--muted); text-transform
 <!-- Lifecheck capsule nav -->
 <nav class="nav-root">
   <a href="/lifecheck/" class="nav-logo lc-brand" aria-label="Swiftaw Lifecheck">
-    <img src="/SWFTW_Logomark.png" alt="Swiftaw">
-    <span class="lc-sep"></span>
-    <span class="lc-name">Life<b>check</b></span>
-    <span class="lc-vchip">v1.1</span>
+    <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
+    <span class="lc-vchip">v1.2</span>
   </a>
   <div class="nav-pill-group">
     <a href="/lifecheck/" class="nav-pill">Overview</a>
@@ -148,7 +146,7 @@ td .opt { font-size: 10px; font-weight: 700; color: var(--muted); text-transform
   <!-- MAIN -->
   <main class="docs-main">
     <div class="docs-hero">
-      <span class="tagline">📘 Integration guide · Lifecheck v1.1</span>
+      <span class="tagline">📘 Integration guide · Lifecheck v1.2</span>
       <h1>Add Lifecheck to your site.</h1>
       <p>Lifecheck is a drop-in human check. The widget runs in a sandboxed frame served from Swiftaw, hands the browser a one-time <b>token</b> on success, and you confirm that token on your server before trusting the request. Two lines to install, one call to verify.</p>
     </div>
@@ -283,7 +281,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
   <span class="at">"passed"</span>:       <span class="st">"signals"</span>,         <span class="cm">// "signals" | "challenge"</span>
   <span class="at">"challenge_ts"</span>: <span class="st">"2026-07-31T18:04:11Z"</span>,
   <span class="at">"hostname"</span>:     <span class="st">"yoursite.com"</span>,
-  <span class="at">"v"</span>:            <span class="st">"1.1"</span>,
+  <span class="at">"v"</span>:            <span class="st">"1.2"</span>,
   <span class="at">"error-codes"</span>:  []
 }</code></pre>
       <div class="callout tip"><svg><use href="#i-bulb"/></svg><div>Gate your action on <code>success === true</code>. <code>apikey</code> is the public Lifecheck key (safe to ship); <code>p_secret</code> is your private secret and must stay server-side. Tokens are single-use and expire ~2 minutes after issue.</div></div>
@@ -312,7 +310,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
         <tr><td><code>Lifecheck.render(el, opts?)</code></td><td><code>id</code></td><td>Renders a widget into <code>el</code> (element or id). <code>opts</code>: <code>sitekey</code>, <code>callback</code>, <code>expired-callback</code>. Returns a numeric widget id.</td></tr>
         <tr><td><code>Lifecheck.getResponse(ref?)</code></td><td><code>string</code></td><td>Current token, or <code>""</code> if not yet verified. <code>ref</code> = id, element, or container id; defaults to the first widget.</td></tr>
         <tr><td><code>Lifecheck.reset(ref?)</code></td><td><code>void</code></td><td>Clears the token and loads a fresh challenge.</td></tr>
-        <tr><td><code>Lifecheck.version</code></td><td><code>string</code></td><td>Loader version, e.g. <code>"1.1"</code>.</td></tr>
+        <tr><td><code>Lifecheck.version</code></td><td><code>string</code></td><td>Loader version, e.g. <code>"1.2"</code>.</td></tr>
       </table></div>
     </section>
 
@@ -334,7 +332,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
         <tr><td><code>passed</code></td><td>string</td><td><code>"signals"</code> (passed on behaviour) or <code>"challenge"</code> (solved a task).</td></tr>
         <tr><td><code>challenge_ts</code></td><td>string</td><td>ISO-8601 timestamp of the check.</td></tr>
         <tr><td><code>hostname</code></td><td>string</td><td>Domain the check was solved on.</td></tr>
-        <tr><td><code>v</code></td><td>string</td><td>Lifecheck version (<code>"1.1"</code>).</td></tr>
+        <tr><td><code>v</code></td><td>string</td><td>Lifecheck version (<code>"1.2"</code>).</td></tr>
         <tr><td><code>error-codes</code></td><td>array</td><td>Present when <code>success</code> is false. See below.</td></tr>
       </table></div>
     </section>
@@ -356,9 +354,9 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
     <section id="events">
       <h2>Frame events (advanced)</h2>
       <p>Under the hood the sandboxed widget talks to the loader over <code>postMessage</code>. You normally never touch this (the loader turns it into the callbacks above), but for custom hosts, messages are shaped:</p>
-      <pre class="code"><code>{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.1"</span>, <span class="at">event</span>: <span class="st">"verified"</span>, <span class="at">token</span>: <span class="st">"LC1.1_…"</span> }
-{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.1"</span>, <span class="at">event</span>: <span class="st">"resize"</span>,   <span class="at">height</span>: <span class="nm">74</span> }
-{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.1"</span>, <span class="at">event</span>: <span class="st">"ready"</span> }</code></pre>
+      <pre class="code"><code>{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.2"</span>, <span class="at">event</span>: <span class="st">"verified"</span>, <span class="at">token</span>: <span class="st">"LC1.2_…"</span> }
+{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.2"</span>, <span class="at">event</span>: <span class="st">"resize"</span>,   <span class="at">height</span>: <span class="nm">74</span> }
+{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.2"</span>, <span class="at">event</span>: <span class="st">"ready"</span> }</code></pre>
       <div class="callout note"><svg><use href="#i-note"/></svg><div>Always validate <code>event.origin</code> against Lifecheck's origin before trusting a message. The bundled loader does this for you.</div></div>
     </section>
 
@@ -380,7 +378,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
       <h2>Changelog</h2>
       <div class="changelog">
         <div class="rel">
-          <span class="v">v1.1</span><span class="d">current</span>
+          <span class="v">v1.2</span><span class="d">current</span>
           <ul>
             <li><b>Real keys.</b> Tokens are now issued server-side against your site key, with a domain allow-list and instant revocation when a key is deleted.</li>
             <li><b>Spot-checks.</b> Even clean behavioural passes now have a 25% chance of a challenge. Signals are layered, never trusted alone.</li>
@@ -407,11 +405,11 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
 <footer class="lc-footer">
   <div class="lc-footer-inner">
     <div class="lc-footer-brand">
-      <img src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
       <span class="div"></span>
-      <span>Lifecheck</span>
+      <span>by Swiftaw</span>
     </div>
-    <div class="lc-footer-copy">© 2026 Lifecheck v1.1 - Swiftaw</div>
+    <div class="lc-footer-copy">© 2026 Lifecheck v1.2 - Swiftaw</div>
     <div class="lc-footer-links">
       <a href="/lifecheck/">Overview</a>
       <a href="/lifecheck/docs">Docs &amp; API</a>

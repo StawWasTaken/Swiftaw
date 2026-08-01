@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════
-   Lifecheck v1.1 — client loader / integration API
+   Lifecheck v1.2 — client loader / integration API
    by Swiftaw · https://swiftaw.com/lifecheck/
 
    Drop-in usage
@@ -16,7 +16,7 @@
 (function () {
   'use strict';
 
-  var VERSION = '1.1';
+  var VERSION = '1.2';
 
   // Resolve where THIS script is served from, so the widget iframe and the
   // postMessage origin check work no matter which domain hosts Lifecheck.

@@ -15,10 +15,10 @@
     --stroke:#232c39;
     --stroke-soft:#1a212b;
     --track:#181f29;
-    --yellow:#fff93e; --yellow-s:#ffde00;
-    --green:#3ecf6e;  --green-s:#289b4e;
-    --blue:#2caefc;   --blue-s:#2287e1;
-    --red:#ff0132;    --red-s:#c0052a;
+    --yellow:#fdf846; --yellow-s:#e6d21f;
+    --green:#36c05f;  --green-s:#268f45;
+    --blue:#2daffb;   --blue-s:#1f8ad6;
+    --red:#fd0235;    --red-s:#c00229;
     --pink:#ff77e4;   --pink-s:#e065c8;
     --ink:#0d1117;
     --text:#f4f6fa;
@@ -276,7 +276,7 @@
     <div class="chk-label" id="chkLabel">I'm not a robot</div>
     <div class="badge">
       <img src="https://swiftaw.com/SWFTW_Logomark.png" alt="Swiftaw" draggable="false" />
-      <div class="badge-sub">life&#8209;check <b>v1.1</b></div>
+      <div class="badge-sub">life&#8209;check <b>v1.2</b></div>
       <div class="badge-legal"><a href="https://swiftaw.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy</a> &middot; <a href="https://swiftaw.com/legal/terms-of-service" target="_blank" rel="noopener">Terms</a></div>
     </div>
   </div>
@@ -286,7 +286,7 @@
     <div class="exp-header">
       <div class="brand-mark">
         <img src="https://swiftaw.com/SWFTW_Logomark.png" alt="Swiftaw" draggable="false" />
-        <span class="tag">life&#8209;check&nbsp;·&nbsp;v1.1</span>
+        <span class="tag">life&#8209;check&nbsp;·&nbsp;v1.2</span>
       </div>
       <button class="close-btn" id="closeBtn" title="Close"><i class="fa-solid fa-xmark"></i></button>
     </div>
@@ -314,7 +314,7 @@
   // crosses the boundary is a one-way "verified" message + token.
   function post(event, extra){
     try{
-      parent.postMessage(Object.assign({ source:'swiftaw-lifecheck', v:'1.1', event:event }, extra||{}), '*');
+      parent.postMessage(Object.assign({ source:'swiftaw-lifecheck', v:'1.2', event:event }, extra||{}), '*');
     }catch(e){}
   }
   function reportSize(){
@@ -349,7 +349,7 @@
   }
   function localToken(){
     const rnd = () => Math.random().toString(36).slice(2, 12);
-    return 'LC1.1_' + rnd() + rnd() + '.' + Date.now().toString(36);
+    return 'LC1.2_' + rnd() + rnd() + '.' + Date.now().toString(36);
   }
   // → resolves to a token string, or null if a real key is invalid/removed
   async function issueToken(passed){
