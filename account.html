@@ -23,8 +23,7 @@
   padding: 26px 26px 22px;
 }
 .acc-head { text-align: center; margin-bottom: 20px; }
-.acc-head .mark { width: 46px; height: 46px; border-radius: 13px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; box-shadow: 0 5px 0 0 var(--ink); }
-.acc-head .mark img { width: 28px; height: 28px; filter: brightness(0); }
+.acc-logo { height: 26px; width: auto; display: block; margin: 0 auto 14px; }
 .acc-head h1 { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: -.6px; }
 .acc-head p { font-size: 13px; color: var(--muted-light); margin-top: 4px; }
 
@@ -44,22 +43,27 @@
 .fld .hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
 .fld .hint.bad { color: #ff8ea3; }
 .fld .hint.good { color: var(--c-mint); }
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
 
 /* avatar picker */
-.avatar-pick { display: flex; align-items: center; gap: 13px; }
-.avatar-prev { width: 52px; height: 52px; border-radius: 14px; background: var(--bg-2); border: 1.5px solid var(--border-strong); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
-.avatar-prev svg { width: 20px; height: 20px; fill: var(--muted); }
-.avatar-btn { font-family: var(--font-display); font-weight: 700; font-size: 12.5px; color: var(--muted-light); border: 1.5px solid var(--border-strong); background: var(--bg-2); padding: 9px 13px; border-radius: 10px; cursor: pointer; transition: color .15s, border-color .15s; }
-.avatar-btn:hover { color: #fff; border-color: rgba(254,248,61,.4); }
-.avatar-clear { font-size: 12px; color: var(--muted); background: none; border: 0; cursor: pointer; }
-.avatar-clear:hover { color: #ff8ea3; }
+.ap-main { display: flex; align-items: center; gap: 13px; margin-bottom: 11px; }
+.ap-prev { width: 56px; height: 56px; border-radius: 50%; background: var(--bg-2); border: 1.5px solid var(--border-strong); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ap-prev svg { width: 22px; height: 22px; fill: var(--muted); }
+.ap-prev.has-img svg { display: none; }
+.ap-btns { display: flex; flex-direction: column; gap: 5px; }
+.ap-upload { font-family: var(--font-display); font-weight: 700; font-size: 12.5px; color: var(--muted-light); border: 1.5px solid var(--border-strong); background: var(--bg-2); padding: 8px 13px; border-radius: 10px; cursor: pointer; transition: color .15s, border-color .15s; }
+.ap-upload:hover { color: #fff; border-color: rgba(254,248,61,.4); }
+.ap-clear { font-size: 11.5px; color: var(--muted); background: none; border: 0; cursor: pointer; text-align: left; padding-left: 2px; }
+.ap-clear:hover { color: #ff8ea3; }
+.ap-or { font-size: 11px; color: var(--muted); margin: 2px 0 8px; }
+.ap-defaults { display: flex; gap: 8px; flex-wrap: wrap; }
+.ap-def { width: 42px; height: 42px; border-radius: 50%; background-size: cover; background-position: center; cursor: pointer; border: 2.5px solid transparent; transition: border-color .15s, transform .12s; }
+.ap-def:hover { transform: translateY(-2px); }
+.ap-def.sel { border-color: var(--accent); }
 
-/* lifecheck slot */
-.lc-slot { margin: 4px 0 14px; }
+.lc-slot { margin: 6px 0 14px; }
 .lc-slot .lc-label { font-family: var(--font-display); font-weight: 700; font-size: 12px; color: var(--muted-light); margin-bottom: 8px; }
 .lc-slot .lifecheck { display: flex; }
-.lc-ok { display: none; align-items: center; gap: 8px; font-size: 12.5px; color: var(--c-mint); margin-top: 4px; }
+.lc-ok { display: none; align-items: center; gap: 8px; font-size: 12.5px; color: var(--c-mint); margin-top: 6px; }
 .lc-ok.show { display: flex; }
 .lc-ok svg { width: 14px; height: 14px; fill: var(--c-mint); }
 
@@ -73,6 +77,14 @@
 .acc-sep-note { margin-top: 16px; padding: 11px 13px; border-radius: 11px; background: rgba(196,181,253,.07); border: 1px solid rgba(196,181,253,.22); font-size: 11.5px; color: var(--muted-light); line-height: 1.5; }
 .acc-sep-note b { color: #fff; }
 .acc-foot { text-align: center; margin-top: 14px; font-size: 12px; color: var(--muted); }
+.acc-foot a { color: var(--muted-light); }
+
+/* settings view header */
+.set-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.set-head .big { width: 58px; height: 58px; border-radius: 50%; background: var(--bg-2); border: 1.5px solid var(--border-strong); background-size: cover; background-position: center; flex-shrink: 0; }
+.set-head .who .n { font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -.4px; }
+.set-head .who .e { font-size: 12.5px; color: var(--muted-light); }
+.set-title { font-family: var(--font-display); font-weight: 700; font-size: 12px; color: var(--muted-light); margin: 16px 0 8px; }
 
 .acc-loading { text-align: center; padding: 40px; color: var(--muted); font-family: var(--font-display); font-weight: 700; }
 .hidden { display: none !important; }
@@ -130,9 +142,10 @@
   <div class="acc-card">
     <div class="acc-loading" id="accLoading">loading…</div>
 
-    <div id="accBody" class="hidden">
+    <!-- ══ AUTH (login / signup) ══ -->
+    <div id="viewAuth" class="hidden">
       <div class="acc-head">
-        <div class="mark"><img src="/SWFTW_Logomark_black.png" alt="Swiftaw" onerror="this.src='/SWFTW_Logomark.png'"></div>
+        <img class="acc-logo" src="/SWFTW_Logomark.png" alt="Swiftaw">
         <h1 id="accTitle">Welcome back.</h1>
         <p id="accKicker">Log in to your Swiftaw account.</p>
       </div>
@@ -148,7 +161,6 @@
           <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
         </div>
 
-        <!-- signup-only fields -->
         <div class="signup-only hidden">
           <div class="fld">
             <label for="username">Username</label>
@@ -156,13 +168,8 @@
             <div class="hint" id="unameHint"></div>
           </div>
           <div class="fld">
-            <label>Avatar <span class="opt">(optional)</span></label>
-            <div class="avatar-pick">
-              <div class="avatar-prev" id="avatarPrev"><svg><use href="#i-user"/></svg></div>
-              <button type="button" class="avatar-btn" id="avatarBtn">Choose image</button>
-              <button type="button" class="avatar-clear hidden" id="avatarClear">remove</button>
-              <input type="file" id="avatarInput" accept="image/*" style="display:none">
-            </div>
+            <label>Avatar <span class="opt">(optional, a random one is picked if you skip)</span></label>
+            <div id="signupPicker"></div>
           </div>
         </div>
 
@@ -171,7 +178,6 @@
           <input type="password" id="password" name="password" placeholder="at least 6 characters" required minlength="6" autocomplete="current-password">
         </div>
 
-        <!-- signup-only fields -->
         <div class="signup-only hidden">
           <div class="fld">
             <label for="password2">Confirm password</label>
@@ -188,44 +194,136 @@
       </form>
 
       <div class="acc-msg" id="accMsg"></div>
-
       <div class="acc-sep-note">
         <b>Heads up:</b> your Swiftaw account is separate from your Fortized account. Fortized is a Swiftaw product, but the two log-ins aren't shared.
       </div>
       <div class="acc-foot">One Swiftaw account works across the Swiftaw site and Lifecheck.</div>
     </div>
+
+    <!-- ══ SETTINGS (logged in) ══ -->
+    <div id="viewSettings" class="hidden">
+      <div class="set-head">
+        <div class="big" id="setBig"></div>
+        <div class="who"><div class="n" id="setName">username</div><div class="e" id="setEmail">email</div></div>
+      </div>
+
+      <div class="fld">
+        <label for="setUsername">Username</label>
+        <input type="text" id="setUsername" maxlength="24" autocomplete="username">
+        <div class="hint" id="setUnameHint"></div>
+      </div>
+
+      <div class="set-title">Avatar</div>
+      <div id="settingsPicker"></div>
+
+      <button type="button" class="btn-3d acc-submit" id="saveSettings" style="margin-top:14px;">Save changes</button>
+      <div class="acc-msg" id="setMsg"></div>
+      <div class="acc-foot"><a href="/" id="doneLink">← Back to Swiftaw</a></div>
+    </div>
   </div>
 </div>
+
+<template id="pickerTpl">
+  <div class="ap">
+    <div class="ap-main">
+      <div class="ap-prev"><svg><use href="#i-user"/></svg></div>
+      <div class="ap-btns">
+        <button type="button" class="ap-upload">Upload image</button>
+        <button type="button" class="ap-clear hidden">remove</button>
+        <input type="file" class="ap-input" accept="image/*" style="display:none">
+      </div>
+    </div>
+    <div class="ap-or">or pick a default</div>
+    <div class="ap-defaults"></div>
+  </div>
+</template>
 
 <script src="/css/swiftaw-account.js"></script>
 <script src="/lifecheck/lifecheck.js" async defer></script>
 <script src="/css/swiftaw.js"></script>
 <script>
 (function(){
-  // ── query params ──
+  var DEFAULT_AVATARS = [
+    '/SWFT-DefaultAvatars/SWFT_defavatar1.png',
+    '/SWFT-DefaultAvatars/SWFT_defavatar2.png',
+    '/SWFT-DefaultAvatars/SWFT_defavatar3.png',
+    '/SWFT-DefaultAvatars/SWFT_defavatar4.png',
+    '/SWFT-DefaultAvatars/SWFT_defavatar5.png'
+  ];
+  function randomDefault(){ return DEFAULT_AVATARS[Math.floor(Math.random() * DEFAULT_AVATARS.length)]; }
+
   var qs = new URLSearchParams(location.search);
   var addMode = qs.get('add') === '1';
+  var view = qs.get('view');
   var hint = qs.get('hint') || '';
-  function safeNext(){
-    var n = qs.get('next') || '/';
-    if(n.charAt(0) !== '/' || n.charAt(1) === '/') return '/';   // same-origin paths only
-    return n;
-  }
+  function safeNext(){ var n = qs.get('next') || '/'; if(n.charAt(0) !== '/' || n.charAt(1) === '/') return '/'; return n; }
 
   var loading = document.getElementById('accLoading');
-  var body = document.getElementById('accBody');
+  var viewAuth = document.getElementById('viewAuth');
+  var viewSettings = document.getElementById('viewSettings');
   var msg = document.getElementById('accMsg');
+  var setMsg = document.getElementById('setMsg');
   var lcToken = null;
-  var avatarFile = null;
 
-  window.onAccountLifecheck = function(token){
-    lcToken = token;
-    document.getElementById('lcOk').classList.add('show');
-  };
+  window.onAccountLifecheck = function(token){ lcToken = token; document.getElementById('lcOk').classList.add('show'); };
 
-  function show(kind, text){ msg.className = 'acc-msg show ' + kind; msg.innerHTML = text; }
-  function hide(){ msg.className = 'acc-msg'; }
+  function show(el, kind, text){ el.className = 'acc-msg show ' + kind; el.innerHTML = text; }
+  function hide(el){ el.className = 'acc-msg'; }
 
+  // ── reusable avatar picker ──
+  function AvatarPicker(mountId){
+    var mount = document.getElementById(mountId);
+    mount.appendChild(document.getElementById('pickerTpl').content.cloneNode(true));
+    var root = mount.querySelector('.ap');
+    var prev = root.querySelector('.ap-prev');
+    var input = root.querySelector('.ap-input');
+    var clearBtn = root.querySelector('.ap-clear');
+    var defsWrap = root.querySelector('.ap-defaults');
+    var file = null, chosen = null; // chosen = default url string
+
+    DEFAULT_AVATARS.forEach(function(url){
+      var d = document.createElement('div');
+      d.className = 'ap-def'; d.style.backgroundImage = 'url(' + url + ')'; d.setAttribute('data-url', url);
+      d.addEventListener('click', function(){ selectDefault(url); });
+      defsWrap.appendChild(d);
+    });
+
+    function setPreview(url){ if(url){ prev.style.backgroundImage = 'url(' + url + ')'; prev.classList.add('has-img'); } else { prev.style.backgroundImage = ''; prev.classList.remove('has-img'); } }
+    function markSel(url){ defsWrap.querySelectorAll('.ap-def').forEach(function(d){ d.classList.toggle('sel', d.getAttribute('data-url') === url); }); }
+
+    function selectDefault(url){ file = null; input.value = ''; chosen = url; setPreview(url); markSel(url); clearBtn.classList.remove('hidden'); }
+    root.querySelector('.ap-upload').addEventListener('click', function(){ input.click(); });
+    input.addEventListener('change', function(){
+      var f = input.files[0]; if(!f) return;
+      if(f.size > 3 * 1024 * 1024){ show(msg, 'err', 'Avatar must be under 3 MB.'); return; }
+      file = f; chosen = null; markSel(null); setPreview(URL.createObjectURL(f)); clearBtn.classList.remove('hidden');
+    });
+    clearBtn.addEventListener('click', function(){ file = null; chosen = null; input.value = ''; setPreview(''); markSel(null); clearBtn.classList.add('hidden'); });
+
+    return {
+      selection: function(){ if(file) return { type:'file', file:file }; if(chosen) return { type:'default', url:chosen }; return { type:'none' }; },
+      setInitial: function(url){ if(url){ setPreview(url); if(DEFAULT_AVATARS.indexOf(url) >= 0) markSel(url); clearBtn.classList.remove('hidden'); } }
+    };
+  }
+
+  async function uploadAvatar(client, file, uid){
+    var ext = (file.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g,'') || 'png';
+    var path = uid + '/avatar-' + Date.now() + '.' + ext;
+    var up = await client.storage.from('avatars').upload(path, file, { upsert: true, cacheControl: '3600' });
+    if(up.error) throw up.error;
+    return client.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+  }
+
+  async function resolveAvatar(client, pick, uid, fallbackRandom){
+    var sel = pick.selection();
+    if(sel.type === 'file') { try { return await uploadAvatar(client, sel.file, uid); } catch(e){ return fallbackRandom ? randomDefault() : null; } }
+    if(sel.type === 'default') return sel.url;
+    return fallbackRandom ? randomDefault() : undefined; // undefined = leave unchanged
+  }
+
+  var signupPicker, settingsPicker;
+
+  // ── AUTH view ──
   var mode = qs.get('mode') === 'signup' ? 'signup' : 'login';
   function applyMode(m){
     mode = m;
@@ -236,131 +334,132 @@
     document.getElementById('accTitle').textContent = m === 'login' ? 'Welcome back.' : 'Create your account.';
     document.getElementById('accKicker').textContent = m === 'login' ? 'Log in to your Swiftaw account.' : 'One free account across Swiftaw.';
     document.getElementById('password').setAttribute('autocomplete', m === 'login' ? 'current-password' : 'new-password');
-    hide();
+    hide(msg);
   }
   document.getElementById('tabLogin').addEventListener('click', function(){ applyMode('login'); });
   document.getElementById('tabSignup').addEventListener('click', function(){ applyMode('signup'); });
 
-  // avatar picker
-  var avatarInput = document.getElementById('avatarInput');
-  var avatarPrev = document.getElementById('avatarPrev');
-  var avatarClear = document.getElementById('avatarClear');
-  document.getElementById('avatarBtn').addEventListener('click', function(){ avatarInput.click(); });
-  avatarInput.addEventListener('change', function(){
-    var f = avatarInput.files[0]; if(!f) return;
-    if(f.size > 3 * 1024 * 1024){ show('err', 'Avatar must be under 3 MB.'); return; }
-    avatarFile = f;
-    var url = URL.createObjectURL(f);
-    avatarPrev.style.backgroundImage = 'url(' + url + ')';
-    avatarPrev.innerHTML = '';
-    avatarClear.classList.remove('hidden');
-  });
-  avatarClear.addEventListener('click', function(){
-    avatarFile = null; avatarInput.value = '';
-    avatarPrev.style.backgroundImage = ''; avatarPrev.innerHTML = '<svg><use href="#i-user"/></svg>';
-    avatarClear.classList.add('hidden');
-  });
-
-  // username availability check (debounced)
-  var unameHint = document.getElementById('unameHint');
-  var unameTimer = null, unameOk = false;
-  document.getElementById('username').addEventListener('input', function(e){
-    var v = e.target.value.trim();
-    unameOk = false; unameHint.className = 'hint';
-    if(unameTimer) clearTimeout(unameTimer);
-    if(!v){ unameHint.textContent = ''; return; }
-    if(!/^[a-zA-Z0-9_.-]{3,24}$/.test(v)){ unameHint.textContent = '3-24 chars: letters, numbers, . _ -'; unameHint.className = 'hint bad'; return; }
-    unameHint.textContent = 'checking…';
-    unameTimer = setTimeout(async function(){
-      try {
-        var { data, error } = await window.SwiftawAccount.client().rpc('username_available', { u: v });
-        if(error) throw error;
-        if(data){ unameHint.textContent = 'available'; unameHint.className = 'hint good'; unameOk = true; }
-        else { unameHint.textContent = 'taken, try another'; unameHint.className = 'hint bad'; }
-      } catch(err){ unameHint.textContent = ''; unameOk = true; /* if check fails, let signup try */ }
-    }, 350);
-  });
-
-  async function uploadAvatar(client, file, uid){
-    var ext = (file.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g,'') || 'png';
-    var path = uid + '/avatar.' + ext;
-    var up = await client.storage.from('avatars').upload(path, file, { upsert: true, cacheControl: '3600' });
-    if(up.error) throw up.error;
-    return client.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+  // username availability (shared helper)
+  function wireUsernameCheck(inputId, hintId, currentVal){
+    var el = document.getElementById(inputId), hintEl = document.getElementById(hintId);
+    var timer = null, ok = false;
+    el.addEventListener('input', function(){
+      var v = el.value.trim(); ok = false; hintEl.className = 'hint';
+      if(timer) clearTimeout(timer);
+      if(!v || v === currentVal){ hintEl.textContent = ''; ok = true; return; }
+      if(!/^[a-zA-Z0-9_.-]{3,24}$/.test(v)){ hintEl.textContent = '3-24 chars: letters, numbers, . _ -'; hintEl.className = 'hint bad'; return; }
+      hintEl.textContent = 'checking…';
+      timer = setTimeout(async function(){
+        try {
+          var r = await window.SwiftawAccount.client().rpc('username_available', { u: v });
+          if(r.error) throw r.error;
+          if(r.data){ hintEl.textContent = 'available'; hintEl.className = 'hint good'; ok = true; }
+          else { hintEl.textContent = 'taken, try another'; hintEl.className = 'hint bad'; }
+        } catch(e){ hintEl.textContent = ''; ok = true; }
+      }, 350);
+    });
+    return { ok: function(){ return ok; } };
   }
 
   document.getElementById('accForm').addEventListener('submit', async function(e){
-    e.preventDefault();
-    hide();
+    e.preventDefault(); hide(msg);
     var client = window.SwiftawAccount.client();
     var email = document.getElementById('email').value.trim();
     var password = document.getElementById('password').value;
-    var btn = document.getElementById('accSubmit');
-    btn.disabled = true;
-
+    var btn = document.getElementById('accSubmit'); btn.disabled = true;
     try {
       if(mode === 'login'){
-        var { error } = await client.auth.signInWithPassword({ email: email, password: password });
-        if(error) throw error;
-        location.href = safeNext();
-        return;
+        var r = await client.auth.signInWithPassword({ email: email, password: password });
+        if(r.error) throw r.error;
+        location.href = safeNext(); return;
       }
-
-      // ── signup ──
       var username = document.getElementById('username').value.trim();
       var password2 = document.getElementById('password2').value;
       if(!username || !/^[a-zA-Z0-9_.-]{3,24}$/.test(username)) throw new Error('Pick a username (3-24 chars: letters, numbers, . _ -).');
       if(password.length < 6) throw new Error('Password must be at least 6 characters.');
       if(password !== password2) throw new Error('Passwords do not match.');
       if(!lcToken) throw new Error('Please complete the human check first.');
+      try { var a = await client.rpc('username_available', { u: username }); if(a && a.data === false) throw new Error('That username is taken.'); }
+      catch(ce){ if(ce && ce.message === 'That username is taken.') throw ce; }
 
-      // best-effort username availability
-      try {
-        var avail = await client.rpc('username_available', { u: username });
-        if(avail && avail.data === false) throw new Error('That username is taken.');
-      } catch(chkErr){ if(chkErr && chkErr.message === 'That username is taken.') throw chkErr; }
+      var su = await client.auth.signUp({ email: email, password: password, options: { data: { username: username } } });
+      if(su.error) throw su.error;
 
-      var { data: suData, error: suErr } = await client.auth.signUp({
-        email: email, password: password,
-        options: { data: { username: username } }
-      });
-      if(suErr) throw suErr;
-
-      if(suData.session){
-        // logged in immediately (email confirmation off)
-        var uid = suData.user.id, avatarUrl = null;
-        if(avatarFile){
-          try { avatarUrl = await uploadAvatar(client, avatarFile, uid); } catch(av){ /* non-fatal */ }
-        }
+      if(su.data.session){
+        var uid = su.data.user.id;
+        var avatarUrl = await resolveAvatar(client, signupPicker, uid, true); // random default if none
         await client.auth.updateUser({ data: { username: username, avatar_url: avatarUrl } });
         try { await client.from('profiles').update({ username: username, avatar_url: avatarUrl }).eq('id', uid); } catch(pe){}
         location.href = safeNext();
       } else {
-        show('info', 'Account created! Check your inbox to confirm your email, then log in.');
+        show(msg, 'info', 'Account created! Check your inbox to confirm your email, then log in.');
         applyMode('login');
       }
-    } catch(err){
-      show('err', (err && err.message) ? err.message : 'Something went wrong. Try again.');
-    } finally {
-      btn.disabled = false;
-    }
+    } catch(err){ show(msg, (err && err.message) ? 'err' : 'err', (err && err.message) || 'Something went wrong.'); }
+    finally { btn.disabled = false; }
+  });
+
+  // ── SETTINGS view ──
+  var setUnameChecker = null;
+  function showSettings(user){
+    viewAuth.classList.add('hidden'); viewSettings.classList.remove('hidden');
+    var meta = user.user_metadata || {};
+    var uname = meta.username || (user.email || '').split('@')[0];
+    var av = meta.avatar_url || '';
+    document.getElementById('setName').textContent = uname;
+    document.getElementById('setEmail').textContent = user.email || '';
+    if(av) document.getElementById('setBig').style.backgroundImage = 'url(' + av + ')';
+    var un = document.getElementById('setUsername'); un.value = meta.username || '';
+    setUnameChecker = wireUsernameCheck('setUsername', 'setUnameHint', meta.username || '');
+    if(!settingsPicker){ settingsPicker = AvatarPicker('settingsPicker'); }
+    settingsPicker.setInitial(av);
+    document.getElementById('doneLink').setAttribute('href', safeNext());
+  }
+
+  document.getElementById('saveSettings').addEventListener('click', async function(){
+    var client = window.SwiftawAccount.client();
+    var user = window.SwiftawAccount.user(); if(!user) return;
+    var btn = this; btn.disabled = true; hide(setMsg);
+    try {
+      var meta = user.user_metadata || {};
+      var newName = document.getElementById('setUsername').value.trim();
+      var data = {};
+      if(newName && newName !== (meta.username || '')){
+        if(!/^[a-zA-Z0-9_.-]{3,24}$/.test(newName)) throw new Error('Username must be 3-24 chars: letters, numbers, . _ -');
+        var a = await client.rpc('username_available', { u: newName });
+        if(a && a.data === false) throw new Error('That username is taken.');
+        data.username = newName;
+      }
+      var av = await resolveAvatar(client, settingsPicker, user.id, false); // undefined = unchanged
+      if(av !== undefined) data.avatar_url = av;
+      if(Object.keys(data).length === 0){ setMsg.className = 'acc-msg show info'; setMsg.textContent = 'Nothing to save yet.'; btn.disabled = false; return; }
+      await client.auth.updateUser({ data: data });
+      try { await client.from('profiles').update(data).eq('id', user.id); } catch(pe){}
+      setMsg.className = 'acc-msg show ok'; setMsg.textContent = 'Saved.';
+      var u2 = window.SwiftawAccount.user();
+      showSettings(u2 || user);
+    } catch(err){ setMsg.className = 'acc-msg show err'; setMsg.textContent = (err && err.message) || 'Could not save.'; }
+    finally { btn.disabled = false; }
   });
 
   // ── boot ──
   window.SwiftawAccount.ready(function(){
     loading.classList.add('hidden');
-    body.classList.remove('hidden');
-    if(hint) document.getElementById('email').value = hint;
-    // already logged in and not explicitly adding another account → bounce to next
-    if(window.SwiftawAccount.user() && !addMode){
-      location.href = safeNext();
+    signupPicker = AvatarPicker('signupPicker');
+    var user = window.SwiftawAccount.user();
+    if(user && !addMode && (view === 'settings' || !qs.has('next'))){
+      showSettings(user);
       return;
     }
-    if(addMode){ show('info', 'Add another account. Logging in keeps your current account too.'); }
+    if(user && !addMode && qs.has('next')){ location.href = safeNext(); return; }
+    // auth view
+    viewAuth.classList.remove('hidden');
+    if(hint) document.getElementById('email').value = hint;
+    if(addMode) show(msg, 'info', 'Add another account. Logging in keeps your current account too.');
+    wireUsernameCheck('username', 'unameHint', '');
     applyMode(mode);
   });
 
-  // company/products dropdowns
   document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
       dropdown.addEventListener('click', function(e) {
@@ -369,9 +468,7 @@
         dropdown.classList.toggle('open');
       });
     });
-    document.addEventListener('click', function() {
-      document.querySelectorAll('.nav-dropdown.open').forEach(function(d) { d.classList.remove('open'); });
-    });
+    document.addEventListener('click', function() { document.querySelectorAll('.nav-dropdown.open').forEach(function(d) { d.classList.remove('open'); }); });
   });
 })();
 </script>
