@@ -38,6 +38,43 @@
   document.head.appendChild(s);
 })();
 
+// Copy button on code blocks (docs + overview), like AI code blocks
+(function () {
+  function ready(fn) { if (document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }
+  ready(function () {
+    var blocks = document.querySelectorAll('pre.code, .code-block');
+    if (!blocks.length) return;
+    if (!document.getElementById('swiftaw-copy-style')) {
+      var st = document.createElement('style'); st.id = 'swiftaw-copy-style';
+      st.textContent =
+        '.swiftaw-codewrap{position:relative;}' +
+        '.swiftaw-codewrap > pre.code, .swiftaw-codewrap > .code-block{padding-top:40px;}' +
+        '.swiftaw-copy{position:absolute;top:9px;right:9px;z-index:2;display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display,sans-serif);font-weight:700;font-size:11px;color:#cbd5e1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:5px 9px;cursor:pointer;transition:color .15s,border-color .15s,background .15s;opacity:.85;}' +
+        '.swiftaw-copy:hover{color:#fff;border-color:rgba(254,248,61,.4);background:rgba(255,255,255,.1);opacity:1;}' +
+        '.swiftaw-copy.done{color:#86efac;border-color:rgba(134,239,172,.5);}' +
+        '.swiftaw-copy svg{width:12px;height:12px;fill:currentColor;}';
+      document.head.appendChild(st);
+    }
+    var COPY = '<svg viewBox="0 0 448 512"><path d="M384 336l-192 0c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l140.1 0L400 115.9 400 320c0 8.8-7.2 16-16 16zM192 384l192 0c35.3 0 64-28.7 64-64l0-204.1c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1L192 0c-35.3 0-64 28.7-64 64l0 256c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l192 0c35.3 0 64-28.7 64-64l0-32-48 0 0 32c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l32 0 0-48-32 0z"/></svg>';
+    var CHK = '<svg viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>';
+    blocks.forEach(function (block) {
+      if (block.closest('.swiftaw-codewrap')) return;
+      var wrap = document.createElement('div'); wrap.className = 'swiftaw-codewrap';
+      block.parentNode.insertBefore(wrap, block); wrap.appendChild(block);
+      var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'swiftaw-copy';
+      btn.innerHTML = COPY + '<span>Copy</span>';
+      btn.addEventListener('click', function () {
+        var text = block.innerText.replace(/\n{3,}/g, '\n\n');
+        navigator.clipboard.writeText(text).then(function () {
+          btn.classList.add('done'); btn.innerHTML = CHK + '<span>Copied</span>';
+          setTimeout(function () { btn.classList.remove('done'); btn.innerHTML = COPY + '<span>Copy</span>'; }, 1400);
+        }).catch(function () {});
+      });
+      wrap.appendChild(btn);
+    });
+  });
+})();
+
 (function () {
   // Nav scroll polish
   const nav = document.querySelector('.nav-root');

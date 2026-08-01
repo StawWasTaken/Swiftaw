@@ -319,11 +319,43 @@
   }
   const ro = ('ResizeObserver' in window) ? new ResizeObserver(reportSize) : null;
 
-  // A verification token. In production this is minted + signed server-side;
-  // here it is a short-lived opaque handle the host forwards to /v1/verify.
-  function mintToken(){
+  /* ---------------- token issuance ----------------
+     Real site keys (lc_site_*) get a token minted server-side by Supabase,
+     which only succeeds if the key still exists and the host is allowed.
+     That makes the key real: delete it and verification stops immediately,
+     no page reload needed. Swiftaw's own demo/account checks use a local
+     token so they work without a registered key. */
+  const SUPA_URL = 'https://mwszvynzzugbowdngzab.supabase.co';
+  const SUPA_KEY = 'sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf';
+  const SUPA_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  const P = new URLSearchParams(location.search);
+  const SITE_KEY = P.get('k') || '';
+  const HOST = P.get('host') || '';
+  const SERVER_MODE = /^lc_site_/.test(SITE_KEY);
+  let sbClient = null;
+
+  function loadScript(src){
+    return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+  }
+  async function getSb(){
+    if(sbClient) return sbClient;
+    if(!window.supabase || !window.supabase.createClient) await loadScript(SUPA_CDN);
+    sbClient = window.supabase.createClient(SUPA_URL, SUPA_KEY, { auth: { persistSession: false } });
+    return sbClient;
+  }
+  function localToken(){
     const rnd = () => Math.random().toString(36).slice(2, 12);
     return 'LC1.1_' + rnd() + rnd() + '.' + Date.now().toString(36);
+  }
+  // → resolves to a token string, or null if a real key is invalid/removed
+  async function issueToken(passed){
+    if(!SERVER_MODE) return localToken();
+    try {
+      const sb = await getSb();
+      const { data, error } = await sb.rpc('lifecheck_issue_token', { p_site_key: SITE_KEY, p_host: HOST, p_passed: passed || 'challenge' });
+      if(error || !data) return null;
+      return data;
+    } catch(e){ return null; }
   }
 
   // light tamper friction (does not stop a determined dev, just discourages
@@ -457,11 +489,22 @@
   }
 
   function passCollapsed(){
+    issueToken('signals').then(function(token){
+      if(!token){ keyFail(); return; }
+      chkBox.classList.remove('spin');
+      chkBox.classList.add('checked');
+      chkLabel.textContent = 'Verified';
+      collapsed.classList.add('is-verified');
+      post('verified', { token: token });
+    });
+  }
+
+  // Real key is invalid or was removed → can't verify.
+  function keyFail(){
     chkBox.classList.remove('spin');
-    chkBox.classList.add('checked');
-    chkLabel.textContent = 'Verified';
-    collapsed.classList.add('is-verified');
-    post('verified', { token: mintToken() });
+    chkBox.querySelector('i').className = 'fa-solid fa-triangle-exclamation';
+    chkLabel.textContent = "Can't verify — check the site key";
+    locked = false;
   }
 
   function openChallenge(){
@@ -727,17 +770,26 @@
     statusBox.classList.remove('hidden');
 
     if(pass){
-      statusBox.className = 'status pass';
-      statusBox.innerHTML = `<i class="fa-solid fa-circle-check"></i><div>Verified. Life form confirmed.<span class="d">You may proceed.</span></div>`;
-      reportSize();
-      setTimeout(()=>{
-        resetCollapsed();
-        chkBox.classList.add('checked');
-        chkLabel.textContent = 'Verified';
-        collapsed.classList.add('is-verified');
-        locked = true;
-        post('verified', { token: mintToken() });
-      }, 1100);
+      issueToken('challenge').then(function(token){
+        if(!token){
+          // real key invalid / removed
+          statusBox.className = 'status fail';
+          statusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i><div>Can't verify.<span class="d">This site's Lifecheck key is invalid or was removed.</span></div>`;
+          reportSize();
+          return;
+        }
+        statusBox.className = 'status pass';
+        statusBox.innerHTML = `<i class="fa-solid fa-circle-check"></i><div>Verified. Life form confirmed.<span class="d">You may proceed.</span></div>`;
+        reportSize();
+        setTimeout(()=>{
+          resetCollapsed();
+          chkBox.classList.add('checked');
+          chkLabel.textContent = 'Verified';
+          collapsed.classList.add('is-verified');
+          locked = true;
+          post('verified', { token: token });
+        }, 1100);
+      });
     } else {
       statusBox.className = 'status fail';
       statusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i><div>Not verified.${reason ? ' '+reason : ''}<span class="d">Try a new challenge.</span></div>`;

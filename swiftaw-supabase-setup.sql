@@ -175,6 +175,119 @@ grant select, insert, update, delete on public.lifecheck_keys to authenticated;
 
 
 -- ════════════════════════════════════════════
+-- 2b. LIFECHECK TOKENS  (server-issued verification tokens)
+--     Makes keys "real": the widget asks Supabase to mint a token,
+--     which only happens if the site key still exists (and the host
+--     is allowed). Deleting a key stops new tokens immediately, and
+--     the secret-side verify can no longer find the key. No page
+--     reload needed for revocation to take effect.
+-- ════════════════════════════════════════════
+create table if not exists public.lifecheck_tokens (
+  token      text primary key,
+  key_id     uuid not null references public.lifecheck_keys(id) on delete cascade,
+  site_key   text not null,
+  host       text,
+  passed     text default 'challenge',
+  used       boolean not null default false,
+  used_at    timestamptz,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null default (now() + interval '2 minutes')
+);
+create index if not exists lifecheck_tokens_key_idx on public.lifecheck_tokens(key_id);
+
+alter table public.lifecheck_tokens enable row level security;
+-- no direct table access; everything goes through the two RPCs below
+revoke all on public.lifecheck_tokens from anon, authenticated;
+
+-- Called by the widget (browser, anon key) after a human passes.
+-- Returns a fresh token, or NULL if the site key is unknown/removed
+-- or the host is not in the key's allow-list.
+create or replace function public.lifecheck_issue_token(p_site_key text, p_host text, p_passed text default 'challenge')
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  k public.lifecheck_keys%rowtype;
+  new_token text;
+  host_ok boolean;
+begin
+  select * into k from public.lifecheck_keys where site_key = p_site_key limit 1;
+  if not found then
+    return null;                    -- key does not exist / was deleted
+  end if;
+
+  -- domain allow-list (empty = any domain). Matches exact host or subdomains.
+  if array_length(k.domains, 1) is null then
+    host_ok := true;
+  else
+    host_ok := exists (
+      select 1 from unnest(k.domains) d
+      where p_host = d or p_host like '%.' || d
+    );
+  end if;
+  if not host_ok then
+    return null;
+  end if;
+
+  new_token := 'LC1.1_' || replace(gen_random_uuid()::text, '-', '');
+  insert into public.lifecheck_tokens (token, key_id, site_key, host, passed)
+  values (new_token, k.id, p_site_key, p_host, coalesce(p_passed, 'challenge'));
+  return new_token;
+end;
+$$;
+
+-- Called by the customer's SERVER with their secret key + the token.
+-- Consumes the token (single use) and returns a JSON verdict.
+create or replace function public.lifecheck_verify_token(p_secret text, p_token text)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  k public.lifecheck_keys%rowtype;
+  t public.lifecheck_tokens%rowtype;
+begin
+  if p_secret is null or p_secret = '' then
+    return jsonb_build_object('success', false, 'v', '1.1', 'error-codes', jsonb_build_array('missing-input-secret'));
+  end if;
+  select * into k from public.lifecheck_keys where secret_key = p_secret limit 1;
+  if not found then
+    return jsonb_build_object('success', false, 'v', '1.1', 'error-codes', jsonb_build_array('invalid-input-secret'));
+  end if;
+  if p_token is null or p_token = '' then
+    return jsonb_build_object('success', false, 'v', '1.1', 'error-codes', jsonb_build_array('missing-input-token'));
+  end if;
+
+  select * into t from public.lifecheck_tokens where token = p_token and key_id = k.id limit 1;
+  if not found then
+    return jsonb_build_object('success', false, 'v', '1.1', 'error-codes', jsonb_build_array('invalid-input-token'));
+  end if;
+  if t.used or t.expires_at < now() then
+    return jsonb_build_object('success', false, 'v', '1.1', 'error-codes', jsonb_build_array('timeout-or-duplicate'));
+  end if;
+
+  update public.lifecheck_tokens set used = true, used_at = now() where token = t.token;
+
+  return jsonb_build_object(
+    'success', true,
+    'score', 0.9,
+    'passed', t.passed,
+    'challenge_ts', t.created_at,
+    'hostname', t.host,
+    'v', '1.1',
+    'error-codes', jsonb_build_array()
+  );
+end;
+$$;
+
+grant execute on function public.lifecheck_issue_token(text, text, text) to anon, authenticated;
+grant execute on function public.lifecheck_verify_token(text, text) to anon, authenticated;
+
+
+-- ════════════════════════════════════════════
 -- 3. REACTIONS  (live counter used across swiftaw.com)
 --    Matches what /css/swiftaw.js expects: a swiftaw_reactions
 --    table plus swiftaw_inc_reaction / swiftaw_dec_reaction RPCs.

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Get a Lifecheck API key · Swiftaw</title>
+<title>Get a Lifecheck API key - Swiftaw</title>
 <meta name="description" content="Create a free Swiftaw account and generate your Lifecheck site key and secret key.">
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://swiftaw.com/lifecheck/keys">
@@ -89,6 +89,22 @@
 .doc-hint a { color: var(--accent); }
 .loading { text-align: center; padding: 44px 20px; color: var(--muted); font-family: var(--font-display); font-weight: 700; }
 .hidden { display: none !important; }
+
+/* confirm modal (Swiftaw design, replaces browser confirm) */
+.modal-overlay { position: fixed; inset: 0; z-index: 500; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(5,6,8,.66); backdrop-filter: blur(6px); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+.modal-overlay.show { opacity: 1; pointer-events: auto; }
+.modal { width: 100%; max-width: 380px; background: linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%); border: 1.5px solid var(--border-strong); border-radius: 20px; box-shadow: 0 10px 0 0 var(--ink), 0 30px 60px rgba(0,0,0,.6); padding: 24px; transform: translateY(12px) scale(.96); transition: transform .22s cubic-bezier(.34,1.56,.64,1); }
+.modal-overlay.show .modal { transform: none; }
+.modal .m-ic { width: 46px; height: 46px; border-radius: 13px; background: rgba(255,1,50,.12); border: 1.5px solid rgba(255,91,120,.3); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+.modal .m-ic svg { width: 19px; height: 19px; fill: #ff5b78; }
+.modal h3 { font-family: var(--font-display); font-weight: 800; font-size: 18px; letter-spacing: -.4px; margin-bottom: 7px; }
+.modal p { font-size: 14px; color: var(--muted-light); line-height: 1.5; margin-bottom: 20px; }
+.modal .m-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.btn-cancel { font-family: var(--font-display); font-weight: 700; font-size: 13px; color: var(--muted-light); border: 1.5px solid var(--border-strong); background: var(--bg-2); padding: 10px 16px; border-radius: 11px; cursor: pointer; transition: color .15s, border-color .15s; }
+.btn-cancel:hover { color: #fff; border-color: rgba(255,255,255,.2); }
+.btn-danger { font-family: var(--font-display); font-weight: 800; font-size: 13px; color: #fff; background: #ff0132; border: 2px solid #c0052a; box-shadow: 0 3px 0 0 #7a0420; padding: 10px 18px; border-radius: 11px; cursor: pointer; transition: transform .12s, filter .15s; }
+.btn-danger:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn-danger:active { transform: translateY(2px); box-shadow: 0 1px 0 0 #7a0420; }
 </style>
 </head>
 <body>
@@ -174,6 +190,19 @@
   </div>
 </div>
 
+<!-- confirm modal (Swiftaw design) -->
+<div class="modal-overlay" id="confirmOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="m-ic"><svg><use href="#i-trash"/></svg></div>
+    <h3 id="confirmTitle">Delete this key?</h3>
+    <p id="confirmMsg">Sites using it will stop verifying right away.</p>
+    <div class="m-actions">
+      <button class="btn-cancel" id="confirmCancel">Cancel</button>
+      <button class="btn-danger" id="confirmOk">Delete key</button>
+    </div>
+  </div>
+</div>
+
 <!-- footer -->
 <footer class="lc-footer">
   <div class="lc-footer-inner">
@@ -182,7 +211,7 @@
       <span class="div"></span>
       <span>Lifecheck</span>
     </div>
-    <div class="lc-footer-copy">© 2026 Swiftaw · Lifecheck v1.1</div>
+    <div class="lc-footer-copy">© 2026 Lifecheck v1.1 - Swiftaw</div>
     <div class="lc-footer-links">
       <a href="/lifecheck/">Overview</a>
       <a href="/lifecheck/docs">Docs</a>
@@ -207,6 +236,37 @@
 
   function show(el, kind, text){ el.className = 'msg show ' + kind; el.textContent = text; }
   function hide(el){ el.className = 'msg'; }
+
+  // Swiftaw-styled confirm dialog (replaces browser confirm)
+  function confirmDialog(opts){
+    opts = opts || {};
+    return new Promise(function(resolve){
+      var ov = document.getElementById('confirmOverlay');
+      var okBtn = document.getElementById('confirmOk');
+      var cancelBtn = document.getElementById('confirmCancel');
+      document.getElementById('confirmTitle').textContent = opts.title || 'Are you sure?';
+      document.getElementById('confirmMsg').textContent = opts.message || '';
+      okBtn.textContent = opts.confirmText || 'Confirm';
+      function close(val){
+        ov.classList.remove('show');
+        okBtn.removeEventListener('click', onOk);
+        cancelBtn.removeEventListener('click', onCancel);
+        ov.removeEventListener('click', onBackdrop);
+        document.removeEventListener('keydown', onKey);
+        resolve(val);
+      }
+      function onOk(){ close(true); }
+      function onCancel(){ close(false); }
+      function onBackdrop(e){ if(e.target === ov) close(false); }
+      function onKey(e){ if(e.key === 'Escape') close(false); }
+      okBtn.addEventListener('click', onOk);
+      cancelBtn.addEventListener('click', onCancel);
+      ov.addEventListener('click', onBackdrop);
+      document.addEventListener('keydown', onKey);
+      ov.classList.add('show');
+      okBtn.focus();
+    });
+  }
   function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
   function fmtDate(s){ try { return new Date(s).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); } catch(e){ return ''; } }
 
@@ -256,7 +316,8 @@
     }
     var delBtn = e.target.closest('[data-del]');
     if(delBtn){
-      if(!confirm('Delete this key? Sites using it will stop verifying.')) return;
+      var ok = await confirmDialog({ title: 'Delete this key?', message: 'Sites using it will stop verifying right away.', confirmText: 'Delete key' });
+      if(!ok) return;
       var { error } = await sb.from('lifecheck_keys').delete().eq('id', delBtn.getAttribute('data-del'));
       if(error){ show(keyMsg, 'err', 'Could not delete: ' + error.message); return; }
       loadKeys();

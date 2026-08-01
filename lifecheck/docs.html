@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lifecheck Docs &amp; API · integration guide (v1.1) · Swiftaw</title>
+<title>Lifecheck Docs &amp; API (v1.1) - Swiftaw</title>
 <meta name="description" content="How to integrate Swiftaw Lifecheck v1.1: add the widget, read the token client-side, and verify it on your server. Full data-attribute, JavaScript API and verify-endpoint reference.">
 <link rel="canonical" href="https://swiftaw.com/lifecheck/docs">
 <meta property="og:type" content="website">
@@ -227,10 +227,10 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
     <!-- VERIFY -->
     <section id="verify">
       <h2><span class="step">3</span> Verify on your server</h2>
-      <p>The client token proves nothing on its own. Always confirm it server-side before you act. POST the token and your secret key to the verify endpoint:</p>
+      <p>The client token proves nothing on its own. Always confirm it from your <b>backend</b> (never browser JS, or you'll leak your secret and hit CORS). Verification is a single call to Lifecheck's function endpoint with your secret key and the token:</p>
       <div class="pill-row">
-        <span class="pill"><span class="method-post">POST</span> https://api.swiftaw.com/lifecheck/v1/verify</span>
-        <span class="pill">Content-Type: application/x-www-form-urlencoded</span>
+        <span class="pill"><span class="method-post">POST</span> https://mwszvynzzugbowdngzab.supabase.co/rest/v1/rpc/lifecheck_verify_token</span>
+        <span class="pill">Content-Type: application/json</span>
       </div>
 
       <div class="tabs" role="tablist">
@@ -239,31 +239,38 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
         <div class="tab-btn" data-tab="php">PHP</div>
       </div>
       <div class="tab-panel on" data-tab="curl">
-        <pre class="code"><code>curl -X POST https://api.swiftaw.com/lifecheck/v1/verify \
-  -d secret=<span class="st">YOUR_SECRET_KEY</span> \
-  -d token=<span class="st">THE_TOKEN_FROM_THE_BROWSER</span> \
-  -d remoteip=<span class="st">203.0.113.7</span>   <span class="cm"># optional</span></code></pre>
+        <pre class="code"><code>curl -X POST \
+  <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/rest/v1/rpc/lifecheck_verify_token"</span> \
+  -H <span class="st">"apikey: LIFECHECK_PUBLIC_KEY"</span> \
+  -H <span class="st">"Content-Type: application/json"</span> \
+  -d <span class="st">'{ "p_secret": "YOUR_SECRET_KEY", "p_token": "THE_TOKEN_FROM_THE_BROWSER" }'</span></code></pre>
       </div>
       <div class="tab-panel" data-tab="node">
-        <pre class="code"><code><span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(<span class="st">"https://api.swiftaw.com/lifecheck/v1/verify"</span>, {
+        <pre class="code"><code><span class="cm">// server-side only — keep YOUR_SECRET_KEY out of the browser</span>
+<span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(
+  <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/rest/v1/rpc/lifecheck_verify_token"</span>, {
   <span class="at">method</span>: <span class="st">"POST"</span>,
-  <span class="at">headers</span>: { <span class="st">"Content-Type"</span>: <span class="st">"application/x-www-form-urlencoded"</span> },
-  <span class="at">body</span>: <span class="kw">new</span> <span class="nm">URLSearchParams</span>({
-    <span class="at">secret</span>: process.env.<span class="nm">LIFECHECK_SECRET</span>,
-    <span class="at">token</span>: req.body[<span class="st">"lifecheck-token"</span>]
+  <span class="at">headers</span>: {
+    <span class="st">"apikey"</span>: <span class="st">"LIFECHECK_PUBLIC_KEY"</span>,
+    <span class="st">"Content-Type"</span>: <span class="st">"application/json"</span>
+  },
+  <span class="at">body</span>: <span class="nm">JSON</span>.<span class="fn">stringify</span>({
+    <span class="at">p_secret</span>: process.env.<span class="nm">LIFECHECK_SECRET</span>,
+    <span class="at">p_token</span>: req.body[<span class="st">"lifecheck-token"</span>]
   })
 });
 <span class="kw">const</span> data = <span class="kw">await</span> res.<span class="fn">json</span>();
 <span class="kw">if</span> (!data.success) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="nm">400</span>).<span class="fn">send</span>(<span class="st">"Failed Lifecheck"</span>);</code></pre>
       </div>
       <div class="tab-panel" data-tab="php">
-        <pre class="code"><code><span class="nm">$r</span> = <span class="fn">file_get_contents</span>(<span class="st">"https://api.swiftaw.com/lifecheck/v1/verify"</span>, <span class="kw">false</span>,
+        <pre class="code"><code><span class="nm">$r</span> = <span class="fn">file_get_contents</span>(
+  <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/rest/v1/rpc/lifecheck_verify_token"</span>, <span class="kw">false</span>,
   <span class="fn">stream_context_create</span>([<span class="st">"http"</span> =&gt; [
     <span class="st">"method"</span>  =&gt; <span class="st">"POST"</span>,
-    <span class="st">"header"</span>  =&gt; <span class="st">"Content-Type: application/x-www-form-urlencoded"</span>,
-    <span class="st">"content"</span> =&gt; <span class="fn">http_build_query</span>([
-      <span class="st">"secret"</span> =&gt; <span class="nm">$SECRET</span>,
-      <span class="st">"token"</span>  =&gt; <span class="nm">$_POST</span>[<span class="st">"lifecheck-token"</span>]
+    <span class="st">"header"</span>  =&gt; <span class="st">"apikey: LIFECHECK_PUBLIC_KEY\r\nContent-Type: application/json"</span>,
+    <span class="st">"content"</span> =&gt; <span class="fn">json_encode</span>([
+      <span class="st">"p_secret"</span> =&gt; <span class="nm">$SECRET</span>,
+      <span class="st">"p_token"</span>  =&gt; <span class="nm">$_POST</span>[<span class="st">"lifecheck-token"</span>]
     ])
   ]]));
 <span class="nm">$ok</span> = <span class="fn">json_decode</span>(<span class="nm">$r</span>)-&gt;success;</code></pre>
@@ -272,14 +279,15 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
       <h3>Response</h3>
       <pre class="code"><code>{
   <span class="at">"success"</span>:      <span class="kw">true</span>,
-  <span class="at">"score"</span>:        <span class="nm">0.9</span>,               <span class="cm">// 0.0 (bot) → 1.0 (human)</span>
+  <span class="at">"score"</span>:        <span class="nm">0.9</span>,
   <span class="at">"passed"</span>:       <span class="st">"signals"</span>,         <span class="cm">// "signals" | "challenge"</span>
   <span class="at">"challenge_ts"</span>: <span class="st">"2026-07-31T18:04:11Z"</span>,
   <span class="at">"hostname"</span>:     <span class="st">"yoursite.com"</span>,
   <span class="at">"v"</span>:            <span class="st">"1.1"</span>,
   <span class="at">"error-codes"</span>:  []
 }</code></pre>
-      <div class="callout tip"><svg><use href="#i-bulb"/></svg><div>Gate your action on <code>success === true</code>. The <code>score</code> is advisory, so raise your own threshold (say <code>&gt;= 0.5</code>) for higher-risk endpoints.</div></div>
+      <div class="callout tip"><svg><use href="#i-bulb"/></svg><div>Gate your action on <code>success === true</code>. <code>apikey</code> is the public Lifecheck key (safe to ship); <code>p_secret</code> is your private secret and must stay server-side. Tokens are single-use and expire ~2 minutes after issue.</div></div>
+      <div class="callout note"><svg><use href="#i-note"/></svg><div>Tokens are issued live against your key. <b>Delete a key and verification stops immediately</b> — existing pages can't mint new valid tokens, no redeploy needed.</div></div>
     </section>
 
     <!-- API: data attributes -->
@@ -311,13 +319,13 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
     <!-- API: endpoint -->
     <section id="endpoint">
       <h2>Verify endpoint</h2>
-      <p><span class="method-post">POST</span> <code>https://api.swiftaw.com/lifecheck/v1/verify</code> request parameters:</p>
+      <p><span class="method-post">POST</span> <code>/rest/v1/rpc/lifecheck_verify_token</code> (JSON body) request parameters:</p>
       <div class="tbl-wrap"><table>
         <tr><th>Param</th><th></th><th>Description</th></tr>
-        <tr><td><code>secret</code></td><td><span class="req">required</span></td><td>Your secret key.</td></tr>
-        <tr><td><code>token</code></td><td><span class="req">required</span></td><td>The token returned by the widget in the browser.</td></tr>
-        <tr><td><code>remoteip</code></td><td><span class="opt">optional</span></td><td>The end user's IP, for extra signal.</td></tr>
+        <tr><td><code>p_secret</code></td><td><span class="req">required</span></td><td>Your secret key (server-side only).</td></tr>
+        <tr><td><code>p_token</code></td><td><span class="req">required</span></td><td>The token returned by the widget in the browser.</td></tr>
       </table></div>
+      <p>Send the public Lifecheck key in the <code>apikey</code> header. The endpoint accepts cross-origin requests, but call it from your backend so <code>p_secret</code> never reaches a browser.</p>
       <p>Response fields:</p>
       <div class="tbl-wrap"><table>
         <tr><th>Field</th><th>Type</th><th>Meaning</th></tr>
@@ -336,12 +344,11 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
       <h2>Error codes</h2>
       <div class="tbl-wrap"><table>
         <tr><th>Code</th><th>Meaning</th></tr>
-        <tr><td><code>missing-input-secret</code></td><td>The <code>secret</code> parameter was not sent.</td></tr>
-        <tr><td><code>invalid-input-secret</code></td><td>The secret key is malformed or unknown.</td></tr>
-        <tr><td><code>missing-input-token</code></td><td>The <code>token</code> parameter was not sent.</td></tr>
-        <tr><td><code>invalid-input-token</code></td><td>The token is malformed.</td></tr>
+        <tr><td><code>missing-input-secret</code></td><td>The <code>p_secret</code> parameter was not sent.</td></tr>
+        <tr><td><code>invalid-input-secret</code></td><td>The secret key is unknown (or its key was deleted).</td></tr>
+        <tr><td><code>missing-input-token</code></td><td>The <code>p_token</code> parameter was not sent.</td></tr>
+        <tr><td><code>invalid-input-token</code></td><td>No such token for this key.</td></tr>
         <tr><td><code>timeout-or-duplicate</code></td><td>The token has expired or was already verified once.</td></tr>
-        <tr><td><code>hostname-mismatch</code></td><td>The solving domain doesn't match the site key's registered domains.</td></tr>
       </table></div>
     </section>
 
@@ -360,12 +367,12 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
       <h2>Anti-theft model</h2>
       <p>People ask how they can integrate Lifecheck without being able to just copy it. Here's the honest answer:</p>
       <ul>
-        <li>The detection logic and the five challenges live in <code>embed.html</code>, served only from <b>swiftaw.com</b> and loaded inside a sandboxed <code>&lt;iframe&gt;</code>.</li>
-        <li>Integrators reference a <b>URL and an API</b>: the script tag and a <code>&lt;div&gt;</code>. They never receive a standalone, re-hostable copy of the checks.</li>
-        <li>The only thing that crosses the frame boundary into a customer's page is a one-way <b>"verified" message and a token</b>, not the code that produced it.</li>
-        <li>The token is meaningless until <b>your secret key</b> validates it against Swiftaw. A stolen widget shell can't mint tokens that pass verification.</li>
+        <li>The detection logic and the five challenges live in <code>embed.html</code>, served only from <b>swiftaw.com</b> and loaded inside a sandboxed <code>&lt;iframe&gt;</code>. Integrators embed a URL, not a re-hostable copy of the checks.</li>
+        <li><b>Tokens are minted server-side.</b> When a visitor passes, the widget asks Swiftaw to issue a token, which only happens if your site key <b>still exists</b> and the host is on its allow-list. A copied widget with no valid key gets nothing back.</li>
+        <li><b>Live revocation.</b> Delete a key and token issuance stops that instant, and the secret-side verify can no longer find the key. Pages already open can't keep verifying — no reload required.</li>
+        <li>The token is single-use and useless until <b>your secret key</b> verifies it. A stolen widget shell can't produce tokens that pass your server check.</li>
       </ul>
-      <div class="callout warn"><svg><use href="#i-warn"/></svg><div>Client-side friction (disabled selection, context menu, minification) discourages casual scraping but is <b>not</b> the security boundary. The real guarantee is server-side token verification, so never skip step 3.</div></div>
+      <div class="callout warn"><svg><use href="#i-warn"/></svg><div>Like any browser check, a determined bot can still drive the widget itself — the honest guarantee is the pairing of <b>live key validation</b> and <b>server-side secret verification</b> (step 3), not client-side friction. Never skip step 3.</div></div>
     </section>
 
     <!-- changelog -->
@@ -375,6 +382,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
         <div class="rel">
           <span class="v">v1.1</span><span class="d">current</span>
           <ul>
+            <li><b>Real keys.</b> Tokens are now issued server-side against your site key, with a domain allow-list and instant revocation when a key is deleted.</li>
             <li><b>Spot-checks.</b> Even clean behavioural passes now have a 25% chance of a challenge. Signals are layered, never trusted alone.</li>
             <li>Self-sizing frame via <code>resize</code> messages, so the box never clips.</li>
             <li>Hidden-field auto-injection for zero-JS form submits.</li>
@@ -403,7 +411,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
       <span class="div"></span>
       <span>Lifecheck</span>
     </div>
-    <div class="lc-footer-copy">© 2026 Swiftaw · Lifecheck v1.1</div>
+    <div class="lc-footer-copy">© 2026 Lifecheck v1.1 - Swiftaw</div>
     <div class="lc-footer-links">
       <a href="/lifecheck/">Overview</a>
       <a href="/lifecheck/docs">Docs &amp; API</a>
