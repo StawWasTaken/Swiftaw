@@ -7,6 +7,131 @@ The site is a static build on GitHub Pages (`swiftaw.com`), deployed from
 
 ---
 
+## 🔴 SESSION HANDOFF — Lifecheck v1.2 (redesign + telemetry + Edge Function)
+
+Repo **StawWasTaken/Swiftaw**, branch **`claude/swiftaw-handoff-legal-brand-gxlmab`**,
+mirrored to `main` (GitHub Pages deploy branch).
+
+### 📋 Standing rules (every push)
+- Push to **the work branch AND `main`** each time: `git push -u origin <branch>`,
+  then `git branch -f main HEAD && git push origin main`.
+- **`main` can move under you** (user uploads assets via the GitHub web
+  uploader) → `git fetch origin main` first, rebase onto it, never force-clobber.
+- Verify UI via a **local HTTP server** (`python3 -m http.server`) + Playwright,
+  never `file://` (pages use root-absolute paths). Sandbox can't reach Supabase /
+  Google Fonts / the GitHub CDN — local PNGs render, web fonts fall back.
+- **No em-dashes in widget copy**, no "reCAPTCHA" wording.
+- **Anti-abuse mechanism details stay OUT of public docs + served source.**
+
+### ✅ Shipped this session
+- **Widget redesign (`lifecheck/embed.html`)**
+  • White **LifeCheck wordmark** overlay (`filter:brightness(0) invert(1)`) + `v1.2`
+    + Privacy·Terms badge; single-line quiet **consent footer**; widget widened to
+    **396px** (loader iframe max-width **402px**) so consent fits one line.
+  • **Close button removed** — an open mini-game must be completed (no dismiss +
+    re-trigger the quick passive pass).
+  • **3 new mini-games** (Twemoji **drawn on `<canvas>`** so the answer isn't in
+    the DOM): `imagepick` ("click the X"), `oddone` (tap the non-life), `tally`
+    (count life forms). Brute-force capped at 2 wrong taps. Existing 5 kept
+    (grid/slider/rotate/sequence/code) = 8 total. Twemoji `jdecked/twemoji@15.1.0`
+    72×72 PNG, native-glyph fallback.
+  • **Real-key enforcement**: only first-party (swiftaw.com) pages get local demo
+    tokens; everyone else needs a registered `lc_site_` key (server token).
+  • **Interaction telemetry** → `lifecheck_events` via `lifecheck_log_events` RPC
+    (throttled fire-and-forget batches). Events: widget_open, check_click,
+    cursor_flag, spot_check, passive_pass, challenge_open, minigame_correct/wrong,
+    challenge_pass/fail, speed_flag, tamper, key_fail, verified, **session_summary**.
+  • **`session_summary`** = one labelled **feature-vector row per session**
+    (duration, via, touch, challengesShown, wrongTaps, suspiciousSignals,
+    spotChecked, cursor stats) — the row you'd train a bot/human model on.
+  • **Telemetry diagnostics**: `flushEvents` now surfaces the RPC `{error}` via
+    `console.warn` (it resolves with error, doesn't throw — was fully swallowed
+    before) + `?lcdebug=1` logs successes.
+- **SQL (`swiftaw-supabase-setup.sql`)**: new `lifecheck_events` table +
+  `lifecheck_log_events` RPC (RLS-locked, security-definer, batch/size capped,
+  granted to anon). Tokens `LC1.1_`→`LC1.2_`, verify response `v1.1`→`v1.2`.
+  **USER RAN THIS — confirmed working (STATUS 204).**
+- **Edge Function** `supabase/functions/lifecheck-verify/` (+ `supabase/config.toml`,
+  `verify_jwt=false`): browser-safe verify — browser sends public sitekey+token,
+  function looks up the secret server-side (service role) → CORS-enabled verdict,
+  secret never in the browser. **USER DEPLOYED via dashboard (JS version, Verify
+  JWT off) — working (200, CORS OK).** `.ts` file is for CLI deploy.
+- **Verifier page `lifecheck/verify-test.html`**: pass widget → mint token →
+  verify against the Edge Function. Working.
+- **Docs (`lifecheck/docs.html`)**: Data & consent note, "No backend? Verify in
+  the browser safely" section + verify-test link. **Removed the public
+  explanation** of the anti-abuse mechanism; softened the revocation note.
+  **Changelog: restored v1.1** (now v1.2/v1.1/v1.0); v1.2 reworded to not reveal
+  internals.
+- **Secrecy pass**: stripped the plain-English anti-theft explanations from
+  `embed.html` comments + `lifecheck.js` header; user-facing failures are generic
+  ("Can't verify here" / "Lifecheck isn't set up for this site").
+- **Consent + Privacy Policy copy** broadened (vague-but-precise): data is used to
+  "run, improve and **train** Swiftaw's systems **and AI**, and build new
+  products." Privacy Policy §02/§03 updated (`legal/privacy-policy/index.html`).
+- **Footer (all 3 lifecheck pages + `lc.css`)**: Fortized-style — dropped "by
+  Swiftaw", copy = "© 2026 Lifecheck · made by **Swiftaw**" (Swiftaw → swiftaw.com),
+  **inset divider** (not full-bleed).
+
+### ✅ Resolved (was a false alarm)
+- **"Telemetry stopped recording"** → NOT a bug. The user was paging the Supabase
+  table editor and missed the newest rows on later pages. A direct anon RPC test
+  returned **STATUS 204** — the whole pipeline is healthy. (Tip: sort
+  `lifecheck_events` by `created_at` desc.) The diagnostics added are a keeper.
+
+### 🎯 OPEN TODO — NEXT SESSION
+0. **★ START BUILDING OUR AI (the focus of the new session).** Use the
+   `lifecheck_events` data — especially the `session_summary` feature rows — to
+   start Swiftaw's automated systems & AI:
+   (a) tune Lifecheck's heuristics from real signal distributions;
+   (b) **anomaly detection / clustering** on the feature vectors (bot detection,
+       no labels needed) — the first shippable "automated system";
+   (c) weak-label **supervised human/bot classifier** (suspicious/robotic ≈ bot,
+       clean passive pass ≈ human);
+   (d) feed the same signals into **Fortized's moderation AI**;
+   (e) longer term → Swiftaw's own AI models + new products.
+   First concrete steps: build an **export + labeling pipeline** from
+   `lifecheck_events`; decide whether to capture richer signals (full cursor
+   trajectories); pick model/infra (Supabase → feature engineering → model).
+1. **Cache-bust the widget.** The iframe loads `embed.html?v=1.2` (constant), so
+   browsers cache the widget and returning visitors can get a stale version (this
+   caused a scare this session). Add a real per-deploy cache-buster.
+2. **Site-wide brand-colour pass** (original 2nd goal, not started): apply the new
+   palette — red `#fd0235` / green `#36c05f` / blue `#2daffb` / yellow `#fdf846` —
+   CORRECTLY across the Swiftaw + Lifecheck sites. Tokens exist in
+   `css/swiftaw.css` but need to actually be applied + eyeballed per page.
+3. **Fortized legal copy voice pass** (carried over): rewrite the 5 Fortized doc
+   pages in the plain human voice, without changing legal meaning.
+4. **Reconcile legal entity**: "Swiftaw SAS" + real SIRET/registration
+   (placeholder currently).
+
+### ⚠️ Live-verify on deploy (sandbox is CDN/Supabase-blind)
+- Twemoji artwork renders on real browsers; real `lc_site_` key end-to-end →
+  `success: true`; the widget records `lcs_…` rows incl. `session_summary`.
+
+### 🧭 Key anchors
+Widget `lifecheck/embed.html`: telemetry `logEvent`/`flushEvents`/`sessionSummary`
+(~415-480), challenges `buildImagePick`/`buildOddOne`/`buildTally`/`buildGrid`/
+`buildSlider`/`buildRotate`/`buildSequence`/`buildCode`, `emojiCanvas`/`twemojiCode`,
+`issueToken`/`firstPartyEmbed`, `DEBUG` (`?lcdebug`). Loader `lifecheck/lifecheck.js`
+(VERSION 1.2, iframe max-width 402). SQL `swiftaw-supabase-setup.sql` (§2c events +
+log RPC; §2b tokens LC1.2/v1.2). Edge fn `supabase/functions/lifecheck-verify/index.ts`
++ `supabase/config.toml`. Verifier `lifecheck/verify-test.html`. Docs
+`lifecheck/docs.html` (changelog, verify §, data/consent). Footer `lifecheck/lc.css`
+(`.lc-footer`/`.lc-footer-inner`) + markup in index/docs/keys.html. Privacy clause
+`legal/privacy-policy/index.html` §02/§03.
+
+### 🔑 Supabase state (USER-side, all confirmed working)
+Project `mwszvynzzugbowdngzab.supabase.co`; anon publishable key
+`sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf`. SQL run ✓ · email confirmation
+off ✓ · `lifecheck-verify` Edge Function deployed (JWT off) ✓ · telemetry
+recording ✓. Tables: `lifecheck_events`, `lifecheck_keys`, `lifecheck_tokens`,
+`profiles`, `swiftaw_reactions`.
+
+---
+
+---
+
 ## 🔴 SESSION HANDOFF — Legal system, brand palette, Lifecheck v1.2
 
 Two repos in play, both deploy from `main` (GitHub Pages):
