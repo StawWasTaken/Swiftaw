@@ -354,13 +354,7 @@
   }
   const ro = ('ResizeObserver' in window) ? new ResizeObserver(reportSize) : null;
 
-  /* ---------------- Supabase / token issuance ----------------
-     Real site keys (lc_site_*) get a token minted server-side by Supabase,
-     which only succeeds if the key still exists and the host is allowed.
-     That makes the key real: delete it and verification stops immediately.
-     Swiftaw's OWN first-party pages (the demo, the sign-up check) run with a
-     demo key and a local token. A copy of this widget dropped on some other
-     site with no registered key gets NOTHING — it can't verify. */
+  /* ---------------- Supabase / token issuance ---------------- */
   const SUPA_URL = 'https://mwszvynzzugbowdngzab.supabase.co';
   const SUPA_KEY = 'sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf';
   const SUPA_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
@@ -373,8 +367,6 @@
   // A per-load session id ties every event from this widget instance together.
   const SESSION_ID = 'lcs_' + Math.random().toString(36).slice(2,12) + Date.now().toString(36);
 
-  // Only Swiftaw's own pages may use a local (demo) token. Everyone else must
-  // present a registered lc_site_ key that Supabase mints a token for.
   function firstPartyEmbed(){
     function ours(h){ return /(^|\.)swiftaw\.com$/i.test(h); }
     try{
@@ -402,7 +394,6 @@
     const rnd = () => Math.random().toString(36).slice(2, 12);
     return 'LC1.2_' + rnd() + rnd() + '.' + Date.now().toString(36);
   }
-  // → resolves to a token string, or null if verification isn't allowed
   async function issueToken(passed){
     if(SERVER_MODE){
       try {
@@ -412,7 +403,6 @@
         return data;
       } catch(e){ return null; }
     }
-    // non-registered key → local token ONLY for Swiftaw's own pages
     if(FIRST_PARTY) return localToken();
     return null;
   }
@@ -489,7 +479,6 @@
   }
   window.addEventListener('beforeunload', () => { try{ sessionSummary(false, 'abandoned'); flushEvents(); }catch(e){} });
 
-  // light tamper friction + a suspicious signal when someone pokes at it
   document.addEventListener('contextmenu', e => { e.preventDefault(); logEvent('tamper', { outcome:'suspicious', suspicious:true, detail:{ kind:'contextmenu' } }); });
   document.addEventListener('dragstart', e => e.preventDefault());
 
@@ -591,12 +580,9 @@
   }
   function pick(arr,n){ return shuffle(arr).slice(0,n); }
 
-  // We render every mini-game icon with Twemoji (Twitter's open emoji set) so
-  // the artwork looks identical on every OS/browser. It's DRAWN onto a canvas
-  // rather than placed as an <img>, so the answer never sits in the DOM as
-  // readable text/markup — a scraped copy of the widget can't tell the tiles
-  // apart, and a simple DOM-reading bot can't solve it. If the Twemoji CDN is
-  // unreachable we fall back to the platform's own emoji glyph.
+  // Mini-game icons are drawn with Twemoji onto a canvas so the artwork looks
+  // identical on every OS/browser. If the Twemoji CDN is unreachable we fall
+  // back to the platform's own emoji glyph.
   const TWEMOJI_BASE = 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/72x72/';
   function twemojiCode(str){
     const pts = [];
@@ -697,11 +683,10 @@
     });
   }
 
-  // Verification isn't allowed (no valid/registered key, or an unauthorized copy)
   function keyFail(){
     chkBox.classList.remove('spin');
     chkBox.querySelector('i').className = 'fa-solid fa-triangle-exclamation';
-    chkLabel.textContent = SERVER_MODE ? "Can't verify — check the site key" : "This site isn't authorized";
+    chkLabel.textContent = SERVER_MODE ? "Can't verify — check the site key" : "Can't verify here";
     logEvent('key_fail', { outcome:'suspicious', suspicious:!FIRST_PARTY, detail:{ serverMode:SERVER_MODE, firstParty:FIRST_PARTY } });
     locked = false;
   }
@@ -740,8 +725,7 @@
   }
 
   // NOTE: there is deliberately no "close" control on an open challenge.
-  // Once Lifecheck asks for a mini-game the visitor must complete it —
-  // you can't dismiss it and re-trigger the quick passive pass.
+  // An open challenge has no dismiss control by design.
 
   /* ---------------- 1. IMAGE PICK (click the named life form) ---------------- */
   function buildImagePick(){
@@ -1095,7 +1079,7 @@
           statusBox.className = 'status fail';
           statusBox.innerHTML = SERVER_MODE
             ? `<i class="fa-solid fa-triangle-exclamation"></i><div>Can't verify.<span class="d">This site's Lifecheck key is invalid or was removed.</span></div>`
-            : `<i class="fa-solid fa-triangle-exclamation"></i><div>Not authorized.<span class="d">This copy of Lifecheck isn't registered to this site.</span></div>`;
+            : `<i class="fa-solid fa-triangle-exclamation"></i><div>Can't verify here.<span class="d">Lifecheck isn't set up for this site.</span></div>`;
           reportSize();
           return;
         }

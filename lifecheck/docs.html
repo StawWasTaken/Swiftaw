@@ -200,7 +200,6 @@ td .opt { font-size: 10px; font-weight: 700; color: var(--muted); text-transform
     <span class="at">callback</span>: <span class="kw">function</span>(token){ console.<span class="fn">log</span>(<span class="st">"passed:"</span>, token); }
   });
 <span class="tag">&lt;/script&gt;</span></code></pre>
-      <div class="callout note"><svg><use href="#i-note"/></svg><div><b>Real keys only.</b> A registered <code>lc_site_</code> key is verified live against Supabase, and (if you scope it) against your domain allow-list. A copy of the widget dropped on an unregistered site can't mint a token &mdash; it simply won't verify.</div></div>
       <div class="callout note"><svg><use href="#i-note"/></svg><div><b>Data &amp; consent.</b> Lifecheck records how visitors interact with the check and its mini-games (including robotic or suspicious signals) to run, improve and train Swiftaw's systems and AI. The widget shows this consent inline and links our <a href="/legal/terms-of-service">Terms</a>, <a href="/legal/privacy-policy">Privacy</a> and <a href="/legal/products-policy">Products</a> policies &mdash; no extra notice is required on your side.</div></div>
     </section>
 
@@ -287,7 +286,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
   <span class="at">"error-codes"</span>:  []
 }</code></pre>
       <div class="callout tip"><svg><use href="#i-bulb"/></svg><div>Gate your action on <code>success === true</code>. <code>apikey</code> is the public Lifecheck key (safe to ship); <code>p_secret</code> is your private secret and must stay server-side. Tokens are single-use and expire ~2 minutes after issue.</div></div>
-      <div class="callout note"><svg><use href="#i-note"/></svg><div>Tokens are issued live against your key. <b>Delete a key and verification stops immediately</b> — existing pages can't mint new valid tokens, no redeploy needed.</div></div>
+      <div class="callout note"><svg><use href="#i-note"/></svg><div>Keys are checked live, so managing them takes effect right away — <b>remove a key and it stops working immediately</b>, no redeploy needed.</div></div>
 
       <h3>No backend? Verify in the browser safely</h3>
       <p>A direct browser call to the verify RPC fails CORS on purpose — it stops you shipping your secret to the client. For a fully static site, deploy the <code>lifecheck-verify</code> Edge Function (in <code>supabase/functions/</code>): the browser sends only the <b>public</b> site key + token, and the function looks up the secret server-side and returns a CORS-enabled verdict. Your secret never leaves Supabase. Try it live on the <a href="/lifecheck/verify-test">token verifier</a>.</p>
@@ -394,8 +393,16 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
         <div class="rel">
           <span class="v">v1.2</span><span class="d">current</span>
           <ul>
-            <li><b>Real keys.</b> Tokens are now issued server-side against your site key, with a domain allow-list and instant revocation when a key is deleted.</li>
-            <li><b>Spot-checks.</b> Even clean behavioural passes now have a 25% chance of a challenge. Signals are layered, never trusted alone.</li>
+            <li><b>New mini-games.</b> Pick the life form, spot the odd one out, and count the life forms &mdash; drawn with Twemoji so they look the same everywhere.</li>
+            <li><b>Refreshed widget.</b> The LifeCheck wordmark, a wider card, and smoother motion.</li>
+            <li>Interaction insights that help the check keep getting better.</li>
+            <li>Hardened verification and behind-the-scenes tuning.</li>
+          </ul>
+        </div>
+        <div class="rel old">
+          <span class="v">v1.1</span><span class="d">previous</span>
+          <ul>
+            <li>Per-site API keys, server-issued tokens, and a verify endpoint.</li>
             <li>Self-sizing frame via <code>resize</code> messages, so the box never clips.</li>
             <li>Hidden-field auto-injection for zero-JS form submits.</li>
             <li><code>lifecheck:verified</code> DOM event + dotted-path callbacks.</li>
@@ -405,8 +412,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
           <span class="v">v1.0</span><span class="d">initial</span>
           <ul>
             <li>Cursor-behaviour detection (distance, jitter, reaction time) with touch fallback.</li>
-            <li>Five themed challenges + checkbox widget.</li>
-            <li>Token mint + verify endpoint.</li>
+            <li>Themed challenges + the &ldquo;I'm not a robot&rdquo; checkbox widget.</li>
           </ul>
         </div>
       </div>
@@ -420,10 +426,8 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
   <div class="lc-footer-inner">
     <div class="lc-footer-brand">
       <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
-      <span class="div"></span>
-      <span>by Swiftaw</span>
     </div>
-    <div class="lc-footer-copy">© 2026 Lifecheck v1.2 - Swiftaw</div>
+    <div class="lc-footer-copy">© 2026 Lifecheck &middot; made by <a href="https://swiftaw.com">Swiftaw</a></div>
     <div class="lc-footer-links">
       <a href="/lifecheck/">Overview</a>
       <a href="/lifecheck/docs">Docs &amp; API</a>

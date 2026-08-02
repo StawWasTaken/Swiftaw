@@ -9,9 +9,8 @@
           data-sitekey="YOUR_SITE_KEY"
           data-callback="onLifecheckPass"></div>
 
-   The challenge itself runs sandboxed inside an <iframe> served from
-   swiftaw.com — the host page never sees (and can't copy) the detection
-   logic. All it receives back is a one-time token to verify server-side.
+   The challenge runs inside an <iframe> served from swiftaw.com. The host
+   page receives a one-time token to verify server-side.
    ════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';

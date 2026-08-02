@@ -28,13 +28,16 @@
 @media (max-width: 520px) { .lc-vchip { display: none; } }
 @media (max-width: 420px) { .lc-name { font-size: 14px; } .nav-logo.lc-brand img { height: 20px; } }
 
-/* ─── footer ─── */
-.lc-footer { margin-top: 110px; padding: 40px 24px 44px; border-top: 1px solid var(--border); }
+/* ─── footer (Fortized-style: inset divider, not full-width) ─── */
+.lc-footer { margin-top: 110px; padding: 0 24px 44px; }
 .lc-footer-inner {
   max-width: 1080px; margin: 0 auto;
+  border-top: 1px solid var(--border); padding-top: 34px;
   display: flex; align-items: center; justify-content: space-between;
   gap: 18px; flex-wrap: wrap;
 }
+.lc-footer-copy a { color: var(--muted-light); font-weight: 600; transition: color .15s; }
+.lc-footer-copy a:hover { color: var(--accent); }
 .lc-footer-brand { display: flex; align-items: center; gap: 10px; }
 .lc-footer-brand img { height: 18px; width: auto; opacity: .6; }
 .lc-footer-brand .div { width: 1px; height: 16px; background: var(--border-strong); }
