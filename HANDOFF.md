@@ -36,17 +36,43 @@ avatar, conic blue/green/pink mark). Page is intentionally SHORT/punchy.
 - publishable key (client-safe, RLS-protected): `sb_publishable_ObemhvadYmuXSJchH-SpzA_W4awNZtM`
 - NEVER commit the service_role / secret key.
 
-**Deferred build notes (user-provided, for the real AI later):**
-- The chat interface will be **inspired by Fortized**'s chat.
-- Code that Supernova generates → render in **cards like the Lifecheck docs**
-  code blocks (Copy button + a View action to preview the script where possible,
-  e.g. HTML).
-- Tables Supernova outputs → styled like the **Lifecheck docs tables**.
+**Chat page — BUILT (front-end shell, `supernova/chat.html` + `chat.css` +
+`chat.js`, served at `/supernova/chat`).** Gated to Swiftaw accounts only via
+`window.SwiftawAccount` (`/css/swiftaw-account.js`): logged out → sign-in gate
+card (→ `/account?next=/supernova/chat`); logged in → the app. Model is
+**Pulsar**. Since Pulsar is NOT built yet, assistant replies are a
+clearly-labelled LOCAL SIMULATION (`buildReply` in chat.js) that streams word
+by word then renders rich markdown; threads persist in `localStorage`
+(`sn_threads_<userId>`), not Supabase yet. Everything is structured for real
+wiring: replace `respondTo`/`buildReply` with a Pulsar API call + stream, and
+swap localStorage for the AI Supabase above; feedback thumbs already have a
+`TODO(real AI)` POST point. Components built: collapsible sidebar (New chat,
+search, Today/Yesterday/Older + Pinned, rename/pin/delete menu), topbar with
+model+latency badge, message rows (Fortized-style), thinking accordion,
+streaming cursor, **code cards** (lang label + Copy + View-in-iframe, custom JS
+highlighter → Lifecheck-docs `tok-*` colours), markdown, **docs-style tables**,
+KaTeX math (CDN, graceful fallback), image/media cards, message toolbar (Copy,
+Regenerate, Edit prompt, Branch, thumbs up/down feedback), model selector
+(Pulsar + soon), attachments, char/token counter, elicitation chips, toasts,
+system/error banners. All FA solid inline-SVG icons. Verified via Playwright
+(mocked account). Linked from the landing page nav + hero ("Open chat").
+
+**Still deferred (user-provided, for the real AI later):**
+- The chat interface visual is **inspired by Fortized**'s chat (rows/avatars).
+  When the real model lands, deepen the Fortized parity if wanted.
+- Code cards + tables already match the **Lifecheck docs** style, per request.
 - Longer term: `supernova.swiftaw.com` subdomain (DNS/hosting, later).
 - Public copy keeps data-sourcing HIGH LEVEL ("our own world + the open web,
   handled with care for privacy") — decide the real consent/data story and
   reconcile with Fortized's private-messages privacy policy before claiming
   training on user data.
+
+**TODO — MY ACCOUNT page overhaul (`account.html`, user-requested):** more
+features + **security, safety, customization, privacy** controls, and a
+**Swiftaw Products** section that (a) shows which Swiftaw-account products the
+user has used (Lifecheck, Supernova, …) and (b) lets them **connect external
+products that keep their own accounts** (e.g. Fortized today). One Swiftaw
+account is the hub; other-account products are linked, not merged.
 
 ---
 
