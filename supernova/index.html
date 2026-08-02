@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supernova, Swiftaw's own AI - Swiftaw</title>
+<meta name="description" content="Supernova is Swiftaw's own AI. It learns what real people feel like from small, anonymous behavioural signals, then quietly flags the sessions that don't add up. The brain we're growing behind Lifecheck. In training on v0.1.">
+<link rel="canonical" href="https://swiftaw.com/supernova/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Swiftaw">
+<meta property="og:title" content="Supernova by Swiftaw">
+<meta property="og:description" content="Swiftaw's own AI. It learns the shape of real people and flags what doesn't fit. In training on v0.1.">
+<meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
+<meta property="og:url" content="https://swiftaw.com/supernova/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0d1117">
+<link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw.css">
+<link rel="stylesheet" href="/supernova/sn.css">
+<style>
+/* ─── hero ─── */
+.sn-hero { position: relative; padding: 130px 0 30px; overflow: hidden; }
+.sn-hero-grid {
+  max-width: 1120px; margin: 0 auto; padding: 0 28px;
+  display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center;
+}
+@media (max-width: 920px) { .sn-hero-grid { grid-template-columns: 1fr; gap: 40px; } .sn-hero { padding: 110px 0 20px; } }
+
+.sn-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-size: 12.5px; font-weight: 700;
+  color: var(--c-blue);
+  background: rgba(var(--blue-rgb),.08); border: 1.5px solid rgba(var(--blue-rgb),.25);
+  padding: 7px 14px; border-radius: 100px; margin-bottom: 22px;
+  transform: rotate(-2deg);
+}
+.sn-eyebrow .v { color: #0d1117; background: var(--c-blue); padding: 1px 6px; border-radius: 100px; font-size: 10.5px; }
+.sn-hero h1 {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(42px, 6.2vw, 82px); letter-spacing: -3px; line-height: .95;
+  margin-bottom: 20px;
+}
+.sn-hero h1 .pop {
+  background: linear-gradient(135deg, var(--c-blue), var(--c-lilac));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: inline-block; transform: rotate(-1.5deg);
+}
+.sn-hero .sub { font-size: 18px; color: var(--text); max-width: 470px; line-height: 1.55; margin-bottom: 26px; }
+.sn-hero .sub b { color: #fff; font-weight: 600; }
+.sn-hero .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.sn-hero .mini-facts { display: flex; gap: 26px; margin-top: 30px; flex-wrap: wrap; }
+.sn-mini .n { font-family: var(--font-display); font-weight: 800; font-size: 26px; letter-spacing: -1px;
+  background: linear-gradient(135deg, var(--c-blue), var(--c-lilac));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.sn-mini .l { font-size: 12px; color: var(--muted-light); }
+
+/* readout preview card */
+.sn-demo-wrap { display: flex; justify-content: center; }
+.sn-demo {
+  position: relative;
+  background: linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%);
+  border: 1.5px solid var(--border); border-radius: 26px;
+  box-shadow: 0 10px 0 0 var(--ink), 0 30px 60px rgba(0,0,0,.5);
+  padding: 24px; width: 100%; max-width: 420px;
+  transform: rotate(1.2deg);
+}
+.sn-demo::before {
+  content: ""; position: absolute; inset: 0; border-radius: 26px;
+  background: radial-gradient(circle at 85% -10%, rgba(var(--blue-rgb),.14), transparent 55%);
+  pointer-events: none;
+}
+.sn-demo .demo-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.sn-demo .demo-head .t { font-family: var(--font-display); font-weight: 800; font-size: 14px; letter-spacing: -.3px; }
+.sn-demo .demo-head .live {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-display); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--c-blue); background: rgba(var(--blue-rgb),.10); border: 1px solid rgba(var(--blue-rgb),.25);
+  padding: 5px 10px; border-radius: 100px;
+}
+.sn-demo .demo-head .live .d { width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; animation: liveBlink 1.6s ease infinite; }
+/* animated signal bars */
+.sn-bars { display: flex; align-items: flex-end; gap: 6px; height: 74px; padding: 0 2px; }
+.sn-bars i { flex: 1; border-radius: 5px 5px 2px 2px; background: linear-gradient(180deg, var(--c-blue), rgba(var(--lilac-rgb),.5)); opacity: .85; animation: snBar 2.6s ease-in-out infinite; }
+.sn-bars i:nth-child(1){ animation-delay: 0s } .sn-bars i:nth-child(2){ animation-delay: .18s }
+.sn-bars i:nth-child(3){ animation-delay: .36s } .sn-bars i:nth-child(4){ animation-delay: .54s }
+.sn-bars i:nth-child(5){ animation-delay: .72s } .sn-bars i:nth-child(6){ animation-delay: .9s }
+.sn-bars i:nth-child(7){ animation-delay: 1.08s } .sn-bars i:nth-child(8){ animation-delay: 1.26s }
+.sn-bars i:nth-child(9){ animation-delay: 1.44s } .sn-bars i:nth-child(10){ animation-delay: 1.62s }
+@keyframes snBar { 0%,100% { height: 22%; } 50% { height: 90%; } }
+.sn-demo .verdict {
+  margin-top: 16px; display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; border-radius: 14px;
+  background: rgba(var(--green-rgb),.08); border: 1px solid rgba(var(--green-rgb),.3);
+}
+.sn-demo .verdict .lab { display: flex; align-items: center; gap: 9px; font-family: var(--font-display); font-weight: 800; font-size: 14px; color: var(--c-mint); }
+.sn-demo .verdict .lab svg { width: 16px; height: 16px; fill: var(--c-mint); }
+.sn-demo .verdict .score { font-family: 'Roboto Mono', ui-monospace, monospace; font-size: 13px; color: var(--c-mint); font-weight: 600; }
+.sn-demo .demo-note { margin-top: 14px; font-size: 11.5px; color: var(--muted); text-align: center; line-height: 1.5; }
+
+.sn-deco1 { position: absolute; top: 92px; right: 8%; width: 30px; height: 30px; color: var(--c-blue); --r: 12deg; }
+.sn-deco2 { position: absolute; bottom: 10px; left: 3%; width: 26px; height: 26px; color: var(--c-lilac); --r: -16deg; }
+
+/* ─── generic section ─── */
+.sn-section { max-width: 1080px; margin: 0 auto; padding: 66px 28px 0; }
+.sn-section .eye {
+  font-family: var(--font-display); font-size: 12.5px; font-weight: 700; color: var(--muted-light);
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 12px;
+}
+.sn-section .eye svg { width: 15px; height: 15px; fill: var(--c-blue); }
+.sn-section h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(30px, 4vw, 46px); letter-spacing: -1.6px; line-height: 1.02; margin-bottom: 12px; max-width: 660px; }
+.sn-section .lede { font-size: 16.5px; color: var(--text); max-width: 580px; line-height: 1.55; }
+
+/* how it learns */
+.learn { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
+@media (max-width: 860px) { .learn { grid-template-columns: 1fr; } }
+.lcard {
+  position: relative; padding: 26px; border-radius: 22px;
+  background: var(--panel); border: 1.5px solid var(--border);
+  box-shadow: 0 6px 0 0 var(--ink); transition: transform .25s;
+}
+.lcard.t1 { transform: rotate(-1.2deg); } .lcard.t2 { transform: rotate(1deg); } .lcard.t3 { transform: rotate(-.6deg); }
+.lcard:hover { transform: rotate(0) translateY(-4px); }
+.lcard .ic { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+.lcard .ic svg { width: 20px; height: 20px; }
+.lcard.t1 .ic { background: rgba(var(--blue-rgb),.12); } .lcard.t1 .ic svg { fill: var(--c-blue); }
+.lcard.t2 .ic { background: rgba(var(--lilac-rgb),.14); } .lcard.t2 .ic svg { fill: var(--c-lilac); }
+.lcard.t3 .ic { background: rgba(var(--green-rgb),.12); } .lcard.t3 .ic svg { fill: var(--c-mint); }
+.lcard h3 { font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -.4px; margin-bottom: 8px; }
+.lcard p { font-size: 14px; color: var(--muted-light); line-height: 1.55; }
+.lcard .num { position: absolute; top: 20px; right: 22px; font-family: var(--font-display); font-weight: 800; font-size: 15px; color: var(--muted); opacity: .5; }
+
+.honest-note {
+  margin-top: 24px; padding: 18px 20px; border-radius: 16px;
+  background: linear-gradient(160deg, #14202e 0%, #0e1826 100%);
+  border: 1.5px solid rgba(var(--blue-rgb),.25);
+  font-size: 14px; color: var(--text); line-height: 1.55; display: flex; gap: 14px; align-items: flex-start;
+}
+.honest-note svg { width: 20px; height: 20px; fill: var(--c-blue); flex-shrink: 0; margin-top: 2px; }
+.honest-note b { color: #fff; }
+
+/* features */
+.feat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 36px; }
+@media (max-width: 900px) { .feat-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 520px) { .feat-grid { grid-template-columns: 1fr; } }
+.feat { padding: 22px; border-radius: 20px; background: var(--panel); border: 1.5px solid var(--border); box-shadow: 0 6px 0 0 var(--ink); }
+.feat h3 { font-family: var(--font-display); font-weight: 800; font-size: 16px; letter-spacing: -.3px; margin-bottom: 8px; display: flex; align-items: center; gap: 9px; }
+.feat h3 svg { width: 16px; height: 16px; fill: var(--c-blue); }
+.feat p { font-size: 13.5px; color: var(--muted-light); line-height: 1.55; }
+
+/* roadmap */
+.road { margin-top: 36px; display: grid; gap: 14px; }
+.rstep {
+  display: grid; grid-template-columns: 132px 1fr; gap: 22px; align-items: start;
+  padding: 22px 24px; border-radius: 20px;
+  background: var(--panel); border: 1.5px solid var(--border); box-shadow: 0 6px 0 0 var(--ink);
+}
+@media (max-width: 640px) { .rstep { grid-template-columns: 1fr; gap: 8px; } }
+.rstep .when {
+  font-family: var(--font-display); font-weight: 800; font-size: 13px; letter-spacing: .04em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 8px; padding-top: 2px;
+}
+.rstep .when .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.rstep.now .when { color: var(--c-mint); } .rstep.now .when .dot { background: var(--c-mint); box-shadow: 0 0 10px var(--c-mint); }
+.rstep.next .when { color: var(--c-blue); } .rstep.next .when .dot { background: var(--c-blue); }
+.rstep.later .when { color: var(--c-lilac); } .rstep.later .when .dot { background: var(--c-lilac); }
+.rstep.someday .when { color: var(--muted-light); } .rstep.someday .when .dot { background: var(--muted); }
+.rstep h3 { font-family: var(--font-display); font-weight: 800; font-size: 17px; letter-spacing: -.4px; margin-bottom: 6px; }
+.rstep p { font-size: 14px; color: var(--muted-light); line-height: 1.55; }
+
+/* outro */
+.sn-outro { max-width: 1080px; margin: 76px auto 0; padding: 0 28px; }
+.sn-outro-card {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--ink);
+  border: 2px solid var(--ink); border-radius: 28px; box-shadow: 0 10px 0 0 var(--ink);
+  padding: 46px 42px; text-align: center; transform: rotate(-.5deg); position: relative; overflow: hidden;
+}
+.sn-outro-card h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(28px, 4vw, 42px); letter-spacing: -1.4px; margin-bottom: 10px; }
+.sn-outro-card p { font-size: 16px; font-weight: 500; margin-bottom: 22px; max-width: 560px; margin-left: auto; margin-right: auto; }
+.sn-outro-card .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.sn-outro-card .b-dark, .sn-outro-card .b-ghost { font-family: var(--font-display); font-weight: 700; font-size: 14px; padding: 13px 22px; border-radius: 14px; display: inline-flex; align-items: center; gap: 8px; transition: transform .12s; }
+.sn-outro-card .b-dark { background: var(--ink); color: #fff; border: 2px solid var(--ink); box-shadow: 0 6px 0 0 rgba(0,0,0,.4); }
+.sn-outro-card .b-dark:hover { transform: translateY(-2px); }
+.sn-outro-card .b-ghost { background: transparent; color: var(--ink); border: 2px solid var(--ink); box-shadow: 0 6px 0 0 var(--ink); }
+.sn-outro-card .b-ghost:hover { transform: translateY(-2px); }
+</style>
+</head>
+<body>
+
+<div class="bg-blob b1"></div>
+<div class="bg-blob b2"></div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-spark" viewBox="0 0 576 512"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></symbol>
+  <symbol id="i-chip" viewBox="0 0 512 512"><path d="M176 24c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40-32 0C50.1 64 0 114.1 0 176l0 32L24 208c13.3 0 24 10.7 24 24s-10.7 24-24 24L0 256l0 64 24 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L0 368l0 32c0 61.9 50.1 112 112 112l32 0 0 40c0 13.3 10.7 24 24 24s24-10.7 24-24l0-40 32 0 0 40c0 13.3 10.7 24 24 24s24-10.7 24-24l0-40 32 0 0 40c0 13.3 10.7 24 24 24s24-10.7 24-24l0-40 32 0c61.9 0 112-50.1 112-112l0-32 40 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-40 0 0-64 40 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-40 0 0-32c0-61.9-50.1-112-112-112l-32 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40-32 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40-32 0 0-40zM160 128l192 0c17.7 0 32 14.3 32 32l0 192c0 17.7-14.3 32-32 32l-192 0c-17.7 0-32-14.3-32-32l0-192c0-17.7 14.3-32 32-32z"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 512 512"><path d="M0 256C0 114.6 114.6 0 256 0S512 114.6 512 256s-114.6 256-256 256S0 397.4 0 256zm352-96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM192 288c0 35.3 28.7 64 64 64s64-28.7 64-64c0-8.8-7.2-16-16-16l-96 0c-8.8 0-16 7.2-16 16zm-32-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></symbol>
+  <symbol id="i-radar" viewBox="0 0 640 512"><path d="M246.9 18.3L271 3.8c21.6-13 46.3-19.8 71.5-19.8 36.8 0 72.2 14.6 98.2 40.7l63.9 63.9c15 15 23.4 35.4 23.4 56.6l0 30.9 19.7 19.7 0 0c15.6-15.6 40.9-15.6 56.6 0s15.6 40.9 0 56.6l-64 64c-15.6 15.6-40.9 15.6-56.6 0s-15.6-40.9 0-56.6L464 240 433.1 240c-21.2 0-41.6-8.4-56.6-23.4l-49.1-49.1c-15-15-23.4-35.4-23.4-56.6l0-12.7c0-11.2-5.9-21.7-15.5-27.4l-41.6-25c-10.4-6.2-10.4-21.2 0-27.4zM50.7 402.7l222.1-222.1 90.5 90.5-222.1 222.1c-25 25-65.5 25-90.5 0s-25-65.5 0-90.5z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 512 512"><path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2-.5 99.2-41.3 280.7-213.7 363.2-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 448 512"><path d="M144 144l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192l0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 448 512"><path d="M349.4 44.6c5.9-13.7 1.5-29.7-10.6-38.5s-28.6-8-39.9 1.8l-256 224c-10 8.8-13.6 22.9-8.9 35.3S50.7 288 64 288l111.5 0L98.6 467.4c-5.9 13.7-1.5 29.7 10.6 38.5s28.6 8 39.9-1.8l256-224c10-8.8 13.6-22.9 8.9-35.3s-16.6-20.7-30-20.7L272 224 349.4 44.6z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 384 512"><path d="M169.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L192 205.3 54.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/></symbol>
+</svg>
+
+<!-- Supernova capsule nav -->
+<nav class="nav-root">
+  <a href="/supernova/" class="nav-logo sn-brand" aria-label="Swiftaw Supernova">
+    <img src="/supernova/Supernova%20Logo.png" alt="Supernova">
+    <span class="sn-vchip">v0.1</span>
+  </a>
+  <div class="nav-pill-group">
+    <a href="/supernova/" class="nav-pill active">Overview</a>
+    <a href="#how" class="nav-pill">How it learns</a>
+    <a href="#roadmap" class="nav-pill">Roadmap</a>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-right">
+    <a href="/lifecheck/" class="nav-btn-cta">Lifecheck</a>
+    <div class="nav-hamburger" aria-label="Menu"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mobile-menu">
+  <a href="/supernova/">Overview</a>
+  <a href="#how">How it learns</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="/lifecheck/">Lifecheck</a>
+  <a href="https://swiftaw.com">Swiftaw</a>
+</div>
+
+<!-- HERO -->
+<section class="sn-hero">
+  <div class="deco sn-deco1 float-a"><svg><use href="#i-spark"/></svg></div>
+  <div class="deco sn-deco2 float-b"><svg><use href="#i-chip"/></svg></div>
+  <div class="sn-hero-grid">
+    <div>
+      <div class="sn-eyebrow"><span class="v">v0.1</span> Swiftaw's own AI, in training</div>
+      <h1>Meet <span class="pop">Supernova.</span></h1>
+      <p class="sub">Supernova is the AI we're growing at Swiftaw. It learns what <b>real people</b> feel like from small, anonymous signals, then quietly flags the sessions that don't add up. It's the brain taking shape behind <b>Lifecheck</b>.</p>
+      <div class="actions">
+        <a href="#how" class="btn-3d">How it learns <svg class="i"><use href="#i-chevron"/></svg></a>
+        <a href="#roadmap" class="btn-3d-ghost">See the roadmap</a>
+      </div>
+      <div class="mini-facts">
+        <div class="sn-mini"><div class="n">0</div><div class="l">labels needed to start</div></div>
+        <div class="sn-mini"><div class="n">100%</div><div class="l">behavioural, no profiles</div></div>
+        <div class="sn-mini"><div class="n">1</div><div class="l">brain, many products</div></div>
+      </div>
+    </div>
+
+    <div class="sn-demo-wrap">
+      <div class="sn-demo">
+        <div class="demo-head">
+          <span class="t">Session readout</span>
+          <span class="live"><span class="d"></span> learning</span>
+        </div>
+        <div class="sn-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="verdict">
+          <span class="lab"><svg><use href="#i-check"/></svg> Looks human</span>
+          <span class="score">0.98 confidence</span>
+        </div>
+        <div class="demo-note">Illustrative preview. Supernova reads the shape of a session, not who you are.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT LEARNS -->
+<section class="sn-section" id="how">
+  <div class="eye"><svg><use href="#i-chip"/></svg> how it learns</div>
+  <h2>It learns normal, then notices the odd one out.</h2>
+  <p class="lede">Supernova doesn't work from a hand-written list of "this is a bot". It watches how real sessions behave, builds a picture of normal, and treats whatever sits far outside it with suspicion.</p>
+
+  <div class="learn">
+    <div class="lcard t1">
+      <span class="num">01</span>
+      <div class="ic"><svg><use href="#i-wave"/></svg></div>
+      <h3>Reads real behaviour</h3>
+      <p>Every Lifecheck pass leaves a tiny, anonymous trace of how a session moved and felt. Supernova learns from those, never from who you are.</p>
+    </div>
+    <div class="lcard t2">
+      <span class="num">02</span>
+      <div class="ic"><svg><use href="#i-radar"/></svg></div>
+      <h3>Finds the outliers</h3>
+      <p>It groups the ordinary together and flags what lands nowhere near the crowd. No labelled examples required, so it works from day one.</p>
+    </div>
+    <div class="lcard t3">
+      <span class="num">03</span>
+      <div class="ic"><svg><use href="#i-spark"/></svg></div>
+      <h3>Gets sharper over time</h3>
+      <p>The more real sessions it sees, the tighter its sense of normal, and the fewer actual people it ever needs to bother.</p>
+    </div>
+  </div>
+
+  <div class="honest-note">
+    <svg><use href="#i-shield"/></svg>
+    <div>We're honest about the stage: Supernova is <b>in training</b>. For now it watches and scores in the background while Lifecheck's own checks still make the call. It earns more say only once it's proven.</div>
+  </div>
+</section>
+
+<!-- WHY IT'S DIFFERENT -->
+<section class="sn-section">
+  <div class="eye"><svg><use href="#i-spark"/></svg> what makes it ours</div>
+  <h2>Small, kind, and quietly effective.</h2>
+  <div class="feat-grid">
+    <div class="feat">
+      <h3><svg><use href="#i-lock"/></svg> Privacy first</h3>
+      <p>Signals are anonymous and short-lived. No cookies, no profiles built on you, nothing sold on.</p>
+    </div>
+    <div class="feat">
+      <h3><svg><use href="#i-shield"/></svg> Advisory to start</h3>
+      <p>Supernova won't block a soul on its own yet. It advises while it learns, so real people are never caught out.</p>
+    </div>
+    <div class="feat">
+      <h3><svg><use href="#i-chip"/></svg> One brain, many uses</h3>
+      <p>It starts with Lifecheck, but it's built to help wherever telling humans from bots matters across Swiftaw.</p>
+    </div>
+    <div class="feat">
+      <h3><svg><use href="#i-bolt"/></svg> Ours end to end</h3>
+      <p>Built and run by the team behind Fortized and Lifecheck, on our own infrastructure. No black box rented from elsewhere.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="sn-section" id="roadmap">
+  <div class="eye"><svg><use href="#i-radar"/></svg> where it's headed</div>
+  <h2>We're building this in the open.</h2>
+  <p class="lede">Supernova is early, and we'd rather show the plan than pretend it's finished. Here's the honest order of things.</p>
+
+  <div class="road">
+    <div class="rstep now">
+      <div class="when"><span class="dot"></span> Now</div>
+      <div>
+        <h3>Learning the shape of normal</h3>
+        <p>Gathering anonymous session signals from Lifecheck and building the first model of what a real person looks like.</p>
+      </div>
+    </div>
+    <div class="rstep next">
+      <div class="when"><span class="dot"></span> Next</div>
+      <div>
+        <h3>Quiet background scoring</h3>
+        <p>Supernova scores sessions as they happen, still advisory, so we can check it against reality before it changes anything.</p>
+      </div>
+    </div>
+    <div class="rstep later">
+      <div class="when"><span class="dot"></span> Later</div>
+      <div>
+        <h3>A sharper Lifecheck</h3>
+        <p>Its read starts feeding Lifecheck directly, so real people breeze through even faster and bots meet more friction.</p>
+      </div>
+    </div>
+    <div class="rstep someday">
+      <div class="when"><span class="dot"></span> Someday</div>
+      <div>
+        <h3>Across Swiftaw</h3>
+        <p>The same brain, lending a hand wherever we need to tell a person from a script, kept just as private.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OUTRO -->
+<div class="sn-outro">
+  <div class="sn-outro-card reveal">
+    <h2>Supernova is just getting started.</h2>
+    <p>It's growing behind Lifecheck right now. Try Lifecheck to see the front of it, and follow the Newsroom for what comes next.</p>
+    <div class="btns">
+      <a href="/lifecheck/" class="b-dark">Try Lifecheck <svg class="i" style="fill:#fff;"><use href="#i-bolt"/></svg></a>
+      <a href="/newsroom" class="b-ghost">Follow along</a>
+    </div>
+  </div>
+</div>
+
+<!-- footer -->
+<footer class="sn-footer">
+  <div class="sn-footer-inner">
+    <div class="sn-footer-brand">
+      <img src="/supernova/Supernova%20Logo.png" alt="Supernova">
+    </div>
+    <div class="sn-footer-copy">© 2026 Supernova &middot; made by <a href="https://swiftaw.com">Swiftaw</a></div>
+    <div class="sn-footer-links">
+      <a href="/supernova/">Overview</a>
+      <a href="/lifecheck/">Lifecheck</a>
+      <a href="/innovation-room">Lab</a>
+      <a href="https://swiftaw.com">Swiftaw</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/css/swiftaw.js"></script>
+</body>
+</html>
