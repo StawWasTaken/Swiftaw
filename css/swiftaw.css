@@ -688,7 +688,7 @@ img.emoji {
    sets the page's lead brand colour.
 ════════════════════════════════════════════ */
 .legal-top { padding: 128px 0 30px; }
-.legal-shell { max-width: 720px; margin: 0 auto; padding: 0 26px; }
+.legal-shell { max-width: 900px; margin: 0 auto; padding: 0 26px; }
 
 .legal-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
@@ -711,18 +711,23 @@ img.emoji {
 
 .legal-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 24px; }
 .legal-meta .pill {
-  display: inline-flex; align-items: center; gap: 7px;
+  display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--font-display); font-weight: 700; font-size: 12px;
   color: var(--muted-light);
+  padding: 4px 10px; border-radius: 100px;
+  background: rgba(255,255,255,.04); border: 1px solid var(--border);
 }
-.legal-meta .pill svg { width: 13px; height: 13px; fill: var(--legal-accent, var(--accent)); }
-.legal-actions { display: flex; gap: 14px; margin-left: auto; }
+.legal-meta .pill svg { width: 12px; height: 12px; fill: var(--legal-accent, var(--accent)); }
+.legal-actions { display: inline-flex; gap: 8px; }
 .legal-action {
-  display: inline-flex; align-items: center; gap: 7px;
+  display: inline-flex; align-items: center; gap: 6px;
   font-family: var(--font-display); font-weight: 700; font-size: 12px;
-  color: var(--muted-light); cursor: pointer; transition: color .15s;
+  color: var(--muted-light); cursor: pointer;
+  padding: 7px 12px; border-radius: 10px;
+  background: rgba(255,255,255,.04); border: 1px solid var(--border);
+  transition: color .15s, border-color .15s, background .15s;
 }
-.legal-action:hover { color: #fff; }
+.legal-action:hover { color: #fff; border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.07); }
 .legal-action svg { width: 13px; height: 13px; fill: currentColor; }
 
 /* the big top illustration - large, standalone, straight on the bg */
