@@ -290,7 +290,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
       <div class="callout note"><svg><use href="#i-note"/></svg><div>Tokens are issued live against your key. <b>Delete a key and verification stops immediately</b> — existing pages can't mint new valid tokens, no redeploy needed.</div></div>
 
       <h3>No backend? Verify in the browser safely</h3>
-      <p>A direct browser call to the verify RPC fails CORS on purpose — it stops you shipping your secret to the client. For a fully static site, deploy the <code>lifecheck-verify</code> Edge Function (in <code>/lifecheck/edge-functions/</code>): the browser sends only the <b>public</b> site key + token, and the function looks up the secret server-side and returns a CORS-enabled verdict. Your secret never leaves Supabase.</p>
+      <p>A direct browser call to the verify RPC fails CORS on purpose — it stops you shipping your secret to the client. For a fully static site, deploy the <code>lifecheck-verify</code> Edge Function (in <code>supabase/functions/</code>): the browser sends only the <b>public</b> site key + token, and the function looks up the secret server-side and returns a CORS-enabled verdict. Your secret never leaves Supabase. Try it live on the <a href="/lifecheck/verify-test">token verifier</a>.</p>
       <pre class="code"><code><span class="cm">// deploy once:  supabase functions deploy lifecheck-verify --no-verify-jwt</span>
 <span class="kw">const</span> r = <span class="kw">await</span> <span class="fn">fetch</span>(
   <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/functions/v1/lifecheck-verify"</span>, {

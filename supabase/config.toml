@@ -1,0 +1,10 @@
+# Supabase project config (Swiftaw)
+# Deploy the browser-safe Lifecheck verifier with:
+#   supabase link --project-ref mwszvynzzugbowdngzab
+#   supabase functions deploy lifecheck-verify
+# verify_jwt=false below lets anonymous browsers call it (no --no-verify-jwt flag needed).
+
+project_id = "mwszvynzzugbowdngzab"
+
+[functions.lifecheck-verify]
+verify_jwt = false
