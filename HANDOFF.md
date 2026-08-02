@@ -22,6 +22,9 @@ mirrored to `main` (GitHub Pages deploy branch).
   Google Fonts / the GitHub CDN — local PNGs render, web fonts fall back.
 - **No em-dashes in widget copy**, no "reCAPTCHA" wording.
 - **Anti-abuse mechanism details stay OUT of public docs + served source.**
+- **Bump `BUILD` in `lifecheck/lifecheck.js` on every widget deploy** so the
+  embed iframe cache-busts (an hourly bucket is a safety net, but the bump gives
+  an instant refresh).
 
 ### ✅ Shipped this session
 - **Widget redesign (`lifecheck/embed.html`)**

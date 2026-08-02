@@ -17,6 +17,15 @@
 
   var VERSION = '1.2';
 
+  // Per-deploy cache-buster for the widget iframe. Without this the frame loads
+  // a constant "embed.html?v=1.2" URL, so a redeployed widget keeps serving the
+  // stale cached copy. BUMP `BUILD` on every widget deploy for an instant
+  // refresh; the hourly bucket below is a safety net so a forgotten bump still
+  // self-heals within ~1h. (Loading a NEW page renders a fresh iframe URL; an
+  // already-open verification is never disrupted mid-session.)
+  var BUILD = '2026.08.02.1';
+  var CACHE_BUST = BUILD + '.' + Math.floor(Date.now() / 3600000);
+
   // Resolve where THIS script is served from, so the widget iframe and the
   // postMessage origin check work no matter which domain hosts Lifecheck.
   var self = document.currentScript ||
@@ -61,7 +70,8 @@
 
     // frame that hosts the sandboxed challenge
     var iframe = document.createElement('iframe');
-    var src = EMBED_URL + '?v=' + VERSION + (w.sitekey ? '&k=' + encodeURIComponent(w.sitekey) : '') +
+    var src = EMBED_URL + '?v=' + VERSION + '&b=' + encodeURIComponent(CACHE_BUST) +
+      (w.sitekey ? '&k=' + encodeURIComponent(w.sitekey) : '') +
       '&host=' + encodeURIComponent(location.hostname);
     iframe.src = src;
     iframe.title = 'Lifecheck verification';
