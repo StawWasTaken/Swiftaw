@@ -171,8 +171,8 @@
 .state.live { color: var(--accent); background: rgba(254,248,61,.10); border: 1px solid rgba(254,248,61,.30); }
 .state.live .d { animation: liveBlink 1.6s ease infinite; }
 .state.cooking { color: var(--c-lilac); background: rgba(196,181,253,.08); border: 1px solid rgba(196,181,253,.22); }
-.state.shelved { color: var(--c-blue); background: rgba(125,211,252,.08); border: 1px solid rgba(125,211,252,.22); }
-.state.dreaming { color: var(--c-mint); background: rgba(134,239,172,.08); border: 1px solid rgba(134,239,172,.22); }
+.state.shelved { color: var(--c-blue); background: rgba(var(--blue-rgb),.08); border: 1px solid rgba(var(--blue-rgb),.22); }
+.state.dreaming { color: var(--c-green); background: rgba(var(--green-rgb),.08); border: 1px solid rgba(var(--green-rgb),.22); }
 .state.killed { color: #eb4545; background: rgba(235,69,69,.08); border: 1px solid rgba(235,69,69,.30); text-decoration: line-through; }
 @keyframes liveBlink { 0%,100%{opacity:1} 50%{opacity:.35} }
 

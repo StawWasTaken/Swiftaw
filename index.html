@@ -325,7 +325,7 @@
 }
 .card-product.notes {
   background: linear-gradient(160deg, #14242e 0%, #0e1a26 100%);
-  border-color: rgba(125,211,252,.25);
+  border-color: rgba(var(--blue-rgb),.25);
 }
 
 /* ─── why ─── */
@@ -356,6 +356,10 @@
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   letter-spacing: -3px;
 }
+/* three small rules, three brand colours (yellow stays the lead elsewhere) */
+.why.t1 .num { background: linear-gradient(135deg, var(--c-red),   #ff5c7f); -webkit-background-clip: text; background-clip: text; }
+.why.t2 .num { background: linear-gradient(135deg, var(--c-green), #6fe39a); -webkit-background-clip: text; background-clip: text; }
+.why.t3 .num { background: linear-gradient(135deg, var(--c-blue),  #7cd3fc); -webkit-background-clip: text; background-clip: text; }
 .why h4 { font-family: var(--font-display); font-size: 20px; font-weight: 800; margin: 10px 0 8px; }
 .why p { font-size: 14px; color: var(--muted-light); line-height: 1.6; }
 
@@ -680,7 +684,7 @@
         <span class="make-link" style="color:var(--c-lilac);">peek inside <svg style="width:12px;height:12px;fill:var(--c-lilac);"><use href="#i-building"/></svg></span>
       </a>
 
-      <a href="/newsroom" class="make-card reveal" style="transform: rotate(-.8deg); background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(125,211,252,.25);">
+      <a href="/newsroom" class="make-card reveal" style="transform: rotate(-.8deg); background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(45,175,251,.25);">
         <h3 style="color:var(--c-blue);">Newsroom.</h3>
         <p>the occasional party</p>
         <span class="make-link" style="color:var(--c-blue);">read <svg style="width:12px;height:12px;fill:var(--c-blue);"><use href="#i-calendar"/></svg></span>

@@ -27,9 +27,9 @@
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
   font-size: 13px; font-weight: 700;
-  color: var(--c-pink);
-  background: rgba(255,138,180,.08);
-  border: 1.5px solid rgba(255,138,180,.25);
+  color: var(--c-red);
+  background: rgba(var(--red-rgb),.10);
+  border: 1.5px solid rgba(var(--red-rgb),.28);
   padding: 7px 14px; border-radius: 100px;
   margin-bottom: 22px;
   transform: rotate(-2deg);
@@ -96,10 +96,10 @@
   transition: transform .25s, box-shadow .25s;
 }
 .pillar-card:hover { transform: rotate(0) translateY(-5px); box-shadow: 0 10px 0 0 var(--ink); }
-.pillar-card.p1 { transform: rotate(-2deg); background: linear-gradient(160deg, #2a1822 0%, #1c0e16 100%); border-color: rgba(255,138,180,.25); }
-.pillar-card.p2 { transform: rotate(1.5deg); background: linear-gradient(160deg, #1c1a2c 0%, #13111e 100%); border-color: rgba(196,181,253,.25); }
-.pillar-card.p3 { transform: rotate(-1deg); background: linear-gradient(160deg, #123326 0%, #0b1c17 100%); border-color: rgba(134,239,172,.25); }
-.pillar-card.p4 { transform: rotate(1.2deg); background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(125,211,252,.25); }
+.pillar-card.p1 { transform: rotate(-2deg); background: linear-gradient(160deg, #2a1822 0%, #1c0e16 100%); border-color: rgba(var(--red-rgb),.25); }
+.pillar-card.p2 { transform: rotate(1.5deg); background: linear-gradient(160deg, #1c1a2c 0%, #13111e 100%); border-color: rgba(var(--lilac-rgb),.25); }
+.pillar-card.p3 { transform: rotate(-1deg); background: linear-gradient(160deg, #123326 0%, #0b1c17 100%); border-color: rgba(var(--green-rgb),.25); }
+.pillar-card.p4 { transform: rotate(1.2deg); background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(var(--blue-rgb),.25); }
 .pillar-card .num {
   display: inline-flex; align-items: center; justify-content: center;
   width: 40px; height: 40px; border-radius: 12px;
@@ -111,10 +111,10 @@
 .pillar-card.p2 .num svg { fill: var(--c-lilac); }
 .pillar-card.p3 .num svg { fill: var(--c-mint); }
 .pillar-card.p4 .num svg { fill: var(--c-blue); }
-.pillar-card.p1 .num { background: rgba(255,138,180,.14); }
-.pillar-card.p2 .num { background: rgba(196,181,253,.14); }
-.pillar-card.p3 .num { background: rgba(134,239,172,.14); }
-.pillar-card.p4 .num { background: rgba(125,211,252,.14); }
+.pillar-card.p1 .num { background: rgba(var(--red-rgb),.16); }
+.pillar-card.p2 .num { background: rgba(var(--lilac-rgb),.14); }
+.pillar-card.p3 .num { background: rgba(var(--green-rgb),.16); }
+.pillar-card.p4 .num { background: rgba(var(--blue-rgb),.16); }
 .pillar-card h3 { font-family: var(--font-display); font-size: 21px; font-weight: 800; letter-spacing: -.4px; margin-bottom: 10px; }
 .pillar-card p { font-size: 14.5px; color: var(--text); line-height: 1.6; }
 

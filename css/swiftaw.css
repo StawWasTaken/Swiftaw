@@ -39,6 +39,14 @@
   --c-red:   #fd0235;
   --c-green: #36c05f;
 
+  /* brand colours as rgb triples, so tints/borders derive from the REAL
+     hexes (rgba(var(--red-rgb), a)) instead of stale pastel values. */
+  --red-rgb:    253, 2, 53;
+  --green-rgb:  54, 192, 95;
+  --blue-rgb:   45, 175, 251;
+  --yellow-rgb: 253, 248, 70;
+  --lilac-rgb:  196, 181, 253;  /* secondary */
+
   --font-display: 'Syne', sans-serif;
   --font-body: 'DM Sans', sans-serif;
 
@@ -79,7 +87,7 @@ body::before {
   animation: blobDrift 18s ease-in-out infinite;
 }
 .bg-blob.b1 { top: -200px; right: -180px; }
-.bg-blob.b2 { bottom: -280px; left: -200px; background: radial-gradient(circle, rgba(125,211,252,.028), transparent 65%); animation-delay: -8s; }
+.bg-blob.b2 { bottom: -280px; left: -200px; background: radial-gradient(circle, rgba(var(--blue-rgb),.028), transparent 65%); animation-delay: -8s; }
 @keyframes blobDrift {
   0%,100% { transform: translate(0,0) scale(1); }
   50% { transform: translate(40px,30px) scale(1.05); }
@@ -361,9 +369,9 @@ body::before {
 
 /* tinted sticker variants */
 .sticker.tint-yellow { background: linear-gradient(160deg, #2a2912 0%, #1c1a08 100%); border-color: rgba(254,248,61,.30); }
-.sticker.tint-pink   { background: linear-gradient(160deg, #2a1822 0%, #1c0e16 100%); border-color: rgba(255,138,180,.30); }
-.sticker.tint-blue   { background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(125,211,252,.30); }
-.sticker.tint-mint   { background: linear-gradient(160deg, #142a22 0%, #0e1c17 100%); border-color: rgba(134,239,172,.30); }
+.sticker.tint-pink   { background: linear-gradient(160deg, #2a1822 0%, #1c0e16 100%); border-color: rgba(var(--red-rgb),.30); }
+.sticker.tint-blue   { background: linear-gradient(160deg, #142433 0%, #0e1a26 100%); border-color: rgba(var(--blue-rgb),.30); }
+.sticker.tint-mint   { background: linear-gradient(160deg, #142a22 0%, #0e1c17 100%); border-color: rgba(var(--green-rgb),.30); }
 .sticker.tint-lilac  { background: linear-gradient(160deg, #1c1a2c 0%, #13111e 100%); border-color: rgba(196,181,253,.30); }
 .sticker.tint-peach  { background: linear-gradient(160deg, #2a1d12 0%, #1c130a 100%); border-color: rgba(253,186,116,.30); }
 
@@ -381,9 +389,11 @@ body::before {
 }
 .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
 .chip.yellow { background: rgba(254,248,61,.08); color: var(--accent); border-color: rgba(254,248,61,.22); }
-.chip.pink   { background: rgba(255,138,180,.08); color: var(--c-pink); border-color: rgba(255,138,180,.22); }
-.chip.blue   { background: rgba(125,211,252,.08); color: var(--c-blue); border-color: rgba(125,211,252,.22); }
-.chip.mint   { background: rgba(134,239,172,.08); color: var(--c-mint); border-color: rgba(134,239,172,.22); }
+.chip.pink,
+.chip.red    { background: rgba(var(--red-rgb),.10);   color: var(--c-red);   border-color: rgba(var(--red-rgb),.28); }
+.chip.blue   { background: rgba(var(--blue-rgb),.08);  color: var(--c-blue);  border-color: rgba(var(--blue-rgb),.24); }
+.chip.mint,
+.chip.green  { background: rgba(var(--green-rgb),.08); color: var(--c-green); border-color: rgba(var(--green-rgb),.24); }
 .chip.lilac  { background: rgba(196,181,253,.08); color: var(--c-lilac); border-color: rgba(196,181,253,.22); }
 .chip.peach  { background: rgba(253,186,116,.08); color: var(--c-peach); border-color: rgba(253,186,116,.22); }
 
@@ -440,9 +450,9 @@ body::before {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-display);
   font-size: 10.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: #86efac;
-  background: rgba(134,239,172,.10);
-  border: 1px solid rgba(134,239,172,.25);
+  color: var(--c-green);
+  background: rgba(var(--green-rgb),.10);
+  border: 1px solid rgba(var(--green-rgb),.25);
   padding: 6px 12px; border-radius: 100px;
 }
 .live-chip.offline { color: var(--muted-light); background: rgba(255,255,255,.04); border-color: var(--border); }
