@@ -77,6 +77,10 @@
   function inline(t) {
     t = escHTML(t);
     t = t.replace(/`([^`]+)`/g, function (m, c) { return '<code class="inline">' + c + '</code>'; });
+    // images ![alt](url) — must run before links; Pulsar embeds images this way
+    t = t.replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, function (m, alt, url) {
+      return '<img class="msg-embed-img" src="' + url + '" alt="' + alt + '" loading="lazy" onerror="this.classList.add(\'broken\')">';
+    });
     t = t.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     t = t.replace(/\*([^*]+)\*/g, '<em>$1</em>');
     t = t.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
@@ -285,9 +289,15 @@
     return '<details class="think"><summary><svg class="ic-sm"><use href="#i-brain"/></svg> Thinking<svg class="ic-sm chev"><use href="#i-cd"/></svg></summary><div class="think-body">' + renderMarkdown(txt) + '</div></details>';
   }
   function userTools(idx) {
-    var w = document.createElement('div'); w.className = 'msg-tools';
-    w.innerHTML = tbtn('copy', 'i-copy', 'Copy') + tbtn('edit', 'i-pen', 'Edit prompt');
-    w.addEventListener('click', function (e) { var b = e.target.closest('.msg-tool'); if (b) msgAction(b.dataset.act, idx, w); });
+    var t = activeThread(); var m = t && t.messages[idx];
+    var g = t && m && t.vgroups && t.vgroups[m.vg];
+    var pager = (g && g.versions.length > 1) ?
+      '<div class="ver-pager"><button class="vp-btn" data-act="vprev" aria-label="Previous version">&lsaquo;</button>' +
+      '<span class="vp-n">' + (g.active + 1) + ' / ' + g.versions.length + '</span>' +
+      '<button class="vp-btn" data-act="vnext" aria-label="Next version">&rsaquo;</button></div>' : '';
+    var w = document.createElement('div'); w.className = 'msg-tools' + (pager ? ' pinned' : '');
+    w.innerHTML = tbtn('edit', 'i-pen', 'Edit prompt') + tbtn('copy', 'i-copy', 'Copy') + pager;
+    w.addEventListener('click', function (e) { var b = e.target.closest('.msg-tool, .vp-btn'); if (b) msgAction(b.dataset.act, idx, w); });
     return w;
   }
   function aiTools(idx, m) {
@@ -306,6 +316,8 @@
     else if (act === 'edit') { editUserMessage(idx); }
     else if (act === 'regen') { regenerate(idx); }
     else if (act === 'branch') { branchFrom(idx); }
+    else if (act === 'vprev') { switchVersion(idx, -1); }
+    else if (act === 'vnext') { switchVersion(idx, 1); }
     else if (act === 'up' || act === 'down') { setFeedback(idx, act, toolsEl); }
   }
   function setFeedback(idx, val, toolsEl) {
@@ -333,16 +345,51 @@
     ta.addEventListener('input', grow); grow(); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
     function cancel() { renderStream(); }
     function save() {
-      var v = ta.value.trim(); if (!v) return;
-      m.content = v; m.ts = now();
-      t.messages = t.messages.slice(0, idx + 1); // drop the old answer + anything after
-      if (idx === 0 || !t.messages.slice(0, idx).some(function (x) { return x.role === 'user'; })) { t.title = v.slice(0, 42); $('#threadTitle').textContent = t.title; }
+      var v = ta.value.trim(); if (!v || v === m.content) return cancel();
+      t.vgroups = t.vgroups || {};
+      var g = t.vgroups[m.vg] || (t.vgroups[m.vg] = { versions: [{ content: m.content, ts: m.ts }], active: 0 });
+      // snapshot the version we're leaving (its prompt text + everything after it)
+      g.versions[g.active].content = m.content; g.versions[g.active].tail = cloneTail(t, idx);
+      // new version becomes active with a fresh (empty) tail
+      g.versions.push({ content: v, ts: now(), tail: [] }); g.active = g.versions.length - 1;
+      m.content = v; m.ts = g.versions[g.active].ts;
+      t.messages = t.messages.slice(0, idx + 1);
+      titleIfFirst(t, idx, v);
       t.updatedAt = now(); saveThreads(); renderStream(); renderSidebar();
+      stock('user', v);
       respondTo(v);
     }
     box.querySelector('.me-cancel').addEventListener('click', cancel);
     box.querySelector('.me-save').addEventListener('click', save);
     ta.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); } else if (e.key === 'Escape') cancel(); });
+  }
+  function cloneTail(t, idx) { return t.messages.slice(idx + 1).map(function (m) { return JSON.parse(JSON.stringify(m)); }); }
+  function titleIfFirst(t, idx, v) {
+    if (!t.messages.slice(0, idx).some(function (x) { return x.role === 'user'; })) { t.title = v.slice(0, 42) || 'New chat'; $('#threadTitle').textContent = t.title; }
+  }
+  function switchVersion(idx, dir) {
+    if (state.streaming) return;
+    var t = activeThread(); if (!t) return; var m = t.messages[idx]; if (!m || !m.vg) return;
+    var g = t.vgroups && t.vgroups[m.vg]; if (!g) return;
+    var k = g.active + dir; if (k < 0 || k >= g.versions.length) return;
+    g.versions[g.active].content = m.content; g.versions[g.active].tail = cloneTail(t, idx);
+    g.active = k;
+    m.content = g.versions[k].content;
+    t.messages = t.messages.slice(0, idx + 1).concat((g.versions[k].tail || []).map(function (x) { return JSON.parse(JSON.stringify(x)); }));
+    titleIfFirst(t, idx, m.content);
+    t.updatedAt = now(); saveThreads(); renderStream(); renderSidebar();
+  }
+  /* stock data into Pulsar's DB (append-only). Silent until schema.sql is run. */
+  var PULSAR_DB = { url: 'https://xrmmedxbqmwjcucyjosl.supabase.co', key: 'sb_publishable_ObemhvadYmuXSJchH-SpzA_W4awNZtM' };
+  function stock(role, content, extra) {
+    if (!content) return;
+    try {
+      fetch(PULSAR_DB.url + '/rest/v1/pulsar_messages', {
+        method: 'POST', keepalive: true,
+        headers: { apikey: PULSAR_DB.key, Authorization: 'Bearer ' + PULSAR_DB.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify(Object.assign({ user_ref: state.uid || null, conv_ref: state.activeId || null, role: role, content: content }, extra || {}))
+      }).catch(function () {});
+    } catch (e) {}
   }
   function regenerate(aiIdx) {
     var t = activeThread(); var userIdx = aiIdx - 1;
@@ -363,10 +410,13 @@
     if (!text && !state.attachments.length) return;
     if (state.streaming) return;
     var t = activeThread(); if (!t) { newThread(); t = activeThread(); }
-    var msg = { role: 'user', content: text, ts: now(), attachments: state.attachments.slice() };
+    var vg = uid();
+    var msg = { role: 'user', content: text, ts: now(), attachments: state.attachments.slice(), vg: vg };
     t.messages.push(msg);
+    t.vgroups = t.vgroups || {}; t.vgroups[vg] = { versions: [{ content: text, ts: msg.ts }], active: 0 };
     if (t.messages.filter(function (m) { return m.role === 'user'; }).length === 1) { t.title = text.slice(0, 42) || 'New chat'; $('#threadTitle').textContent = t.title; }
     t.updatedAt = now(); saveThreads();
+    stock('user', text);
     $('#composerInput').value = ''; state.attachments = []; renderAttachments(); autoGrow(); updateCounter(); setElicitations([]);
     renderStream(); renderSidebar();
     respondTo(text);
@@ -411,6 +461,7 @@
       if (srcs.length) pr.insertAdjacentHTML('afterend', sourcesHTML(srcs));
       var aiMsg = { role: 'assistant', content: full, ts: now(), reasoning: payload.reasoning, sources: srcs, feedback: null };
       t.messages.push(aiMsg); t.updatedAt = now(); saveThreads(); renderSidebar();
+      if (!state.abort) stock('assistant', full, { reasoning: payload.reasoning, sources: srcs });
       // attach tools + elicitations
       var idx = t.messages.length - 1;
       row.querySelector('.body').appendChild(aiTools(idx, aiMsg));
@@ -434,6 +485,14 @@
         reasoning: 'Introduce myself plainly and a little warmly.',
         answer: 'I\'m **Supernova**, running Swiftaw\'s own model, **Pulsar**. Think of me as your assistant here. Ask me anything and I\'ll help you think it through, write it, or build it.',
         followups: ['What can you do?', 'Who made you?', 'Let\'s get started']
+      };
+    }
+    if (/image|picture|photo|show me (a|an|the)|diagram|render|what does .* look like/.test(p)) {
+      return {
+        reasoning: 'They want to see something, so I\'ll embed an image right in the reply rather than just describing it.',
+        answer: 'Here you go:\n\n![The Crab Nebula, a supernova remnant](https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Crab_Nebula.jpg/600px-Crab_Nebula.jpg)\n\nThat\'s the Crab Nebula, the leftovers of a supernova we\'ve watched for centuries. Want a different one or a closer look?',
+        sources: [{ title: 'Crab Nebula - Wikimedia Commons', url: 'https://commons.wikimedia.org/wiki/File:Crab_Nebula.jpg' }],
+        followups: ['Show me another', 'What am I looking at?', 'Make it bigger']
       };
     }
     if (/code|html|button|landing|component|function|script/.test(p)) {

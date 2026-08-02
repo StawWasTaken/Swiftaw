@@ -84,6 +84,18 @@ the chat uses the in-browser simulation. To go live: run schema, seed Swiftaw's
 uuid into `pulsar_trusted_accounts`, run the feed, deploy the function, then
 swap `respondTo()` in `chat.js` from `buildReply()` to a fetch to `pulsar-chat`.
 
+**More chat features (latest):** the chat now **stocks every turn** into the AI
+DB (`stock()` → `POST /rest/v1/pulsar_messages` with the publishable key;
+silent until `schema.sql` is run). **Prompt version pager** — editing a prompt
+keeps the old version + its downstream messages; a `‹ n/m ›` pager under the
+user message switches between them (`vgroups`/`switchVersion` in chat.js).
+**Image embeds** — `![alt](url)` renders as `.msg-embed-img` (broken images
+hidden); `buildReply` + the Edge Function persona let Pulsar show pictures.
+**Source chips fixed** (title stacked over domain, no overlap). Schema reframed
+to Pulsar's **own generative model** (`pulsar_corpus`/`pulsar_vocab`/
+`pulsar_ngrams`) — no external model underneath. Ingestion RLS = anon INSERT
+only (no anon SELECT); reads stay service-role.
+
 **Still deferred (user-provided, for the real AI later):**
 - The chat interface visual is **inspired by Fortized**'s chat (rows/avatars).
   When the real model lands, deepen the Fortized parity if wanted.

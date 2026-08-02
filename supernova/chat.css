@@ -366,13 +366,13 @@ body.acct-open .side-foot .acct-trigger .cv { transform: rotate(180deg); }
 .msg-sources .src-h { display: flex; align-items: center; gap: 7px; font-family: var(--font-display); font-weight: 700; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted-light); margin-bottom: 8px; }
 .msg-sources .src-h .ic-sm { fill: var(--sn-blue); }
 .msg-sources .src-list { display: flex; gap: 8px; flex-wrap: wrap; }
-.src-chip { display: inline-flex; align-items: center; gap: 8px; max-width: 240px; padding: 7px 11px 7px 8px; border-radius: 100px; background: var(--panel); border: 1.5px solid var(--border); transition: .12s; }
+.src-chip { display: inline-flex; align-items: center; gap: 9px; max-width: 240px; padding: 8px 13px 8px 9px; border-radius: 13px; background: var(--panel); border: 1.5px solid var(--border); transition: border-color .12s, transform .12s; overflow: hidden; }
 .src-chip:hover { border-color: rgba(var(--sn-blue-rgb),.4); transform: translateY(-1px); }
-.src-chip .fav { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; background: var(--bg-2); }
-.src-chip .st { min-width: 0; }
-.src-chip .st .tt { font-size: 12.5px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
-.src-chip .st .dm { font-size: 10.5px; color: var(--muted); }
-.src-chip .num { font-family: var(--font-display); font-weight: 800; font-size: 10.5px; color: var(--sn-blue); background: rgba(var(--sn-blue-rgb),.12); border-radius: 100px; padding: 1px 6px; }
+.src-chip .num { flex-shrink: 0; font-family: var(--font-display); font-weight: 800; font-size: 10.5px; color: var(--sn-blue); background: rgba(var(--sn-blue-rgb),.12); border-radius: 100px; padding: 2px 7px; }
+.src-chip .fav { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; background: var(--bg-2); object-fit: cover; }
+.src-chip .st { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.src-chip .st .tt { display: block; font-size: 12.5px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 165px; }
+.src-chip .st .dm { display: block; font-size: 10.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 165px; }
 
 /* ═══ AI TRAINER ═══ */
 .trainer { position: fixed; inset: 0; z-index: 160; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(3,5,9,.74); }
@@ -432,3 +432,13 @@ body.acct-open .side-foot .acct-trigger .cv { transform: rotate(180deg); }
 .msg-edit .me-cancel:hover { color: #fff; }
 .msg-edit .me-save { color: #0d1117; background: linear-gradient(120deg, var(--sn-blue), var(--sn-pink)); border: 1.5px solid var(--ink); box-shadow: 0 3px 0 0 var(--ink); }
 .msg-edit .me-save:active { transform: translateY(2px); box-shadow: 0 1px 0 0 var(--ink); }
+
+/* embedded images (Pulsar can show pictures) */
+.prose .msg-embed-img { display: block; max-width: min(440px, 100%); width: auto; height: auto; border-radius: 14px; border: 1.5px solid var(--border); margin: 6px 0 12px; background: var(--panel); }
+.prose .msg-embed-img.broken { display: none; }
+
+/* prompt version pager (‹ 2 / 2 ›) */
+.ver-pager { display: inline-flex; align-items: center; gap: 1px; margin-left: 4px; }
+.ver-pager .vp-btn { width: 24px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--muted-light); font-size: 17px; line-height: 1; border-radius: 7px; }
+.ver-pager .vp-btn:hover { color: #fff; background: rgba(255,255,255,.07); }
+.ver-pager .vp-n { font-size: 11.5px; color: var(--muted); font-family: 'Roboto Mono', monospace; min-width: 36px; text-align: center; }

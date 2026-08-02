@@ -45,6 +45,11 @@ Truth & trust:
 Sources:
 - When you used the web, cite the sources you actually used. Return them so the
   UI can show the link + the site's favicon (like Grok). Never invent sources.
+
+Images:
+- When it genuinely helps (the user asks, or a picture is the clearest answer),
+  embed an image inline with markdown: ![short description](https://image-url).
+  Only use real, working image URLs. Don't decorate every reply with images.
 `.trim();
 
 // ── web search -> [{title,url,snippet}] ──────────────────────────
@@ -65,14 +70,17 @@ function needsFreshFacts(text: string): boolean {
 }
 
 // ── the model call ───────────────────────────────────────────────
-// TODO: replace with a call to OUR Pulsar model once it is served.
-// Until then this returns a small honest placeholder so the pipeline
-// (auth -> search -> sources -> persist) is end-to-end runnable.
+// This calls OUR OWN Pulsar generator (the model trained from the data in
+// this database via schema.sql -> pulsar_ngrams / pulsar_corpus). It is NOT
+// another company's model running underneath. PULSAR_MODEL_URL points at our
+// own inference server once training has produced a model. Until then this
+// returns an honest placeholder so the pipeline (auth -> search -> sources ->
+// persist) is end-to-end runnable.
 async function callPulsar(_messages: unknown[], _system: string, _sources: unknown[]) {
   const url = Deno.env.get("PULSAR_MODEL_URL");
   if (!url) {
     return {
-      content: "Pulsar's model server isn't connected yet, so this is a placeholder reply. The rest of the pipeline (auth, web search, sources, logging) is live.",
+      content: "Pulsar's own model isn't trained yet (run schema.sql, stock data, then train). The rest of the pipeline (auth, web search, sources, logging) is live.",
       reasoning: "No PULSAR_MODEL_URL set; returning a stub.",
     };
   }

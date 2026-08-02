@@ -34,11 +34,21 @@ the Trainer: pick the model, toggle which data sources it trains on, and run
 the chat UI writes these to `localStorage`; point it at the AI Supabase to
 persist (the tables are ready).
 
+## Our own model (not someone else's)
+
+Pulsar generates from **its own data**, it does not run another company's model
+underneath. `schema.sql` sets up the model's parameters as data:
+`pulsar_corpus` (training text), `pulsar_vocab` + `pulsar_ngrams` (learned
+frequencies). A training job tokenises the corpus and fills the n-grams; the
+generator then samples the next word from what Pulsar has actually seen. That's
+a real (if simple) statistical language model to start; it upgrades to a neural
+one later without changing the data pipeline.
+
 ## Status — honest
 
-- ✅ Schema, Lifecheck feed, Edge Function scaffold, persona + trust rules, sources UI, Trainer UI.
-- ⏳ **Two things need real infrastructure before Pulsar actually thinks:**
-  1. **A served model.** `callPulsar()` has a clear TODO. Point `PULSAR_MODEL_URL` at our model endpoint (or a provider while we train ours). Until then the chat uses the in-browser simulation.
+- ✅ Schema (incl. the generative-model tables), Lifecheck feed, Edge Function scaffold, persona + trust + image rules, sources UI, image embeds, Trainer UI. The chat now **stocks every turn** into `pulsar_messages` the moment `schema.sql` is run.
+- ⏳ **Two things still to build before Pulsar generates for real:**
+  1. **The trainer + generator.** A job that fills `pulsar_ngrams` from the stocked data, and `callPulsar()` pointed at our own inference (`PULSAR_MODEL_URL`). Until then the chat uses the in-browser simulation.
   2. **A search provider.** `webSearch()` returns `[]` until `SEARCH_API_KEY` + a provider (Brave / Tavily / SerpAPI / Bing) are wired.
 
 ## Wiring the frontend to the real backend (when ready)
