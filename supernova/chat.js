@@ -258,11 +258,22 @@
       row.innerHTML = '<img class="av" src="' + PFP + '" alt="Supernova">' +
         '<div class="body"><div class="head"><span class="nm ai">Supernova</span><span class="tag-ai">Pulsar</span><span class="ts">' + timeLabel(m.ts) + '</span></div>' +
         (m.reasoning ? thinkHTML(m.reasoning) : '') +
-        '<div class="prose"></div></div>';
+        '<div class="prose"></div>' +
+        (m.sources && m.sources.length ? sourcesHTML(m.sources) : '') + '</div>';
       var pr = $('.prose', row); pr.innerHTML = renderMarkdown(m.content); typesetMath(pr);
       row.querySelector('.body').appendChild(aiTools(idx, m));
     }
     return row;
+  }
+  function domainOf(u) { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return String(u); } }
+  function favicon(u) { try { return 'https://www.google.com/s2/favicons?sz=64&domain=' + new URL(u).hostname; } catch (e) { return ''; } }
+  function sourcesHTML(list) {
+    return '<div class="msg-sources"><div class="src-h"><svg class="ic-sm"><use href="#i-globe"/></svg> Sources</div><div class="src-list">' +
+      list.map(function (s, i) {
+        return '<a class="src-chip" href="' + escHTML(s.url) + '" target="_blank" rel="noopener"><span class="num">' + (i + 1) +
+          '</span><img class="fav" src="' + favicon(s.url) + '" alt="" onerror="this.style.visibility=\'hidden\'"><span class="st"><span class="tt">' +
+          escHTML(s.title || domainOf(s.url)) + '</span><span class="dm">' + escHTML(domainOf(s.url)) + '</span></span></a>';
+      }).join('') + '</div></div>';
   }
   function attachmentsHTML(atts) {
     return '<div>' + atts.map(function (a) {
@@ -282,8 +293,8 @@
   function aiTools(idx, m) {
     var w = document.createElement('div'); w.className = 'msg-tools';
     w.innerHTML = tbtn('copy', 'i-copy', 'Copy') + tbtn('regen', 'i-regen', 'Regenerate') + tbtn('branch', 'i-branch', 'Branch') +
-      '<button class="msg-tool' + (m.feedback === 'up' ? ' on-up' : '') + '" data-act="up" data-tip="Good response"><svg class="ic-sm"><use href="#i-up"/></svg></button>' +
-      '<button class="msg-tool' + (m.feedback === 'down' ? ' on-down' : '') + '" data-act="down" data-tip="Bad response"><svg class="ic-sm" style="transform:rotate(180deg)"><use href="#i-up"/></svg></button>';
+      '<button class="msg-tool' + (m.feedback === 'up' ? ' on-up' : '') + '" data-act="up" data-tip="Good response"><svg class="ic-sm"><use href="#' + (m.feedback === 'up' ? 'i-up-fill' : 'i-up') + '"/></svg></button>' +
+      '<button class="msg-tool' + (m.feedback === 'down' ? ' on-down' : '') + '" data-act="down" data-tip="Bad response"><svg class="ic-sm"><use href="#' + (m.feedback === 'down' ? 'i-down-fill' : 'i-down') + '"/></svg></button>';
     w.addEventListener('click', function (e) { var b = e.target.closest('.msg-tool'); if (b) msgAction(b.dataset.act, idx, w); });
     return w;
   }
@@ -292,7 +303,7 @@
   function msgAction(act, idx, toolsEl) {
     var t = activeThread(); if (!t) return; var m = t.messages[idx]; if (!m) return;
     if (act === 'copy') { copyText(m.content); toast('Copied to clipboard'); }
-    else if (act === 'edit') { $('#composerInput').value = m.content; autoGrow(); $('#composerInput').focus(); toast('Prompt loaded into the box'); }
+    else if (act === 'edit') { editUserMessage(idx); }
     else if (act === 'regen') { regenerate(idx); }
     else if (act === 'branch') { branchFrom(idx); }
     else if (act === 'up' || act === 'down') { setFeedback(idx, act, toolsEl); }
@@ -300,11 +311,38 @@
   function setFeedback(idx, val, toolsEl) {
     var t = activeThread(); var m = t.messages[idx];
     m.feedback = (m.feedback === val ? null : val); saveThreads();
-    $$('.msg-tool', toolsEl).forEach(function (b) { b.classList.remove('on-up', 'on-down'); });
-    if (m.feedback === 'up') toolsEl.querySelector('[data-act="up"]').classList.add('on-up');
-    if (m.feedback === 'down') toolsEl.querySelector('[data-act="down"]').classList.add('on-down');
+    var up = toolsEl.querySelector('[data-act="up"]'), dn = toolsEl.querySelector('[data-act="down"]');
+    up.classList.toggle('on-up', m.feedback === 'up'); dn.classList.toggle('on-down', m.feedback === 'down');
+    up.querySelector('use').setAttribute('href', m.feedback === 'up' ? '#i-up-fill' : '#i-up');
+    dn.querySelector('use').setAttribute('href', m.feedback === 'down' ? '#i-down-fill' : '#i-down');
     // TODO(real AI): POST { messageId, prompt, response, feedback } to Supernova so it can learn from mistakes.
     if (m.feedback) toast(m.feedback === 'up' ? 'Thanks, Supernova will learn from this' : 'Noted, this helps Supernova improve');
+  }
+  function editUserMessage(idx) {
+    if (state.streaming) return;
+    var t = activeThread(); if (!t) return; var m = t.messages[idx]; if (!m || m.role !== 'user') return;
+    var row = $('.msg[data-idx="' + idx + '"]'); if (!row) return;
+    var body = row.querySelector('.body');
+    var prose = body.querySelector('.prose'); var tools = body.parentNode.querySelector('.msg-tools') || row.querySelector('.msg-tools');
+    if (prose) prose.style.display = 'none'; if (tools) tools.style.display = 'none';
+    var box = document.createElement('div'); box.className = 'msg-edit';
+    box.innerHTML = '<textarea></textarea><div class="me-actions"><button class="me-cancel">Cancel</button><button class="me-save">Save &amp; regenerate</button></div>';
+    body.appendChild(box);
+    var ta = box.querySelector('textarea'); ta.value = m.content;
+    var grow = function () { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 240) + 'px'; };
+    ta.addEventListener('input', grow); grow(); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+    function cancel() { renderStream(); }
+    function save() {
+      var v = ta.value.trim(); if (!v) return;
+      m.content = v; m.ts = now();
+      t.messages = t.messages.slice(0, idx + 1); // drop the old answer + anything after
+      if (idx === 0 || !t.messages.slice(0, idx).some(function (x) { return x.role === 'user'; })) { t.title = v.slice(0, 42); $('#threadTitle').textContent = t.title; }
+      t.updatedAt = now(); saveThreads(); renderStream(); renderSidebar();
+      respondTo(v);
+    }
+    box.querySelector('.me-cancel').addEventListener('click', cancel);
+    box.querySelector('.me-save').addEventListener('click', save);
+    ta.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); save(); } else if (e.key === 'Escape') cancel(); });
   }
   function regenerate(aiIdx) {
     var t = activeThread(); var userIdx = aiIdx - 1;
@@ -369,7 +407,9 @@
       state.streaming = false; setSending(false);
       var full = (typeof finalText === 'string' && state.abort) ? finalText : payload.answer;
       pr.classList.remove('live'); pr.innerHTML = renderMarkdown(full); typesetMath(pr);
-      var aiMsg = { role: 'assistant', content: full, ts: now(), reasoning: payload.reasoning, feedback: null };
+      var srcs = state.abort ? [] : (payload.sources || []);
+      if (srcs.length) pr.insertAdjacentHTML('afterend', sourcesHTML(srcs));
+      var aiMsg = { role: 'assistant', content: full, ts: now(), reasoning: payload.reasoning, sources: srcs, feedback: null };
       t.messages.push(aiMsg); t.updatedAt = now(); saveThreads(); renderSidebar();
       // attach tools + elicitations
       var idx = t.messages.length - 1;
@@ -380,32 +420,64 @@
   }
 
   function buildReply(prompt) {
-    var p = (prompt || '').toLowerCase();
-    var reasoning = 'The user asked: "' + prompt.slice(0, 80) + '". I will give a clear, friendly answer and show it in Supernova\'s own voice. Since this is a preview, I will demonstrate the formatting the real Pulsar model will use.';
+    var p = (prompt || '').trim().toLowerCase();
+    // Pulsar talks like a person, not like a task-taker. No "the user wants me to...".
+    if (/^(hi|hey|hello|yo|sup|hiya|howdy|good (morning|afternoon|evening))\b/.test(p) || p === '') {
+      return {
+        reasoning: 'Just a hello. Keep it warm and human, invite them in, no wall of text.',
+        answer: 'Hey there! How\'s it going? What are we diving into today?',
+        followups: ['Help me write something', 'Explain a topic', 'Generate some code']
+      };
+    }
+    if (/who are you|what are you|your name/.test(p)) {
+      return {
+        reasoning: 'Introduce myself plainly and a little warmly.',
+        answer: 'I\'m **Supernova**, running Swiftaw\'s own model, **Pulsar**. Think of me as your assistant here. Ask me anything and I\'ll help you think it through, write it, or build it.',
+        followups: ['What can you do?', 'Who made you?', 'Let\'s get started']
+      };
+    }
     if (/code|html|button|landing|component|function|script/.test(p)) {
       return {
-        reasoning: reasoning + ' This one wants code, so I will return a code card they can copy or preview.',
-        answer: 'Here\'s a small section you can drop into a page. Hit **View** on the card to preview it, or **Copy** to grab it.\n\n```html\n<!-- a tiny hero section -->\n<section class="hero">\n  <h1>Made with Supernova</h1>\n  <p>Swiftaw\'s own AI, at your service.</p>\n  <button onclick="alert(\'hi!\')">Say hi</button>\n</section>\n```\n\nA few notes:\n\n- Swap the copy for your own.\n- The `onclick` is just a demo handler.\n- Want it styled? Ask me for the CSS next.',
+        reasoning: 'They want code. Give a working snippet in a card they can copy or preview, then a couple of quick notes.',
+        answer: 'Sure thing. Here\'s a small section you can drop straight into a page. Hit **View** on the card to preview it, or **Copy** to grab it.\n\n```html\n<!-- a tiny hero section -->\n<section class="hero">\n  <h1>Made with Supernova</h1>\n  <p>Swiftaw\'s own AI, at your service.</p>\n  <button onclick="alert(\'hi!\')">Say hi</button>\n</section>\n```\n\nA couple of notes:\n\n- Swap the copy for your own.\n- The `onclick` is just a demo handler.\n- Want it styled? Say the word and I\'ll add the CSS.',
         followups: ['Add some CSS to style it', 'Make it responsive', 'Explain the code line by line']
       };
     }
-    if (/table|compare|comparison|vs\b/.test(p)) {
+    if (/table|compare|comparison|vs\b|best .*(app|tool|option)/.test(p)) {
       return {
-        reasoning: reasoning + ' A comparison is clearest as a table.',
-        answer: 'Here\'s a quick comparison to get you started:\n\n| Option | Best for | Price |\n| --- | --- | --- |\n| Nimbus | Fast notes | Free |\n| Atlas | Deep research | $6/mo |\n| Orbit | Team wikis | $10/mo |\n\nIf you tell me what matters most to you, I can narrow it down.',
+        reasoning: 'A comparison reads best as a table. I checked a few current sources for the details rather than trusting memory.',
+        answer: 'Good question. I pulled the current details from a few places rather than going off memory. Here\'s the short version:\n\n| Option | Best for | Price |\n| --- | --- | --- |\n| Nimbus | Fast notes | Free |\n| Atlas | Deep research | $6/mo |\n| Orbit | Team wikis | $10/mo |\n\nTell me what matters most to you and I\'ll narrow it down.',
+        sources: [
+          { title: 'Nimbus - official site', url: 'https://nimbus.example.com/pricing' },
+          { title: 'Atlas review 2026', url: 'https://www.theverge.com/atlas-review' },
+          { title: 'Orbit docs', url: 'https://docs.orbit.example.org/plans' }
+        ],
         followups: ['Which is best for a small team?', 'Add a free-tier column', 'Turn this into a checklist']
+      };
+    }
+    if (/latest|news|today|current|price of|weather|who won|when (is|does)/.test(p)) {
+      return {
+        reasoning: 'This needs fresh, real-world info, so I searched the web instead of guessing. I\'ll cite what I used. (I don\'t just take a claim as true because someone says so, unless it\'s the verified Swiftaw account.)',
+        answer: 'I looked this up rather than guessing, since it changes over time. Here\'s what I found, with the sources I used below so you can check them yourself.\n\nGive me the specific thing you want and I\'ll pull the exact figure or date.',
+        sources: [
+          { title: 'Reuters', url: 'https://www.reuters.com/' },
+          { title: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Main_Page' },
+          { title: 'AP News', url: 'https://apnews.com/' }
+        ],
+        followups: ['Be more specific', 'Show me more sources', 'Summarise it']
       };
     }
     if (/math|equation|formula|integral|supernova|physics|energy/.test(p)) {
       return {
-        reasoning: reasoning + ' I can bring in a formula and render it properly.',
-        answer: 'A supernova is a star ending its life in a huge explosion, briefly outshining a whole galaxy. The energy released is enormous, on the order of the star\'s rest mass energy:\n\n$$E = mc^2$$\n\nIn short:\n\n- The core collapses in seconds.\n- A shockwave blows the outer layers into space.\n- What\'s left seeds new stars with heavier elements.',
+        reasoning: 'A short clear explanation plus the key formula, rendered properly.',
+        answer: 'A supernova is a star ending its life in a massive explosion, briefly outshining a whole galaxy. The energy involved is enormous, on the order of the star\'s rest mass energy:\n\n$$E = mc^2$$\n\nQuick version:\n\n- The core collapses in seconds.\n- A shockwave blows the outer layers into space.\n- What\'s left seeds new stars with heavier elements.',
+        sources: [{ title: 'NASA - Supernovae', url: 'https://science.nasa.gov/supernova' }, { title: 'Wikipedia - Supernova', url: 'https://en.wikipedia.org/wiki/Supernova' }],
         followups: ['What\'s left behind after one?', 'How bright is it, really?', 'Explain it for a 10 year old']
       };
     }
     return {
-      reasoning: reasoning,
-      answer: 'Happy to help with that. Here\'s a clear take:\n\n- **Straight answer** first, then the why.\n- I keep things short unless you want more.\n- Ask a follow-up and I\'ll go deeper.\n\nSince I\'m still in *preview*, this reply is a simulation, but the real Pulsar model will pick up right here.',
+      reasoning: 'General question. Answer directly and warmly, offer to go deeper.',
+      answer: 'Got it. Here\'s my take:\n\n- **Short answer first**, then the why.\n- I keep it tight unless you want the long version.\n- Nudge me with a follow-up and I\'ll go deeper.\n\nHeads up, I\'m still in *preview*, so this reply is a simulation, but the real Pulsar will pick up right here.',
       followups: ['Tell me more', 'Give me an example', 'Keep it shorter']
     };
   }
@@ -457,7 +529,11 @@
   function toggleModel(force) { $('#modelPop').classList.toggle('on', force); }
 
   /*  MISC  */
-  function scrollDown() { var s = $('#stream'); s.scrollTop = s.scrollHeight; }
+  function scrollDown() {
+    var s = $('#stream'); if (!s) return;
+    s.scrollTop = s.scrollHeight;
+    requestAnimationFrame(function () { s.scrollTop = s.scrollHeight; });
+  }
   function copyText(txt) {
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).catch(function () { fallbackCopy(txt); });
     else fallbackCopy(txt);
@@ -475,8 +551,10 @@
   /*  INIT  */
   function bind() {
     $('#sideNew').addEventListener('click', newThread);
-    $('#sideToggle').addEventListener('click', toggleSidebar);
     $('#topToggle').addEventListener('click', toggleSidebar);
+    $('#trainerBtn').addEventListener('click', openTrainer);
+    $('#trainerClose').addEventListener('click', closeTrainer);
+    $('#trainer').addEventListener('click', function (e) { if (e.target === $('#trainer')) closeTrainer(); });
     $('#sideBackdrop').addEventListener('click', function () { document.body.classList.remove('side-open'); });
     $('#searchInput').addEventListener('input', function (e) { state.search = e.target.value; renderSidebar(); });
 
@@ -509,19 +587,104 @@
       }
       if (!e.target.closest('#ctxMenu') && !e.target.closest('.t-menu')) closeThreadMenu();
       if (!e.target.closest('#modelBtn') && !e.target.closest('#modelPop')) $('#modelPop').classList.remove('on');
+      if (!e.target.closest('#acctMenu') && !e.target.closest('.acct-trigger')) closeAcctMenu();
     });
     $('#viewClose').addEventListener('click', closeView);
     $('#viewOverlay').addEventListener('click', function (e) { if (e.target === $('#viewOverlay')) closeView(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeView(); closeThreadMenu(); } });
   }
 
-  function fillUser() {
-    var u = state.user; var nm = nameOf(u), av = avatarOf(u);
-    $('#foot').innerHTML = (av ? '<img class="av" src="' + escHTML(av) + '" alt="">' : '<div class="av">' + escHTML(nm.charAt(0).toUpperCase()) + '</div>') +
-      '<div class="who"><div class="n">' + escHTML(nm) + '</div><div class="e">' + escHTML(u.email || '') + '</div></div>' +
-      '<button class="side-icobtn" id="signOut" data-tip="Sign out" aria-label="Sign out"><svg class="ic"><use href="#i-out"/></svg></button>';
-    $('#signOut').addEventListener('click', function () { if (window.SwiftawAccount) window.SwiftawAccount.signOut(); });
+  /*  ACCOUNT MENU (switch / settings / add / sign out)  */
+  function avImg(url, nm, cls) {
+    return url ? '<img class="' + cls + '" src="' + escHTML(url) + '" alt="">' : '<div class="' + cls + '">' + escHTML((nm || 'S').charAt(0).toUpperCase()) + '</div>';
   }
+  function acctPage() { return (window.SwiftawAccount && window.SwiftawAccount.accountPage) || '/account'; }
+  function fillUser() {
+    var u = state.user, nm = nameOf(u), av = avatarOf(u);
+    $('#foot').innerHTML = '<button class="acct-trigger" id="acctTrigger" aria-label="Account">' +
+      avImg(av, nm, 'av') +
+      '<div class="who"><div class="n">' + escHTML(nm) + '</div><div class="e">' + escHTML(u.email || '') + '</div></div>' +
+      '<svg class="cv" viewBox="0 0 384 512"><use href="#i-cd"/></svg></button>';
+    $('#acctTrigger').addEventListener('click', function (e) { e.stopPropagation(); toggleAcctMenu(); });
+  }
+  function buildAcctMenu() {
+    var u = state.user, nm = nameOf(u), av = avatarOf(u);
+    var roster = (window.SwiftawAccount && window.SwiftawAccount.accounts) ? window.SwiftawAccount.accounts() : [];
+    var others = roster.filter(function (a) { return a.id !== u.id; });
+    var othersHtml = others.map(function (a) {
+      var an = a.username || (a.email || '').split('@')[0];
+      return '<button class="row" data-switch="' + escHTML(a.id) + '">' + avImg(a.avatar_url, an, 'av') +
+        '<span class="lbl"><div class="n">' + escHTML(an) + '</div><div class="e">' + escHTML(a.email || '') + '</div></span></button>';
+    }).join('');
+    var m = $('#acctMenu');
+    m.innerHTML = '<div class="cur">' + avImg(av, nm, 'av') +
+      '<div class="who"><div class="n">' + escHTML(nm) + '</div><div class="e">' + escHTML(u.email || '') + '</div></div></div>' +
+      (othersHtml ? '<div class="sep"></div>' + othersHtml : '') + '<div class="sep"></div>' +
+      '<button class="row" data-settings><span class="ic-wrap"><svg class="ic-sm"><use href="#i-gear"/></svg></span><span class="lbl"><div class="n">Account settings</div></span></button>' +
+      '<button class="row" data-add><span class="ic-wrap"><svg class="ic-sm"><use href="#i-plus"/></svg></span><span class="lbl"><div class="n">Add another account</div></span></button>' +
+      '<button class="row out" data-out><span class="ic-wrap"><svg class="ic-sm"><use href="#i-out"/></svg></span><span class="lbl"><div class="n">Sign out</div></span></button>';
+    m.querySelector('[data-settings]').addEventListener('click', function () { location.href = acctPage() + '?view=settings'; });
+    m.querySelector('[data-add]').addEventListener('click', function () { if (window.SwiftawAccount) window.SwiftawAccount.addAccount(); });
+    m.querySelector('[data-out]').addEventListener('click', function () { if (window.SwiftawAccount) window.SwiftawAccount.signOut(); });
+    $$('[data-switch]', m).forEach(function (b) { b.addEventListener('click', function () { if (window.SwiftawAccount) window.SwiftawAccount.switchTo(b.getAttribute('data-switch')); }); });
+  }
+  function toggleAcctMenu() {
+    var m = $('#acctMenu');
+    if (m.classList.contains('on')) return closeAcctMenu();
+    buildAcctMenu();
+    var r = $('#acctTrigger').getBoundingClientRect();
+    m.style.left = r.left + 'px'; m.style.width = r.width + 'px';
+    m.classList.add('on');
+    // position above the footer
+    m.style.top = (r.top - m.offsetHeight - 8) + 'px';
+    document.body.classList.add('acct-open');
+  }
+  function closeAcctMenu() { $('#acctMenu').classList.remove('on'); document.body.classList.remove('acct-open'); }
+
+  /*  AI TRAINER (Swiftaw account only)  */
+  var TRAIN_SOURCES = [
+    { id: 'lifecheck', name: 'Lifecheck signals', trusted: false, dd: 'Anonymous human-vs-bot behaviour from Lifecheck sessions.' },
+    { id: 'chats', name: 'Chat conversations', trusted: false, dd: 'What people say here. Treated as claims to check, not facts.' },
+    { id: 'web', name: 'Open web (search)', trusted: false, dd: 'Live search results, so Pulsar checks reality instead of trusting a claim.' },
+    { id: 'swiftaw', name: 'Swiftaw ground truth', trusted: true, dd: 'Anything the Swiftaw account marks certain is treated as 100% true.' }
+  ];
+  var TRAIN_GAMES = [
+    { id: 'factcheck', icon: 'i-globe', name: 'Fact check', dd: 'Pulsar is given a claim and must verify it against sources before agreeing.' },
+    { id: 'skeptic', icon: 'i-shield', name: 'Trust drill', dd: 'A user insists on something false. Pulsar must not just believe it.' },
+    { id: 'reason', icon: 'i-brain', name: 'Reasoning', dd: 'Multi-step problems Pulsar has to work through, not guess.' },
+    { id: 'voice', icon: 'i-chat', name: 'Voice', dd: 'Reply like a person, warm and natural, not like a task-taker.' }
+  ];
+  function trainKey() { return 'sn_train_' + state.uid; }
+  function trainState() { try { return JSON.parse(localStorage.getItem(trainKey()) || '{}'); } catch (e) { return {}; } }
+  function trainSave(s) { try { localStorage.setItem(trainKey(), JSON.stringify(s)); } catch (e) {} }
+  function isTrainer() { return nameOf(state.user) === 'Swiftaw'; }
+  function openTrainer() {
+    if (!isTrainer()) return;
+    var st = trainState(); st.sources = st.sources || { lifecheck: true, chats: true, web: true, swiftaw: true };
+    var dataHost = $('#trData'); dataHost.innerHTML = '';
+    TRAIN_SOURCES.forEach(function (s) {
+      var on = st.sources[s.id] !== false;
+      var el = document.createElement('div'); el.className = 'tr-toggle' + (on ? ' on' : '');
+      el.innerHTML = '<div class="sw"></div><div><div class="tt">' + escHTML(s.name) + (s.trusted ? '<span class="trust">Trusted 100%</span>' : '') + '</div><div class="dd">' + escHTML(s.dd) + '</div></div>';
+      el.addEventListener('click', function () { st.sources[s.id] = !(st.sources[s.id] !== false); el.classList.toggle('on', st.sources[s.id] !== false); trainSave(st); });
+      dataHost.appendChild(el);
+    });
+    var gHost = $('#trGames'); gHost.innerHTML = '';
+    TRAIN_GAMES.forEach(function (g) {
+      var el = document.createElement('div'); el.className = 'tr-game';
+      el.innerHTML = '<div class="gi"><svg class="ic"><use href="#' + g.icon + '"/></svg></div><h4>' + escHTML(g.name) + '</h4><p>' + escHTML(g.dd) + '</p>' +
+        '<button class="grun" data-game="' + g.id + '"><svg class="ic-sm"><use href="#i-spark"/></svg> Run drill</button><div class="gres"><svg class="ic-sm"><use href="#i-check"/></svg> Logged for training</div>';
+      el.querySelector('.grun').addEventListener('click', function () {
+        st.runs = (st.runs || 0) + 1; trainSave(st);
+        el.querySelector('.gres').classList.add('on');
+        // TODO(real AI): enqueue this exercise + its config to the Pulsar training queue (see pulsar-schema.sql: training_exercises).
+        toast('Drill queued for Pulsar');
+      });
+      gHost.appendChild(el);
+    });
+    $('#trainer').classList.add('on');
+  }
+  function closeTrainer() { $('#trainer').classList.remove('on'); }
 
   function startApp() {
     $('#gate').classList.remove('on'); $('#app').classList.add('on');
@@ -529,6 +692,7 @@
     if (state.threads.length) { state.activeId = state.threads.sort(function (a, b) { return b.updatedAt - a.updatedAt; })[0].id; renderSidebar(); selectThread(state.activeId); }
     else newThread();
     fillUser(); autoGrow(); updateCounter();
+    $('#trainerBtn').hidden = !isTrainer();
   }
   function showGate() { $('#app').classList.remove('on'); $('#gate').classList.add('on'); }
 

@@ -57,6 +57,33 @@ Regenerate, Edit prompt, Branch, thumbs up/down feedback), model selector
 system/error banners. All FA solid inline-SVG icons. Verified via Playwright
 (mocked account). Linked from the landing page nav + hero ("Open chat").
 
+**Chat refinements (this pass):** removed the topbar model badge + the shared
+account chip (`#swiftaw-acct` hidden on this page) + the duplicate sidebar
+toggle + the "Chat" brand chip; model list is Pulsar-only; app background is a
+flat `#0d1117`; sidebar footer is now an **account menu** (switch account /
+account settings / add account / sign out via `SwiftawAccount`); thumbs
+up/down use the real FA outline+filled icons; **auto-scroll fixed** (grid row
+capped to 100dvh + `min-height:0` so `.stream` is the bounded scroller);
+**Edit prompt** now edits inline, truncates the thread, and regenerates.
+Persona rewritten to be conversational (natural greetings, "not the user
+wants…"); replies can carry **web Sources** (favicon + link chips, Grok-style);
+composer disclaimer = "Supernova is an AI and can make mistakes. Verify
+important information." A Swiftaw-only **Trainer** (flask in topbar) picks data
+sources + runs drills.
+
+**Pulsar backend (real AI) — `supernova/pulsar/`:** `schema.sql` (AI Supabase:
+chat logs, `pulsar_signals` training corpus, feedback, web cache/sources,
+`pulsar_facts` trust layer, `pulsar_trusted_accounts` = Swiftaw ground truth,
+training/exercise queue, RLS with `is_pulsar_admin()`), `feed-lifecheck.mjs`
+(service-role ETL: Lifecheck `session_summary` → `pulsar_signals`),
+`functions/pulsar-chat/index.ts` (Edge Function: auth → web search → sources →
+**model call TODO** → persist; full persona + trust prompt), and `README.md`
+(architecture + honest status). TWO things still need infra: a **served model**
+(`PULSAR_MODEL_URL`) and a **search provider** (`SEARCH_API_KEY`); until then
+the chat uses the in-browser simulation. To go live: run schema, seed Swiftaw's
+uuid into `pulsar_trusted_accounts`, run the feed, deploy the function, then
+swap `respondTo()` in `chat.js` from `buildReply()` to a fetch to `pulsar-chat`.
+
 **Still deferred (user-provided, for the real AI later):**
 - The chat interface visual is **inspired by Fortized**'s chat (rows/avatars).
   When the real model lands, deepen the Fortized parity if wanted.
