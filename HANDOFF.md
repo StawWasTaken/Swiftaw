@@ -7,6 +7,49 @@ The site is a static build on GitHub Pages (`swiftaw.com`), deployed from
 
 ---
 
+## 🟣 SUPERNOVA — Swiftaw's own generative AI (product page live, AI not built yet)
+
+`swiftaw.com/supernova` (dir `supernova/`, work branch `claude/supernova`,
+mirrored to `main`). Built on the shared `swiftaw.css` capsule-nav / 3D-button
+system, chrome in `supernova/sn.css`, page-specific styles inline in
+`supernova/index.html`.
+
+**What Supernova IS (the real vision, not bot-detection):** a *generative AI
+assistant* of our own (Gemini / ChatGPT / Claude shaped) that you can talk to,
+trained on our own projects + free public web data, and the SAME intelligence
+will then power the automated systems inside Lifecheck, Fortized and future
+projects. Lifecheck consumes Supernova, not the other way around.
+
+**Brand:** blue `#30aefc`, pink `#ff77e4`, green `#3ecf6e` (tokens
+`--sn-blue/-pink/-green` + `*-rgb` in `sn.css`). Signature hero visual = the
+multicolour equalizer **bars** (spectrum cycles the 3 brand colours) + the
+Supernova avatar. Assets (user-uploaded, in `supernova/`): `Supernova Logo.png`
+(wordmark), `Supernova favicon.png` (favicon), `Supernova pfp.png` (chatbot
+avatar, conic blue/green/pink mark). Page is intentionally SHORT/punchy.
+
+**Page titles convention (this repo):** `<page> - <Product>`, e.g.
+`Overview - Supernova`, and Lifecheck retitled to `Overview / Docs / API keys
+- Lifecheck` (were `... - Swiftaw`). Home stays `Swiftaw - swiftly beyond`.
+
+**AI database (Supabase, for when we build the AI — NOT wired up yet):**
+- URL: `https://xrmmedxbqmwjcucyjosl.supabase.co`
+- publishable key (client-safe, RLS-protected): `sb_publishable_ObemhvadYmuXSJchH-SpzA_W4awNZtM`
+- NEVER commit the service_role / secret key.
+
+**Deferred build notes (user-provided, for the real AI later):**
+- The chat interface will be **inspired by Fortized**'s chat.
+- Code that Supernova generates → render in **cards like the Lifecheck docs**
+  code blocks (Copy button + a View action to preview the script where possible,
+  e.g. HTML).
+- Tables Supernova outputs → styled like the **Lifecheck docs tables**.
+- Longer term: `supernova.swiftaw.com` subdomain (DNS/hosting, later).
+- Public copy keeps data-sourcing HIGH LEVEL ("our own world + the open web,
+  handled with care for privacy") — decide the real consent/data story and
+  reconcile with Fortized's private-messages privacy policy before claiming
+  training on user data.
+
+---
+
 ## 🔴 SESSION HANDOFF — Lifecheck v1.2 (redesign + telemetry + Edge Function)
 
 Repo **StawWasTaken/Swiftaw**, branch **`claude/swiftaw-handoff-legal-brand-gxlmab`**,
