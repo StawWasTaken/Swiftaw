@@ -362,6 +362,7 @@
   const SITE_KEY = P.get('k') || '';
   const HOST = P.get('host') || '';
   const SERVER_MODE = /^lc_site_/.test(SITE_KEY);
+  const DEBUG = P.has('lcdebug');   // ?lcdebug=1 → log telemetry successes too
   let sbClient = null;
 
   // A per-load session id ties every event from this widget instance together.
@@ -469,13 +470,23 @@
     const batch = _evQueue.splice(0, _evQueue.length);
     try{
       const sb = await getSb();
-      await sb.rpc('lifecheck_log_events', {
+      // NOTE: a failed RPC RESOLVES with { error } — it does not throw — so we
+      // must inspect error, or failures are invisible. Surface it either way.
+      const { error } = await sb.rpc('lifecheck_log_events', {
         p_events: batch,
         p_site_key: SITE_KEY || null,
         p_host: HOST || null,
         p_session: SESSION_ID
       });
-    }catch(e){ /* swallow — telemetry must never affect the check */ }
+      if(error){
+        console.warn('[Lifecheck] telemetry rejected:', error.message || error.hint || error.code || error);
+      } else if(DEBUG){
+        console.log('[Lifecheck] logged ' + batch.length + ' event(s)');
+      }
+    }catch(e){
+      // network / CDN / client failure — telemetry must never affect the check
+      console.warn('[Lifecheck] telemetry failed to send:', (e && e.message) || e);
+    }
   }
   window.addEventListener('beforeunload', () => { try{ sessionSummary(false, 'abandoned'); flushEvents(); }catch(e){} });
 
