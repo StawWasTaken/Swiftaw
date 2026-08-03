@@ -860,9 +860,9 @@
       nbtn.disabled = true; nbtn.classList.add('busy'); var nlabel = nbtn.innerHTML;
       var set = function (t) { nbtn.innerHTML = '<svg class="ic"><use href="#i-brain"/></svg> ' + t; };
       set('Loading data...');
-      rpc('pulsar_export', { admin_uid: state.uid, lim: 6000 }).then(function (texts) {
+      rpc('pulsar_export', { admin_uid: state.uid, lim: 4000 }).then(function (texts) {
         if (!Array.isArray(texts) || texts.length < 5) throw new Error('Not enough data yet, chat more first');
-        return window.SN_Neural.train(texts, { epochs: 15, onProgress: function (pct) { set('Training ' + pct + '%'); } });
+        return window.SN_Neural.train(texts, { epochs: 10, onProgress: function (pct, loss, phase) { set(phase === 'prep' ? 'Preparing data...' : ('Training ' + pct + '%')); } });
       }).then(function (res) {
         set('Saving...');
         return window.SN_Neural.save(PULSAR_DB).then(function () { return res; });
