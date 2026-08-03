@@ -18,6 +18,8 @@ create policy sent_read on pulsar_sentences for select using (true);   -- browse
 -- Feedback that TEACHES sentences. Any text Swiftaw puts in quotes
 -- ("..." / "...") is added to Pulsar's sentence vocabulary AND its corpus,
 -- so training learns those exact phrasings and can recombine them.
+-- (model.sql made this return void; we change it to jsonb, so drop first.)
+drop function if exists pulsar_feedback_note(text, text);
 create or replace function pulsar_feedback_note(admin_uid text, note text)
 returns jsonb language plpgsql security definer set search_path = public as $$
 declare q text; cnt int := 0;
