@@ -15,8 +15,11 @@
   var state = {
     user: null, uid: null, threads: [], activeId: null,
     streaming: false, abort: false, search: '', attachments: [], model: 'pulsar',
-    modelReady: false, neuralReady: false, stats: null, trainMode: null
+    modelReady: false, neuralReady: false, stats: null, trainMode: null,
+    folders: [], editingFolder: null, _fldSel: null
   };
+  var FOLDER_COLORS = ['#30aefc', '#ff77e4', '#3ecf6e', '#fdba74', '#c4b5fd', '#f87171', '#fbbf24', '#94a0b4'];
+  var FOLDER_ICONS = ['i-folder', 'i-spark', 'i-chat', 'i-brain', 'i-globe', 'i-shield', 'i-flask', 'i-pin'];
   var codeReg = {}; var codeSeq = 0;
 
   /*  helpers  */
@@ -146,23 +149,46 @@
   function renderSidebar() {
     var host = $('#sideScroll'); host.innerHTML = '';
     var q = state.search.trim().toLowerCase();
-    var list = state.threads.filter(function (t) {
-      if (!q) return true;
-      if (t.title.toLowerCase().indexOf(q) >= 0) return true;
-      return t.messages.some(function (m) { return (m.content || '').toLowerCase().indexOf(q) >= 0; });
-    });
-    var pinned = list.filter(function (t) { return t.pinned; });
-    var rest = list.filter(function (t) { return !t.pinned; }).sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+    function match(t) { if (!q) return true; if (t.title.toLowerCase().indexOf(q) >= 0) return true; return t.messages.some(function (m) { return (m.content || '').toLowerCase().indexOf(q) >= 0; }); }
+    var fset = {}; (state.folders || []).forEach(function (f) { fset[f.id] = true; });
 
-    if (pinned.length) { host.appendChild(secHeader('Pinned', 'i-pin')); pinned.sort(function (a, b) { return b.updatedAt - a.updatedAt; }).forEach(function (t) { host.appendChild(threadEl(t)); }); }
-    var groups = ['Today', 'Yesterday', 'Older'];
-    groups.forEach(function (g) {
+    // folders first
+    (state.folders || []).forEach(function (f) {
+      var chats = state.threads.filter(function (t) { return t.folderId === f.id && match(t); }).sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+      if (q && !chats.length) return;
+      host.appendChild(folderEl(f, chats));
+    });
+
+    var unfiled = state.threads.filter(function (t) { return (!t.folderId || !fset[t.folderId]) && match(t); });
+    var pinned = unfiled.filter(function (t) { return t.pinned; }).sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+    var rest = unfiled.filter(function (t) { return !t.pinned; }).sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+
+    if (pinned.length) { host.appendChild(secHeader('Pinned', 'i-pin')); pinned.forEach(function (t) { host.appendChild(threadEl(t)); }); }
+    ['Today', 'Yesterday', 'Older'].forEach(function (g) {
       var items = rest.filter(function (t) { return threadGroup(t.updatedAt) === g; });
       if (!items.length) return;
       host.appendChild(secHeader(g, null));
       items.forEach(function (t) { host.appendChild(threadEl(t)); });
     });
-    if (!list.length) { var e = document.createElement('div'); e.className = 'side-empty'; e.textContent = q ? 'No chats match your search.' : 'No chats yet. Start a new one.'; host.appendChild(e); }
+    if (!state.threads.length && !(state.folders || []).length) { var e = document.createElement('div'); e.className = 'side-empty'; e.textContent = 'No chats yet. Start a new one.'; host.appendChild(e); }
+  }
+  function folderEl(f, chats) {
+    var d = document.createElement('div'); d.className = 'folder' + (f.collapsed ? ' collapsed' : '');
+    var head = document.createElement('div'); head.className = 'folder-head';
+    head.innerHTML = '<span class="fico" style="background:' + f.color + '"><svg><use href="#' + f.icon + '"/></svg></span>' +
+      '<span class="fname">' + escHTML(f.name) + '</span><span class="fcount">' + chats.length + '</span>' +
+      '<button class="fmenu" aria-label="Folder menu"><svg class="ic-sm"><use href="#i-dots"/></svg></button>' +
+      '<svg class="fchev"><use href="#i-cd"/></svg>';
+    head.addEventListener('click', function (e) {
+      if (e.target.closest('.fmenu')) { e.stopPropagation(); openFolderModal(f); return; }
+      f.collapsed = !f.collapsed; saveFolders(); renderSidebar();
+    });
+    d.appendChild(head);
+    var body = document.createElement('div'); body.className = 'folder-body';
+    if (chats.length) chats.forEach(function (t) { body.appendChild(threadEl(t)); });
+    else { var em = document.createElement('div'); em.className = 'folder-empty'; em.textContent = 'Empty'; body.appendChild(em); }
+    d.appendChild(body);
+    return d;
   }
   function secHeader(label, icon) {
     var d = document.createElement('div'); d.className = 'side-sec-h';
@@ -208,6 +234,63 @@
     renderSidebar(); toast('Chat deleted');
   }
   function pinThread(id) { var t = state.threads.filter(function (x) { return x.id === id; })[0]; if (t) { t.pinned = !t.pinned; saveThreads(); renderSidebar(); toast(t.pinned ? 'Pinned' : 'Unpinned'); } }
+
+  /*  FOLDERS  */
+  function folderKey() { return 'sn_folders_' + state.uid; }
+  function saveFolders() { try { localStorage.setItem(folderKey(), JSON.stringify(state.folders)); } catch (e) {} }
+  function loadFolders() { try { state.folders = JSON.parse(localStorage.getItem(folderKey()) || '[]'); } catch (e) { state.folders = []; } }
+  function openFolderModal(folder) {
+    state.editingFolder = folder || null;
+    $('#fldTitle').textContent = folder ? 'Edit folder' : 'New folder';
+    $('#fldName').value = folder ? folder.name : '';
+    $('#fldSave').textContent = folder ? 'Save' : 'Create folder';
+    $('#fldDelete').hidden = !folder;
+    var sel = { color: folder ? folder.color : FOLDER_COLORS[0], icon: folder ? folder.icon : FOLDER_ICONS[0] };
+    state._fldSel = sel;
+    var ch = $('#fldColors'); ch.innerHTML = '';
+    FOLDER_COLORS.forEach(function (c) {
+      var b = document.createElement('button'); b.className = 'fld-sw' + (c === sel.color ? ' on' : ''); b.style.background = c; b.style.color = c;
+      b.addEventListener('click', function () { sel.color = c; $$('.fld-sw', ch).forEach(function (x) { x.classList.remove('on'); }); b.classList.add('on'); });
+      ch.appendChild(b);
+    });
+    var ih = $('#fldIcons'); ih.innerHTML = '';
+    FOLDER_ICONS.forEach(function (ic) {
+      var b = document.createElement('button'); b.className = 'fld-ico' + (ic === sel.icon ? ' on' : ''); b.innerHTML = '<svg><use href="#' + ic + '"/></svg>';
+      b.addEventListener('click', function () { sel.icon = ic; $$('.fld-ico', ih).forEach(function (x) { x.classList.remove('on'); }); b.classList.add('on'); });
+      ih.appendChild(b);
+    });
+    $('#folderModal').classList.add('on'); setTimeout(function () { $('#fldName').focus(); }, 30);
+  }
+  function closeFolderModal() { $('#folderModal').classList.remove('on'); state.editingFolder = null; }
+  function saveFolder() {
+    var name = $('#fldName').value.trim() || 'Folder'; var sel = state._fldSel || { color: FOLDER_COLORS[0], icon: FOLDER_ICONS[0] };
+    if (state.editingFolder) { state.editingFolder.name = name; state.editingFolder.color = sel.color; state.editingFolder.icon = sel.icon; }
+    else { state.folders.unshift({ id: uid(), name: name, color: sel.color, icon: sel.icon, collapsed: false }); }
+    saveFolders(); closeFolderModal(); renderSidebar();
+  }
+  function deleteFolder() {
+    if (!state.editingFolder) return; var id = state.editingFolder.id;
+    state.threads.forEach(function (t) { if (t.folderId === id) t.folderId = null; }); saveThreads();
+    state.folders = state.folders.filter(function (f) { return f.id !== id; }); saveFolders();
+    closeFolderModal(); renderSidebar(); toast('Folder deleted');
+  }
+  function openFolderPicker(threadId, r) {
+    var m = $('#folderPicker'); m.innerHTML = '';
+    function opt(html, fn) { var b = document.createElement('button'); b.innerHTML = html; b.addEventListener('click', function () { fn(); closeFolderPicker(); }); m.appendChild(b); }
+    opt('<svg class="ic-sm"><use href="#i-x"/></svg> No folder', function () { moveThread(threadId, null); });
+    state.folders.forEach(function (f) {
+      opt('<span class="fico" style="width:20px;height:20px;background:' + f.color + ';border-radius:6px;display:inline-flex;align-items:center;justify-content:center"><svg style="width:11px;height:11px;fill:#0d1117"><use href="#' + f.icon + '"/></svg></span> ' + escHTML(f.name), function () { moveThread(threadId, f.id); });
+    });
+    opt('<svg class="ic-sm"><use href="#i-plus"/></svg> New folder', function () { openFolderModal(null); });
+    m.style.left = Math.min(r.left, window.innerWidth - 190) + 'px'; m.style.top = (r.top) + 'px';
+    m.classList.add('on');
+  }
+  function closeFolderPicker() { $('#folderPicker').classList.remove('on'); }
+  function moveThread(id, folderId) {
+    var t = state.threads.filter(function (x) { return x.id === id; })[0]; if (!t) return;
+    t.folderId = folderId; saveThreads(); renderSidebar();
+    toast(folderId ? 'Moved to folder' : 'Removed from folder');
+  }
 
   /*  THREAD / STREAM  */
   function newThread() {
@@ -410,11 +493,11 @@
       method: 'POST', headers: { apikey: PULSAR_DB.key, Authorization: 'Bearer ' + PULSAR_DB.key, 'Content-Type': 'application/json' },
       body: JSON.stringify(body || {})
     }).then(function (r) {
-      if (!r.ok) return r.text().then(function (t) {
-        var msg = t; try { var j = JSON.parse(t); msg = j.message || j.hint || j.details || t; } catch (e) {}
-        throw new Error(msg || ('rpc ' + r.status));
+      return r.text().then(function (t) {
+        if (!r.ok) { var msg = t; try { var j = JSON.parse(t); msg = j.message || j.hint || j.details || t; } catch (e) {} throw new Error(msg || ('rpc ' + r.status)); }
+        if (!t) return null;
+        try { return JSON.parse(t); } catch (e) { return t; }
       });
-      return r.json();
     });
   }
   function cap(t) { t = String(t).trim(); t = t.charAt(0).toUpperCase() + t.slice(1); if (!/[.!?]$/.test(t)) t += '.'; return t; }
@@ -443,10 +526,37 @@
       return buildReply(prompt);
     }).catch(function () { return buildReply(prompt); });
   }
-  // Pulsar's own brain: recalled fact -> neural -> n-gram -> in-browser draft.
+  var _lastChallenge = '';
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function wordset(s) { return String(s).toLowerCase().split(/\W+/).filter(function (w) { return w.length > 3; }); }
+  function similar(a, b) { var A = wordset(a), B = wordset(b); if (!A.length || !B.length) return false; var n = 0; A.forEach(function (w) { if (B.indexOf(w) >= 0) n++; }); return n / Math.max(A.length, B.length) > 0.5; }
+  // Training drills that actually challenge the user (esp. false claims):
+  // check its data, push back, hold ground on repetition; admit ignorance.
+  function trainingReply(prompt) {
+    var kind = state.trainMode && state.trainMode.kind;
+    if (kind === 'skeptic') {
+      var same = _lastChallenge && similar(prompt, _lastChallenge); _lastChallenge = prompt;
+      var lines = same
+        ? ['Repeating it doesn\'t make it true. Show me a credible source and I\'ll reconsider; otherwise I\'m sticking with the evidence.',
+          'I hear you, but I still have nothing solid backing that. Where is it from?',
+          'Saying it again won\'t convince me. What\'s the actual proof?']
+        : ['That\'s a strong claim. What I can find doesn\'t support it, what\'s your source?',
+          'I\'m not taking that as true just because it\'s stated. Point me to real evidence?',
+          'Hmm, that doesn\'t line up with what I know. Can you back it up?'];
+      return Promise.resolve({ reasoning: 'This is a claim. I check my data, don\'t accept it without support, and hold my ground.', answer: pick(lines), followups: ['Here is a source', 'You are right, actually', 'Answer: "..." to teach me'] });
+    }
+    _lastChallenge = prompt;
+    return neuralReply(prompt).then(function (r) {
+      if (r) return r;
+      if (state.modelReady) return ngramReply(prompt);
+      return { reasoning: 'I don\'t have a confident answer yet in this drill.', answer: 'I don\'t know that one yet. Teach me the right answer with  Answer: "..."  and I\'ll remember it.', followups: ['Answer: "..."', 'Give me a hint', 'Move on'] };
+    });
+  }
+  // Pulsar's own brain: recalled fact -> training challenge -> neural -> n-gram -> draft.
   function getReply(prompt) {
     return recall(prompt).then(function (fact) {
       if (fact) return { reasoning: 'I recalled this from what Swiftaw confirmed as true.', answer: cap(fact), sources: [], followups: ['Tell me more', 'How do you know?', 'Ask something else'] };
+      if (state.trainMode) return trainingReply(prompt);
       return neuralReply(prompt).then(function (r) { return r || ngramReply(prompt); });
     });
   }
@@ -500,6 +610,7 @@
       .then(function (res) {
         var n = res && res.sentences_learned;
         toast(n ? ('Learned ' + n + ' new example' + (n > 1 ? 's' : '') + ' + saved as fact') : 'Feedback saved to Pulsar');
+        autoLearn();
       })
       .catch(function () { toast('Feedback saved (run model.sql to store it in Pulsar)', 'err'); });
   }
@@ -523,7 +634,7 @@
     renderStream(); renderSidebar();
     stock('user', text);
     if (q) rpc('pulsar_teach', { admin_uid: state.uid, question: q, answer: ans })
-      .then(function () { toast('Taught: Pulsar will answer that'); })
+      .then(function () { toast('Taught: Pulsar will answer that'); autoLearn(); })
       .catch(function (e) { toast((e && e.message) || 'Save failed', 'err'); });
   }
 
@@ -737,8 +848,17 @@
 
     // context menu actions
     $('#ctxRename').addEventListener('click', function () { var id = menuFor; closeThreadMenu(); renameThread(id); });
+    $('#ctxMove').addEventListener('click', function () { var id = menuFor; var r = $('#ctxMenu').getBoundingClientRect(); closeThreadMenu(); openFolderPicker(id, r); });
     $('#ctxPin').addEventListener('click', function () { var id = menuFor; closeThreadMenu(); pinThread(id); });
     $('#ctxDelete').addEventListener('click', function () { var id = menuFor; closeThreadMenu(); deleteThread(id); });
+
+    // folders
+    $('#folderNew').addEventListener('click', function () { openFolderModal(null); });
+    $('#fldClose').addEventListener('click', closeFolderModal);
+    $('#fldSave').addEventListener('click', saveFolder);
+    $('#fldDelete').addEventListener('click', deleteFolder);
+    $('#folderModal').addEventListener('click', function (e) { if (e.target === $('#folderModal')) closeFolderModal(); });
+    $('#fldName').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); saveFolder(); } });
 
     // code card actions (delegated)
     document.addEventListener('click', function (e) {
@@ -752,10 +872,11 @@
       if (!e.target.closest('#ctxMenu') && !e.target.closest('.t-menu')) closeThreadMenu();
       if (!e.target.closest('#modelBtn') && !e.target.closest('#modelPop')) $('#modelPop').classList.remove('on');
       if (!e.target.closest('#acctMenu') && !e.target.closest('.acct-trigger')) closeAcctMenu();
+      if (!e.target.closest('#folderPicker') && !e.target.closest('#ctxMove')) closeFolderPicker();
     });
     $('#viewClose').addEventListener('click', closeView);
     $('#viewOverlay').addEventListener('click', function (e) { if (e.target === $('#viewOverlay')) closeView(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeView(); closeThreadMenu(); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeView(); closeThreadMenu(); closeFolderPicker(); closeFolderModal(); } });
   }
 
   /*  ACCOUNT MENU (switch / settings / add / sign out)  */
@@ -862,12 +983,15 @@
       set('Loading data...');
       rpc('pulsar_export', { admin_uid: state.uid, lim: 4000 }).then(function (texts) {
         if (!Array.isArray(texts) || texts.length < 5) throw new Error('Not enough data yet, chat more first');
-        return window.SN_Neural.train(texts, { epochs: 10, onProgress: function (pct, loss, phase) { set(phase === 'prep' ? 'Preparing data...' : ('Training ' + pct + '%')); } });
+        return window.SN_Neural.train(texts, {
+          epochs: 10, dbUrl: PULSAR_DB.url, dbKey: PULSAR_DB.key,
+          onProgress: function (pct, loss, phase) { set(phase === 'prep' ? 'Preparing data...' : (phase === 'save' ? 'Saving...' : ('Training ' + pct + '%'))); }
+        });
       }).then(function (res) {
-        set('Saving...');
-        return window.SN_Neural.save(PULSAR_DB).then(function () { return res; });
+        set('Loading...');
+        return window.SN_Neural.load(PULSAR_DB).then(function () { return res; }).catch(function () { return res; });
       }).then(function (res) {
-        state.neuralReady = true; toast('Neural model trained on ' + res.vocab + ' words and saved');
+        state.neuralReady = true; toast('Neural model trained on ' + res.vocab + ' words');
       }).catch(function (e) { toast((e && e.message) || 'Neural training failed', 'err'); })
         .then(function () { nbtn.disabled = false; nbtn.classList.remove('busy'); nbtn.innerHTML = nlabel; });
     };
@@ -915,19 +1039,31 @@
 
   function startApp() {
     $('#gate').classList.remove('on'); $('#app').classList.add('on');
-    loadThreads();
+    loadThreads(); loadFolders();
     if (state.threads.length) { state.activeId = state.threads.sort(function (a, b) { return b.updatedAt - a.updatedAt; })[0].id; renderSidebar(); selectThread(state.activeId); }
     else newThread();
     fillUser(); autoGrow(); updateCounter();
     $('#trainerBtn').hidden = !isTrainer();
-    refreshStats();
+    refreshStats().then(function () { setTimeout(autoLearn, 4000); });
+    setInterval(function () { if (state.stats && state.stats.untrained > 0) autoLearn(); }, 90000);
     if (window.SN_Neural) window.SN_Neural.load(PULSAR_DB).then(function () { state.neuralReady = true; }).catch(function () { state.neuralReady = false; });
   }
   function refreshStats() {
     return rpc('pulsar_stats', {}).then(function (s) {
       state.stats = s || null;
-      state.modelReady = !!(s && s.vocab > 300);
+      state.modelReady = !!(s && s.vocab > 120);
     }).catch(function () { state.stats = null; state.modelReady = false; });
+  }
+  // Pulsar learns by itself: quietly run the fast n-gram training in the
+  // background (after teaching + on a timer) so it improves without a click.
+  var _autoLearning = false;
+  function autoLearn() {
+    if (_autoLearning) return Promise.resolve();
+    _autoLearning = true;
+    return rpc('pulsar_train', { admin_uid: state.uid, batch: 500 })
+      .then(function () { return refreshStats(); })
+      .catch(function () {})
+      .then(function () { _autoLearning = false; });
   }
   function showGate() { $('#app').classList.remove('on'); $('#gate').classList.add('on'); }
 

@@ -47,62 +47,22 @@
   }
   function enc(stoi, w) { return (w in stoi) ? stoi[w] : 1; }
 
-  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-  var MAX_TEXTS = 700, MAX_SEQS = 12000;
-
-  // build training pairs WITHOUT freezing the page (yields to the browser)
-  function buildSeqs(texts, stoi, X, Y, onTick) {
-    var i = 0;
-    return new Promise(function (resolve) {
-      function chunk() {
-        var start = Date.now();
-        while (i < texts.length && X.length < MAX_SEQS) {
-          var ids = [2].concat(tokenize(texts[i]).map(function (w) { return enc(stoi, w); })).concat([3]);
-          for (var k = 1; k < ids.length && X.length < MAX_SEQS; k++) {
-            var ctx = ids.slice(Math.max(0, k - SEQ), k);
-            while (ctx.length < SEQ) ctx.unshift(0);
-            X.push(ctx); Y.push(ids[k]);
-          }
-          i++;
-          if (Date.now() - start > 30) { if (onTick) onTick(); return (window.requestAnimationFrame || setTimeout)(chunk); }
-        }
-        resolve();
-      }
-      chunk();
-    });
-  }
-
-  // ── TRAIN (Swiftaw only) — non-blocking ──────────────────────────
+  // ── TRAIN (Swiftaw only) — runs in a Web Worker, never freezes the UI ──
   function train(texts, opts) {
     opts = opts || {};
     var onProgress = opts.onProgress || function () {};
-    var tf;
-    return ensureTF().then(function (_tf) { tf = _tf; return tf.ready(); }).then(function () {
-      texts = (texts || []).filter(function (t) { return t && String(t).trim().length > 1; });
-      if (texts.length < 5) throw new Error('Not enough data yet, chat more first');
-      texts = shuffle(texts).slice(0, MAX_TEXTS);
-      var vocab = buildVocab(texts), stoi = vocab.stoi, V = vocab.size;
-      var X = [], Y = [];
-      return buildSeqs(texts, stoi, X, Y, function () { onProgress(0, null, 'prep'); }).then(function () {
-        if (!X.length) throw new Error('no training sequences');
-        var model = tf.sequential();
-        model.add(tf.layers.embedding({ inputDim: V, outputDim: EMBED, inputLength: SEQ }));
-        model.add(tf.layers.gru({ units: UNITS }));
-        model.add(tf.layers.dense({ units: V, activation: 'softmax' }));
-        model.compile({ optimizer: tf.train.adam(0.01), loss: 'sparseCategoricalCrossentropy' });
-
-        var xs = tf.tensor2d(X, [X.length, SEQ], 'int32');
-        var ys = tf.tensor1d(Y, 'int32');
-        var epochs = Math.min(opts.epochs || 10, 12);
-        return model.fit(xs, ys, {
-          epochs: epochs, batchSize: 64, shuffle: true, yieldEvery: 'auto',
-          callbacks: { onEpochEnd: function (e, logs) { onProgress(Math.round(((e + 1) / epochs) * 100), logs && logs.loss); return tf.nextFrame(); } }
-        }).then(function () {
-          xs.dispose(); ys.dispose();
-          MODEL = model; STOI = stoi; ITOS = vocab.itos;
-          return { vocab: V, sequences: X.length };
-        });
-      });
+    return new Promise(function (resolve, reject) {
+      var w;
+      try { w = new Worker('/supernova/neural-worker.js'); }
+      catch (e) { return reject(new Error('Background training not available in this browser')); }
+      w.onmessage = function (e) {
+        var m = e.data || {};
+        if (m.type === 'progress') onProgress(m.pct || 0, m.loss, m.phase);
+        else if (m.type === 'done') { w.terminate(); resolve({ vocab: m.vocab, sequences: m.sequences }); }
+        else if (m.type === 'error') { w.terminate(); reject(new Error(m.message || 'training failed')); }
+      };
+      w.onerror = function (e) { w.terminate(); reject(new Error((e && e.message) || 'worker error')); };
+      w.postMessage({ type: 'train', texts: texts, epochs: opts.epochs, db: { url: opts.dbUrl, key: opts.dbKey } });
     });
   }
 
