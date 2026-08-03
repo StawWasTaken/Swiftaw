@@ -472,3 +472,14 @@ body.acct-open .side-foot .acct-trigger .cv { transform: rotate(180deg); }
 .tr-train.neural .ic { fill: var(--sn-pink); }
 .tr-train.neural[hidden] { display: none; }
 .tr-train.neural .beta { font-family: var(--font-display); font-weight: 800; font-size: 8.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--sn-pink); background: rgba(var(--sn-pink-rgb),.14); border: 1px solid rgba(var(--sn-pink-rgb),.35); padding: 1px 6px; border-radius: 100px; }
+
+/* training-session bar (above the composer) */
+.train-bar { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; padding: 9px 12px; border-radius: 12px; background: rgba(var(--sn-green-rgb),.08); border: 1.5px solid rgba(var(--sn-green-rgb),.3); }
+.train-bar[hidden] { display: none; }
+.train-bar .ic-sm { fill: var(--sn-green); }
+.train-bar .tb-label { flex: 1; font-family: var(--font-display); font-weight: 700; font-size: 13px; color: var(--sn-green); }
+.train-bar .tb-stop { font-family: var(--font-display); font-weight: 700; font-size: 12px; color: #fff; background: rgba(255,255,255,.06); border: 1px solid var(--border-strong); padding: 6px 12px; border-radius: 9px; }
+.train-bar .tb-stop:hover { background: rgba(253,2,53,.14); border-color: rgba(253,2,53,.4); color: #ff9a9a; }
+
+/* Answer tag (teal, distinct from Feedback green) */
+.fb-tag.ans { color: var(--sn-blue); background: rgba(var(--sn-blue-rgb),.12); border-color: rgba(var(--sn-blue-rgb),.3); }

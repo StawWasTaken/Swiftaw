@@ -15,7 +15,7 @@
   var state = {
     user: null, uid: null, threads: [], activeId: null,
     streaming: false, abort: false, search: '', attachments: [], model: 'pulsar',
-    modelReady: false, neuralReady: false, stats: null
+    modelReady: false, neuralReady: false, stats: null, trainMode: null
   };
   var codeReg = {}; var codeSeq = 0;
 
@@ -219,6 +219,8 @@
   function selectThread(id) {
     state.activeId = id; var t = activeThread(); if (!t) return;
     $('#threadTitle').textContent = t.title;
+    state.trainMode = t.trainMode ? { kind: t.trainMode, label: (TRAIN_GAMES.filter(function (g) { return g.id === t.trainMode; })[0] || {}).name || 'Training' } : null;
+    if (typeof renderTrainBar === 'function') renderTrainBar();
     renderStream(); renderSidebar();
     setElicitations([]);
     if (window.innerWidth <= 760) document.body.classList.remove('side-open');
@@ -254,7 +256,7 @@
     if (m.role === 'user') {
       var av = avatarOf(state.user);
       row.innerHTML = (av ? '<img class="av" src="' + escHTML(av) + '" alt="">' : '<div class="av user">' + escHTML(nameOf(state.user).charAt(0).toUpperCase()) + '</div>') +
-        '<div class="body"><div class="head"><span class="nm">' + escHTML(nameOf(state.user)) + '</span>' + (m.feedbackNote ? '<span class="fb-tag">Feedback</span>' : '') + '<span class="ts">' + timeLabel(m.ts) + '</span></div>' +
+        '<div class="body"><div class="head"><span class="nm">' + escHTML(nameOf(state.user)) + '</span>' + (m.feedbackNote ? '<span class="fb-tag">Feedback</span>' : '') + (m.answerNote ? '<span class="fb-tag ans">Answer</span>' : '') + '<span class="ts">' + timeLabel(m.ts) + '</span></div>' +
         (m.attachments && m.attachments.length ? attachmentsHTML(m.attachments) : '') +
         '<div class="prose"></div></div>';
       $('.prose', row).textContent = m.content;
@@ -407,7 +409,13 @@
     return fetch(PULSAR_DB.url + '/rest/v1/rpc/' + fn, {
       method: 'POST', headers: { apikey: PULSAR_DB.key, Authorization: 'Bearer ' + PULSAR_DB.key, 'Content-Type': 'application/json' },
       body: JSON.stringify(body || {})
-    }).then(function (r) { if (!r.ok) throw new Error('rpc ' + r.status); return r.json(); });
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) {
+        var msg = t; try { var j = JSON.parse(t); msg = j.message || j.hint || j.details || t; } catch (e) {}
+        throw new Error(msg || ('rpc ' + r.status));
+      });
+      return r.json();
+    });
   }
   function cap(t) { t = String(t).trim(); t = t.charAt(0).toUpperCase() + t.slice(1); if (!/[.!?]$/.test(t)) t += '.'; return t; }
   // 1) recall a fact Swiftaw confirmed as true
@@ -461,6 +469,7 @@
     if (!text && !state.attachments.length) return;
     if (state.streaming) return;
     if (isTrainer() && /^feedback:\s*\S/i.test(text)) { submitFeedbackNote(text); return; }
+    if (isTrainer() && /^answer:\s*\S/i.test(text)) { submitAnswer(text); return; }
     var t = activeThread(); if (!t) { newThread(); t = activeThread(); }
     var vg = uid();
     var msg = { role: 'user', content: text, ts: now(), attachments: state.attachments.slice(), vg: vg };
@@ -493,6 +502,29 @@
         toast(n ? ('Learned ' + n + ' new example' + (n > 1 ? 's' : '') + ' + saved as fact') : 'Feedback saved to Pulsar');
       })
       .catch(function () { toast('Feedback saved (run model.sql to store it in Pulsar)', 'err'); });
+  }
+
+  // Swiftaw types  Answer: "..."  to teach the exact answer to the last question
+  function submitAnswer(text) {
+    var ans = text.replace(/^answer:\s*/i, '').trim().replace(/^["""]|["""]$/g, '').trim();
+    var t = activeThread(); if (!t) { newThread(); t = activeThread(); }
+    var q = null;
+    for (var i = t.messages.length - 1; i >= 0; i--) {
+      var m = t.messages[i];
+      if (m.role === 'user' && !m.feedbackNote && !m.answerNote) { q = m.content; break; }
+    }
+    var vg = uid();
+    t.messages.push({ role: 'user', content: text, ts: now(), vg: vg, answerNote: true });
+    t.vgroups = t.vgroups || {}; t.vgroups[vg] = { versions: [{ content: text, ts: now() }], active: 0 };
+    t.messages.push({ role: 'assistant', content: q ? ('Learned. When someone asks that, I\'ll answer: "' + ans + '"') : ('Ask me the question first, then teach me with Answer: "..." so I know what it belongs to.'), ts: now(), ack: true, sources: [], feedback: null });
+    if (t.messages.filter(function (x) { return x.role === 'user'; }).length === 1) { t.title = text.slice(0, 42); $('#threadTitle').textContent = t.title; }
+    t.updatedAt = now(); saveThreads();
+    $('#composerInput').value = ''; autoGrow(); updateCounter(); setElicitations([]);
+    renderStream(); renderSidebar();
+    stock('user', text);
+    if (q) rpc('pulsar_teach', { admin_uid: state.uid, question: q, answer: ans })
+      .then(function () { toast('Taught: Pulsar will answer that'); })
+      .catch(function (e) { toast((e && e.message) || 'Save failed', 'err'); });
   }
 
   function respondTo(prompt) {
@@ -685,6 +717,7 @@
     $('#topToggle').addEventListener('click', toggleSidebar);
     $('#trainerBtn').addEventListener('click', openTrainer);
     $('#trainerClose').addEventListener('click', closeTrainer);
+    $('#trainStop').addEventListener('click', stopTraining);
     $('#trainer').addEventListener('click', function (e) { if (e.target === $('#trainer')) closeTrainer(); });
     $('#sideBackdrop').addEventListener('click', function () { document.body.classList.remove('side-open'); });
     $('#searchInput').addEventListener('input', function (e) { state.search = e.target.value; renderSidebar(); });
@@ -850,18 +883,35 @@
     TRAIN_GAMES.forEach(function (g) {
       var el = document.createElement('div'); el.className = 'tr-game';
       el.innerHTML = '<div class="gi"><svg class="ic"><use href="#' + g.icon + '"/></svg></div><h4>' + escHTML(g.name) + '</h4><p>' + escHTML(g.dd) + '</p>' +
-        '<button class="grun" data-game="' + g.id + '"><svg class="ic-sm"><use href="#i-spark"/></svg> Run drill</button><div class="gres"><svg class="ic-sm"><use href="#i-check"/></svg> Logged for training</div>';
-      el.querySelector('.grun').addEventListener('click', function () {
-        st.runs = (st.runs || 0) + 1; trainSave(st);
-        el.querySelector('.gres').classList.add('on');
-        // TODO(real AI): enqueue this exercise + its config to the Pulsar training queue (see pulsar-schema.sql: training_exercises).
-        toast('Drill queued for Pulsar');
-      });
+        '<button class="grun" data-game="' + g.id + '"><svg class="ic-sm"><use href="#i-chat"/></svg> Start session</button>';
+      el.querySelector('.grun').addEventListener('click', function () { startTraining(g); });
       gHost.appendChild(el);
     });
     $('#trainer').classList.add('on');
   }
   function closeTrainer() { $('#trainer').classList.remove('on'); }
+
+  /* training chat sessions */
+  var TRAIN_OPENERS = {
+    factcheck: 'Fact-check drill. Give me a claim and I\'ll say whether it holds up. Correct me with  Answer: "..."  or  Feedback: "..."  when I\'m wrong.',
+    skeptic: 'Trust drill. Try to convince me of something false. I should push back, and you correct me with  Answer: "..."  so I learn.',
+    reason: 'Reasoning drill. Give me a step-by-step problem. Teach the right working with  Answer: "..." .',
+    voice: 'Voice drill. Chat with me and shape how I speak using  Feedback: "..."  with example phrasings.'
+  };
+  function startTraining(g) {
+    closeTrainer();
+    var t = { id: uid(), title: 'Training · ' + g.name, pinned: false, createdAt: now(), updatedAt: now(), messages: [], trainMode: g.id };
+    t.messages.push({ role: 'assistant', content: TRAIN_OPENERS[g.id] || ('Training: ' + g.name), ts: now(), ack: true, sources: [], feedback: null });
+    state.threads.unshift(t); state.activeId = t.id; state.trainMode = { kind: g.id, label: g.name };
+    saveThreads(); selectThread(t.id); renderTrainBar();
+    $('#composerInput').focus();
+  }
+  function stopTraining() { state.trainMode = null; renderTrainBar(); toast('Training session ended'); }
+  function renderTrainBar() {
+    var bar = $('#trainBar');
+    if (state.trainMode) { $('#trainBarLabel').textContent = 'Training: ' + state.trainMode.label; bar.hidden = false; $('#composerInput').placeholder = 'Teach Pulsar (Answer: / Feedback: also work)…'; }
+    else { bar.hidden = true; $('#composerInput').placeholder = 'Message Supernova…'; }
+  }
 
   function startApp() {
     $('#gate').classList.remove('on'); $('#app').classList.add('on');

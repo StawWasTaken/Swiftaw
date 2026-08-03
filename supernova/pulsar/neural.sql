@@ -107,7 +107,7 @@ begin
     then raise exception 'not authorised to export';
   end if;
   return array(
-    select content from pulsar_messages where content <> '' order by created_at desc limit lim
+    (select content from pulsar_messages where content <> '' order by created_at desc limit lim)
     union all select text from pulsar_corpus    where text <> ''
     union all select text from pulsar_sentences
   );
