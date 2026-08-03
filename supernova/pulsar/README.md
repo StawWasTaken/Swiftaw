@@ -9,9 +9,11 @@ account/auth project.
 
 | File | What it is | Runs where |
 | --- | --- | --- |
-| `schema.sql` | The AI database: chat logs, training corpus, feedback, web-search cache + sources, a trust layer, and a training/exercise queue. | Run once in the AI Supabase SQL editor. |
-| `feed-lifecheck.mjs` | Loads Lifecheck `session_summary` feature vectors into `pulsar_signals` so Pulsar learns from real human-vs-bot behaviour. | You run it locally with both service-role keys. |
-| `functions/pulsar-chat/index.ts` | The chat brain: auth → web search → sources → **model call** → persist. Persona + trust rules live here. | Supabase Edge Function. |
+| `schema.sql` | The AI database: chat logs, training corpus, `pulsar_signals`, feedback, web cache, trust layer, training tables. | Run once in the AI Supabase SQL editor. |
+| **`model.sql`** | **The model itself as SQL functions: `pulsar_train` (learns n-grams from stocked data, feedback-weighted), `pulsar_generate` (walks the patterns to produce text), `pulsar_stats`, `pulsar_feedback_note`.** | Run once in the SQL editor, after `schema.sql`. The website calls these RPCs directly — **no Edge Function deploy, no terminal.** |
+| `import-lifecheck.sql` | No-terminal Lifecheck backfill (calls the Lifecheck REST API from Postgres via the `http` extension). | SQL editor. |
+| `feed-lifecheck.mjs` | Same import as a Node script (alternative to the SQL one, if you prefer). | Local, with both service-role keys. |
+| `functions/pulsar-chat/*` | Optional Edge Function for later (server-side web search + logging). Not needed for train/generate — those are the SQL RPCs above. | Supabase Edge Function (optional). |
 
 ## How Pulsar learns (three inputs)
 
@@ -44,12 +46,20 @@ generator then samples the next word from what Pulsar has actually seen. That's
 a real (if simple) statistical language model to start; it upgrades to a neural
 one later without changing the data pipeline.
 
+## How to turn it on (no terminal)
+
+1. Run `schema.sql` in the AI project SQL editor.
+2. Run `model.sql` (same place). This creates the train + generate functions.
+3. Register Swiftaw: `insert into pulsar_trusted_accounts(user_id,username) values ('SWIFTAW-UID','Swiftaw');`
+4. Import Lifecheck: run `import-lifecheck.sql` (paste your Lifecheck service key).
+5. Chat a bit (that stocks data), then open the **Trainer** and hit **Train Pulsar now**.
+   Once the vocabulary passes ~300 words the chat automatically switches from the
+   in-browser draft to Pulsar's own generation (`getReply` in chat.js).
+
 ## Status — honest
 
-- ✅ Schema (incl. the generative-model tables), Lifecheck feed, Edge Function scaffold, persona + trust + image rules, sources UI, image embeds, Trainer UI. The chat now **stocks every turn** into `pulsar_messages` the moment `schema.sql` is run.
-- ⏳ **Two things still to build before Pulsar generates for real:**
-  1. **The trainer + generator.** A job that fills `pulsar_ngrams` from the stocked data, and `callPulsar()` pointed at our own inference (`PULSAR_MODEL_URL`). Until then the chat uses the in-browser simulation.
-  2. **A search provider.** `webSearch()` returns `[]` until `SEARCH_API_KEY` + a provider (Brave / Tavily / SerpAPI / Bing) are wired.
+- ✅ Schema, **train + generate SQL functions**, Lifecheck import (SQL + Node), stocking every turn, feedback (thumbs → `pulsar_feedback`; Swiftaw `Feedback:` note → `pulsar_feedback_note`), Trainer UI with live stats + one-click train, persona + trust + image rules, sources UI, image embeds.
+- ⏳ **Quality**: an n-gram model is real but simple; expect rough output early, improving with data. Upgrading to a neural model later swaps `pulsar_generate` for a served model without changing the data pipeline. **Live web search** still needs a provider key (the optional Edge Function); until then Pulsar generates from its own data.
 
 ## Wiring the frontend to the real backend (when ready)
 

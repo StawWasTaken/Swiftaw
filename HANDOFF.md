@@ -96,6 +96,25 @@ to Pulsar's **own generative model** (`pulsar_corpus`/`pulsar_vocab`/
 `pulsar_ngrams`) — no external model underneath. Ingestion RLS = anon INSERT
 only (no anon SELECT); reads stay service-role.
 
+**Trainer + generator (real model, latest) — `supernova/pulsar/model.sql`:**
+Pulsar's model is now pure Postgres RPCs (no Edge deploy, no terminal):
+`pulsar_train(admin_uid,batch)` tokenises new `pulsar_messages`/`pulsar_corpus`
+(feedback-weighted: up×3, down×0) into `pulsar_vocab` + `pulsar_ngrams` bi/tri-
+grams; `pulsar_generate(seed,max)` walks those n-grams (trigram→bigram→unigram
+backoff, freq-weighted) to produce text; `pulsar_stats()` (anon-safe counts) and
+`pulsar_feedback_note(admin_uid,note)` (Swiftaw directive → `pulsar_feedback` +
+trust-1 `pulsar_facts`). All granted to anon; the site calls them with the
+publishable key. chat.js: `getReply()` calls `pulsar_generate` and streams it
+when `state.modelReady` (vocab>300 via `pulsar_stats` on load), else the
+in-browser draft (`buildReply`) — automatic cutover once trained. Thumbs →
+`stockFeedback` POST to `pulsar_feedback`. Swiftaw typing `Feedback: <note>` →
+`submitFeedbackNote` (special "Feedback"-tagged message + ack + RPC). Trainer UI
+redesigned: live stat tiles + one-click **Train Pulsar now** (`pulsar_train`
+RPC) + graceful "run schema.sql + model.sql to connect" when offline. Order to
+enable: run schema.sql → model.sql → seed Swiftaw uid → import-lifecheck.sql →
+chat → Train. n-gram is intentionally simple (rough early); swap
+`pulsar_generate` for a neural served model later without touching the pipeline.
+
 **Still deferred (user-provided, for the real AI later):**
 - The chat interface visual is **inspired by Fortized**'s chat (rows/avatars).
   When the real model lands, deepen the Fortized parity if wanted.

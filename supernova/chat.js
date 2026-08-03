@@ -14,7 +14,8 @@
 
   var state = {
     user: null, uid: null, threads: [], activeId: null,
-    streaming: false, abort: false, search: '', attachments: [], model: 'pulsar'
+    streaming: false, abort: false, search: '', attachments: [], model: 'pulsar',
+    modelReady: false, stats: null
   };
   var codeReg = {}; var codeSeq = 0;
 
@@ -253,7 +254,7 @@
     if (m.role === 'user') {
       var av = avatarOf(state.user);
       row.innerHTML = (av ? '<img class="av" src="' + escHTML(av) + '" alt="">' : '<div class="av user">' + escHTML(nameOf(state.user).charAt(0).toUpperCase()) + '</div>') +
-        '<div class="body"><div class="head"><span class="nm">' + escHTML(nameOf(state.user)) + '</span><span class="ts">' + timeLabel(m.ts) + '</span></div>' +
+        '<div class="body"><div class="head"><span class="nm">' + escHTML(nameOf(state.user)) + '</span>' + (m.feedbackNote ? '<span class="fb-tag">Feedback</span>' : '') + '<span class="ts">' + timeLabel(m.ts) + '</span></div>' +
         (m.attachments && m.attachments.length ? attachmentsHTML(m.attachments) : '') +
         '<div class="prose"></div></div>';
       $('.prose', row).textContent = m.content;
@@ -327,8 +328,11 @@
     up.classList.toggle('on-up', m.feedback === 'up'); dn.classList.toggle('on-down', m.feedback === 'down');
     up.querySelector('use').setAttribute('href', m.feedback === 'up' ? '#i-up-fill' : '#i-up');
     dn.querySelector('use').setAttribute('href', m.feedback === 'down' ? '#i-down-fill' : '#i-down');
-    // TODO(real AI): POST { messageId, prompt, response, feedback } to Supernova so it can learn from mistakes.
-    if (m.feedback) toast(m.feedback === 'up' ? 'Thanks, Supernova will learn from this' : 'Noted, this helps Supernova improve');
+    if (m.feedback) {
+      var prev = t.messages[idx - 1];
+      stockFeedback(prev ? prev.content : null, m.content, m.feedback);
+      toast(m.feedback === 'up' ? 'Thanks, Pulsar will weight this higher' : 'Noted, Pulsar will learn from this');
+    }
   }
   function editUserMessage(idx) {
     if (state.streaming) return;
@@ -391,6 +395,34 @@
       }).catch(function () {});
     } catch (e) {}
   }
+  function stockFeedback(prompt, response, rating) {
+    try {
+      fetch(PULSAR_DB.url + '/rest/v1/pulsar_feedback', {
+        method: 'POST', headers: { apikey: PULSAR_DB.key, Authorization: 'Bearer ' + PULSAR_DB.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify({ user_ref: state.uid || null, model: 'pulsar', prompt: prompt || null, response: response || null, rating: rating })
+      }).catch(function () {});
+    } catch (e) {}
+  }
+  function rpc(fn, body) {
+    return fetch(PULSAR_DB.url + '/rest/v1/rpc/' + fn, {
+      method: 'POST', headers: { apikey: PULSAR_DB.key, Authorization: 'Bearer ' + PULSAR_DB.key, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body || {})
+    }).then(function (r) { if (!r.ok) throw new Error('rpc ' + r.status); return r.json(); });
+  }
+  // Pulsar's OWN generation: walk the learned n-grams. Falls back to the
+  // in-browser draft until the model has been trained on enough data.
+  function getReply(prompt) {
+    if (!state.modelReady) return Promise.resolve(buildReply(prompt));
+    var seed = String(prompt || '').toLowerCase().split(/\s+/).slice(-4).join(' ');
+    return rpc('pulsar_generate', { seed: seed, max_tokens: 60 }).then(function (text) {
+      if (typeof text === 'string' && text.trim().split(/\s+/).length >= 6) {
+        var ans = text.trim(); ans = ans.charAt(0).toUpperCase() + ans.slice(1);
+        if (!/[.!?]$/.test(ans)) ans += '.';
+        return { reasoning: 'Generated from the patterns I\'ve learned so far.', answer: ans, followups: ['Tell me more', 'Try again', 'Explain that'] };
+      }
+      return buildReply(prompt);
+    }).catch(function () { return buildReply(prompt); });
+  }
   function regenerate(aiIdx) {
     var t = activeThread(); var userIdx = aiIdx - 1;
     while (userIdx >= 0 && t.messages[userIdx].role !== 'user') userIdx--;
@@ -409,6 +441,7 @@
     text = (text != null ? text : $('#composerInput').value).trim();
     if (!text && !state.attachments.length) return;
     if (state.streaming) return;
+    if (isTrainer() && /^feedback:\s*\S/i.test(text)) { submitFeedbackNote(text); return; }
     var t = activeThread(); if (!t) { newThread(); t = activeThread(); }
     var vg = uid();
     var msg = { role: 'user', content: text, ts: now(), attachments: state.attachments.slice(), vg: vg };
@@ -422,6 +455,24 @@
     respondTo(text);
   }
 
+  // Swiftaw types "Feedback: ..." to leave a high-signal training directive
+  function submitFeedbackNote(text) {
+    var note = text.replace(/^feedback:\s*/i, '').trim();
+    var t = activeThread(); if (!t) { newThread(); t = activeThread(); }
+    var vg = uid();
+    t.messages.push({ role: 'user', content: text, ts: now(), vg: vg, feedbackNote: true });
+    t.vgroups = t.vgroups || {}; t.vgroups[vg] = { versions: [{ content: text, ts: now() }], active: 0 };
+    t.messages.push({ role: 'assistant', content: 'Got it, noted as a training directive from Swiftaw. I\'ll fold that into how I improve. Thanks!', ts: now(), ack: true, reasoning: null, sources: [], feedback: null });
+    if (t.messages.filter(function (m) { return m.role === 'user'; }).length === 1) { t.title = text.slice(0, 42); $('#threadTitle').textContent = t.title; }
+    t.updatedAt = now(); saveThreads();
+    $('#composerInput').value = ''; autoGrow(); updateCounter(); setElicitations([]);
+    renderStream(); renderSidebar();
+    stock('user', text);
+    rpc('pulsar_feedback_note', { admin_uid: state.uid, note: note })
+      .then(function () { toast('Feedback saved to Pulsar'); })
+      .catch(function () { toast('Feedback saved (run model.sql to store it in Pulsar)', 'err'); });
+  }
+
   function respondTo(prompt) {
     var t = activeThread(); if (!t) return;
     state.streaming = true; state.abort = false; setSending(true);
@@ -431,27 +482,26 @@
     row.innerHTML = '<img class="av" src="' + PFP + '" alt="Supernova"><div class="body"><div class="head"><span class="nm ai">Supernova</span><span class="tag-ai">Pulsar</span><span class="ts">' + timeLabel(now()) + '</span></div><div class="think-slot"></div><div class="typing-dots"><i></i><i></i><i></i></div><div class="prose live"></div></div>';
     host.appendChild(row); scrollDown();
 
-    var payload = buildReply(prompt);
+    var payload = null;
     var pr = $('.prose', row), dots = $('.typing-dots', row), thinkSlot = $('.think-slot', row);
 
-    // 1) brief think delay, then reasoning accordion streams
-    setTimeout(function () {
+    // resolve the reply (Pulsar's own model if trained, else the draft), then stream it
+    getReply(prompt).then(function (p) {
+      payload = p;
       if (state.abort) return finish();
       dots.remove();
       thinkSlot.innerHTML = thinkHTML(payload.reasoning);
-      // 2) stream the answer word by word with a caret
       var words = payload.answer.split(/(\s+)/); var i = 0, buf = '';
       pr.innerHTML = '<span class="stream-cursor"></span>';
       (function step() {
         if (state.abort) { return finish(buf); }
         if (i >= words.length) { return finish(payload.answer); }
         buf += words[i++];
-        // show raw-ish text while streaming (cheap: escape + line breaks), keep caret
         pr.innerHTML = escHTML(buf).replace(/\n/g, '<br>') + '<span class="stream-cursor"></span>';
         scrollDown();
         setTimeout(step, 14 + Math.random() * 26);
       })();
-    }, 480);
+    });
 
     function finish(finalText) {
       state.streaming = false; setSending(false);
@@ -717,9 +767,37 @@
   function trainState() { try { return JSON.parse(localStorage.getItem(trainKey()) || '{}'); } catch (e) { return {}; } }
   function trainSave(s) { try { localStorage.setItem(trainKey(), JSON.stringify(s)); } catch (e) {} }
   function isTrainer() { return nameOf(state.user) === 'Swiftaw'; }
+  function renderTrainStats() {
+    var s = state.stats; var host = $('#trStats'); if (!host) return;
+    var tiles = [
+      { k: 'messages', label: 'Messages stocked' },
+      { k: 'vocab', label: 'Vocabulary' },
+      { k: 'ngrams', label: 'Patterns learned' },
+      { k: 'signals', label: 'Lifecheck signals' }
+    ];
+    host.innerHTML = tiles.map(function (t) {
+      var v = s && (s[t.k] != null) ? s[t.k] : '--';
+      return '<div class="tr-stat"><div class="v">' + v + '</div><div class="l">' + t.label + '</div></div>';
+    }).join('') +
+      '<div class="tr-stat wide"><div class="v ' + (state.modelReady ? 'ready' : 'learning') + '">' + (state.modelReady ? 'Model ready' : 'Learning') + '</div><div class="l">' +
+      (s && s.last_trained ? 'trained ' + new Date(s.last_trained).toLocaleString() : (s ? 'not trained yet' : 'run schema.sql + model.sql to connect')) + '</div></div>';
+  }
   function openTrainer() {
     if (!isTrainer()) return;
+    renderTrainStats(); refreshStats().then(renderTrainStats);
     var st = trainState(); st.sources = st.sources || { lifecheck: true, chats: true, web: true, swiftaw: true };
+    var trainBtn = $('#trTrain');
+    trainBtn.onclick = function () {
+      if (trainBtn.disabled) return;
+      trainBtn.disabled = true; trainBtn.classList.add('busy');
+      var label = trainBtn.innerHTML; trainBtn.innerHTML = '<svg class="ic"><use href="#i-spark"/></svg> Training...';
+      rpc('pulsar_train', { admin_uid: state.uid, batch: 800 }).then(function (res) {
+        toast('Trained on ' + ((res && res.processed) || 0) + ' items');
+        return refreshStats();
+      }).then(function () { renderTrainStats(); }).catch(function () {
+        toast('Training needs model.sql run first', 'err');
+      }).then(function () { trainBtn.disabled = false; trainBtn.classList.remove('busy'); trainBtn.innerHTML = label; });
+    };
     var dataHost = $('#trData'); dataHost.innerHTML = '';
     TRAIN_SOURCES.forEach(function (s) {
       var on = st.sources[s.id] !== false;
@@ -752,6 +830,13 @@
     else newThread();
     fillUser(); autoGrow(); updateCounter();
     $('#trainerBtn').hidden = !isTrainer();
+    refreshStats();
+  }
+  function refreshStats() {
+    return rpc('pulsar_stats', {}).then(function (s) {
+      state.stats = s || null;
+      state.modelReady = !!(s && s.vocab > 300);
+    }).catch(function () { state.stats = null; state.modelReady = false; });
   }
   function showGate() { $('#app').classList.remove('on'); $('#gate').classList.add('on'); }
 

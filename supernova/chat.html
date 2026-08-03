@@ -151,18 +151,16 @@
       <button class="x" id="trainerClose" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
     </div>
     <div class="tr-body">
-      <p class="tr-lede">Steer how <b>Pulsar</b> learns. Pick what it trains on, then put it through drills. Only the <b>Swiftaw</b> account can open this, and anything Swiftaw marks as certain, Pulsar treats as ground truth.</p>
+      <p class="tr-lede">Steer how <b>Pulsar</b> learns. It builds its own model from the data below, weighted by feedback. Only the <b>Swiftaw</b> account can open this, and anything Swiftaw marks certain is treated as ground truth. Tip: in chat, type <b>Feedback: &lt;your note&gt;</b> to leave Pulsar a written directive.</p>
 
-      <div class="tr-sec-h">Model</div>
-      <div class="tr-models">
-        <button class="tr-model on" data-model="pulsar"><span class="mi"><svg class="ic-sm"><use href="#i-spark"/></svg></span><div><div class="mt">Pulsar</div><div class="md">Swiftaw's first model</div></div><svg class="sel ic-sm"><use href="#i-check"/></svg></button>
-      </div>
+      <div class="tr-stats" id="trStats"></div>
+      <button class="tr-train" id="trTrain"><svg class="ic"><use href="#i-spark"/></svg> Train Pulsar now</button>
 
       <div class="tr-sec-h">Train on</div>
       <div class="tr-data" id="trData"></div>
 
-      <div class="tr-sec-h">Drills &amp; exercises</div>
-      <p class="tr-note">Small tasks Pulsar has to pass. Results feed back into training.</p>
+      <div class="tr-sec-h">Focus drills</div>
+      <p class="tr-note">Optional exercises that shape what Pulsar prioritises.</p>
       <div class="tr-games" id="trGames"></div>
     </div>
   </div>

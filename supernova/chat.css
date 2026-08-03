@@ -442,3 +442,27 @@ body.acct-open .side-foot .acct-trigger .cv { transform: rotate(180deg); }
 .ver-pager .vp-btn { width: 24px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--muted-light); font-size: 17px; line-height: 1; border-radius: 7px; }
 .ver-pager .vp-btn:hover { color: #fff; background: rgba(255,255,255,.07); }
 .ver-pager .vp-n { font-size: 11.5px; color: var(--muted); font-family: 'Roboto Mono', monospace; min-width: 36px; text-align: center; }
+
+/* trainer stats + train button */
+.tr-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+@media (max-width: 620px){ .tr-stats { grid-template-columns: 1fr 1fr; } }
+.tr-stat { padding: 14px; border-radius: 14px; background: var(--bg-2); border: 1.5px solid var(--border); }
+.tr-stat .v { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: -.5px; color: #fff; }
+.tr-stat .l { font-size: 11.5px; color: var(--muted-light); margin-top: 2px; }
+.tr-stat.wide { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; }
+.tr-stat.wide .v { font-size: 15px; }
+.tr-stat.wide .v.ready { color: var(--sn-green); } .tr-stat.wide .v.learning { color: var(--sn-blue); }
+.tr-stat.wide .l { margin-top: 0; }
+.tr-train { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; border-radius: 14px; margin-bottom: 6px;
+  font-family: var(--font-display); font-weight: 800; font-size: 15px; color: #0d1117;
+  background: linear-gradient(120deg, var(--sn-blue), var(--sn-pink) 62%, var(--sn-green));
+  border: 2px solid var(--ink); box-shadow: 0 5px 0 0 var(--ink); transition: transform .1s, filter .15s; }
+.tr-train:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.tr-train:active { transform: translateY(3px); box-shadow: 0 2px 0 0 var(--ink); }
+.tr-train:disabled { opacity: .6; cursor: default; transform: none; }
+.tr-train .ic { fill: #0d1117; }
+.tr-train.busy .ic { animation: snSpin 1s linear infinite; }
+@keyframes snSpin { to { transform: rotate(360deg); } }
+
+/* feedback-note tag on a Swiftaw message */
+.fb-tag { font-family: var(--font-display); font-weight: 800; font-size: 9px; letter-spacing: .07em; text-transform: uppercase; color: var(--sn-green); background: rgba(var(--sn-green-rgb),.12); border: 1px solid rgba(var(--sn-green-rgb),.3); padding: 1px 7px; border-radius: 100px; }
