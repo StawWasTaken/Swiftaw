@@ -466,3 +466,9 @@ body.acct-open .side-foot .acct-trigger .cv { transform: rotate(180deg); }
 
 /* feedback-note tag on a Swiftaw message */
 .fb-tag { font-family: var(--font-display); font-weight: 800; font-size: 9px; letter-spacing: .07em; text-transform: uppercase; color: var(--sn-green); background: rgba(var(--sn-green-rgb),.12); border: 1px solid rgba(var(--sn-green-rgb),.3); padding: 1px 7px; border-radius: 100px; }
+
+/* neural train button */
+.tr-train.neural { background: var(--panel); color: #fff; border: 1.5px solid rgba(var(--sn-pink-rgb),.5); box-shadow: 0 5px 0 0 var(--ink); margin-top: 8px; }
+.tr-train.neural .ic { fill: var(--sn-pink); }
+.tr-train.neural[hidden] { display: none; }
+.tr-train.neural .beta { font-family: var(--font-display); font-weight: 800; font-size: 8.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--sn-pink); background: rgba(var(--sn-pink-rgb),.14); border: 1px solid rgba(var(--sn-pink-rgb),.35); padding: 1px 6px; border-radius: 100px; }

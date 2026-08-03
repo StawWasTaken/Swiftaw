@@ -49,12 +49,22 @@ one later without changing the data pipeline.
 ## How to turn it on (no terminal)
 
 1. Run `schema.sql` in the AI project SQL editor.
-2. Run `model.sql` (same place). This creates the train + generate functions.
-3. Register Swiftaw: `insert into pulsar_trusted_accounts(user_id,username) values ('SWIFTAW-UID','Swiftaw');`
-4. Import Lifecheck: run `import-lifecheck.sql` (paste your Lifecheck service key).
-5. Chat a bit (that stocks data), then open the **Trainer** and hit **Train Pulsar now**.
-   Once the vocabulary passes ~300 words the chat automatically switches from the
-   in-browser draft to Pulsar's own generation (`getReply` in chat.js).
+2. Run `model.sql` (n-gram train + generate + stats + feedback).
+3. Run `neural.sql` (feedback-learns-sentences + fact **recall** + neural support + Storage bucket).
+4. Register Swiftaw: `insert into pulsar_trusted_accounts(user_id,username) values ('SWIFTAW-UID','Swiftaw');`
+5. Import Lifecheck: run `import-lifecheck.sql` (paste your Lifecheck service key).
+6. Chat a bit (stocks data), then open the **Trainer**:
+   - **Train Pulsar now** → the n-gram model (fast, in Postgres). Once vocab > ~300 the chat auto-switches to Pulsar's own generation.
+   - **Train neural model (beta)** → trains a small neural net in your browser (`neural.js`, TensorFlow.js) on the exported data, saves it to Storage; every visitor then generates with it. Needs a live run + enough data.
+
+## How Pulsar answers (priority)
+
+`getReply` in chat.js: **recalled fact** (a trusted thing Swiftaw taught, via `pulsar_recall`) → **neural model** (if trained) → **n-gram model** → in-browser draft.
+
+## Feedback teaches Pulsar
+
+- 👍/👎 on a message → `pulsar_feedback` (training weights up-votes ×3, drops down-votes).
+- Swiftaw types `Feedback: <note>` → stored as a directive. Any text in **quotes** is learned three ways: a **phrasing example** (`pulsar_sentences`), **corpus** to train on, and a **trusted fact** (`pulsar_facts`, trust 1) that `pulsar_recall` can surface later. So `Feedback: "Elon Musk, as of August 2026, is the richest man on earth."` is remembered and recalled when asked.
 
 ## Status — honest
 

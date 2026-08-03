@@ -15,7 +15,7 @@
   var state = {
     user: null, uid: null, threads: [], activeId: null,
     streaming: false, abort: false, search: '', attachments: [], model: 'pulsar',
-    modelReady: false, stats: null
+    modelReady: false, neuralReady: false, stats: null
   };
   var codeReg = {}; var codeSeq = 0;
 
@@ -409,19 +409,38 @@
       body: JSON.stringify(body || {})
     }).then(function (r) { if (!r.ok) throw new Error('rpc ' + r.status); return r.json(); });
   }
-  // Pulsar's OWN generation: walk the learned n-grams. Falls back to the
-  // in-browser draft until the model has been trained on enough data.
-  function getReply(prompt) {
+  function cap(t) { t = String(t).trim(); t = t.charAt(0).toUpperCase() + t.slice(1); if (!/[.!?]$/.test(t)) t += '.'; return t; }
+  // 1) recall a fact Swiftaw confirmed as true
+  function recall(prompt) {
+    return rpc('pulsar_recall', { query: prompt })
+      .then(function (t) { return (typeof t === 'string' && t.trim().length > 3) ? t.trim() : null; })
+      .catch(function () { return null; });
+  }
+  // 2) neural model (browser TF.js), if one has been trained + saved
+  function neuralReply(prompt) {
+    if (!state.neuralReady || !window.SN_Neural) return Promise.resolve(null);
+    return Promise.resolve().then(function () { return window.SN_Neural.reply(prompt); }).then(function (text) {
+      if (text && String(text).trim().split(/\s+/).length >= 5)
+        return { reasoning: 'Generated with my neural model.', answer: cap(text), followups: ['Tell me more', 'Try again', 'Say it differently'] };
+      return null;
+    }).catch(function () { return null; });
+  }
+  // 3) n-gram model
+  function ngramReply(prompt) {
     if (!state.modelReady) return Promise.resolve(buildReply(prompt));
     var seed = String(prompt || '').toLowerCase().split(/\s+/).slice(-4).join(' ');
     return rpc('pulsar_generate', { seed: seed, max_tokens: 60 }).then(function (text) {
-      if (typeof text === 'string' && text.trim().split(/\s+/).length >= 6) {
-        var ans = text.trim(); ans = ans.charAt(0).toUpperCase() + ans.slice(1);
-        if (!/[.!?]$/.test(ans)) ans += '.';
-        return { reasoning: 'Generated from the patterns I\'ve learned so far.', answer: ans, followups: ['Tell me more', 'Try again', 'Explain that'] };
-      }
+      if (typeof text === 'string' && text.trim().split(/\s+/).length >= 6)
+        return { reasoning: 'Generated from the patterns I\'ve learned so far.', answer: cap(text), followups: ['Tell me more', 'Try again', 'Explain that'] };
       return buildReply(prompt);
     }).catch(function () { return buildReply(prompt); });
+  }
+  // Pulsar's own brain: recalled fact -> neural -> n-gram -> in-browser draft.
+  function getReply(prompt) {
+    return recall(prompt).then(function (fact) {
+      if (fact) return { reasoning: 'I recalled this from what Swiftaw confirmed as true.', answer: cap(fact), sources: [], followups: ['Tell me more', 'How do you know?', 'Ask something else'] };
+      return neuralReply(prompt).then(function (r) { return r || ngramReply(prompt); });
+    });
   }
   function regenerate(aiIdx) {
     var t = activeThread(); var userIdx = aiIdx - 1;
@@ -469,7 +488,10 @@
     renderStream(); renderSidebar();
     stock('user', text);
     rpc('pulsar_feedback_note', { admin_uid: state.uid, note: note })
-      .then(function () { toast('Feedback saved to Pulsar'); })
+      .then(function (res) {
+        var n = res && res.sentences_learned;
+        toast(n ? ('Learned ' + n + ' new example' + (n > 1 ? 's' : '') + ' + saved as fact') : 'Feedback saved to Pulsar');
+      })
       .catch(function () { toast('Feedback saved (run model.sql to store it in Pulsar)', 'err'); });
   }
 
@@ -798,6 +820,24 @@
         toast('Training needs model.sql run first', 'err');
       }).then(function () { trainBtn.disabled = false; trainBtn.classList.remove('busy'); trainBtn.innerHTML = label; });
     };
+    var nbtn = $('#trTrainNeural');
+    nbtn.hidden = !window.SN_Neural;
+    nbtn.onclick = function () {
+      if (nbtn.disabled || !window.SN_Neural) return;
+      nbtn.disabled = true; nbtn.classList.add('busy'); var nlabel = nbtn.innerHTML;
+      var set = function (t) { nbtn.innerHTML = '<svg class="ic"><use href="#i-brain"/></svg> ' + t; };
+      set('Loading data...');
+      rpc('pulsar_export', { admin_uid: state.uid, lim: 6000 }).then(function (texts) {
+        if (!Array.isArray(texts) || texts.length < 5) throw new Error('Not enough data yet, chat more first');
+        return window.SN_Neural.train(texts, { epochs: 15, onProgress: function (pct) { set('Training ' + pct + '%'); } });
+      }).then(function (res) {
+        set('Saving...');
+        return window.SN_Neural.save(PULSAR_DB).then(function () { return res; });
+      }).then(function (res) {
+        state.neuralReady = true; toast('Neural model trained on ' + res.vocab + ' words and saved');
+      }).catch(function (e) { toast((e && e.message) || 'Neural training failed', 'err'); })
+        .then(function () { nbtn.disabled = false; nbtn.classList.remove('busy'); nbtn.innerHTML = nlabel; });
+    };
     var dataHost = $('#trData'); dataHost.innerHTML = '';
     TRAIN_SOURCES.forEach(function (s) {
       var on = st.sources[s.id] !== false;
@@ -831,6 +871,7 @@
     fillUser(); autoGrow(); updateCounter();
     $('#trainerBtn').hidden = !isTrainer();
     refreshStats();
+    if (window.SN_Neural) window.SN_Neural.load(PULSAR_DB).then(function () { state.neuralReady = true; }).catch(function () { state.neuralReady = false; });
   }
   function refreshStats() {
     return rpc('pulsar_stats', {}).then(function (s) {
