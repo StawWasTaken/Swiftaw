@@ -16,7 +16,7 @@
     user: null, uid: null, threads: [], activeId: null,
     streaming: false, abort: false, search: '', attachments: [], model: 'pulsar',
     modelReady: false, neuralReady: false, stats: null, trainMode: null,
-    folders: [], editingFolder: null, _fldSel: null
+    folders: [], editingFolder: null, _fldSel: null, _drag: null
   };
   var FOLDER_COLORS = ['#30aefc', '#ff77e4', '#3ecf6e', '#fdba74', '#c4b5fd', '#f87171', '#fbbf24', '#94a0b4'];
   var FOLDER_ICONS = ['i-folder', 'i-spark', 'i-chat', 'i-brain', 'i-globe', 'i-shield', 'i-flask', 'i-pin'];
@@ -154,13 +154,13 @@
 
     // folders first
     (state.folders || []).forEach(function (f) {
-      var chats = state.threads.filter(function (t) { return t.folderId === f.id && match(t); }).sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+      var chats = state.threads.filter(function (t) { return t.folderId === f.id && match(t); }).sort(byOrder);
       if (q && !chats.length) return;
       host.appendChild(folderEl(f, chats));
     });
 
     var unfiled = state.threads.filter(function (t) { return (!t.folderId || !fset[t.folderId]) && match(t); });
-    var pinned = unfiled.filter(function (t) { return t.pinned; }).sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+    var pinned = unfiled.filter(function (t) { return t.pinned; }).sort(byOrder);
     var rest = unfiled.filter(function (t) { return !t.pinned; }).sort(function (a, b) { return b.updatedAt - a.updatedAt; });
 
     if (pinned.length) { host.appendChild(secHeader('Pinned', 'i-pin')); pinned.forEach(function (t) { host.appendChild(threadEl(t)); }); }
@@ -183,8 +183,31 @@
       if (e.target.closest('.fmenu')) { e.stopPropagation(); openFolderModal(f); return; }
       f.collapsed = !f.collapsed; saveFolders(); renderSidebar();
     });
+    // folder drag (reorder folders) via the header
+    head.draggable = true;
+    head.addEventListener('dragstart', function (e) { state._drag = { type: 'folder', id: f.id }; d.classList.add('dragging'); try { e.dataTransfer.setData('text/plain', f.id); e.dataTransfer.effectAllowed = 'move'; } catch (x) {} e.stopPropagation(); });
+    head.addEventListener('dragend', function () { d.classList.remove('dragging'); clearDropMarks(); state._drag = null; });
+    // folder as a drop target: a thread drops INTO it; a folder drops to REORDER
+    function overFolder(e) {
+      if (!state._drag) return; e.preventDefault(); e.stopPropagation();
+      if (state._drag.type === 'thread') { d.classList.add('drop-into'); }
+      else if (state._drag.type === 'folder' && state._drag.id !== f.id) {
+        var r = head.getBoundingClientRect(); var after = (e.clientY - r.top) > r.height / 2;
+        head.classList.toggle('drop-after', after); head.classList.toggle('drop-before', !after);
+      }
+    }
+    function leaveFolder() { d.classList.remove('drop-into'); head.classList.remove('drop-before', 'drop-after'); }
+    function dropFolder(e) {
+      if (!state._drag) return; e.preventDefault(); e.stopPropagation();
+      if (state._drag.type === 'thread') { d.classList.remove('drop-into'); moveIntoFolder(state._drag.id, f.id); }
+      else if (state._drag.type === 'folder') { var after = head.classList.contains('drop-after'); leaveFolder(); reorderFolder(state._drag.id, f.id, after); }
+    }
+    head.addEventListener('dragover', overFolder); head.addEventListener('dragleave', leaveFolder); head.addEventListener('drop', dropFolder);
     d.appendChild(head);
     var body = document.createElement('div'); body.className = 'folder-body';
+    body.addEventListener('dragover', function (e) { if (state._drag && state._drag.type === 'thread') { e.preventDefault(); d.classList.add('drop-into'); } });
+    body.addEventListener('dragleave', function () { d.classList.remove('drop-into'); });
+    body.addEventListener('drop', function (e) { if (state._drag && state._drag.type === 'thread' && !e.target.closest('.thread')) { e.preventDefault(); e.stopPropagation(); d.classList.remove('drop-into'); moveIntoFolder(state._drag.id, f.id); } });
     if (chats.length) chats.forEach(function (t) { body.appendChild(threadEl(t)); });
     else { var em = document.createElement('div'); em.className = 'folder-empty'; em.textContent = 'Empty'; body.appendChild(em); }
     d.appendChild(body);
@@ -205,7 +228,59 @@
       if (d.querySelector('.t-rename')) return;
       selectThread(t.id);
     });
+    // drag & drop
+    d.draggable = true;
+    d.addEventListener('dragstart', function (e) { state._drag = { type: 'thread', id: t.id }; d.classList.add('dragging'); try { e.dataTransfer.setData('text/plain', t.id); e.dataTransfer.effectAllowed = 'move'; } catch (x) {} });
+    d.addEventListener('dragend', function () { d.classList.remove('dragging'); clearDropMarks(); state._drag = null; });
+    d.addEventListener('dragover', function (e) {
+      if (!state._drag || state._drag.type !== 'thread' || state._drag.id === t.id) return;
+      e.preventDefault(); e.stopPropagation();
+      var r = d.getBoundingClientRect(); var after = (e.clientY - r.top) > r.height / 2;
+      d.classList.toggle('drop-after', after); d.classList.toggle('drop-before', !after);
+    });
+    d.addEventListener('dragleave', function () { d.classList.remove('drop-before', 'drop-after'); });
+    d.addEventListener('drop', function (e) {
+      if (!state._drag || state._drag.type !== 'thread') return;
+      e.preventDefault(); e.stopPropagation();
+      var after = d.classList.contains('drop-after'); d.classList.remove('drop-before', 'drop-after');
+      dropThreadNear(state._drag.id, t, after);
+    });
     return d;
+  }
+  function clearDropMarks() { $$('.drop-before,.drop-after,.drop-into').forEach(function (x) { x.classList.remove('drop-before', 'drop-after', 'drop-into'); }); }
+  function byOrder(a, b) { var ao = (a.order == null ? Infinity : a.order), bo = (b.order == null ? Infinity : b.order); if (ao !== bo) return ao - bo; return b.updatedAt - a.updatedAt; }
+  function contextThreads(ref) {
+    // the ordered list a thread belongs to (a folder, or the unfiled pinned list)
+    var fset = {}; (state.folders || []).forEach(function (f) { fset[f.id] = true; });
+    if (ref.folderId && fset[ref.folderId]) return state.threads.filter(function (t) { return t.folderId === ref.folderId; }).sort(byOrder);
+    if (ref.pinned) return state.threads.filter(function (t) { return t.pinned && (!t.folderId || !fset[t.folderId]); }).sort(byOrder);
+    return null; // date-grouped area: not manually orderable
+  }
+  function dropThreadNear(dragId, tgt, after) {
+    var src = state.threads.filter(function (x) { return x.id === dragId; })[0]; if (!src || src.id === tgt.id) return;
+    src.folderId = tgt.folderId || null; src.pinned = !!tgt.pinned;
+    var list = contextThreads(tgt);
+    if (!list) { saveThreads(); renderSidebar(); return; } // dropped into a date group -> just adopts context
+    list = list.filter(function (t) { return t.id !== src.id; });
+    var idx = list.indexOf(tgt); if (idx < 0) idx = list.length - 1;
+    list.splice(after ? idx + 1 : idx, 0, src);
+    list.forEach(function (t, i) { t.order = i; });
+    saveThreads(); renderSidebar();
+  }
+  function moveIntoFolder(dragId, folderId) {
+    var src = state.threads.filter(function (x) { return x.id === dragId; })[0]; if (!src) return;
+    src.folderId = folderId; src.pinned = false;
+    var max = -1; state.threads.forEach(function (t) { if (t.folderId === folderId && t.order != null && t.order > max) max = t.order; });
+    src.order = max + 1;
+    saveThreads(); renderSidebar();
+  }
+  function reorderFolder(dragId, tgtId, after) {
+    if (dragId === tgtId) return;
+    var arr = state.folders, from = arr.map(function (f) { return f.id; }).indexOf(dragId);
+    if (from < 0) return; var moved = arr.splice(from, 1)[0];
+    var to = arr.map(function (f) { return f.id; }).indexOf(tgtId); if (to < 0) to = arr.length;
+    arr.splice(after ? to + 1 : to, 0, moved);
+    saveFolders(); renderSidebar();
   }
 
   var menuFor = null;

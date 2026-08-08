@@ -530,3 +530,13 @@ body.acct-open .side-foot .acct-trigger .cv { transform: rotate(180deg); }
 .fld-del[hidden] { display: none; }
 .fld-save { margin-left: auto; font-family: var(--font-display); font-weight: 700; font-size: 14px; color: #0d1117; padding: 11px 20px; border-radius: 12px; background: linear-gradient(120deg, var(--sn-blue), var(--sn-pink)); border: 1.5px solid var(--ink); box-shadow: 0 4px 0 0 var(--ink); }
 .fld-save:active { transform: translateY(2px); box-shadow: 0 1px 0 0 var(--ink); }
+
+/* ═══ DRAG & DROP (reorder) ═══ */
+.thread.dragging, .folder.dragging { opacity: .5; }
+.thread { position: relative; }
+.thread.drop-before::after, .thread.drop-after::after { content: ""; position: absolute; left: 6px; right: 6px; height: 2px; border-radius: 2px; background: var(--sn-blue); box-shadow: 0 0 6px var(--sn-blue); }
+.thread.drop-before::after { top: -1px; } .thread.drop-after::after { bottom: -1px; }
+.folder-head.drop-before, .folder-head.drop-after { position: relative; }
+.folder-head.drop-before::after, .folder-head.drop-after::after { content: ""; position: absolute; left: 6px; right: 6px; height: 2px; border-radius: 2px; background: var(--sn-pink); box-shadow: 0 0 6px var(--sn-pink); }
+.folder-head.drop-before::after { top: -1px; } .folder-head.drop-after::after { bottom: -1px; }
+.folder.drop-into > .folder-head { background: rgba(var(--sn-blue-rgb),.14); box-shadow: inset 0 0 0 1.5px rgba(var(--sn-blue-rgb),.5); border-radius: 10px; }
