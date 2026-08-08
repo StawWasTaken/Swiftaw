@@ -122,7 +122,7 @@
     var ids = [2].concat(seed), out = [], end = STOI['</s>'];
     for (var i = 0; i < 45; i++) {
       var win = ids.slice(-SEQ); while (win.length < SEQ) win.unshift(0);
-      var input = tf.tensor2d([win], [1, SEQ], 'int32');
+      var input = tf.tensor2d([win], [1, SEQ], 'float32');
       var pred = MODEL.predict(input);
       var probs = pred.dataSync(); input.dispose(); pred.dispose();
       var nxt = sample(probs, 0.8);

@@ -57,7 +57,26 @@
 
 <!-- ═══ ACCESS GATE ═══ -->
 <div class="sn-gate" id="gate">
-  <div class="sn-gate-card">
+  <!-- Lifecheck human verification (first access only) -->
+  <div class="sn-gate-card lc-card" id="gateVerify" hidden>
+    <div class="lc-brand"><span class="lc-dot"></span> Lifecheck</div>
+    <h1>Quick human check</h1>
+    <p>Before you connect your Swiftaw account to Supernova, Lifecheck confirms you're a real person. You only do this once on this device.</p>
+    <div class="lc-hold" id="lcHold" role="button" tabindex="0" aria-label="Press and hold to verify">
+      <svg class="lc-ring" viewBox="0 0 120 120">
+        <circle class="lc-track" cx="60" cy="60" r="52"></circle>
+        <circle class="lc-prog" id="lcProg" cx="60" cy="60" r="52"></circle>
+      </svg>
+      <div class="lc-face" id="lcFace">
+        <svg class="ic" id="lcIcon"><use href="#i-shield"/></svg>
+        <span id="lcLabel">Press &amp; hold</span>
+      </div>
+    </div>
+    <p class="lc-hint" id="lcHint">Hold the circle until it fills.</p>
+    <a class="g-ghost" href="/supernova/">Back to Supernova</a>
+  </div>
+  <!-- Sign-in (after verification) -->
+  <div class="sn-gate-card" id="gateSignin" hidden>
     <img class="mark" src="/supernova/Supernova%20pfp.png" alt="Supernova">
     <h1>Chat with Supernova</h1>
     <p>Supernova is part of your Swiftaw account. Sign in to start chatting. One account works across Swiftaw, Lifecheck and Supernova.</p>
@@ -192,10 +211,19 @@
   </div>
 </div>
 
+<!-- Supernova settings card (opened from the account menu) -->
+<div class="fld-modal set-modal" id="settingsModal">
+  <div class="fld-card set-card">
+    <div class="fld-head"><span class="t"><svg class="ic-sm" style="fill:var(--sn-blue);vertical-align:-2px"><use href="#i-gear"/></svg> Settings</span><button class="x" id="setClose" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button></div>
+    <div class="set-body" id="setBody"></div>
+  </div>
+</div>
+
 <div class="toasts" id="toasts"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <script src="/css/swiftaw-account.js"></script>
 <script src="/supernova/neural.js"></script>
 <script src="/supernova/chat.js"></script>

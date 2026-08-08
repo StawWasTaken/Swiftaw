@@ -18,6 +18,11 @@
     modelReady: false, neuralReady: false, stats: null, trainMode: null,
     folders: [], editingFolder: null, _fldSel: null, _drag: null
   };
+  /*  SETTINGS (per browser)  */
+  var SETTINGS_DEFAULTS = { enterToSend: true, twemoji: true, showThinking: true, streamSpeed: 'normal' };
+  var snSettings = (function () { try { var s = JSON.parse(localStorage.getItem('sn_settings') || '{}'); var o = {}; for (var k in SETTINGS_DEFAULTS) o[k] = (k in s) ? s[k] : SETTINGS_DEFAULTS[k]; return o; } catch (e) { return Object.assign({}, SETTINGS_DEFAULTS); } })();
+  function saveSettings() { try { localStorage.setItem('sn_settings', JSON.stringify(snSettings)); } catch (e) {} }
+
   var FOLDER_COLORS = ['#30aefc', '#ff77e4', '#3ecf6e', '#fdba74', '#c4b5fd', '#f87171', '#fbbf24', '#94a0b4'];
   var FOLDER_ICONS = ['i-folder', 'i-spark', 'i-chat', 'i-brain', 'i-globe', 'i-shield', 'i-flask', 'i-pin'];
   var codeReg = {}; var codeSeq = 0;
@@ -92,9 +97,9 @@
   }
   function renderMarkdown(md) {
     var blocks = [];
-    md = String(md).replace(/```(\w+)?\n([\s\S]*?)```/g, function (m, lang, code) {
-      blocks.push({ lang: lang || '', code: code.replace(/\n$/, '') });
-      return ' CODE' + (blocks.length - 1) + ' ';
+    md = String(md).replace(/```([\w+#.-]*)[^\S\n]*\n?([\s\S]*?)```/g, function (m, lang, code) {
+      blocks.push({ lang: (lang || '').toLowerCase(), code: code.replace(/\n$/, '') });
+      return '\nCODE' + (blocks.length - 1) + '\n';
     });
     var lines = md.split('\n'), html = '', i = 0;
     while (i < lines.length) {
@@ -121,6 +126,11 @@
       html += '<p>' + inline(p.join(' ')) + '</p>';
     }
     return html;
+  }
+  // Render emoji as Twemoji SVGs (guarded: if the lib isn't loaded, native emoji stay)
+  function twemojify(el) {
+    if (!el || !window.twemoji || !snSettings.twemoji) return;
+    try { window.twemoji.parse(el, { folder: 'svg', ext: '.svg', className: 'sn-emoji', base: 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/' }); } catch (e) {}
   }
   function typesetMath(el) {
     if (typeof window.renderMathInElement !== 'function') return;
@@ -417,7 +427,7 @@
         '<div class="body"><div class="head"><span class="nm">' + escHTML(nameOf(state.user)) + '</span>' + (m.feedbackNote ? '<span class="fb-tag">Feedback</span>' : '') + (m.answerNote ? '<span class="fb-tag ans">Answer</span>' : '') + '<span class="ts">' + timeLabel(m.ts) + '</span></div>' +
         (m.attachments && m.attachments.length ? attachmentsHTML(m.attachments) : '') +
         '<div class="prose"></div></div>';
-      $('.prose', row).textContent = m.content;
+      var upr = $('.prose', row); upr.textContent = m.content; twemojify(upr);
       row.appendChild(userTools(idx));
     } else {
       row.innerHTML = '<img class="av" src="' + PFP + '" alt="Supernova">' +
@@ -425,7 +435,7 @@
         (m.reasoning ? thinkHTML(m.reasoning) : '') +
         '<div class="prose"></div>' +
         (m.sources && m.sources.length ? sourcesHTML(m.sources) : '') + '</div>';
-      var pr = $('.prose', row); pr.innerHTML = renderMarkdown(m.content); typesetMath(pr);
+      var pr = $('.prose', row); pr.innerHTML = renderMarkdown(m.content); typesetMath(pr); twemojify(pr);
       row.querySelector('.body').appendChild(aiTools(idx, m));
     }
     return row;
@@ -447,7 +457,7 @@
     }).join('') + '</div>';
   }
   function thinkHTML(txt) {
-    return '<details class="think"><summary><svg class="ic-sm"><use href="#i-brain"/></svg> Thinking<svg class="ic-sm chev"><use href="#i-cd"/></svg></summary><div class="think-body">' + renderMarkdown(txt) + '</div></details>';
+    return '<details class="think"' + (snSettings.showThinking ? ' open' : '') + '><summary><svg class="ic-sm"><use href="#i-brain"/></svg> Thinking<svg class="ic-sm chev"><use href="#i-cd"/></svg></summary><div class="think-body">' + renderMarkdown(txt) + '</div></details>';
   }
   function userTools(idx) {
     var t = activeThread(); var m = t && t.messages[idx];
@@ -576,6 +586,88 @@
     });
   }
   function cap(t) { t = String(t).trim(); t = t.charAt(0).toUpperCase() + t.slice(1); if (!/[.!?]$/.test(t)) t += '.'; return t; }
+
+  /*  NATIVE MATH: Pulsar computes arithmetic itself, it isn't "taught" it.
+      (Like the old Tithonia brain: math is a built-in competence.)  */
+  var MATH_FN = {
+    sqrt: Math.sqrt, cbrt: Math.cbrt, abs: Math.abs, round: Math.round, floor: Math.floor,
+    ceil: Math.ceil, sin: Math.sin, cos: Math.cos, tan: Math.tan, asin: Math.asin,
+    acos: Math.acos, atan: Math.atan, sinh: Math.sinh, cosh: Math.cosh, tanh: Math.tanh,
+    exp: Math.exp, ln: Math.log, log: function (x) { return Math.log(x) / Math.LN10; },
+    log2: function (x) { return Math.log(x) / Math.LN2; }, sign: Math.sign,
+    min: Math.min, max: Math.max, hypot: Math.hypot,
+    fact: function (n) { n = Math.round(n); if (n < 0 || n > 170) return NaN; for (var r = 1, k = 2; k <= n; k++) r *= k; return r; }
+  };
+  var MATH_CONST = { pi: Math.PI, e: Math.E, tau: Math.PI * 2, phi: (1 + Math.sqrt(5)) / 2 };
+  function mathTokenize(s) {
+    var toks = [], i = 0, n = s.length;
+    while (i < n) {
+      var c = s[i];
+      if (c === ' ' || c === '\t') { i++; continue; }
+      if (/[0-9.]/.test(c)) { var j = i + 1; while (j < n && /[0-9.eE]/.test(s[j]) && !(/[eE]/.test(s[j]) && !/[0-9]/.test(s[j + 1] || '') && s[j + 1] !== '-' && s[j + 1] !== '+')) j++; var num = parseFloat(s.slice(i, j)); if (isNaN(num)) return null; toks.push({ t: 'num', v: num }); i = j; continue; }
+      if (/[a-zA-Z]/.test(c)) { var k = i + 1; while (k < n && /[a-zA-Z0-9]/.test(s[k])) k++; toks.push({ t: 'name', v: s.slice(i, k).toLowerCase() }); i = k; continue; }
+      if ('+-*/^%()'.indexOf(c) >= 0) { toks.push({ t: 'op', v: c }); i++; continue; }
+      if (c === ',') { toks.push({ t: 'comma' }); i++; continue; }
+      return null;
+    }
+    return toks;
+  }
+  function mathEval(toks) {
+    var pos = 0;
+    function peek() { return toks[pos]; }
+    function expr() { var v = term(); var p; while ((p = peek()) && p.t === 'op' && (p.v === '+' || p.v === '-')) { pos++; var r = term(); v = p.v === '+' ? v + r : v - r; } return v; }
+    function term() { var v = factor(); var p; while ((p = peek()) && p.t === 'op' && (p.v === '*' || p.v === '/' || p.v === '%')) { pos++; var r = factor(); v = p.v === '*' ? v * r : p.v === '/' ? v / r : v % r; } return v; }
+    function factor() { var v = unary(); var p = peek(); if (p && p.t === 'op' && p.v === '^') { pos++; v = Math.pow(v, factor()); } return v; }
+    function unary() { var p = peek(); if (p && p.t === 'op' && (p.v === '-' || p.v === '+')) { pos++; var v = unary(); return p.v === '-' ? -v : v; } return atom(); }
+    function atom() {
+      var p = peek(); if (!p) throw 0;
+      if (p.t === 'num') { pos++; return p.v; }
+      if (p.t === 'op' && p.v === '(') { pos++; var v = expr(); if (!peek() || peek().v !== ')') throw 0; pos++; return v; }
+      if (p.t === 'name') {
+        pos++;
+        if (p.v in MATH_CONST) return MATH_CONST[p.v];
+        if (peek() && peek().t === 'op' && peek().v === '(') {
+          pos++; var args = [expr()];
+          while (peek() && peek().t === 'comma') { pos++; args.push(expr()); }
+          if (!peek() || peek().v !== ')') throw 0; pos++;
+          var fn = MATH_FN[p.v]; if (!fn) throw 0; return fn.apply(null, args);
+        }
+        throw 0;
+      }
+      throw 0;
+    }
+    var out = expr(); if (pos !== toks.length) throw 0; return out;
+  }
+  function mathFmt(n) { if (Number.isInteger(n)) return String(n); var r = Math.round(n * 1e10) / 1e10; return (Math.abs(r) >= 1e15 || (Math.abs(r) < 1e-6 && r !== 0)) ? n.toExponential(6) : String(r); }
+  function mathReply(prompt) {
+    var raw = String(prompt || '').trim();
+    if (!raw || raw.length > 160) return null;
+    var s = raw.toLowerCase()
+      .replace(/^(what(?:\s+is|'?s)?|whats|calculate|compute|evaluate|eval|how much is|how many is|work out|solve|the answer to)\b[\s:=]*/, '')
+      .replace(/[=?.]+\s*$/, '')
+      .replace(/\bplus\b/g, '+').replace(/\bminus\b/g, '-')
+      .replace(/\b(times|multiplied by)\b/g, '*').replace(/\b(divided by|over)\b/g, '/')
+      .replace(/\bto the power of\b/g, '^').replace(/\bsquared\b/g, '^2').replace(/\bcubed\b/g, '^3')
+      .replace(/\b(mod|modulo)\b/g, '%').replace(/\bpercent of\b/g, '% of')
+      .replace(/(\d[\d.]*)\s*%\s*of\s*/g, '($1/100)*')
+      .replace(/(\d[\d.]*)\s*%(?!\s*[\d.(])/g, '($1/100)')
+      .replace(/(\d[\d.]*)\s*!/g, 'fact($1)')
+      .replace(/\bx\b/g, '*')
+      .trim();
+    if (!s || !/\d/.test(s)) return null;
+    // must actually be a calculation (has an operator or a known function/constant)
+    if (!/[-+*/^%]|sqrt|cbrt|sin|cos|tan|log|ln|exp|abs|fact|hypot|min|max|\bpi\b|\btau\b/.test(s)) return null;
+    if (/[a-z]/.test(s.replace(/sqrt|cbrt|sinh|cosh|tanh|asin|acos|atan|sin|cos|tan|log2|log|ln|exp|abs|ceil|floor|round|sign|hypot|min|max|fact|pi|tau|phi|e/g, ''))) return null;
+    var toks = mathTokenize(s); if (!toks || !toks.length) return null;
+    var res; try { res = mathEval(toks); } catch (e) { return null; }
+    if (res == null || typeof res !== 'number' || !isFinite(res)) return null;
+    return {
+      reasoning: 'This is a calculation, so I worked it out directly instead of guessing.',
+      answer: '**' + mathFmt(res) + '**\n\n`' + s.replace(/`/g, '') + ' = ' + mathFmt(res) + '`',
+      followups: ['Show the steps', 'Another calculation', 'Explain it']
+    };
+  }
+
   // 1) recall a fact Swiftaw confirmed as true
   function recall(prompt) {
     return rpc('pulsar_recall', { query: prompt })
@@ -629,6 +721,8 @@
   }
   // Pulsar's own brain: recalled fact -> training challenge -> neural -> n-gram -> draft.
   function getReply(prompt) {
+    var m = mathReply(prompt);
+    if (m) return Promise.resolve(m);
     return recall(prompt).then(function (fact) {
       if (fact) return { reasoning: 'I recalled this from what Swiftaw confirmed as true.', answer: cap(fact), sources: [], followups: ['Tell me more', 'How do you know?', 'Ask something else'] };
       if (state.trainMode) return trainingReply(prompt);
@@ -739,14 +833,16 @@
         buf += words[i++];
         pr.innerHTML = escHTML(buf).replace(/\n/g, '<br>') + '<span class="stream-cursor"></span>';
         scrollDown();
-        setTimeout(step, 14 + Math.random() * 26);
+        var sp = snSettings.streamSpeed === 'instant' ? 0 : snSettings.streamSpeed === 'fast' ? 4 : 14;
+        if (sp === 0) { i = words.length; buf = payload.answer; return finish(payload.answer); }
+        setTimeout(step, sp + Math.random() * (sp * 1.8));
       })();
     });
 
     function finish(finalText) {
       state.streaming = false; setSending(false);
       var full = (typeof finalText === 'string' && state.abort) ? finalText : payload.answer;
-      pr.classList.remove('live'); pr.innerHTML = renderMarkdown(full); typesetMath(pr);
+      pr.classList.remove('live'); pr.innerHTML = renderMarkdown(full); typesetMath(pr); twemojify(pr);
       var srcs = state.abort ? [] : (payload.sources || []);
       if (srcs.length) pr.insertAdjacentHTML('afterend', sourcesHTML(srcs));
       var aiMsg = { role: 'assistant', content: full, ts: now(), reasoning: payload.reasoning, sources: srcs, feedback: null };
@@ -758,6 +854,38 @@
       if (!state.abort) setElicitations(payload.followups);
       scrollDown();
     }
+  }
+
+  // Code generation. Detects the language/topic and returns a complete,
+  // runnable snippet in a copy/preview card, plus short notes. Fenced blocks
+  // are what renderMarkdown turns into the code card, so the raw ``` never shows.
+  function codeReply(p) {
+    var fu = ['Explain it line by line', 'Add error handling', 'Make it shorter'];
+    function fence(lang, code) { return '```' + lang + '\n' + code + '\n```'; }
+    if (/\bpython|py\b|\.py\b/.test(p)) {
+      var wantsClass = /class|object|oop/.test(p);
+      var code = wantsClass
+        ? 'class Counter:\n    def __init__(self, start=0):\n        self.value = start\n\n    def increment(self, by=1):\n        self.value += by\n        return self.value\n\n\nc = Counter()\nfor _ in range(3):\n    print(c.increment())'
+        : 'def fizzbuzz(n):\n    for i in range(1, n + 1):\n        if i % 15 == 0:\n            print("FizzBuzz")\n        elif i % 3 == 0:\n            print("Fizz")\n        elif i % 5 == 0:\n            print("Buzz")\n        else:\n            print(i)\n\n\nif __name__ == "__main__":\n    fizzbuzz(20)';
+      return { reasoning: 'They want Python. Give a complete, runnable script with a clear entry point.', answer: 'Here\'s a working Python snippet. Copy it and run with `python file.py`.\n\n' + fence('python', code) + '\n\nTweak it to your case and tell me what you\'re building, I\'ll shape it further.', followups: fu };
+    }
+    if (/\bsql|query|database|select|join\b/.test(p)) {
+      return { reasoning: 'A SQL request. Give a real, parameterised-feeling query with a note on safety.', answer: 'Here\'s a query you can adapt:\n\n' + fence('sql', 'select u.id,\n       u.username,\n       count(m.id) as messages\nfrom users u\nleft join messages m on m.user_id = u.id\nwhere u.created_at > now() - interval \'30 days\'\ngroup by u.id, u.username\norder by messages desc\nlimit 20;') + '\n\nNotes:\n\n- Swap the table and column names for yours.\n- Always bind user input as parameters, never string-concat it in.', followups: ['Add a WHERE filter', 'Explain the JOIN', 'Turn it into an index tip'] };
+    }
+    if (/\bregex|regular expression\b/.test(p)) {
+      return { reasoning: 'A regex request. Give a tested pattern and show it in JS with a guard.', answer: 'Here\'s a pattern (email as an example) with usage:\n\n' + fence('javascript', 'const emailRe = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\n\nfunction isEmail(value) {\n  return emailRe.test(String(value).trim());\n}\n\nconsole.log(isEmail("hi@swiftaw.com")); // true\nconsole.log(isEmail("nope"));           // false') + '\n\nTell me exactly what you need to match and I\'ll build the pattern for it.', followups: ['Match phone numbers instead', 'Explain each part', 'Make it case-insensitive'] };
+    }
+    if (/\bfetch|api|request|http|ajax\b/.test(p)) {
+      return { reasoning: 'They want to call an API. Show a modern async fetch with error handling.', answer: 'Here\'s a clean async fetch with proper error handling:\n\n' + fence('javascript', 'async function getData(url) {\n  try {\n    const res = await fetch(url, { headers: { Accept: "application/json" } });\n    if (!res.ok) throw new Error(`HTTP ${res.status}`);\n    return await res.json();\n  } catch (err) {\n    console.error("Request failed:", err);\n    return null;\n  }\n}\n\ngetData("https://api.example.com/items").then((data) => {\n  console.log(data);\n});') + '\n\nSwap in your endpoint. Want it to retry, or post a body instead?', followups: ['Make it a POST', 'Add a timeout', 'Add retries'] };
+    }
+    if (/\bcss|style|responsive|animation|flex|grid\b/.test(p)) {
+      return { reasoning: 'A CSS request. Give a small, modern, responsive block.', answer: 'Here\'s a tidy, responsive card style:\n\n' + fence('css', '.card {\n  display: grid;\n  gap: 12px;\n  padding: 20px;\n  border-radius: 16px;\n  background: #111827;\n  color: #e5e7eb;\n  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);\n}\n\n.card-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n  gap: 16px;\n}') + '\n\nDrop `.card` inside a `.card-grid` and it reflows on its own. Want a hover lift?', followups: ['Add a hover effect', 'Add a dark/light toggle', 'Explain auto-fit'] };
+    }
+    if (/\b(javascript|js|function|component|react)\b/.test(p) && !/html/.test(p)) {
+      return { reasoning: 'They want JavaScript. Give a reusable, documented function.', answer: 'Here\'s a small reusable helper:\n\n' + fence('javascript', '/** Debounce: run fn only after it stops being called for `wait` ms. */\nfunction debounce(fn, wait = 300) {\n  let t;\n  return function (...args) {\n    clearTimeout(t);\n    t = setTimeout(() => fn.apply(this, args), wait);\n  };\n}\n\nconst onSearch = debounce((q) => console.log("searching", q), 400);\nonSearch("he");\nonSearch("hello"); // only this one runs') + '\n\nHandy for search inputs and resize handlers. Want the throttle version too?', followups: ['Show throttle instead', 'Explain the closure', 'Add TypeScript types'] };
+    }
+    // default: HTML section (previewable in the card)
+    return { reasoning: 'They want front-end code. Give a self-contained HTML section they can preview with View or copy.', answer: 'Here\'s a self-contained section, hit **View** on the card to preview it or **Copy** to grab it:\n\n' + fence('html', '<section style="font-family: system-ui; text-align: center; padding: 48px 20px; background: #0d1117; color: #e6edf3; border-radius: 16px;">\n  <h1 style="margin: 0 0 8px; font-size: 28px;">Made with Supernova</h1>\n  <p style="margin: 0 0 20px; opacity: .8;">Swiftaw\'s own AI, at your service.</p>\n  <button onclick="alert(\'Hi from Supernova!\')" style="padding: 10px 22px; border: 0; border-radius: 999px; background: #30aefc; color: #fff; font-weight: 600; cursor: pointer;">Say hi</button>\n</section>') + '\n\nNotes:\n\n- Swap the copy and colours for your own.\n- Want the CSS pulled out into a stylesheet? Say the word.', followups: ['Add matching CSS', 'Make it responsive', 'Explain the code'] };
   }
 
   function buildReply(prompt) {
@@ -785,12 +913,8 @@
         followups: ['Show me another', 'What am I looking at?', 'Make it bigger']
       };
     }
-    if (/code|html|button|landing|component|function|script/.test(p)) {
-      return {
-        reasoning: 'They want code. Give a working snippet in a card they can copy or preview, then a couple of quick notes.',
-        answer: 'Sure thing. Here\'s a small section you can drop straight into a page. Hit **View** on the card to preview it, or **Copy** to grab it.\n\n```html\n<!-- a tiny hero section -->\n<section class="hero">\n  <h1>Made with Supernova</h1>\n  <p>Swiftaw\'s own AI, at your service.</p>\n  <button onclick="alert(\'hi!\')">Say hi</button>\n</section>\n```\n\nA couple of notes:\n\n- Swap the copy for your own.\n- The `onclick` is just a demo handler.\n- Want it styled? Say the word and I\'ll add the CSS.',
-        followups: ['Add some CSS to style it', 'Make it responsive', 'Explain the code line by line']
-      };
+    if (/\b(code|html|css|javascript|js|python|py|button|landing|component|function|script|snippet|program|api|fetch|regex|sql|query)\b/.test(p)) {
+      return codeReply(p);
     }
     if (/table|compare|comparison|vs\b|best .*(app|tool|option)/.test(p)) {
       return {
@@ -910,7 +1034,11 @@
 
     var ta = $('#composerInput');
     ta.addEventListener('input', function () { autoGrow(); updateCounter(); });
-    ta.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+    ta.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      var send = snSettings.enterToSend ? !e.shiftKey : (e.ctrlKey || e.metaKey);
+      if (send) { e.preventDefault(); sendMessage(); }
+    });
     var box = $('#composerBox');
     ta.addEventListener('focus', function () { box.classList.add('focus'); });
     ta.addEventListener('blur', function () { box.classList.remove('focus'); });
@@ -951,7 +1079,9 @@
     });
     $('#viewClose').addEventListener('click', closeView);
     $('#viewOverlay').addEventListener('click', function (e) { if (e.target === $('#viewOverlay')) closeView(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeView(); closeThreadMenu(); closeFolderPicker(); closeFolderModal(); } });
+    $('#setClose').addEventListener('click', closeSettings);
+    $('#settingsModal').addEventListener('click', function (e) { if (e.target === $('#settingsModal')) closeSettings(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeView(); closeThreadMenu(); closeFolderPicker(); closeFolderModal(); closeSettings(); } });
   }
 
   /*  ACCOUNT MENU (switch / settings / add / sign out)  */
@@ -980,9 +1110,11 @@
     m.innerHTML = '<div class="cur">' + avImg(av, nm, 'av') +
       '<div class="who"><div class="n">' + escHTML(nm) + '</div><div class="e">' + escHTML(u.email || '') + '</div></div></div>' +
       (othersHtml ? '<div class="sep"></div>' + othersHtml : '') + '<div class="sep"></div>' +
-      '<button class="row" data-settings><span class="ic-wrap"><svg class="ic-sm"><use href="#i-gear"/></svg></span><span class="lbl"><div class="n">Account settings</div></span></button>' +
+      '<button class="row" data-snset><span class="ic-wrap"><svg class="ic-sm"><use href="#i-gear"/></svg></span><span class="lbl"><div class="n">Settings</div></span></button>' +
+      '<button class="row" data-settings><span class="ic-wrap"><svg class="ic-sm"><use href="#i-shield"/></svg></span><span class="lbl"><div class="n">Account settings</div></span></button>' +
       '<button class="row" data-add><span class="ic-wrap"><svg class="ic-sm"><use href="#i-plus"/></svg></span><span class="lbl"><div class="n">Add another account</div></span></button>' +
       '<button class="row out" data-out><span class="ic-wrap"><svg class="ic-sm"><use href="#i-out"/></svg></span><span class="lbl"><div class="n">Sign out</div></span></button>';
+    m.querySelector('[data-snset]').addEventListener('click', openSettings);
     m.querySelector('[data-settings]').addEventListener('click', function () { location.href = acctPage() + '?view=settings'; });
     m.querySelector('[data-add]').addEventListener('click', function () { if (window.SwiftawAccount) window.SwiftawAccount.addAccount(); });
     m.querySelector('[data-out]').addEventListener('click', function () { if (window.SwiftawAccount) window.SwiftawAccount.signOut(); });
@@ -1000,6 +1132,51 @@
     document.body.classList.add('acct-open');
   }
   function closeAcctMenu() { $('#acctMenu').classList.remove('on'); document.body.classList.remove('acct-open'); }
+
+  /*  SETTINGS CARD  */
+  function toggleRow(key, title, desc) {
+    return '<div class="set-row"><div class="set-txt"><div class="set-n">' + escHTML(title) + '</div><div class="set-d">' + escHTML(desc) + '</div></div>' +
+      '<button class="set-sw' + (snSettings[key] ? ' on' : '') + '" data-toggle="' + key + '" role="switch" aria-checked="' + (!!snSettings[key]) + '"><span class="knob"></span></button></div>';
+  }
+  function openSettings() {
+    closeAcctMenu();
+    var nm = nameOf(state.user);
+    var speeds = [['normal', 'Normal'], ['fast', 'Fast'], ['instant', 'Instant']];
+    var speedHtml = '<div class="set-row"><div class="set-txt"><div class="set-n">Response speed</div><div class="set-d">How fast replies stream in.</div></div>' +
+      '<div class="set-seg" id="setSpeed">' + speeds.map(function (s) { return '<button data-speed="' + s[0] + '"' + (snSettings.streamSpeed === s[0] ? ' class="on"' : '') + '>' + s[1] + '</button>'; }).join('') + '</div></div>';
+    var body = $('#setBody');
+    body.innerHTML =
+      '<div class="set-me">' + avImg(avatarOf(state.user), nm, 'av') + '<div><div class="set-me-n">' + escHTML(nm) + '</div><div class="set-me-e">' + escHTML(state.user.email || '') + '</div></div></div>' +
+      '<div class="set-sec">Chat</div>' +
+      toggleRow('enterToSend', 'Press Enter to send', 'Off means Enter adds a newline; use Ctrl/Cmd+Enter to send.') +
+      speedHtml +
+      toggleRow('showThinking', 'Show reasoning by default', 'Expand Pulsar\'s "Thinking" panel automatically.') +
+      '<div class="set-sec">Appearance</div>' +
+      toggleRow('twemoji', 'Twemoji emoji', 'Render emoji as consistent Twemoji artwork.') +
+      '<div class="set-sec">Data</div>' +
+      '<div class="set-row"><div class="set-txt"><div class="set-n">Clear all chats</div><div class="set-d">Deletes every conversation and folder on this device.</div></div><button class="set-btn danger" id="setClear">Clear</button></div>' +
+      '<div class="set-about">Supernova runs on Swiftaw\'s own model, <b>Pulsar</b>. Settings are saved on this device.</div>';
+    body.querySelectorAll('[data-toggle]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = b.getAttribute('data-toggle'); snSettings[k] = !snSettings[k]; saveSettings();
+        b.classList.toggle('on', snSettings[k]); b.setAttribute('aria-checked', !!snSettings[k]);
+        if (activeThread()) renderStream();
+      });
+    });
+    body.querySelectorAll('#setSpeed [data-speed]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        snSettings.streamSpeed = b.getAttribute('data-speed'); saveSettings();
+        body.querySelectorAll('#setSpeed [data-speed]').forEach(function (x) { x.classList.remove('on'); }); b.classList.add('on');
+      });
+    });
+    var clr = $('#setClear'); if (clr) clr.addEventListener('click', function () {
+      if (!confirm('Delete all chats and folders on this device? This cannot be undone.')) return;
+      state.threads = []; state.folders = []; state.activeId = null; saveThreads(); saveFolders();
+      newThread(); renderSidebar(); closeSettings(); toast('All chats cleared');
+    });
+    $('#settingsModal').classList.add('on');
+  }
+  function closeSettings() { $('#settingsModal').classList.remove('on'); }
 
   /*  AI TRAINER (Swiftaw account only)  */
   var TRAIN_SOURCES = [
@@ -1140,7 +1317,57 @@
       .catch(function () {})
       .then(function () { _autoLearning = false; });
   }
-  function showGate() { $('#app').classList.remove('on'); $('#gate').classList.add('on'); }
+  /*  ONE-TIME LIFECHECK GATE  (human check before connecting an account)  */
+  var LC_KEY = 'sn_lifecheck_v1';
+  function lifecheckDone() { try { return !!localStorage.getItem(LC_KEY); } catch (e) { return false; } }
+  function showGate() {
+    $('#app').classList.remove('on'); $('#gate').classList.add('on');
+    var verify = $('#gateVerify'), signin = $('#gateSignin');
+    if (!verify || !signin) return;
+    if (lifecheckDone()) { verify.hidden = true; signin.hidden = false; }
+    else { signin.hidden = true; verify.hidden = false; initLifecheck(); }
+  }
+  var _lcWired = false;
+  function initLifecheck() {
+    var hold = $('#lcHold'), prog = $('#lcProg'), face = $('#lcFace'), label = $('#lcLabel'), icon = $('#lcIcon'), hint = $('#lcHint');
+    if (!hold || !prog || _lcWired) return; _lcWired = true;
+    var C = 2 * Math.PI * 52; prog.style.strokeDasharray = C; prog.style.strokeDashoffset = C;
+    var HOLD_MS = 1600, raf = null, start = 0, done = false, moved = 0, lastX = null, lastY = null;
+    function setPct(pct) { prog.style.strokeDashoffset = C * (1 - pct); }
+    function tick(now) {
+      var pct = Math.min(1, (now - start) / HOLD_MS); setPct(pct);
+      if (pct >= 1) { pass(); return; }
+      raf = requestAnimationFrame(tick);
+    }
+    function begin(e) {
+      if (done) return; if (e && e.cancelable) e.preventDefault();
+      start = performance.now(); moved = 0; lastX = lastY = null;
+      hold.classList.add('holding'); label.textContent = 'Hold on...'; hint.textContent = 'Keep holding.';
+      raf = requestAnimationFrame(tick);
+    }
+    function track(e) {
+      if (!raf) return; var p = (e.touches && e.touches[0]) || e;
+      if (lastX != null) moved += Math.abs(p.clientX - lastX) + Math.abs(p.clientY - lastY);
+      lastX = p.clientX; lastY = p.clientY;
+    }
+    function cancel() {
+      if (done || !raf) return; cancelAnimationFrame(raf); raf = null;
+      hold.classList.remove('holding'); setPct(0); label.textContent = 'Press & hold'; hint.textContent = 'Hold the circle until it fills.';
+    }
+    function pass() {
+      done = true; if (raf) cancelAnimationFrame(raf); raf = null; setPct(1);
+      hold.classList.remove('holding'); hold.classList.add('done');
+      icon.innerHTML = '<use href="#i-check"/>'; label.textContent = 'Verified'; hint.textContent = 'You\'re all set.';
+      try { localStorage.setItem(LC_KEY, JSON.stringify({ at: Date.now(), moved: Math.round(moved) })); } catch (e) {}
+      setTimeout(function () { var v = $('#gateVerify'), s = $('#gateSignin'); if (v) v.hidden = true; if (s) s.hidden = false; }, 750);
+    }
+    hold.addEventListener('mousedown', begin);
+    hold.addEventListener('touchstart', begin, { passive: false });
+    window.addEventListener('mousemove', track); window.addEventListener('touchmove', track, { passive: true });
+    window.addEventListener('mouseup', cancel); window.addEventListener('touchend', cancel); hold.addEventListener('mouseleave', cancel);
+    hold.addEventListener('keydown', function (e) { if ((e.key === ' ' || e.key === 'Enter') && !raf && !done) { e.preventDefault(); begin(); } });
+    hold.addEventListener('keyup', function (e) { if (e.key === ' ' || e.key === 'Enter') cancel(); });
+  }
 
   document.addEventListener('DOMContentLoaded', function () {
     bind();

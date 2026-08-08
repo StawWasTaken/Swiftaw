@@ -540,3 +540,50 @@ body.acct-open .side-foot .acct-trigger .cv { transform: rotate(180deg); }
 .folder-head.drop-before::after, .folder-head.drop-after::after { content: ""; position: absolute; left: 6px; right: 6px; height: 2px; border-radius: 2px; background: var(--sn-pink); box-shadow: 0 0 6px var(--sn-pink); }
 .folder-head.drop-before::after { top: -1px; } .folder-head.drop-after::after { bottom: -1px; }
 .folder.drop-into > .folder-head { background: rgba(var(--sn-blue-rgb),.14); box-shadow: inset 0 0 0 1.5px rgba(var(--sn-blue-rgb),.5); border-radius: 10px; }
+
+/* Twemoji: inline emoji rendered as SVG */
+img.sn-emoji { height: 1.2em; width: 1.2em; margin: 0 .05em 0 .1em; vertical-align: -0.2em; display: inline-block; }
+.tag-ai img.sn-emoji, .chip img.sn-emoji { height: 1em; width: 1em; }
+
+/* Settings card */
+.set-card { max-width: 460px; width: 92vw; max-height: 86vh; display: flex; flex-direction: column; }
+.set-body { overflow-y: auto; padding: 4px 2px 6px; }
+.set-me { display: flex; align-items: center; gap: 12px; padding: 6px 4px 14px; }
+.set-me .av { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; font-size: 18px; display: flex; align-items: center; justify-content: center; background: var(--sn-blue); color: #fff; font-weight: 700; }
+.set-me-n { font-weight: 700; font-size: 15px; }
+.set-me-e { font-size: 12.5px; opacity: .6; }
+.set-sec { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; opacity: .5; font-weight: 700; margin: 14px 4px 6px; }
+.set-row { display: flex; align-items: center; gap: 14px; padding: 11px 4px; border-top: 1px solid rgba(255,255,255,.06); }
+.set-sec + .set-row { border-top: 0; }
+.set-txt { flex: 1; min-width: 0; }
+.set-n { font-size: 14px; font-weight: 600; }
+.set-d { font-size: 12px; opacity: .55; margin-top: 2px; line-height: 1.35; }
+.set-sw { flex: none; width: 42px; height: 24px; border-radius: 999px; border: 0; background: rgba(255,255,255,.14); position: relative; cursor: pointer; transition: background .18s; }
+.set-sw .knob { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: left .18s; }
+.set-sw.on { background: var(--sn-green); }
+.set-sw.on .knob { left: 21px; }
+.set-seg { flex: none; display: inline-flex; background: rgba(255,255,255,.06); border-radius: 10px; padding: 3px; gap: 2px; }
+.set-seg button { border: 0; background: transparent; color: inherit; font: inherit; font-size: 12.5px; padding: 5px 11px; border-radius: 8px; cursor: pointer; opacity: .7; }
+.set-seg button.on { background: var(--sn-blue); color: #fff; opacity: 1; font-weight: 600; }
+.set-btn { flex: none; border: 1px solid rgba(255,255,255,.16); background: transparent; color: inherit; font: inherit; font-size: 13px; padding: 7px 16px; border-radius: 9px; cursor: pointer; }
+.set-btn.danger { border-color: rgba(248,113,113,.5); color: #f87171; }
+.set-btn.danger:hover { background: rgba(248,113,113,.12); }
+.set-about { font-size: 12px; opacity: .5; margin: 16px 4px 4px; line-height: 1.45; }
+
+/* Lifecheck one-time human gate */
+.lc-card .lc-brand { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: .04em; color: var(--sn-green); margin-bottom: 16px; text-transform: uppercase; }
+.lc-brand .lc-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--sn-green); box-shadow: 0 0 0 0 rgba(62,207,110,.6); animation: lcPulse 1.8s infinite; }
+@keyframes lcPulse { 0% { box-shadow: 0 0 0 0 rgba(62,207,110,.5); } 70% { box-shadow: 0 0 0 8px rgba(62,207,110,0); } 100% { box-shadow: 0 0 0 0 rgba(62,207,110,0); } }
+.lc-hold { position: relative; width: 128px; height: 128px; margin: 26px auto 14px; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none; outline: none; }
+.lc-hold:focus-visible { border-radius: 50%; box-shadow: 0 0 0 3px rgba(62,207,110,.5); }
+.lc-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+.lc-ring circle { fill: none; stroke-width: 7; stroke-linecap: round; }
+.lc-track { stroke: rgba(255,255,255,.1); }
+.lc-prog { stroke: var(--sn-green); transition: stroke-dashoffset .08s linear; }
+.lc-face { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--muted-light); transition: transform .15s, color .2s; }
+.lc-face .ic { width: 26px; height: 26px; fill: currentColor; }
+.lc-face span { font-size: 12.5px; font-weight: 600; }
+.lc-hold.holding .lc-face { transform: scale(.92); color: #fff; }
+.lc-hold.done .lc-face { color: var(--sn-green); }
+.lc-hold.done { cursor: default; }
+.lc-hint { font-size: 12.5px !important; color: var(--muted-light); margin-bottom: 16px !important; min-height: 18px; }

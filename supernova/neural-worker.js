@@ -49,7 +49,9 @@ onmessage = function (e) {
       model.add(tf.layers.dense({ units: V, activation: 'softmax' }));
       model.compile({ optimizer: tf.train.adam(0.01), loss: 'sparseCategoricalCrossentropy' });
 
-      var xs = tf.tensor2d(X, [X.length, SEQ], 'int32'), ys = tf.tensor1d(Y, 'int32');
+      // Embedding indices must be float32 for tf.layers.embedding (it floors/gathers
+      // internally); int32 inputs trip a "floor must be float32" error. Labels stay int32.
+      var xs = tf.tensor2d(X, [X.length, SEQ], 'float32'), ys = tf.tensor1d(Y, 'int32');
       var epochs = Math.min(msg.epochs || 10, 12);
       await model.fit(xs, ys, {
         epochs: epochs, batchSize: 64, shuffle: true,
