@@ -6,7 +6,7 @@
 /* global tf, importScripts */
 try { importScripts('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js'); } catch (e) {}
 
-var SEQ = 6, EMBED = 48, UNITS = 96, VOCAB_CAP = 1500, MAX_TEXTS = 700, MAX_SEQS = 12000;
+var SEQ = 6, EMBED = 48, UNITS = 72, VOCAB_CAP = 1500, MAX_TEXTS = 1200, MAX_SEQS = 14000;
 
 function tokenize(t) { return String(t || '').toLowerCase().replace(/([.,!?;:()"])/g, ' $1 ').split(/\s+/).filter(Boolean); }
 function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
@@ -49,13 +49,15 @@ onmessage = function (e) {
       model.add(tf.layers.dense({ units: V, activation: 'softmax' }));
       model.compile({ optimizer: tf.train.adam(0.01), loss: 'sparseCategoricalCrossentropy' });
 
-      // Embedding indices must be float32 for tf.layers.embedding (it floors/gathers
-      // internally); int32 inputs trip a "floor must be float32" error. Labels stay int32.
-      var xs = tf.tensor2d(X, [X.length, SEQ], 'float32'), ys = tf.tensor1d(Y, 'int32');
-      var epochs = Math.min(msg.epochs || 10, 12);
+      // sparseCategoricalCrossentropy calls tf.floor on the LABELS, and floor rejects
+      // int32 -> the labels must be float32 (that was the "floor must be float32" error).
+      // The embedding layer casts its own float32 input back to int32 internally.
+      var xs = tf.tensor2d(X, [X.length, SEQ], 'float32'), ys = tf.tensor1d(Y, 'float32');
+      var epochs = Math.min(msg.epochs || 8, 12);
+      // bigger batches = far fewer steps per epoch = much faster in the browser
       await model.fit(xs, ys, {
-        epochs: epochs, batchSize: 64, shuffle: true,
-        callbacks: { onEpochEnd: function (ep) { postMessage({ type: 'progress', pct: Math.round(((ep + 1) / epochs) * 100) }); } }
+        epochs: epochs, batchSize: 256, shuffle: true,
+        callbacks: { onEpochEnd: function (ep, logs) { postMessage({ type: 'progress', pct: Math.round(((ep + 1) / epochs) * 100), loss: logs && logs.loss }); } }
       });
       xs.dispose(); ys.dispose();
 

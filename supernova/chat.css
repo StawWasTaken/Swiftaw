@@ -587,3 +587,12 @@ img.sn-emoji { height: 1.2em; width: 1.2em; margin: 0 .05em 0 .1em; vertical-ali
 .lc-hold.done .lc-face { color: var(--sn-green); }
 .lc-hold.done { cursor: default; }
 .lc-hint { font-size: 12.5px !important; color: var(--muted-light); margin-bottom: 16px !important; min-height: 18px; }
+
+/* Trainer: feed-data area */
+.tr-feed { width: 100%; min-height: 120px; max-height: 300px; resize: vertical; box-sizing: border-box; margin-bottom: 10px; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--bg); color: var(--ink); font: inherit; font-size: 13.5px; line-height: 1.5; }
+.tr-feed:focus { outline: none; border-color: var(--sn-blue); }
+.tr-feed-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.tr-feed-count { font-size: 12px; color: var(--muted-light); }
+.tr-train.ghost { width: auto; background: var(--panel-2); border: 1.5px solid var(--border); color: var(--ink); }
+.tr-train.ghost:hover { border-color: var(--sn-blue); }
+.tr-train.busy { opacity: .7; pointer-events: none; }

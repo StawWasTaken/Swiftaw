@@ -16,7 +16,7 @@
     user: null, uid: null, threads: [], activeId: null,
     streaming: false, abort: false, search: '', attachments: [], model: 'pulsar',
     modelReady: false, neuralReady: false, stats: null, trainMode: null,
-    folders: [], editingFolder: null, _fldSel: null, _drag: null
+    folders: [], editingFolder: null, _fldSel: null, _drag: null, _regenAvg: null
   };
   /*  SETTINGS (per browser)  */
   var SETTINGS_DEFAULTS = { enterToSend: true, twemoji: true, showThinking: true, streamSpeed: 'normal' };
@@ -38,7 +38,7 @@
 
   /*  persistence  */
   function storeKey() { return 'sn_threads_' + state.uid; }
-  function saveThreads() { try { localStorage.setItem(storeKey(), JSON.stringify(state.threads)); } catch (e) {} }
+  function saveThreads() { try { localStorage.setItem(storeKey(), JSON.stringify(state.threads)); } catch (e) {} scheduleRemoteSave(); }
   function loadThreads() { try { state.threads = JSON.parse(localStorage.getItem(storeKey()) || '[]'); } catch (e) { state.threads = []; } }
   function activeThread() { return state.threads.filter(function (t) { return t.id === state.activeId; })[0] || null; }
 
@@ -322,7 +322,7 @@
 
   /*  FOLDERS  */
   function folderKey() { return 'sn_folders_' + state.uid; }
-  function saveFolders() { try { localStorage.setItem(folderKey(), JSON.stringify(state.folders)); } catch (e) {} }
+  function saveFolders() { try { localStorage.setItem(folderKey(), JSON.stringify(state.folders)); } catch (e) {} scheduleRemoteSave(); }
   function loadFolders() { try { state.folders = JSON.parse(localStorage.getItem(folderKey()) || '[]'); } catch (e) { state.folders = []; } }
   function openFolderModal(folder) {
     state.editingFolder = folder || null;
@@ -472,11 +472,17 @@
     return w;
   }
   function aiTools(idx, m) {
-    var w = document.createElement('div'); w.className = 'msg-tools';
+    var t = activeThread();
+    var g = t && m && m.avg && t.avgroups && t.avgroups[m.avg];
+    var pager = (g && g.versions.length > 1) ?
+      '<div class="ver-pager"><button class="vp-btn" data-act="vprevA" aria-label="Previous response">&lsaquo;</button>' +
+      '<span class="vp-n">' + (g.active + 1) + ' / ' + g.versions.length + '</span>' +
+      '<button class="vp-btn" data-act="vnextA" aria-label="Next response">&rsaquo;</button></div>' : '';
+    var w = document.createElement('div'); w.className = 'msg-tools' + (pager ? ' pinned' : '');
     w.innerHTML = tbtn('copy', 'i-copy', 'Copy') + tbtn('regen', 'i-regen', 'Regenerate') + tbtn('branch', 'i-branch', 'Branch') +
       '<button class="msg-tool' + (m.feedback === 'up' ? ' on-up' : '') + '" data-act="up" data-tip="Good response"><svg class="ic-sm"><use href="#' + (m.feedback === 'up' ? 'i-up-fill' : 'i-up') + '"/></svg></button>' +
-      '<button class="msg-tool' + (m.feedback === 'down' ? ' on-down' : '') + '" data-act="down" data-tip="Bad response"><svg class="ic-sm"><use href="#' + (m.feedback === 'down' ? 'i-down-fill' : 'i-down') + '"/></svg></button>';
-    w.addEventListener('click', function (e) { var b = e.target.closest('.msg-tool'); if (b) msgAction(b.dataset.act, idx, w); });
+      '<button class="msg-tool' + (m.feedback === 'down' ? ' on-down' : '') + '" data-act="down" data-tip="Bad response"><svg class="ic-sm"><use href="#' + (m.feedback === 'down' ? 'i-down-fill' : 'i-down') + '"/></svg></button>' + pager;
+    w.addEventListener('click', function (e) { var b = e.target.closest('.msg-tool, .vp-btn'); if (b) msgAction(b.dataset.act, idx, w); });
     return w;
   }
   function tbtn(act, icon, tip) { return '<button class="msg-tool" data-act="' + act + '" data-tip="' + tip + '"><svg class="ic-sm"><use href="#' + icon + '"/></svg></button>'; }
@@ -489,6 +495,8 @@
     else if (act === 'branch') { branchFrom(idx); }
     else if (act === 'vprev') { switchVersion(idx, -1); }
     else if (act === 'vnext') { switchVersion(idx, 1); }
+    else if (act === 'vprevA') { switchAiVersion(idx, -1); }
+    else if (act === 'vnextA') { switchAiVersion(idx, 1); }
     else if (act === 'up' || act === 'down') { setFeedback(idx, act, toolsEl); }
   }
   function setFeedback(idx, val, toolsEl) {
@@ -553,6 +561,20 @@
     titleIfFirst(t, idx, m.content);
     t.updatedAt = now(); saveThreads(); renderStream(); renderSidebar();
   }
+  // Assistant responses: each regenerate is a version (1 / 2 / 3 ...) you can page through.
+  function switchAiVersion(idx, dir) {
+    if (state.streaming) return;
+    var t = activeThread(); if (!t) return; var m = t.messages[idx]; if (!m || !m.avg) return;
+    var g = t.avgroups && t.avgroups[m.avg]; if (!g) return;
+    var k = g.active + dir; if (k < 0 || k >= g.versions.length) return;
+    // snapshot the version we're leaving (its content + anything that followed it)
+    var cur = g.versions[g.active];
+    cur.content = m.content; cur.reasoning = m.reasoning; cur.sources = m.sources; cur.tail = cloneTail(t, idx);
+    g.active = k; var v = g.versions[k];
+    m.content = v.content; m.reasoning = v.reasoning || null; m.sources = v.sources || []; if (v.ts) m.ts = v.ts;
+    t.messages = t.messages.slice(0, idx + 1).concat((v.tail || []).map(function (x) { return JSON.parse(JSON.stringify(x)); }));
+    t.updatedAt = now(); saveThreads(); renderStream(); renderSidebar();
+  }
   /* stock data into Pulsar's DB (append-only). Silent until schema.sql is run. */
   var PULSAR_DB = { url: 'https://xrmmedxbqmwjcucyjosl.supabase.co', key: 'sb_publishable_ObemhvadYmuXSJchH-SpzA_W4awNZtM' };
   function stock(role, content, extra) {
@@ -573,6 +595,82 @@
       }).catch(function () {});
     } catch (e) {}
   }
+  // Feed pasted text into Pulsar's corpus (Swiftaw only). Splits into passages,
+  // inserts them, so pulsar_train can learn vocabulary + patterns from them.
+  function feedCorpus(text) {
+    var rows = [];
+    String(text).split(/\n{2,}/).forEach(function (para) {
+      para = para.replace(/\s+/g, ' ').trim(); if (!para) return;
+      if (para.length <= 400) { rows.push(para); return; }
+      var buf = '';
+      para.split(/(?<=[.!?])\s+/).forEach(function (sent) {
+        if ((buf + ' ' + sent).trim().length > 400) { if (buf) rows.push(buf.trim()); buf = sent; }
+        else buf = (buf ? buf + ' ' : '') + sent;
+      });
+      if (buf.trim()) rows.push(buf.trim());
+    });
+    rows = rows.filter(function (r) { return r.length > 8; }).slice(0, 800);
+    if (!rows.length) return Promise.reject(new Error('No usable text found'));
+    var body = rows.map(function (r) { return { text: r }; });
+    return fetch(PULSAR_DB.url + '/rest/v1/pulsar_corpus', {
+      method: 'POST',
+      headers: { apikey: PULSAR_DB.key, Authorization: 'Bearer ' + PULSAR_DB.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { var msg = t; try { var j = JSON.parse(t); msg = j.message || j.hint || t; } catch (e) {} throw new Error(msg || ('insert ' + r.status)); });
+      return rows.length;
+    });
+  }
+  /*  CROSS-DEVICE SYNC: your chats follow your Swiftaw account, not one browser.
+      One row per user in sn_chats (user_id, data jsonb). Local storage stays the
+      instant cache; the remote copy is merged in on load and pushed on change.  */
+  var _syncTimer = null, _remoteLoaded = false, _pendingPush = false;
+  function pullRemoteState() {
+    if (!state.uid) return Promise.resolve(null);
+    // sn_chats_get is a SECURITY DEFINER function: you can only read your own row
+    // (by exact user_id), nobody can list everyone's chats.
+    return rpc('sn_chats_get', { uid: state.uid }).then(function (d) { return d || null; }).catch(function () { return null; });
+  }
+  function pushRemoteState() {
+    if (!state.uid) return Promise.resolve();
+    return rpc('sn_chats_put', { uid: state.uid, payload: { v: 1, threads: state.threads, folders: state.folders } }).catch(function () {});
+  }
+  function scheduleRemoteSave() {
+    if (!_remoteLoaded) { _pendingPush = true; return; } // wait until we've merged remote first
+    if (_syncTimer) clearTimeout(_syncTimer);
+    _syncTimer = setTimeout(function () { _syncTimer = null; pushRemoteState(); }, 1500);
+  }
+  // Push immediately (e.g. before switching accounts) so nothing in flight is lost.
+  function flushRemoteSave() { if (_syncTimer) { clearTimeout(_syncTimer); _syncTimer = null; } if (_remoteLoaded) pushRemoteState(); }
+  // Union by id, newer updatedAt wins. Prefers keeping chats over losing them, so a
+  // chat made on another device shows up here (deletes don't propagate across devices yet).
+  function mergeRemoteState(remote) {
+    if (!remote) return false;
+    var changed = false, k;
+    var fmap = {}; (state.folders || []).forEach(function (f) { fmap[f.id] = f; });
+    (remote.folders || []).forEach(function (f) { var ex = fmap[f.id]; if (!ex) { fmap[f.id] = f; changed = true; } else if ((f.updatedAt || 0) > (ex.updatedAt || 0)) { fmap[f.id] = f; changed = true; } });
+    state.folders = []; for (k in fmap) state.folders.push(fmap[k]);
+    var tmap = {}; (state.threads || []).forEach(function (t) { tmap[t.id] = t; });
+    (remote.threads || []).forEach(function (t) { var ex = tmap[t.id]; var ts = t.updatedAt || t.createdAt || 0; if (!ex) { tmap[t.id] = t; changed = true; } else if (ts > (ex.updatedAt || ex.createdAt || 0)) { tmap[t.id] = t; changed = true; } });
+    state.threads = []; for (k in tmap) state.threads.push(tmap[k]);
+    return changed;
+  }
+  function syncOnStart() {
+    _remoteLoaded = false; _pendingPush = false;
+    return pullRemoteState().then(function (remote) {
+      var changed = mergeRemoteState(remote);
+      _remoteLoaded = true;
+      if (changed) {
+        try { localStorage.setItem(storeKey(), JSON.stringify(state.threads)); localStorage.setItem(folderKey(), JSON.stringify(state.folders)); } catch (e) {}
+        if (!state.threads.some(function (t) { return t.id === state.activeId; })) {
+          var newest = state.threads.slice().sort(function (a, b) { return b.updatedAt - a.updatedAt; })[0];
+          if (newest) state.activeId = newest.id;
+        }
+        renderSidebar(); if (state.activeId) selectThread(state.activeId);
+      }
+      if (_pendingPush || changed) { _pendingPush = false; pushRemoteState(); }
+    });
+  }
   function rpc(fn, body) {
     return fetch(PULSAR_DB.url + '/rest/v1/rpc/' + fn, {
       method: 'POST', headers: { apikey: PULSAR_DB.key, Authorization: 'Bearer ' + PULSAR_DB.key, 'Content-Type': 'application/json' },
@@ -585,7 +683,16 @@
       });
     });
   }
-  function cap(t) { t = String(t).trim(); t = t.charAt(0).toUpperCase() + t.slice(1); if (!/[.!?]$/.test(t)) t += '.'; return t; }
+  // Tidy a short plain sentence, but NEVER touch structured content (code fences,
+  // tables, images, lists, multi-line): adding a trailing "." there breaks a closing
+  // ``` fence or a table row so scripts/tables stop rendering.
+  function cap(t) {
+    t = String(t == null ? '' : t).trim();
+    if (/```|\n|^\s*[|>#\-*\d]|!\[|\$\$/.test(t) || t.length > 240) return t;
+    t = t.charAt(0).toUpperCase() + t.slice(1);
+    if (!/[.!?]$/.test(t)) t += '.';
+    return t;
+  }
 
   /*  NATIVE MATH: Pulsar computes arithmetic itself, it isn't "taught" it.
       (Like the old Tithonia brain: math is a built-in competence.)  */
@@ -678,7 +785,7 @@
   function neuralReply(prompt) {
     if (!state.neuralReady || !window.SN_Neural) return Promise.resolve(null);
     return Promise.resolve().then(function () { return window.SN_Neural.reply(prompt); }).then(function (text) {
-      if (text && String(text).trim().split(/\s+/).length >= 5)
+      if (looksCoherent(text))
         return { reasoning: 'Generated with my neural model.', answer: cap(text), followups: ['Tell me more', 'Try again', 'Say it differently'] };
       return null;
     }).catch(function () { return null; });
@@ -688,7 +795,7 @@
     if (!state.modelReady) return Promise.resolve(buildReply(prompt));
     var seed = String(prompt || '').toLowerCase().split(/\s+/).slice(-4).join(' ');
     return rpc('pulsar_generate', { seed: seed, max_tokens: 60 }).then(function (text) {
-      if (typeof text === 'string' && text.trim().split(/\s+/).length >= 6)
+      if (looksCoherent(text))
         return { reasoning: 'Generated from the patterns I\'ve learned so far.', answer: cap(text), followups: ['Tell me more', 'Try again', 'Explain that'] };
       return buildReply(prompt);
     }).catch(function () { return buildReply(prompt); });
@@ -721,18 +828,34 @@
   }
   // Pulsar's own brain: recalled fact -> training challenge -> neural -> n-gram -> draft.
   function getReply(prompt) {
+    // 1) native math   2) a recalled trusted fact   3) training drill
+    // 4) a clear intent (code/greeting/table/image) done well
+    // 5) the trained model (only if coherent)   6) a clean general draft
     var m = mathReply(prompt);
     if (m) return Promise.resolve(m);
     return recall(prompt).then(function (fact) {
       if (fact) return { reasoning: 'I recalled this from what Swiftaw confirmed as true.', answer: cap(fact), sources: [], followups: ['Tell me more', 'How do you know?', 'Ask something else'] };
       if (state.trainMode) return trainingReply(prompt);
+      var intent = structuredIntent(prompt);
+      if (intent) return intent;
       return neuralReply(prompt).then(function (r) { return r || ngramReply(prompt); });
     });
   }
   function regenerate(aiIdx) {
-    var t = activeThread(); var userIdx = aiIdx - 1;
+    if (state.streaming) return;
+    var t = activeThread(); if (!t) return; var m = t.messages[aiIdx]; if (!m || m.role !== 'assistant') return;
+    var userIdx = aiIdx - 1;
     while (userIdx >= 0 && t.messages[userIdx].role !== 'user') userIdx--;
     if (userIdx < 0) return;
+    // start (or continue) a version group on this assistant message
+    t.avgroups = t.avgroups || {};
+    m.avg = m.avg || uid();
+    var g = t.avgroups[m.avg] || (t.avgroups[m.avg] = { versions: [{ content: m.content, reasoning: m.reasoning, sources: m.sources, ts: m.ts, tail: [] }], active: 0 });
+    // snapshot the version we're leaving, with everything that followed it
+    var cur = g.versions[g.active];
+    cur.content = m.content; cur.reasoning = m.reasoning; cur.sources = m.sources; cur.tail = cloneTail(t, aiIdx);
+    // the incoming reply will be appended as the next version (see finish())
+    state._regenAvg = m.avg;
     t.messages = t.messages.slice(0, aiIdx); saveThreads(); renderStream();
     respondTo(t.messages[userIdx].content);
   }
@@ -846,8 +969,18 @@
       var srcs = state.abort ? [] : (payload.sources || []);
       if (srcs.length) pr.insertAdjacentHTML('afterend', sourcesHTML(srcs));
       var aiMsg = { role: 'assistant', content: full, ts: now(), reasoning: payload.reasoning, sources: srcs, feedback: null };
+      // if this reply came from a Regenerate, record it as the next version (1 / 2 / 3 ...)
+      if (state._regenAvg && t.avgroups && t.avgroups[state._regenAvg]) {
+        var g = t.avgroups[state._regenAvg]; aiMsg.avg = state._regenAvg;
+        g.versions.push({ content: full, reasoning: payload.reasoning, sources: srcs, ts: aiMsg.ts, tail: [] });
+        g.active = g.versions.length - 1;
+      }
+      state._regenAvg = null;
       t.messages.push(aiMsg); t.updatedAt = now(); saveThreads(); renderSidebar();
-      if (!state.abort) stock('assistant', full, { reasoning: payload.reasoning, sources: srcs });
+      // NOTE: we deliberately do NOT stock the assistant reply. Until Pulsar is fully
+      // trained these are drafts/simulations, and stocking them trains the model on its
+      // own placeholder text (the "the real Pulsar will pick up here" loop). We only
+      // stock genuine human input (user messages) + explicitly taught answers.
       // attach tools + elicitations
       var idx = t.messages.length - 1;
       row.querySelector('.body').appendChild(aiTools(idx, aiMsg));
@@ -885,10 +1018,14 @@
       return { reasoning: 'They want JavaScript. Give a reusable, documented function.', answer: 'Here\'s a small reusable helper:\n\n' + fence('javascript', '/** Debounce: run fn only after it stops being called for `wait` ms. */\nfunction debounce(fn, wait = 300) {\n  let t;\n  return function (...args) {\n    clearTimeout(t);\n    t = setTimeout(() => fn.apply(this, args), wait);\n  };\n}\n\nconst onSearch = debounce((q) => console.log("searching", q), 400);\nonSearch("he");\nonSearch("hello"); // only this one runs') + '\n\nHandy for search inputs and resize handlers. Want the throttle version too?', followups: ['Show throttle instead', 'Explain the closure', 'Add TypeScript types'] };
     }
     // default: HTML section (previewable in the card)
-    return { reasoning: 'They want front-end code. Give a self-contained HTML section they can preview with View or copy.', answer: 'Here\'s a self-contained section, hit **View** on the card to preview it or **Copy** to grab it:\n\n' + fence('html', '<section style="font-family: system-ui; text-align: center; padding: 48px 20px; background: #0d1117; color: #e6edf3; border-radius: 16px;">\n  <h1 style="margin: 0 0 8px; font-size: 28px;">Made with Supernova</h1>\n  <p style="margin: 0 0 20px; opacity: .8;">Swiftaw\'s own AI, at your service.</p>\n  <button onclick="alert(\'Hi from Supernova!\')" style="padding: 10px 22px; border: 0; border-radius: 999px; background: #30aefc; color: #fff; font-weight: 600; cursor: pointer;">Say hi</button>\n</section>') + '\n\nNotes:\n\n- Swap the copy and colours for your own.\n- Want the CSS pulled out into a stylesheet? Say the word.', followups: ['Add matching CSS', 'Make it responsive', 'Explain the code'] };
+    return { reasoning: 'They want front-end code. Give a self-contained HTML section they can preview with View or copy.', answer: 'Here\'s a self-contained section, hit **View** on the card to preview it or **Copy** to grab it:\n\n' + fence('html', '<section style="font-family: system-ui; text-align: center; padding: 48px 20px; background: #0d1117; color: #e6edf3; border-radius: 16px;">\n  <h1 style="margin: 0 0 8px; font-size: 28px;">Made with Supernova</h1>\n  <p style="margin: 0 0 20px; opacity: .8;">Your AI assistant, at your service.</p>\n  <button onclick="alert(\'Hi from Supernova!\')" style="padding: 10px 22px; border: 0; border-radius: 999px; background: #30aefc; color: #fff; font-weight: 600; cursor: pointer;">Say hi</button>\n</section>') + '\n\nNotes:\n\n- Swap the copy and colours for your own.\n- Want the CSS pulled out into a stylesheet? Say the word.', followups: ['Add matching CSS', 'Make it responsive', 'Explain the code'] };
   }
 
-  function buildReply(prompt) {
+  // Clear, high-quality replies for recognisable intents (greeting, code, tables,
+  // images, math topics). Returns null when nothing matches, so the caller can fall
+  // back to the trained model or a clean general draft. These take priority over raw
+  // generation so a code/table/greeting request always gets a proper answer.
+  function structuredIntent(prompt) {
     var p = (prompt || '').trim().toLowerCase();
     // Pulsar talks like a person, not like a task-taker. No "the user wants me to...".
     if (/^(hi|hey|hello|yo|sup|hiya|howdy|good (morning|afternoon|evening))\b/.test(p) || p === '') {
@@ -901,7 +1038,7 @@
     if (/who are you|what are you|your name/.test(p)) {
       return {
         reasoning: 'Introduce myself plainly and a little warmly.',
-        answer: 'I\'m **Supernova**, running Swiftaw\'s own model, **Pulsar**. Think of me as your assistant here. Ask me anything and I\'ll help you think it through, write it, or build it.',
+        answer: 'I\'m **Supernova**, running **Pulsar**, the most efficient model for everyday tasks. Think of me as your assistant here. Ask me anything and I\'ll help you think it through, write it, or build it.',
         followups: ['What can you do?', 'Who made you?', 'Let\'s get started']
       };
     }
@@ -948,11 +1085,26 @@
         followups: ['What\'s left behind after one?', 'How bright is it, really?', 'Explain it for a 10 year old']
       };
     }
-    return {
-      reasoning: 'General question. Answer directly and warmly, offer to go deeper.',
-      answer: 'Got it. Here\'s my take:\n\n- **Short answer first**, then the why.\n- I keep it tight unless you want the long version.\n- Nudge me with a follow-up and I\'ll go deeper.\n\nHeads up, I\'m still in *preview*, so this reply is a simulation, but the real Pulsar will pick up right here.',
-      followups: ['Tell me more', 'Give me an example', 'Keep it shorter']
+    return null;
+  }
+  function buildReply(prompt) {
+    return structuredIntent(prompt) || {
+      reasoning: 'General question. Answer directly and warmly, and offer to go deeper.',
+      answer: 'Here\'s the short version: tell me a bit more about what you\'re after and I\'ll give you a focused answer. If it helps, I can break it into steps, give an example, or write it out for you. What would be most useful?',
+      followups: ['Give me an example', 'Break it into steps', 'Keep it shorter']
     };
+  }
+  // Never show generated text that looks like gibberish. A small model with little
+  // data can produce broken fragments; if it isn't coherent we fall back to a clean draft.
+  function looksCoherent(text) {
+    var s = String(text || '').trim();
+    var words = s.split(/\s+/);
+    if (words.length < 6) return false;
+    var uniq = {}; words.forEach(function (w) { uniq[w.toLowerCase()] = 1; });
+    if (Object.keys(uniq).length / words.length < 0.55) return false; // too repetitive
+    if (!/[.!?]/.test(s)) return false;                               // no sentence end
+    if (/\b(\w+)\s+\1\s+\1\b/i.test(s)) return false;                 // triple word repeat
+    return true;
   }
 
   /*  COMPOSER  */
@@ -1155,7 +1307,7 @@
       toggleRow('twemoji', 'Twemoji emoji', 'Render emoji as consistent Twemoji artwork.') +
       '<div class="set-sec">Data</div>' +
       '<div class="set-row"><div class="set-txt"><div class="set-n">Clear all chats</div><div class="set-d">Deletes every conversation and folder on this device.</div></div><button class="set-btn danger" id="setClear">Clear</button></div>' +
-      '<div class="set-about">Supernova runs on Swiftaw\'s own model, <b>Pulsar</b>. Settings are saved on this device.</div>';
+      '<div class="set-about">Supernova runs on <b>Pulsar</b>, the most efficient model for everyday tasks.</div>';
     body.querySelectorAll('[data-toggle]').forEach(function (b) {
       b.addEventListener('click', function () {
         var k = b.getAttribute('data-toggle'); snSettings[k] = !snSettings[k]; saveSettings();
@@ -1236,7 +1388,7 @@
       rpc('pulsar_export', { admin_uid: state.uid, lim: 4000 }).then(function (texts) {
         if (!Array.isArray(texts) || texts.length < 5) throw new Error('Not enough data yet, chat more first');
         return window.SN_Neural.train(texts, {
-          epochs: 10, dbUrl: PULSAR_DB.url, dbKey: PULSAR_DB.key,
+          epochs: 8, dbUrl: PULSAR_DB.url, dbKey: PULSAR_DB.key,
           onProgress: function (pct, loss, phase) { set(phase === 'prep' ? 'Preparing data...' : (phase === 'save' ? 'Saving...' : ('Training ' + pct + '%'))); }
         });
       }).then(function (res) {
@@ -1247,6 +1399,27 @@
       }).catch(function (e) { toast((e && e.message) || 'Neural training failed', 'err'); })
         .then(function () { nbtn.disabled = false; nbtn.classList.remove('busy'); nbtn.innerHTML = nlabel; });
     };
+    var feed = $('#trFeed'), feedBtn = $('#trFeedBtn'), feedCount = $('#trFeedCount');
+    if (feed && feedBtn) {
+      feed.oninput = function () { feedCount.textContent = feed.value.length.toLocaleString() + ' characters'; };
+      feedBtn.onclick = function () {
+        var text = feed.value.trim();
+        if (feedBtn.disabled) return;
+        if (text.length < 20) { toast('Paste a bit more text first', 'err'); return; }
+        feedBtn.disabled = true; feedBtn.classList.add('busy'); var fl = feedBtn.innerHTML;
+        feedBtn.innerHTML = '<svg class="ic"><use href="#i-plus"/></svg> Feeding...';
+        feedCorpus(text).then(function (n) {
+          feedBtn.innerHTML = '<svg class="ic"><use href="#i-brain"/></svg> Training...';
+          return rpc('pulsar_train', { admin_uid: state.uid, batch: 1500 }).then(function () { return n; });
+        }).then(function (n) {
+          toast('Fed ' + n + ' passage' + (n === 1 ? '' : 's') + ' and re-trained');
+          feed.value = ''; feedCount.textContent = '0 characters';
+          return refreshStats();
+        }).then(function () { renderTrainStats(); })
+          .catch(function (e) { toast((e && e.message) || 'Feeding failed', 'err'); })
+          .then(function () { feedBtn.disabled = false; feedBtn.classList.remove('busy'); feedBtn.innerHTML = fl; });
+      };
+    }
     var dataHost = $('#trData'); dataHost.innerHTML = '';
     TRAIN_SOURCES.forEach(function (s) {
       var on = st.sources[s.id] !== false;
@@ -1296,6 +1469,7 @@
     else newThread();
     fillUser(); autoGrow(); updateCounter();
     $('#trainerBtn').hidden = !isTrainer();
+    syncOnStart(); // pull this account's chats from the cloud + merge (cross-device)
     refreshStats().then(function () { setTimeout(autoLearn, 4000); });
     setInterval(function () { if (state.stats && state.stats.untrained > 0) autoLearn(); }, 90000);
     if (window.SN_Neural) window.SN_Neural.load(PULSAR_DB).then(function () { state.neuralReady = true; }).catch(function () { state.neuralReady = false; });
@@ -1378,8 +1552,13 @@
       else { state.user = u; state.uid = u.id; startApp(); }
     });
     window.SwiftawAccount.onChange(function (u) {
-      if (!u) { state.user = null; showGate(); }
-      else if (u.id !== state.uid) { state.user = u; state.uid = u.id; startApp(); }
+      if (!u) { flushRemoteSave(); state.user = null; showGate(); }
+      else if (u.id !== state.uid) {
+        // flush any pending save for the account we're leaving, then load the new one
+        flushRemoteSave();
+        state.trainMode = null; state.streaming = false; state.abort = true;
+        state.user = u; state.uid = u.id; startApp();
+      }
     });
   });
 })();
