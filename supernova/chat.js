@@ -1401,19 +1401,20 @@
     };
     var feed = $('#trFeed'), feedBtn = $('#trFeedBtn'), feedCount = $('#trFeedCount');
     if (feed && feedBtn) {
-      feed.oninput = function () { feedCount.textContent = feed.value.length.toLocaleString() + ' characters'; };
+      var feedCountHTML = function (n) { return '<svg class="ic-sm"><use href="#i-file"/></svg> ' + n.toLocaleString() + ' character' + (n === 1 ? '' : 's'); };
+      feed.oninput = function () { feedCount.innerHTML = feedCountHTML(feed.value.length); };
       feedBtn.onclick = function () {
         var text = feed.value.trim();
         if (feedBtn.disabled) return;
         if (text.length < 20) { toast('Paste a bit more text first', 'err'); return; }
         feedBtn.disabled = true; feedBtn.classList.add('busy'); var fl = feedBtn.innerHTML;
-        feedBtn.innerHTML = '<svg class="ic"><use href="#i-plus"/></svg> Feeding...';
+        feedBtn.innerHTML = '<svg class="ic-sm"><use href="#i-spark"/></svg> Feeding...';
         feedCorpus(text).then(function (n) {
-          feedBtn.innerHTML = '<svg class="ic"><use href="#i-brain"/></svg> Training...';
+          feedBtn.innerHTML = '<svg class="ic-sm"><use href="#i-brain"/></svg> Training...';
           return rpc('pulsar_train', { admin_uid: state.uid, batch: 1500 }).then(function () { return n; });
         }).then(function (n) {
           toast('Fed ' + n + ' passage' + (n === 1 ? '' : 's') + ' and re-trained');
-          feed.value = ''; feedCount.textContent = '0 characters';
+          feed.value = ''; feedCount.innerHTML = feedCountHTML(0);
           return refreshStats();
         }).then(function () { renderTrainStats(); })
           .catch(function (e) { toast((e && e.message) || 'Feeding failed', 'err'); })
