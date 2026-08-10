@@ -16,8 +16,13 @@ alter table pulsar_corpus   add column if not exists trained boolean not null de
 alter table pulsar_feedback  add column if not exists note text;
 alter table pulsar_feedback  alter column rating drop not null;
 
--- ── TRAIN: read new data, learn n-grams, weight by feedback ────────
-create or replace function pulsar_train(admin_uid text default null, batch int default 800)
+-- ── TRAIN: learn n-grams from the data, weighted by feedback ───────
+--  rebuild = false (default): fast incremental pass over NEW rows only.
+--  rebuild = true: full retrain. Relearns from ALL chats + corpus it has
+--  ever seen (reinforcing already-learned vocab + patterns), rebuilding the
+--  counts from scratch so nothing gets double-counted. Use this to sharpen.
+drop function if exists pulsar_train(text, int);
+create or replace function pulsar_train(admin_uid text default null, batch int default 800, rebuild boolean default false)
 returns jsonb language plpgsql security definer set search_path = public as $$
 declare v_processed int := 0;
 begin
@@ -25,15 +30,29 @@ begin
     then raise exception 'not authorised to train pulsar';
   end if;
 
-  create temp table _batch on commit drop as
-    select id, content as body,
-           (case when feedback = 'up' then 3 when feedback = 'down' then 0 else 1 end) as w
-    from pulsar_messages
-    where trained = false and content <> '' and role in ('user','assistant')
-    order by created_at asc limit batch;
-  insert into _batch(id, body, w)
-    select id, text, greatest(1, round(trust * 2))::int
-    from pulsar_corpus where trained = false and text <> '' limit batch;
+  if rebuild then
+    -- start the learned vocab + patterns fresh, then relearn from EVERYTHING
+    delete from pulsar_vocab;
+    delete from pulsar_ngrams;
+    create temp table _batch on commit drop as
+      select id, content as body,
+             (case when feedback = 'up' then 3 when feedback = 'down' then 0 else 1 end) as w
+      from pulsar_messages
+      where content <> '' and role in ('user','assistant');
+    insert into _batch(id, body, w)
+      select id, text, greatest(1, round(trust * 2))::int
+      from pulsar_corpus where text <> '';
+  else
+    create temp table _batch on commit drop as
+      select id, content as body,
+             (case when feedback = 'up' then 3 when feedback = 'down' then 0 else 1 end) as w
+      from pulsar_messages
+      where trained = false and content <> '' and role in ('user','assistant')
+      order by created_at asc limit batch;
+    insert into _batch(id, body, w)
+      select id, text, greatest(1, round(trust * 2))::int
+      from pulsar_corpus where trained = false and text <> '' limit batch;
+  end if;
 
   select count(*) into v_processed from _batch where w > 0;
 
@@ -140,5 +159,5 @@ end $$;
 -- the website calls these with the publishable (anon) key
 grant execute on function pulsar_generate(text, int)      to anon, authenticated;
 grant execute on function pulsar_stats()                  to anon, authenticated;
-grant execute on function pulsar_train(text, int)         to anon, authenticated;
+grant execute on function pulsar_train(text, int, boolean) to anon, authenticated;
 grant execute on function pulsar_feedback_note(text, text) to anon, authenticated;

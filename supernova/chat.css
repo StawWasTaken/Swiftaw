@@ -588,22 +588,12 @@ img.sn-emoji { height: 1.2em; width: 1.2em; margin: 0 .05em 0 .1em; vertical-ali
 .set-about { font-size: 12px; opacity: .5; margin: 16px 4px 4px; line-height: 1.45; }
 
 /* Lifecheck one-time human gate */
+.sn-gate-card.lc-card { max-width: 452px; padding: 34px 26px 26px; }
 .lc-card .lc-brand { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: .04em; color: var(--sn-green); margin-bottom: 16px; text-transform: uppercase; }
 .lc-brand .lc-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--sn-green); box-shadow: 0 0 0 0 rgba(62,207,110,.6); animation: lcPulse 1.8s infinite; }
 @keyframes lcPulse { 0% { box-shadow: 0 0 0 0 rgba(62,207,110,.5); } 70% { box-shadow: 0 0 0 8px rgba(62,207,110,0); } 100% { box-shadow: 0 0 0 0 rgba(62,207,110,0); } }
-.lc-hold { position: relative; width: 128px; height: 128px; margin: 26px auto 14px; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none; outline: none; }
-.lc-hold:focus-visible { border-radius: 50%; box-shadow: 0 0 0 3px rgba(62,207,110,.5); }
-.lc-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
-.lc-ring circle { fill: none; stroke-width: 7; stroke-linecap: round; }
-.lc-track { stroke: rgba(255,255,255,.1); }
-.lc-prog { stroke: var(--sn-green); transition: stroke-dashoffset .08s linear; }
-.lc-face { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; color: var(--muted-light); transition: transform .15s, color .2s; }
-.lc-face .ic { width: 26px; height: 26px; fill: currentColor; }
-.lc-face span { font-size: 12.5px; font-weight: 600; }
-.lc-hold.holding .lc-face { transform: scale(.92); color: #fff; }
-.lc-hold.done .lc-face { color: var(--sn-green); }
-.lc-hold.done { cursor: default; }
-.lc-hint { font-size: 12.5px !important; color: var(--muted-light); margin-bottom: 16px !important; min-height: 18px; }
+.lc-embed-wrap { margin: 18px auto 14px; width: 100%; display: flex; justify-content: center; }
+#lcFrame { width: 100%; max-width: 400px; height: 150px; border: 0; background: transparent; display: block; transition: height .25s ease; color-scheme: light dark; }
 
 /* Trainer: feed-data area */
 /* Feed-data card */

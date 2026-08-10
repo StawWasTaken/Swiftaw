@@ -683,6 +683,18 @@
       });
     });
   }
+  // Train the n-gram model. rebuild = true does a FULL retrain: it relearns from
+  // every chat + corpus it has ever seen (reinforcing already-learned vocab +
+  // patterns), rebuilding the counts from scratch so nothing is double-counted.
+  // Falls back to the old 2-arg call if the updated SQL isn't deployed yet.
+  function trainPulsar(rebuild) {
+    var body = { admin_uid: state.uid, batch: rebuild ? 6000 : 500 };
+    if (rebuild) body.rebuild = true;
+    return rpc('pulsar_train', body).catch(function (e) {
+      if (rebuild) return rpc('pulsar_train', { admin_uid: state.uid, batch: 2000 });
+      throw e;
+    });
+  }
   // Tidy a short plain sentence, but NEVER touch structured content (code fences,
   // tables, images, lists, multi-line): adding a trailing "." there breaks a closing
   // ``` fence or a table row so scripts/tables stop rendering.
@@ -1114,36 +1126,11 @@
     if (/\b(code|html|css|javascript|js|python|py|button|landing|component|function|script|snippet|program|api|fetch|regex|sql|query)\b/.test(p)) {
       return codeReply(p);
     }
-    if (/table|compare|comparison|vs\b|best .*(app|tool|option)/.test(p)) {
+    if (/\b(compare|comparison|vs|versus)\b|best .*(app|tool|option)/.test(p)) {
       return {
-        reasoning: 'A comparison reads best as a table. I checked a few current sources for the details rather than trusting memory.',
-        answer: 'Good question. I pulled the current details from a few places rather than going off memory. Here\'s the short version:\n\n| Option | Best for | Price |\n| --- | --- | --- |\n| Nimbus | Fast notes | Free |\n| Atlas | Deep research | $6/mo |\n| Orbit | Team wikis | $10/mo |\n\nTell me what matters most to you and I\'ll narrow it down.',
-        sources: [
-          { title: 'Nimbus - official site', url: 'https://nimbus.example.com/pricing' },
-          { title: 'Atlas review 2026', url: 'https://www.theverge.com/atlas-review' },
-          { title: 'Orbit docs', url: 'https://docs.orbit.example.org/plans' }
-        ],
-        followups: ['Which is best for a small team?', 'Add a free-tier column', 'Turn this into a checklist']
-      };
-    }
-    if (/latest|news|today|current|price of|weather|who won|when (is|does)/.test(p)) {
-      return {
-        reasoning: 'This needs fresh, real-world info, so I searched the web instead of guessing. I\'ll cite what I used. (I don\'t just take a claim as true because someone says so, unless it\'s the verified Swiftaw account.)',
-        answer: 'I looked this up rather than guessing, since it changes over time. Here\'s what I found, with the sources I used below so you can check them yourself.\n\nGive me the specific thing you want and I\'ll pull the exact figure or date.',
-        sources: [
-          { title: 'Reuters', url: 'https://www.reuters.com/' },
-          { title: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/Main_Page' },
-          { title: 'AP News', url: 'https://apnews.com/' }
-        ],
-        followups: ['Be more specific', 'Show me more sources', 'Summarise it']
-      };
-    }
-    if (/math|equation|formula|integral|supernova|physics|energy/.test(p)) {
-      return {
-        reasoning: 'A short clear explanation plus the key formula, rendered properly.',
-        answer: 'A supernova is a star ending its life in a massive explosion, briefly outshining a whole galaxy. The energy involved is enormous, on the order of the star\'s rest mass energy:\n\n$$E = mc^2$$\n\nQuick version:\n\n- The core collapses in seconds.\n- A shockwave blows the outer layers into space.\n- What\'s left seeds new stars with heavier elements.',
-        sources: [{ title: 'NASA - Supernovae', url: 'https://science.nasa.gov/supernova' }, { title: 'Wikipedia - Supernova', url: 'https://en.wikipedia.org/wiki/Supernova' }],
-        followups: ['What\'s left behind after one?', 'How bright is it, really?', 'Explain it for a 10 year old']
+        reasoning: 'A comparison reads best as a table. I\'ll lay out the axes; tell me the exact options and I\'ll fill it in for real.',
+        answer: 'Comparisons read best as a table. Here\'s the shape, tell me the exact options you\'re weighing and I\'ll fill it in:\n\n| Option | Best for | Price |\n| --- | --- | --- |\n| Option A | ... | ... |\n| Option B | ... | ... |\n\nWhat are the two or three you\'re deciding between?',
+        followups: ['Compare the ones I name', 'Add a column', 'Turn this into a checklist']
       };
     }
     return null;
@@ -1447,9 +1434,9 @@
       if (trainBtn.disabled) return;
       trainBtn.disabled = true; trainBtn.classList.add('busy');
       var label = trainBtn.innerHTML; trainBtn.innerHTML = '<svg class="ic"><use href="#i-spark"/></svg> Training...';
-      trProgress('Learning patterns', 0, 'Reading everything Pulsar has stocked, building n-grams.', true);
-      rpc('pulsar_train', { admin_uid: state.uid, batch: 1200 }).then(function (res) {
-        trProgress('Done', 100, 'Learned from ' + ((res && res.processed) || 0) + ' items.');
+      trProgress('Relearning everything', 0, 'Re-reading every chat + corpus it has ever seen, reinforcing vocab + patterns.', true);
+      trainPulsar(true).then(function (res) {
+        trProgress('Done', 100, 'Relearned from ' + ((res && res.processed) || 0) + ' items.');
         toast('Trained on ' + ((res && res.processed) || 0) + ' items');
         return refreshStats();
       }).then(function () { renderTrainStats(); }).catch(function () {
@@ -1462,10 +1449,10 @@
       if (nbtn.disabled || !window.SN_Neural) return;
       nbtn.disabled = true; nbtn.classList.add('busy'); var nlabel = nbtn.innerHTML;
       nbtn.innerHTML = '<svg class="ic"><use href="#i-brain"/></svg> Training neural model...';
-      trProgress('Loading data', 4, 'Gathering everything Pulsar knows to learn from.', true);
-      rpc('pulsar_export', { admin_uid: state.uid, lim: 4000 }).then(function (texts) {
+      trProgress('Loading data', 4, 'Gathering every chat + everything Pulsar has learned to relearn from.', true);
+      rpc('pulsar_export', { admin_uid: state.uid, lim: 8000 }).then(function (texts) {
         if (!Array.isArray(texts) || texts.length < 5) throw new Error('Not enough data yet, feed or chat more first');
-        trProgress('Preparing data', 8, texts.length.toLocaleString() + ' passages to learn from.', true);
+        trProgress('Preparing data', 8, texts.length.toLocaleString() + ' passages (all history) to learn from.', true);
         return window.SN_Neural.train(texts, {
           epochs: 8, dbUrl: PULSAR_DB.url, dbKey: PULSAR_DB.key,
           onProgress: function (pct, loss, phase) {
@@ -1495,7 +1482,7 @@
         feedBtn.innerHTML = '<svg class="ic-sm"><use href="#i-spark"/></svg> Feeding...';
         feedCorpus(text).then(function (n) {
           feedBtn.innerHTML = '<svg class="ic-sm"><use href="#i-brain"/></svg> Training...';
-          return rpc('pulsar_train', { admin_uid: state.uid, batch: 1500 }).then(function () { return n; });
+          return trainPulsar(true).then(function () { return n; });
         }).then(function (n) {
           toast('Fed ' + n + ' passage' + (n === 1 ? '' : 's') + ' and re-trained');
           feed.value = ''; feedCount.innerHTML = feedCountHTML(0);
@@ -1586,46 +1573,22 @@
     if (lifecheckDone()) { verify.hidden = true; signin.hidden = false; }
     else { signin.hidden = true; verify.hidden = false; initLifecheck(); }
   }
+  // Embed the REAL Lifecheck (served at /lifecheck/embed.html on swiftaw.com) and
+  // listen for its one-way postMessage bridge: 'resize' sizes the iframe, 'verified'
+  // hands back a token and unlocks the sign-in. Supernova is first-party on
+  // swiftaw.com, so Lifecheck issues a token without needing a site key.
   var _lcWired = false;
   function initLifecheck() {
-    var hold = $('#lcHold'), prog = $('#lcProg'), face = $('#lcFace'), label = $('#lcLabel'), icon = $('#lcIcon'), hint = $('#lcHint');
-    if (!hold || !prog || _lcWired) return; _lcWired = true;
-    var C = 2 * Math.PI * 52; prog.style.strokeDasharray = C; prog.style.strokeDashoffset = C;
-    var HOLD_MS = 1600, raf = null, start = 0, done = false, moved = 0, lastX = null, lastY = null;
-    function setPct(pct) { prog.style.strokeDashoffset = C * (1 - pct); }
-    function tick(now) {
-      var pct = Math.min(1, (now - start) / HOLD_MS); setPct(pct);
-      if (pct >= 1) { pass(); return; }
-      raf = requestAnimationFrame(tick);
-    }
-    function begin(e) {
-      if (done) return; if (e && e.cancelable) e.preventDefault();
-      start = performance.now(); moved = 0; lastX = lastY = null;
-      hold.classList.add('holding'); label.textContent = 'Hold on...'; hint.textContent = 'Keep holding.';
-      raf = requestAnimationFrame(tick);
-    }
-    function track(e) {
-      if (!raf) return; var p = (e.touches && e.touches[0]) || e;
-      if (lastX != null) moved += Math.abs(p.clientX - lastX) + Math.abs(p.clientY - lastY);
-      lastX = p.clientX; lastY = p.clientY;
-    }
-    function cancel() {
-      if (done || !raf) return; cancelAnimationFrame(raf); raf = null;
-      hold.classList.remove('holding'); setPct(0); label.textContent = 'Press & hold'; hint.textContent = 'Hold the circle until it fills.';
-    }
-    function pass() {
-      done = true; if (raf) cancelAnimationFrame(raf); raf = null; setPct(1);
-      hold.classList.remove('holding'); hold.classList.add('done');
-      icon.innerHTML = '<use href="#i-check"/>'; label.textContent = 'Verified'; hint.textContent = 'You\'re all set.';
-      try { localStorage.setItem(LC_KEY, JSON.stringify({ at: Date.now(), moved: Math.round(moved) })); } catch (e) {}
-      setTimeout(function () { var v = $('#gateVerify'), s = $('#gateSignin'); if (v) v.hidden = true; if (s) s.hidden = false; }, 750);
-    }
-    hold.addEventListener('mousedown', begin);
-    hold.addEventListener('touchstart', begin, { passive: false });
-    window.addEventListener('mousemove', track); window.addEventListener('touchmove', track, { passive: true });
-    window.addEventListener('mouseup', cancel); window.addEventListener('touchend', cancel); hold.addEventListener('mouseleave', cancel);
-    hold.addEventListener('keydown', function (e) { if ((e.key === ' ' || e.key === 'Enter') && !raf && !done) { e.preventDefault(); begin(); } });
-    hold.addEventListener('keyup', function (e) { if (e.key === ' ' || e.key === 'Enter') cancel(); });
+    var frame = $('#lcFrame'); if (!frame || _lcWired) return; _lcWired = true;
+    window.addEventListener('message', function (e) {
+      if (e.origin !== location.origin) return; // Lifecheck is same-origin (/lifecheck)
+      var d = e.data; if (!d || d.source !== 'swiftaw-lifecheck') return;
+      if (d.event === 'resize' && d.height) { frame.style.height = Math.max(120, d.height) + 'px'; }
+      else if (d.event === 'verified') {
+        try { localStorage.setItem(LC_KEY, JSON.stringify({ at: Date.now(), token: d.token || null })); } catch (e2) {}
+        setTimeout(function () { var v = $('#gateVerify'), s = $('#gateSignin'); if (v) v.hidden = true; if (s) s.hidden = false; }, 900);
+      }
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function () {
