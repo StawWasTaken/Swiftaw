@@ -19,7 +19,7 @@
     folders: [], editingFolder: null, _fldSel: null, _drag: null, _regenAvg: null
   };
   /*  SETTINGS (per browser)  */
-  var SETTINGS_DEFAULTS = { enterToSend: true, twemoji: true, showThinking: true, streamSpeed: 'normal' };
+  var SETTINGS_DEFAULTS = { enterToSend: true, twemoji: true, showThinking: true, streamSpeed: 'normal', webSearch: true };
   var snSettings = (function () { try { var s = JSON.parse(localStorage.getItem('sn_settings') || '{}'); var o = {}; for (var k in SETTINGS_DEFAULTS) o[k] = (k in s) ? s[k] : SETTINGS_DEFAULTS[k]; return o; } catch (e) { return Object.assign({}, SETTINGS_DEFAULTS); } })();
   function saveSettings() { try { localStorage.setItem('sn_settings', JSON.stringify(snSettings)); } catch (e) {} }
 
@@ -781,6 +781,61 @@
       .then(function (t) { return (typeof t === 'string' && t.trim().length > 3) ? t.trim() : null; })
       .catch(function () { return null; });
   }
+
+  /*  WEB SEARCH: for factual questions, look it up and cite the source instead of
+      guessing. Uses Wikipedia's keyless, CORS-friendly API (works from a static site).  */
+  function looksInformational(prompt) {
+    var p = String(prompt || '').trim().toLowerCase();
+    if (p.length < 3) return false;
+    if (/^(hi|hey|hello|yo|sup|thanks|thank you|thx|ok|okay|k|lol|haha|nice|cool|yes|no|yep|nope)\b/.test(p)) return false;
+    if (/\b(write|make|create|build|draw|generate|code|script|give me code|fix|debug|translate|rewrite|summarize this|summarise this)\b/.test(p)) return false;
+    if (/\b(who|what|whats|what's|where|when|why|how|which|whose)\b/.test(p)) return true;
+    if (/\b(tell me about|explain|define|definition of|meaning of|history of|facts about|summary of|overview of|who is|what is)\b/.test(p)) return true;
+    var words = p.replace(/[?.!,]/g, '').split(/\s+/).filter(Boolean);
+    if (words.length >= 1 && words.length <= 5) return true; // a short topic like "black holes"
+    return false;
+  }
+  function webQuery(prompt) {
+    return String(prompt || '').trim()
+      .replace(/\?+\s*$/, '')
+      .replace(/^(who|what|whats|what's|where|when|why|how|which|whose)\s+(is|are|was|were|do|does|did|can|could|would|should|has|have|had)\s+/i, '')
+      .replace(/^(tell me about|can you explain|explain|define|definition of|meaning of|history of|facts about|summary of|overview of|who is|what is|whats|what's)\s+/i, '')
+      .replace(/^(a|an|the)\s+/i, '')
+      .replace(/\s+(please|for me|to me)\s*$/i, '')
+      .trim();
+  }
+  function webAnswer(prompt) {
+    if (!snSettings.webSearch) return Promise.resolve(null);
+    var q = webQuery(prompt); if (q.length < 2) q = String(prompt || '').trim();
+    if (!q) return Promise.resolve(null);
+    var api = 'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' +
+      encodeURIComponent(q) + '&srlimit=1&srqiprofile=popular_inclinks_pv&format=json&origin=*';
+    return fetch(api).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      var hit = j && j.query && j.query.search && j.query.search[0];
+      if (!hit) return null;
+      var title = hit.title;
+      return fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title) + '?redirect=true',
+        { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (s) {
+          if (!s || !s.extract || (s.type && s.type === 'disambiguation')) return null;
+          var sentences = s.extract.split(/(?<=[.!?])\s+/).filter(Boolean);
+          var text = sentences.slice(0, 3).join(' ');
+          if (!text) return null;
+          var url = (s.content_urls && s.content_urls.desktop && s.content_urls.desktop.page) ||
+            ('https://en.wikipedia.org/wiki/' + encodeURIComponent(title));
+          var answer = text;
+          var img = s.thumbnail && s.thumbnail.source;
+          if (img) answer += '\n\n![' + (s.title || title) + '](' + img + ')';
+          return {
+            reasoning: 'This is a factual question, so I looked it up and I\'m citing where it came from rather than guessing.',
+            answer: answer,
+            sources: [{ title: s.title || title, url: url }],
+            followups: ['Tell me more', 'Why does it matter?', 'Give me an example']
+          };
+        });
+    }).catch(function () { return null; });
+  }
   // 2) neural model (browser TF.js), if one has been trained + saved
   function neuralReply(prompt) {
     if (!state.neuralReady || !window.SN_Neural) return Promise.resolve(null);
@@ -829,16 +884,22 @@
   // Pulsar's own brain: recalled fact -> training challenge -> neural -> n-gram -> draft.
   function getReply(prompt) {
     // 1) native math   2) a recalled trusted fact   3) training drill
-    // 4) a clear intent (code/greeting/table/image) done well
-    // 5) the trained model (only if coherent)   6) a clean general draft
+    // 4) a factual question -> look it up on the web + cite it
+    // 5) a clear intent (code/greeting/table/image) done well
+    // 6) the trained model (only if coherent)   7) a clean general draft
     var m = mathReply(prompt);
     if (m) return Promise.resolve(m);
     return recall(prompt).then(function (fact) {
       if (fact) return { reasoning: 'I recalled this from what Swiftaw confirmed as true.', answer: cap(fact), sources: [], followups: ['Tell me more', 'How do you know?', 'Ask something else'] };
       if (state.trainMode) return trainingReply(prompt);
-      var intent = structuredIntent(prompt);
-      if (intent) return intent;
-      return neuralReply(prompt).then(function (r) { return r || ngramReply(prompt); });
+      var webFirst = snSettings.webSearch && looksInformational(prompt)
+        ? webAnswer(prompt) : Promise.resolve(null);
+      return webFirst.then(function (web) {
+        if (web) return web;
+        var intent = structuredIntent(prompt);
+        if (intent) return intent;
+        return neuralReply(prompt).then(function (r) { return r || ngramReply(prompt); });
+      });
     });
   }
   function regenerate(aiIdx) {
@@ -1300,6 +1361,7 @@
     body.innerHTML =
       '<div class="set-me">' + avImg(avatarOf(state.user), nm, 'av') + '<div><div class="set-me-n">' + escHTML(nm) + '</div><div class="set-me-e">' + escHTML(state.user.email || '') + '</div></div></div>' +
       '<div class="set-sec">Chat</div>' +
+      toggleRow('webSearch', 'Web search', 'Look up factual questions and cite real sources instead of guessing.') +
       toggleRow('enterToSend', 'Press Enter to send', 'Off means Enter adds a newline; use Ctrl/Cmd+Enter to send.') +
       speedHtml +
       toggleRow('showThinking', 'Show reasoning by default', 'Expand Pulsar\'s "Thinking" panel automatically.') +
@@ -1347,6 +1409,7 @@
   function trainState() { try { return JSON.parse(localStorage.getItem(trainKey()) || '{}'); } catch (e) { return {}; } }
   function trainSave(s) { try { localStorage.setItem(trainKey(), JSON.stringify(s)); } catch (e) {} }
   function isTrainer() { return nameOf(state.user) === 'Swiftaw'; }
+  function fmtStat(n) { return (typeof n === 'number') ? n.toLocaleString() : (n == null ? '--' : n); }
   function renderTrainStats() {
     var s = state.stats; var host = $('#trStats'); if (!host) return;
     var tiles = [
@@ -1355,13 +1418,26 @@
       { k: 'ngrams', label: 'Patterns learned' },
       { k: 'signals', label: 'Lifecheck signals' }
     ];
+    var neural = state.neuralReady ? 'Neural: on' : 'Neural: off';
     host.innerHTML = tiles.map(function (t) {
-      var v = s && (s[t.k] != null) ? s[t.k] : '--';
+      var v = s && (s[t.k] != null) ? fmtStat(s[t.k]) : '--';
       return '<div class="tr-stat"><div class="v">' + v + '</div><div class="l">' + t.label + '</div></div>';
     }).join('') +
-      '<div class="tr-stat wide"><div class="v ' + (state.modelReady ? 'ready' : 'learning') + '">' + (state.modelReady ? 'Model ready' : 'Learning') + '</div><div class="l">' +
-      (s && s.last_trained ? 'trained ' + new Date(s.last_trained).toLocaleString() : (s ? 'not trained yet' : 'run schema.sql + model.sql to connect')) + '</div></div>';
+      '<div class="tr-stat wide ' + (state.modelReady ? 'is-ready' : 'is-learning') + '">' +
+      '<div class="tr-stat-badge"><span class="dot"></span>' + (state.modelReady ? 'Model ready' : 'Still learning') + '</div>' +
+      '<div class="l">' + (s && s.last_trained ? 'Last trained ' + new Date(s.last_trained).toLocaleString() : (s ? 'Not trained yet, feed it data and hit train' : 'Run the Pulsar SQL to connect')) +
+      ' &middot; ' + neural + '</div></div>';
   }
+  // Shared training progress bar (both n-gram + neural training write to it).
+  function trProgress(phase, pct, sub, indeterminate) {
+    var box = $('#trProgress'); if (!box) return;
+    box.hidden = false; box.classList.toggle('indet', !!indeterminate);
+    var ph = $('#trProgressPhase'), pc = $('#trProgressPct'), fill = $('#trProgressFill'), sb = $('#trProgressSub');
+    if (ph) ph.textContent = phase; if (pc) pc.textContent = Math.round(pct) + '%';
+    if (fill) fill.style.width = Math.max(0, Math.min(100, pct)) + '%';
+    if (sb && sub != null) sb.textContent = sub;
+  }
+  function trProgressHide() { var box = $('#trProgress'); if (box) { box.hidden = true; box.classList.remove('indet'); } }
   function openTrainer() {
     if (!isTrainer()) return;
     renderTrainStats(); refreshStats().then(renderTrainStats);
@@ -1371,33 +1447,41 @@
       if (trainBtn.disabled) return;
       trainBtn.disabled = true; trainBtn.classList.add('busy');
       var label = trainBtn.innerHTML; trainBtn.innerHTML = '<svg class="ic"><use href="#i-spark"/></svg> Training...';
-      rpc('pulsar_train', { admin_uid: state.uid, batch: 800 }).then(function (res) {
+      trProgress('Learning patterns', 0, 'Reading everything Pulsar has stocked, building n-grams.', true);
+      rpc('pulsar_train', { admin_uid: state.uid, batch: 1200 }).then(function (res) {
+        trProgress('Done', 100, 'Learned from ' + ((res && res.processed) || 0) + ' items.');
         toast('Trained on ' + ((res && res.processed) || 0) + ' items');
         return refreshStats();
       }).then(function () { renderTrainStats(); }).catch(function () {
-        toast('Training needs model.sql run first', 'err');
-      }).then(function () { trainBtn.disabled = false; trainBtn.classList.remove('busy'); trainBtn.innerHTML = label; });
+        toast('Training needs the Pulsar SQL run first', 'err');
+      }).then(function () { setTimeout(trProgressHide, 900); trainBtn.disabled = false; trainBtn.classList.remove('busy'); trainBtn.innerHTML = label; });
     };
     var nbtn = $('#trTrainNeural');
     nbtn.hidden = !window.SN_Neural;
     nbtn.onclick = function () {
       if (nbtn.disabled || !window.SN_Neural) return;
       nbtn.disabled = true; nbtn.classList.add('busy'); var nlabel = nbtn.innerHTML;
-      var set = function (t) { nbtn.innerHTML = '<svg class="ic"><use href="#i-brain"/></svg> ' + t; };
-      set('Loading data...');
+      nbtn.innerHTML = '<svg class="ic"><use href="#i-brain"/></svg> Training neural model...';
+      trProgress('Loading data', 4, 'Gathering everything Pulsar knows to learn from.', true);
       rpc('pulsar_export', { admin_uid: state.uid, lim: 4000 }).then(function (texts) {
-        if (!Array.isArray(texts) || texts.length < 5) throw new Error('Not enough data yet, chat more first');
+        if (!Array.isArray(texts) || texts.length < 5) throw new Error('Not enough data yet, feed or chat more first');
+        trProgress('Preparing data', 8, texts.length.toLocaleString() + ' passages to learn from.', true);
         return window.SN_Neural.train(texts, {
           epochs: 8, dbUrl: PULSAR_DB.url, dbKey: PULSAR_DB.key,
-          onProgress: function (pct, loss, phase) { set(phase === 'prep' ? 'Preparing data...' : (phase === 'save' ? 'Saving...' : ('Training ' + pct + '%'))); }
+          onProgress: function (pct, loss, phase) {
+            if (phase === 'prep') trProgress('Preparing data', Math.max(8, pct), 'Turning text into training examples.', true);
+            else if (phase === 'save') trProgress('Saving model', 98, 'Storing the trained model so every visitor can use it.', true);
+            else trProgress('Training', pct, loss != null ? ('Loss ' + Number(loss).toFixed(3) + ', lower is better.') : 'Teaching the network to predict the next word.');
+          }
         });
       }).then(function (res) {
-        set('Loading...');
+        trProgress('Loading model', 99, 'Bringing the fresh model online.', true);
         return window.SN_Neural.load(PULSAR_DB).then(function () { return res; }).catch(function () { return res; });
       }).then(function (res) {
-        state.neuralReady = true; toast('Neural model trained on ' + res.vocab + ' words');
-      }).catch(function (e) { toast((e && e.message) || 'Neural training failed', 'err'); })
-        .then(function () { nbtn.disabled = false; nbtn.classList.remove('busy'); nbtn.innerHTML = nlabel; });
+        state.neuralReady = true; trProgress('Ready', 100, 'Neural model trained on ' + res.vocab + ' words.');
+        toast('Neural model trained on ' + res.vocab + ' words');
+      }).catch(function (e) { trProgressHide(); toast((e && e.message) || 'Neural training failed', 'err'); })
+        .then(function () { setTimeout(trProgressHide, 1100); nbtn.disabled = false; nbtn.classList.remove('busy'); nbtn.innerHTML = nlabel; });
     };
     var feed = $('#trFeed'), feedBtn = $('#trFeedBtn'), feedCount = $('#trFeedCount');
     if (feed && feedBtn) {

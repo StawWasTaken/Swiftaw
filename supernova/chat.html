@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <link rel="stylesheet" href="/supernova/sn.css">
-<link rel="stylesheet" href="/supernova/chat.css?v=sn8">
+<link rel="stylesheet" href="/supernova/chat.css?v=sn9">
 </head>
 <body class="sn-chat-body">
 
@@ -201,6 +201,12 @@
       <button class="tr-train" id="trTrain"><svg class="ic"><use href="#i-spark"/></svg> Train Pulsar now</button>
       <button class="tr-train neural" id="trTrainNeural"><svg class="ic"><use href="#i-brain"/></svg> Train neural model <span class="beta">beta</span></button>
 
+      <div class="tr-progress" id="trProgress" hidden>
+        <div class="tr-progress-top"><span class="tr-progress-phase" id="trProgressPhase">Preparing</span><span class="tr-progress-pct" id="trProgressPct">0%</span></div>
+        <div class="tr-progress-track"><span class="tr-progress-fill" id="trProgressFill"></span></div>
+        <div class="tr-progress-sub" id="trProgressSub">This runs in the background, you can keep using Supernova.</div>
+      </div>
+
       <div class="tr-sec-h">Train on</div>
       <div class="tr-data" id="trData"></div>
 
@@ -235,7 +241,7 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <script src="/css/swiftaw-account.js"></script>
-<script src="/supernova/neural.js?v=sn8"></script>
-<script src="/supernova/chat.js?v=sn8"></script>
+<script src="/supernova/neural.js?v=sn9"></script>
+<script src="/supernova/chat.js?v=sn9"></script>
 </body>
 </html>
