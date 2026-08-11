@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <link rel="stylesheet" href="/supernova/sn.css">
-<link rel="stylesheet" href="/supernova/chat.css?v=sn10">
+<link rel="stylesheet" href="/supernova/chat.css?v=sn11">
 </head>
 <body class="sn-chat-body">
 
@@ -212,6 +212,28 @@
         </div>
       </div>
 
+      <div class="tr-sec-h">Auto-train</div>
+      <p class="tr-note">Pulsar quizzes itself: it answers a stream of questions on its own, an automatic grader checks each answer against real sources, and it learns from every one, right and wrong. Pick how long it should run and let it go.</p>
+      <div class="autotrain">
+        <div class="at-dur">
+          <div class="at-dur-top"><span>Training time</span><span class="at-dur-val" id="atDurVal">30m</span></div>
+          <input type="range" id="atDur" class="at-slider" min="10" max="300" step="5" value="30" aria-label="Training time">
+          <div class="at-dur-scale"><span>10m</span><span>2h 30m</span><span>5h</span></div>
+        </div>
+        <button class="tr-train" id="atStart"><svg class="ic"><use href="#i-brain"/></svg> Start auto-training</button>
+        <div class="at-live" id="atLive" hidden>
+          <div class="at-live-stats">
+            <div class="at-s"><b id="atAsked">0</b><span>answered</span></div>
+            <div class="at-s"><b id="atCorrect">0</b><span>correct</span></div>
+            <div class="at-s"><b id="atAcc">0%</b><span>accuracy</span></div>
+            <div class="at-s"><b id="atRemain">--</b><span>left</span></div>
+          </div>
+          <div class="at-progress-track"><span class="at-progress-fill" id="atFill"></span></div>
+          <div class="at-current" id="atCurrent">Warming up...</div>
+          <button class="tr-train ghost" id="atStop"><svg class="ic"><use href="#i-stop"/></svg> Stop auto-training</button>
+        </div>
+      </div>
+
       <div class="tr-sec-h">Focus drills</div>
       <p class="tr-note">Optional exercises that shape what Pulsar prioritises.</p>
       <div class="tr-games" id="trGames"></div>
@@ -233,7 +255,7 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <script src="/css/swiftaw-account.js"></script>
-<script src="/supernova/neural.js?v=sn10"></script>
-<script src="/supernova/chat.js?v=sn10"></script>
+<script src="/supernova/neural.js?v=sn11"></script>
+<script src="/supernova/chat.js?v=sn11"></script>
 </body>
 </html>

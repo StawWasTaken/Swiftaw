@@ -470,6 +470,7 @@ body.acct-open .side-foot .acct-trigger .cv { transform: rotate(180deg); }
 .tr-progress.indet .tr-progress-fill { width: 40% !important; animation: trIndet 1.2s ease-in-out infinite; }
 @keyframes trIndet { 0% { margin-left: -40%; } 100% { margin-left: 100%; } }
 .tr-progress-sub { font-size: 12px; color: var(--muted-light); margin-top: 8px; }
+.tr-train[hidden] { display: none !important; }
 .tr-train { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; border-radius: 14px; margin-bottom: 6px;
   font-family: var(--font-display); font-weight: 800; font-size: 15px; color: #0d1117;
   background: linear-gradient(120deg, var(--sn-blue), var(--sn-pink) 62%, var(--sn-green));
@@ -586,6 +587,35 @@ img.sn-emoji { height: 1.2em; width: 1.2em; margin: 0 .05em 0 .1em; vertical-ali
 .set-btn.danger { border-color: rgba(248,113,113,.5); color: #f87171; }
 .set-btn.danger:hover { background: rgba(248,113,113,.12); }
 .set-about { font-size: 12px; opacity: .5; margin: 16px 4px 4px; line-height: 1.45; }
+
+/* Auto-train */
+.autotrain { border: 1.5px solid var(--border); border-radius: 16px; background: var(--bg-2); padding: 16px; margin-bottom: 6px; }
+.at-dur { margin-bottom: 14px; }
+.at-dur-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
+.at-dur-top span:first-child { font-family: var(--font-display); font-weight: 700; font-size: 13px; color: #fff; }
+.at-dur-val { font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--sn-blue); letter-spacing: -.5px; }
+.at-slider { --fill: 22%; -webkit-appearance: none; appearance: none; width: 100%; height: 10px; border-radius: 100px; outline: none; cursor: pointer;
+  background: linear-gradient(90deg, var(--sn-blue), var(--sn-pink)) 0 / var(--fill) 100% no-repeat, rgba(255,255,255,.1); }
+.at-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 4px solid var(--sn-pink); box-shadow: 0 3px 10px rgba(0,0,0,.4); cursor: grab; transition: transform .12s; }
+.at-slider::-webkit-slider-thumb:active { transform: scale(1.12); cursor: grabbing; }
+.at-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: #fff; border: 4px solid var(--sn-pink); box-shadow: 0 3px 10px rgba(0,0,0,.4); cursor: grab; }
+.at-slider::-moz-range-progress { height: 10px; border-radius: 100px; background: linear-gradient(90deg, var(--sn-blue), var(--sn-pink)); }
+.at-dur-scale { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: var(--muted); }
+.at-live { margin-top: 4px; }
+.at-live-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+.at-s { background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 10px 6px; text-align: center; }
+.at-s b { display: block; font-family: var(--font-display); font-weight: 800; font-size: 19px; color: #fff; letter-spacing: -.5px; }
+.at-s span { font-size: 10.5px; color: var(--muted-light); }
+.at-progress-track { height: 8px; border-radius: 100px; background: rgba(255,255,255,.08); overflow: hidden; margin-bottom: 10px; }
+.at-progress-fill { display: block; height: 100%; width: 0; border-radius: 100px; background: linear-gradient(90deg, var(--sn-blue), var(--sn-pink)); transition: width .8s linear; }
+.at-current { font-size: 13px; color: var(--muted-light); margin-bottom: 12px; min-height: 20px; line-height: 1.4; }
+.at-current .at-q { color: #fff; font-weight: 600; }
+.at-current .at-v { font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 100px; margin-left: 4px; }
+.at-current .at-v.correct { color: var(--sn-green); background: rgba(var(--sn-green-rgb),.15); }
+.at-current .at-v.learned { color: var(--sn-blue); background: rgba(var(--sn-blue-rgb),.15); }
+.tr-train.ghost { width: 100%; background: var(--panel-2); border: 1.5px solid var(--border); color: var(--ink); box-shadow: none; }
+.tr-train.ghost .ic { fill: var(--sn-pink); }
+.tr-train.ghost:hover { border-color: var(--sn-pink); filter: none; transform: none; }
 
 /* Lifecheck one-time human gate */
 .sn-gate-card.lc-card { max-width: 452px; padding: 34px 26px 26px; }

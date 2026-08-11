@@ -1508,6 +1508,7 @@
       el.querySelector('.grun').addEventListener('click', function () { startTraining(g); });
       gHost.appendChild(el);
     });
+    bindAutoTrain();
     $('#trainer').classList.add('on');
   }
   function closeTrainer() { $('#trainer').classList.remove('on'); }
@@ -1563,6 +1564,144 @@
       .catch(function () {})
       .then(function () { _autoLearning = false; });
   }
+  /*  AUTO-TRAIN: Pulsar quizzes itself: it answers a stream of questions on its
+      own, an automatic grader checks each answer against a real source (Wikipedia),
+      and it learns from every one (right = reinforced, wrong = corrected). Runs for
+      the chosen duration (10 min to 5 h), then a final full retrain.  */
+  var AUTO_TOPICS = ('photosynthesis|gravity|black hole|DNA|electricity|the internet|volcano|earthquake|'
+    + 'democracy|capitalism|the Sun|the Moon|evolution|vaccine|antibiotics|climate change|the Renaissance|'
+    + 'World War II|the Roman Empire|ancient Egypt|the Great Wall of China|Mount Everest|the Amazon rainforest|'
+    + 'the Pacific Ocean|the human brain|the heart|blood|magnetism|the periodic table|oxygen|carbon|water|'
+    + 'gold|iron|the atom|electrons|the solar system|Mars|Jupiter|Saturn|the galaxy|the universe|light|sound|'
+    + 'the human eye|bacteria|viruses|the immune system|photosynthesis|the water cycle|earthquakes|tsunamis|'
+    + 'hurricanes|the rainforest|coral reefs|the honeybee|the octopus|the dolphin|the elephant|penguins|'
+    + 'the tiger|the polar bear|dinosaurs|the pyramids|the printing press|the steam engine|the telephone|'
+    + 'the light bulb|the computer|the smartphone|artificial intelligence|the transistor|the telescope|'
+    + 'the microscope|vaccination|antibiotics|surgery|the Olympic Games|chess|football|music|the piano|'
+    + 'the guitar|painting|photography|cinema|Shakespeare|Leonardo da Vinci|Albert Einstein|Isaac Newton|'
+    + 'Marie Curie|Charles Darwin|Nikola Tesla|the French Revolution|the Industrial Revolution|the Cold War|'
+    + 'the United Nations|the European Union|Japan|Brazil|Egypt|India|Australia|Canada|France|Italy|'
+    + 'the Sahara Desert|the Nile|the Himalayas|the Grand Canyon|Antarctica|the North Pole|volcanoes|'
+    + 'gravity|energy|matter|the speed of light|black holes|the Big Bang|quantum mechanics|relativity|'
+    + 'the economy|inflation|money|the stock market|language|mathematics|geometry|the number zero|'
+    + 'the alphabet|writing|the wheel|fire|agriculture|the brain|sleep|dreams|memory|emotions').split('|');
+  var AUTO_TEMPLATES = ['What is %?', 'Tell me about %.', 'Explain %.', 'Describe %.'];
+  var _auto = null;
+
+  function atFmtDur(min) { var h = Math.floor(min / 60), m = min % 60; return (h ? h + 'h' : '') + (h && m ? ' ' : '') + ((m || !h) ? m + 'm' : ''); }
+  function atFmtClock(ms) { var s = Math.max(0, Math.round(ms / 1000)), m = Math.floor(s / 60); s = s % 60; return m + 'm ' + (s < 10 ? '0' : '') + s + 's'; }
+
+  // ground truth for grading + teaching (Wikipedia, independent of the chat web-search toggle)
+  function wikiGroundTruth(topic) {
+    var api = 'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' + encodeURIComponent(topic) + '&srlimit=1&format=json&origin=*';
+    return fetch(api).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      var hit = j && j.query && j.query.search && j.query.search[0]; if (!hit) return null;
+      return fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(hit.title) + '?redirect=true', { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+          if (!s || !s.extract || (s.type && s.type === 'disambiguation')) return null;
+          var sents = s.extract.split(/(?<=[.!?])\s+/).filter(Boolean);
+          return { title: s.title || hit.title, one: sents[0] || '', two: sents.slice(0, 2).join(' ') };
+        });
+    }).catch(function () { return null; });
+  }
+  // the model's OWN answer (no web, no canned): what it actually knows right now
+  function modelSelfAnswer(q) {
+    return neuralReply(q).then(function (r) {
+      if (r && r.answer) return r.answer;
+      return ngramReply(q).then(function (x) { return (x && x.answer && !/tell me a bit more|here\'s the short version/i.test(x.answer)) ? x.answer : ''; });
+    }).catch(function () { return ''; });
+  }
+  function gradeAnswer(modelAns, truth) {
+    var a = wordset(modelAns), b = wordset(truth);
+    if (a.length < 3 || !b.length) return 0;
+    var set = {}; b.forEach(function (w) { set[w] = 1; });
+    var hit = 0; a.forEach(function (w) { if (set[w]) hit++; });
+    return hit / Math.max(4, a.length);
+  }
+  function atBuildRound() {
+    var pool = AUTO_TOPICS.slice();
+    for (var i = pool.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+    return pool.slice(0, 50).map(function (topic) {
+      return { topic: topic, q: AUTO_TEMPLATES[Math.floor(Math.random() * AUTO_TEMPLATES.length)].replace('%', topic) };
+    });
+  }
+  function startAuto(minutes) {
+    if (_auto) return;
+    _auto = { start: Date.now(), until: Date.now() + minutes * 60000, total: minutes * 60000, minutes: minutes,
+      asked: 0, correct: 0, stop: false, queue: [], round: 0, corpusBuf: [], teachBuf: [], cur: '', lastVerdict: '' };
+    _auto.clock = setInterval(atRenderLive, 1000);
+    toast('Auto-training for ' + atFmtDur(minutes) + ', it will keep learning while this tab is open');
+    atRenderLive(); atTick();
+  }
+  function stopAuto() { if (_auto) { _auto.stop = true; finishAuto(); } }
+  function finishAuto() {
+    if (!_auto) return; var a = _auto; _auto = null;
+    if (a.clock) clearInterval(a.clock);
+    atFlush(a, true).then(function () { toast('Auto-training done: ' + a.asked + ' answered, ' + a.correct + ' correct'); });
+    atRenderLive();
+  }
+  function scheduleNext() { if (_auto) setTimeout(atTick, 2600 + Math.random() * 900); }
+  function atTick() {
+    if (!_auto) return;
+    if (_auto.stop || Date.now() >= _auto.until) { finishAuto(); return; }
+    if (!_auto.queue.length) { _auto.queue = atBuildRound(); _auto.round++; }
+    var item = _auto.queue.shift();
+    _auto.cur = item.q; _auto.lastVerdict = ''; atRenderLive();
+    wikiGroundTruth(item.topic).then(function (gt) {
+      if (!_auto) return;
+      if (!gt || !gt.two) { scheduleNext(); return; }
+      return modelSelfAnswer(item.q).then(function (ans) {
+        if (!_auto) return;
+        var correct = gradeAnswer(ans, gt.two) >= 0.34;
+        _auto.asked++; if (correct) _auto.correct++;
+        _auto.lastVerdict = correct ? 'correct' : 'learned';
+        _auto.corpusBuf.push(gt.two);
+        _auto.teachBuf.push({ q: item.q, a: gt.one || gt.two });
+        atRenderLive();
+        if (_auto.asked % 20 === 0) atFlush(_auto, _auto.round % 5 === 0);
+        scheduleNext();
+      });
+    }).catch(function () { if (_auto) scheduleNext(); });
+  }
+  function atFlush(a, rebuild) {
+    var corpus = a.corpusBuf.splice(0, a.corpusBuf.length).filter(Boolean);
+    var teach = a.teachBuf.splice(0, a.teachBuf.length);
+    var p = Promise.resolve();
+    if (corpus.length) {
+      p = fetch(PULSAR_DB.url + '/rest/v1/pulsar_corpus', {
+        method: 'POST', headers: { apikey: PULSAR_DB.key, Authorization: 'Bearer ' + PULSAR_DB.key, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify(corpus.map(function (t) { return { text: t }; }))
+      }).catch(function () {});
+    }
+    teach.forEach(function (pair) { rpc('pulsar_teach', { admin_uid: state.uid, question: pair.q, answer: pair.a }).catch(function () {}); });
+    return p.then(function () { return trainPulsar(!!rebuild); }).then(function () { return refreshStats(); })
+      .then(function () { if ($('#trStats')) renderTrainStats(); }).catch(function () {});
+  }
+  function atRenderLive() {
+    var live = $('#atLive'), start = $('#atStart'); if (!live) return;
+    if (!_auto) { live.hidden = true; if (start) start.hidden = false; return; }
+    live.hidden = false; if (start) start.hidden = true;
+    var a = _auto, elapsed = Date.now() - a.start, remain = Math.max(0, a.until - Date.now());
+    var acc = a.asked ? Math.round(a.correct / a.asked * 100) : 0;
+    if ($('#atAsked')) $('#atAsked').textContent = a.asked;
+    if ($('#atCorrect')) $('#atCorrect').textContent = a.correct;
+    if ($('#atAcc')) $('#atAcc').textContent = acc + '%';
+    if ($('#atRemain')) $('#atRemain').textContent = atFmtClock(remain);
+    if ($('#atFill')) $('#atFill').style.width = Math.min(100, elapsed / a.total * 100) + '%';
+    if ($('#atCurrent')) $('#atCurrent').innerHTML = a.cur
+      ? ('<span class="at-q">' + escHTML(a.cur) + '</span>' + (a.lastVerdict ? ' <span class="at-v ' + a.lastVerdict + '">' + (a.lastVerdict === 'correct' ? 'correct' : 'learned it') + '</span>' : ''))
+      : 'Warming up...';
+  }
+  function bindAutoTrain() {
+    var dur = $('#atDur'), durVal = $('#atDurVal'), startBtn = $('#atStart'), stopBtn = $('#atStop');
+    if (!dur || dur._bound) { atRenderLive(); return; } dur._bound = true;
+    function paint() { var v = +dur.value; if (durVal) durVal.textContent = atFmtDur(v); var pct = (v - dur.min) / (dur.max - dur.min) * 100; dur.style.setProperty('--fill', pct + '%'); }
+    dur.addEventListener('input', paint); paint();
+    if (startBtn) startBtn.addEventListener('click', function () { if (!_auto) startAuto(+dur.value); });
+    if (stopBtn) stopBtn.addEventListener('click', stopAuto);
+    atRenderLive();
+  }
+
   /*  ONE-TIME LIFECHECK GATE  (human check before connecting an account)  */
   var LC_KEY = 'sn_lifecheck_v1';
   function lifecheckDone() { try { return !!localStorage.getItem(LC_KEY); } catch (e) { return false; } }
