@@ -29,20 +29,33 @@ begin
 end $$;
 grant execute on function pulsar_teach(text, text, text) to anon, authenticated;
 
--- recall: taught answers first, then trusted facts
+-- recall: taught answers first, then trusted facts.
+-- Only CONTENT words count toward a match: common template/question words like
+-- "tell", "about", "what", "explain" are ignored, so "tell me about Everest" can't
+-- match "tell me about Newton" just because they share the template. Requires 2
+-- content-word hits (or a single strong topic word for one-word queries).
 create or replace function pulsar_recall(query text)
 returns text language plpgsql security definer set search_path = public as $$
-declare best text; sc int;
+declare best text; sc int; qwords text[]; nq int;
 begin
-  select answer, (select count(*) from unnest(regexp_split_to_array(lower(query), '\s+')) w
-      where length(w) > 3 and lower(pulsar_qa.question) like '%' || w || '%')
-    into best, sc from pulsar_qa order by 2 desc, created_at desc limit 1;
-  if best is not null and coalesce(sc,0) >= 2 then return best; end if;
+  qwords := array(
+    select w from unnest(regexp_split_to_array(lower(coalesce(query,'')), '\s+')) w
+    where length(w) > 3 and w not in (
+      'tell','about','what','whats','explain','describe','define','definition','give','please','your','this',
+      'that','there','their','them','they','have','does','could','would','should','when','where','which','whom',
+      'whose','from','with','into','over','more','most','than','then','will','you','the','and','for','some'
+    )
+  );
+  nq := coalesce(array_length(qwords,1), 0);
+  if nq = 0 then return null; end if;
 
-  select statement, (select count(*) from unnest(regexp_split_to_array(lower(query), '\s+')) w
-      where length(w) > 3 and lower(pulsar_facts.statement) like '%' || w || '%')
+  select answer, (select count(*) from unnest(qwords) w where lower(pulsar_qa.question) like '%' || w || '%')
+    into best, sc from pulsar_qa order by 2 desc, created_at desc limit 1;
+  if best is not null and (coalesce(sc,0) >= 2 or (nq = 1 and coalesce(sc,0) >= 1)) then return best; end if;
+
+  select statement, (select count(*) from unnest(qwords) w where lower(pulsar_facts.statement) like '%' || w || '%')
     into best, sc from pulsar_facts where trust >= 0.9 and source_type <> 'model' order by 2 desc, created_at desc limit 1;
-  if best is not null and coalesce(sc,0) >= 2 then return best; end if;
+  if best is not null and (coalesce(sc,0) >= 2 or (nq = 1 and coalesce(sc,0) >= 1)) then return best; end if;
   return null;
 end $$;
 grant execute on function pulsar_recall(text) to anon, authenticated;

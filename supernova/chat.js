@@ -793,10 +793,26 @@
     };
   }
 
-  // 1) recall a fact Swiftaw confirmed as true
+  // Drop short + common template/question words so "tell me about X" doesn't look
+  // the same as "tell me about Y" (that made recall return the wrong fact).
+  var STOPWORDS = { tell: 1, about: 1, what: 1, whats: 1, explain: 1, describe: 1, define: 1, definition: 1,
+    give: 1, please: 1, your: 1, this: 1, that: 1, there: 1, their: 1, them: 1, they: 1, have: 1, does: 1,
+    could: 1, would: 1, should: 1, when: 1, where: 1, which: 1, whom: 1, whose: 1, from: 1, with: 1, into: 1,
+    over: 1, more: 1, most: 1, than: 1, then: 1, will: 1, you: 1, the: 1, and: 1, for: 1, some: 1, tell1: 1 };
+  function contentWords(s) { return wordset(s).filter(function (w) { return !STOPWORDS[w]; }); }
+  // 1) recall a fact we've been taught / that's trusted
   function recall(prompt) {
     return rpc('pulsar_recall', { query: prompt })
-      .then(function (t) { return (typeof t === 'string' && t.trim().length > 3) ? t.trim() : null; })
+      .then(function (t) {
+        if (!(typeof t === 'string' && t.trim().length > 3)) return null;
+        // Sanity check: a recalled fact must actually relate to the question. A loose
+        // server match can hand back a confidently-wrong fact (e.g. an Everest question
+        // returning a Newton fact). Require the answer to share a real content word.
+        var q = contentWords(prompt); if (!q.length) return null;
+        var aset = {}; contentWords(t).forEach(function (w) { aset[w] = 1; });
+        var hit = 0; q.forEach(function (w) { if (aset[w]) hit++; });
+        return hit >= 1 ? t.trim() : null;
+      })
       .catch(function () { return null; });
   }
 
@@ -908,7 +924,7 @@
     var m = mathReply(prompt);
     if (m) return Promise.resolve(m);
     return recall(prompt).then(function (fact) {
-      if (fact) return { reasoning: 'I recalled this from what Swiftaw confirmed as true.', answer: cap(fact), sources: [], followups: ['Tell me more', 'How do you know?', 'Ask something else'] };
+      if (fact) return { reasoning: 'I recalled this from what I\'ve learned.', answer: cap(fact), sources: [], followups: ['Tell me more', 'How do you know?', 'Ask something else'] };
       if (state.trainMode) return trainingReply(prompt);
       var webFirst = snSettings.webSearch && looksInformational(prompt)
         ? webAnswer(prompt) : Promise.resolve(null);
@@ -1233,6 +1249,7 @@
     $('#topToggle').addEventListener('click', toggleSidebar);
     $('#trainerBtn').addEventListener('click', openTrainer);
     $('#trainerClose').addEventListener('click', closeTrainer);
+    var atInd = $('#atIndicator'); if (atInd) atInd.addEventListener('click', openTrainer);
     $('#trainStop').addEventListener('click', stopTraining);
     $('#trainer').addEventListener('click', function (e) { if (e.target === $('#trainer')) closeTrainer(); });
     $('#sideBackdrop').addEventListener('click', function () { document.body.classList.remove('side-open'); });
@@ -1665,7 +1682,9 @@
         _auto.log.unshift({ q: item.q, ans: (ans && ans.trim()) || '', truth: gt.one || gt.two, correct: correct });
         if (_auto.log.length > 12) _auto.log.pop();
         _auto.corpusBuf.push(gt.two);
-        _auto.teachBuf.push({ q: item.q, a: gt.one || gt.two });
+        // teach keyed on the TOPIC (not the "Tell me about X" template) so recall
+        // keys on the subject and can't confuse one topic's answer for another's
+        _auto.teachBuf.push({ q: item.topic, a: gt.one || gt.two });
         atRenderLive();
         if (_auto.asked % 20 === 0) atFlush(_auto, _auto.round % 5 === 0);
         scheduleNext();
@@ -1686,7 +1705,15 @@
     return p.then(function () { return trainPulsar(!!rebuild); }).then(function () { return refreshStats(); })
       .then(function () { if ($('#trStats')) renderTrainStats(); }).catch(function () {});
   }
+  function atUpdateIndicator() {
+    var ind = $('#atIndicator'); if (!ind) return;
+    if (!_auto) { ind.hidden = true; return; }
+    ind.hidden = false;
+    var lbl = ind.querySelector('.ati-label');
+    if (lbl) lbl.textContent = atFmtClock(Math.max(0, _auto.until - Date.now())) + ' left';
+  }
   function atRenderLive() {
+    atUpdateIndicator(); // sidebar pill, always (visible even when the Trainer is closed)
     var live = $('#atLive'), start = $('#atStart'); if (!live) return;
     if (!_auto) { live.hidden = true; if (start) start.hidden = false; return; }
     live.hidden = false; if (start) start.hidden = true;

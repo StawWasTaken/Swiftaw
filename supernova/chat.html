@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <link rel="stylesheet" href="/supernova/sn.css">
-<link rel="stylesheet" href="/supernova/chat.css?v=sn12">
+<link rel="stylesheet" href="/supernova/chat.css?v=sn13">
 </head>
 <body class="sn-chat-body">
 
@@ -95,6 +95,11 @@
       <input id="searchInput" type="text" placeholder="Search chats" autocomplete="off">
     </div>
     <div class="side-scroll" id="sideScroll"></div>
+    <button class="at-indicator" id="atIndicator" hidden title="Auto-training in progress">
+      <span class="ati-dot"></span>
+      <span class="ati-body"><span class="ati-title">Auto-training</span><span class="ati-label">running</span></span>
+      <svg class="ic-sm ati-flask"><use href="#i-flask"/></svg>
+    </button>
     <div class="side-foot" id="foot"></div>
   </aside>
 
@@ -257,7 +262,7 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <script src="/css/swiftaw-account.js"></script>
-<script src="/supernova/neural.js?v=sn12"></script>
-<script src="/supernova/chat.js?v=sn12"></script>
+<script src="/supernova/neural.js?v=sn13"></script>
+<script src="/supernova/chat.js?v=sn13"></script>
 </body>
 </html>
