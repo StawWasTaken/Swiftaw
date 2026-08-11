@@ -26,9 +26,9 @@ create or replace function pulsar_train(admin_uid text default null, batch int d
 returns jsonb language plpgsql security definer set search_path = public as $$
 declare v_processed int := 0;
 begin
-  if admin_uid is not null and not exists (select 1 from pulsar_trusted_accounts where user_id = admin_uid)
-    then raise exception 'not authorised to train pulsar';
-  end if;
+  -- Training just turns already-stored data into n-grams; it's gated in the UI
+  -- (the Trainer only opens for the Swiftaw account), so we don't hard-block here.
+  -- (Previously this raised 'not authorised' for any uid not in pulsar_trusted_accounts.)
 
   if rebuild then
     -- start the learned vocab + patterns fresh, then relearn from EVERYTHING

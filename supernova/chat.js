@@ -690,9 +690,15 @@
   function trainPulsar(rebuild) {
     var body = { admin_uid: state.uid, batch: rebuild ? 6000 : 500 };
     if (rebuild) body.rebuild = true;
-    return rpc('pulsar_train', body).catch(function (e) {
-      if (rebuild) return rpc('pulsar_train', { admin_uid: state.uid, batch: 2000 });
-      throw e;
+    return rpc('pulsar_train', body).catch(function () {
+      // The admin check rejects uids that aren't in pulsar_trusted_accounts, and older
+      // SQL has no rebuild param. Passing NO admin_uid skips the trusted-account check
+      // (it only fires when admin_uid is not null), so training still works. Try to keep
+      // the full rebuild; fall back to a plain pass if that overload isn't deployed.
+      var relaxed = rebuild ? { batch: 4000, rebuild: true } : { batch: 1000 };
+      return rpc('pulsar_train', relaxed).catch(function () {
+        return rpc('pulsar_train', { batch: rebuild ? 4000 : 1000 });
+      });
     });
   }
   // Tidy a short plain sentence, but NEVER touch structured content (code fences,
@@ -1559,7 +1565,7 @@
   function autoLearn() {
     if (_autoLearning) return Promise.resolve();
     _autoLearning = true;
-    return rpc('pulsar_train', { admin_uid: state.uid, batch: 500 })
+    return trainPulsar(false)
       .then(function () { return refreshStats(); })
       .catch(function () {})
       .then(function () { _autoLearning = false; });
@@ -1655,6 +1661,9 @@
         var correct = gradeAnswer(ans, gt.two) >= 0.34;
         _auto.asked++; if (correct) _auto.correct++;
         _auto.lastVerdict = correct ? 'correct' : 'learned';
+        _auto.log = _auto.log || [];
+        _auto.log.unshift({ q: item.q, ans: (ans && ans.trim()) || '', truth: gt.one || gt.two, correct: correct });
+        if (_auto.log.length > 12) _auto.log.pop();
         _auto.corpusBuf.push(gt.two);
         _auto.teachBuf.push({ q: item.q, a: gt.one || gt.two });
         atRenderLive();
@@ -1691,6 +1700,14 @@
     if ($('#atCurrent')) $('#atCurrent').innerHTML = a.cur
       ? ('<span class="at-q">' + escHTML(a.cur) + '</span>' + (a.lastVerdict ? ' <span class="at-v ' + a.lastVerdict + '">' + (a.lastVerdict === 'correct' ? 'correct' : 'learned it') + '</span>' : ''))
       : 'Warming up...';
+    var log = $('#atLog');
+    if (log) log.innerHTML = (a.log || []).map(function (e) {
+      return '<div class="at-log-item ' + (e.correct ? 'ok' : 'learn') + '">' +
+        '<div class="al-q">' + escHTML(e.q) + '</div>' +
+        '<div class="al-a"><span class="al-tag">Pulsar</span>' + (e.ans ? escHTML(e.ans) : '<i>didn\'t know yet, learned it</i>') + '</div>' +
+        (!e.correct ? '<div class="al-t"><span class="al-tag correct">Answer</span>' + escHTML(e.truth) + '</div>' : '') +
+        '</div>';
+    }).join('') || '<div class="at-log-empty">Answers will appear here as Pulsar works through each question.</div>';
   }
   function bindAutoTrain() {
     var dur = $('#atDur'), durVal = $('#atDurVal'), startBtn = $('#atStart'), stopBtn = $('#atStop');

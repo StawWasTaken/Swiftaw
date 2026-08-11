@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
 <link rel="stylesheet" href="/css/swiftaw.css">
 <link rel="stylesheet" href="/supernova/sn.css">
-<link rel="stylesheet" href="/supernova/chat.css?v=sn11">
+<link rel="stylesheet" href="/supernova/chat.css?v=sn12">
 </head>
 <body class="sn-chat-body">
 
@@ -205,7 +205,7 @@
       <div class="tr-sec-h">Feed data</div>
       <p class="tr-note">Paste any text, articles, docs, transcripts, notes. Pulsar learns vocabulary and sentence patterns from it, then re-trains on everything it already knows so it keeps sharpening.</p>
       <div class="tr-feed-card">
-        <textarea id="trFeed" class="tr-feed" placeholder="Paste text here to teach Pulsar. The more you feed it, the smarter it gets."></textarea>
+        <textarea id="trFeed" class="tr-feed" spellcheck="false" autocomplete="off" placeholder="Paste text here to teach Pulsar. The more you feed it, the smarter it gets."></textarea>
         <div class="tr-feed-foot">
           <span class="tr-feed-count" id="trFeedCount"><svg class="ic-sm"><use href="#i-file"/></svg> 0 characters</span>
           <button class="tr-feed-btn" id="trFeedBtn"><svg class="ic-sm"><use href="#i-spark"/></svg> Feed &amp; train</button>
@@ -230,6 +230,8 @@
           </div>
           <div class="at-progress-track"><span class="at-progress-fill" id="atFill"></span></div>
           <div class="at-current" id="atCurrent">Warming up...</div>
+          <div class="at-log-h">Answers</div>
+          <div class="at-log" id="atLog"></div>
           <button class="tr-train ghost" id="atStop"><svg class="ic"><use href="#i-stop"/></svg> Stop auto-training</button>
         </div>
       </div>
@@ -255,7 +257,7 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <script src="/css/swiftaw-account.js"></script>
-<script src="/supernova/neural.js?v=sn11"></script>
-<script src="/supernova/chat.js?v=sn11"></script>
+<script src="/supernova/neural.js?v=sn12"></script>
+<script src="/supernova/chat.js?v=sn12"></script>
 </body>
 </html>

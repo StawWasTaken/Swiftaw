@@ -53,7 +53,7 @@
     var onProgress = opts.onProgress || function () {};
     return new Promise(function (resolve, reject) {
       var w;
-      try { w = new Worker('/supernova/neural-worker.js?v=sn11'); }
+      try { w = new Worker('/supernova/neural-worker.js?v=sn12'); }
       catch (e) { return reject(new Error('Background training not available in this browser')); }
       w.onmessage = function (e) {
         var m = e.data || {};
