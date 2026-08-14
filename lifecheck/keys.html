@@ -178,6 +178,7 @@
         <div class="field">
           <label for="keyDomains">Allowed domains <span style="color:var(--muted);font-weight:400;">(optional)</span></label>
           <input type="text" id="keyDomains" placeholder="example.com, app.example.com">
+          <div class="hint" style="font-size:12px;color:var(--muted);margin-top:6px;">Hostnames only — subdomains are included automatically, so <code>example.com</code> also covers <code>www.example.com</code>. Leave empty to allow any domain.</div>
         </div>
         <button type="submit" class="btn-3d" id="createKeyBtn"><svg class="i" style="width:13px;height:13px;"><use href="#i-plus"/></svg> Create</button>
       </form>
@@ -320,11 +321,26 @@
     }
   });
 
+  // The allow-list is matched against the embedding page's location.hostname,
+  // so entries have to be bare hostnames. Pasting a full URL ("https://
+  // example.com/") stored it verbatim and silently rejected every request —
+  // normalise instead of trusting what was typed.
+  function normDomain(d){
+    return String(d || '')
+      .trim().toLowerCase()
+      .replace(/^[a-z][a-z0-9+.-]*:\/\//, '')   // scheme
+      .replace(/^[^@/]*@/, '')                  // userinfo
+      .split('/')[0]                            // path
+      .split('?')[0].split('#')[0]
+      .split(':')[0]                            // port
+      .replace(/\.$/, '');                      // trailing dot
+  }
+
   document.getElementById('newKeyForm').addEventListener('submit', async function(e){
     e.preventDefault();
     var name = document.getElementById('keyName').value.trim() || 'My site';
     var raw = document.getElementById('keyDomains').value.trim();
-    var domains = raw ? raw.split(',').map(function(d){ return d.trim(); }).filter(Boolean) : [];
+    var domains = raw ? raw.split(',').map(normDomain).filter(Boolean) : [];
     var btn = document.getElementById('createKeyBtn');
     btn.disabled = true; hide(keyMsg);
     try {

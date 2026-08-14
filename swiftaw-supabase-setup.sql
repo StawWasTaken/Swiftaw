@@ -220,13 +220,25 @@ begin
     return null;                    -- key does not exist / was deleted
   end if;
 
-  -- domain allow-list (empty = any domain). Matches exact host or subdomains.
+  -- Domain allow-list (empty = any domain). Matches exact host or subdomains.
+  -- p_host is the embedding page's location.hostname, so allow-list entries
+  -- are normalised to bare hostnames before comparing: entries pasted as full
+  -- URLs ("https://example.com/") used to match nothing and silently reject
+  -- every request, with no way to tell that from a wrong key.
   if array_length(k.domains, 1) is null then
     host_ok := true;
   else
     host_ok := exists (
       select 1 from unnest(k.domains) d
-      where p_host = d or p_host like '%.' || d
+      cross join lateral (
+        select split_part(
+                 split_part(
+                   regexp_replace(lower(trim(d)), '^[a-z][a-z0-9+.-]*://', ''),
+                 '/', 1),
+               ':', 1) as nd
+      ) n
+      where n.nd <> ''
+        and (lower(p_host) = n.nd or lower(p_host) like '%.' || n.nd)
     );
   end if;
   if not host_ok then
