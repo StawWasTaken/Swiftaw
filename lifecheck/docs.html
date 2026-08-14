@@ -240,7 +240,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
       <div class="tab-panel on" data-tab="curl">
         <pre class="code"><code>curl -X POST \
   <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/rest/v1/rpc/lifecheck_verify_token"</span> \
-  -H <span class="st">"apikey: LIFECHECK_PUBLIC_KEY"</span> \
+  -H <span class="st">"apikey: sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf"</span> \
   -H <span class="st">"Content-Type: application/json"</span> \
   -d <span class="st">'{ "p_secret": "YOUR_SECRET_KEY", "p_token": "THE_TOKEN_FROM_THE_BROWSER" }'</span></code></pre>
       </div>
@@ -250,7 +250,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
   <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/rest/v1/rpc/lifecheck_verify_token"</span>, {
   <span class="at">method</span>: <span class="st">"POST"</span>,
   <span class="at">headers</span>: {
-    <span class="st">"apikey"</span>: <span class="st">"LIFECHECK_PUBLIC_KEY"</span>,
+    <span class="st">"apikey"</span>: <span class="st">"sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf"</span>,
     <span class="st">"Content-Type"</span>: <span class="st">"application/json"</span>
   },
   <span class="at">body</span>: <span class="nm">JSON</span>.<span class="fn">stringify</span>({
@@ -266,7 +266,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
   <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/rest/v1/rpc/lifecheck_verify_token"</span>, <span class="kw">false</span>,
   <span class="fn">stream_context_create</span>([<span class="st">"http"</span> =&gt; [
     <span class="st">"method"</span>  =&gt; <span class="st">"POST"</span>,
-    <span class="st">"header"</span>  =&gt; <span class="st">"apikey: LIFECHECK_PUBLIC_KEY\r\nContent-Type: application/json"</span>,
+    <span class="st">"header"</span>  =&gt; <span class="st">"apikey: sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf\r\nContent-Type: application/json"</span>,
     <span class="st">"content"</span> =&gt; <span class="fn">json_encode</span>([
       <span class="st">"p_secret"</span> =&gt; <span class="nm">$SECRET</span>,
       <span class="st">"p_token"</span>  =&gt; <span class="nm">$_POST</span>[<span class="st">"lifecheck-token"</span>]
@@ -285,7 +285,8 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
   <span class="at">"v"</span>:            <span class="st">"1.2"</span>,
   <span class="at">"error-codes"</span>:  []
 }</code></pre>
-      <div class="callout tip"><svg><use href="#i-bulb"/></svg><div>Gate your action on <code>success === true</code>. <code>apikey</code> is the public Lifecheck key (safe to ship); <code>p_secret</code> is your private secret and must stay server-side. Tokens are single-use and expire ~2 minutes after issue.</div></div>
+      <div class="callout tip"><svg><use href="#i-bulb"/></svg><div>Gate your action on <code>success === true</code>. <code>p_secret</code> is your private secret and must stay server-side. Tokens are single-use and expire ~2 minutes after issue.</div></div>
+      <div class="callout warn"><svg><use href="#i-note"/></svg><div><b>The <code>apikey</code> header is not your Lifecheck key.</b> It is Lifecheck's public API key — the fixed value shown above, identical for every customer, and safe to ship. Sending your own <code>lc_site_…</code> or <code>lc_secret_…</code> key there gets you <code>401 Invalid API key</code> before the token is ever read. Your keys go in the JSON body: <code>p_secret</code> only.</div></div>
       <div class="callout note"><svg><use href="#i-note"/></svg><div>Keys are checked live, so managing them takes effect right away — <b>remove a key and it stops working immediately</b>, no redeploy needed.</div></div>
 
       <h3>No backend? Verify in the browser safely</h3>
@@ -310,6 +311,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
         <tr><td><code>data-sitekey</code></td><td><span class="req">required</span></td><td>Your public site key.</td></tr>
         <tr><td><code>data-callback</code></td><td><span class="opt">optional</span></td><td>Name of a global function called as <code>fn(token, widget)</code> on pass. Dotted paths like <code>app.onPass</code> work.</td></tr>
         <tr><td><code>data-expired-callback</code></td><td><span class="opt">optional</span></td><td>Global function called when a token expires.</td></tr>
+        <tr><td><code>data-error-callback</code></td><td><span class="opt">optional</span></td><td>Global function called as <code>fn({code, message}, widget)</code> when the widget can't verify at all — <code>sitekey-rejected</code> (unknown key, or this domain isn't allow-listed), <code>issue-request-failed</code> (Lifecheck unreachable) or <code>no-sitekey</code>. Use it to fall back; the pass callback will never fire.</td></tr>
         <tr><td><code>data-response-field</code></td><td><span class="opt">optional</span></td><td>Renames the hidden input (default <code>lifecheck-token</code>).</td></tr>
       </table></div>
     </section>
@@ -320,7 +322,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
       <p>Everything hangs off the global <code>Lifecheck</code> object.</p>
       <div class="tbl-wrap"><table>
         <tr><th>Method</th><th>Returns</th><th>Description</th></tr>
-        <tr><td><code>Lifecheck.render(el, opts?)</code></td><td><code>id</code></td><td>Renders a widget into <code>el</code> (element or id). <code>opts</code>: <code>sitekey</code>, <code>callback</code>, <code>expired-callback</code>. Returns a numeric widget id.</td></tr>
+        <tr><td><code>Lifecheck.render(el, opts?)</code></td><td><code>id</code></td><td>Renders a widget into <code>el</code> (element or id). <code>opts</code>: <code>sitekey</code>, <code>callback</code>, <code>expired-callback</code>, <code>error-callback</code>. Returns a numeric widget id.</td></tr>
         <tr><td><code>Lifecheck.getResponse(ref?)</code></td><td><code>string</code></td><td>Current token, or <code>""</code> if not yet verified. <code>ref</code> = id, element, or container id; defaults to the first widget.</td></tr>
         <tr><td><code>Lifecheck.reset(ref?)</code></td><td><code>void</code></td><td>Clears the token and loads a fresh challenge.</td></tr>
         <tr><td><code>Lifecheck.version</code></td><td><code>string</code></td><td>Loader version, e.g. <code>"1.2"</code>.</td></tr>
@@ -336,7 +338,7 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
         <tr><td><code>p_secret</code></td><td><span class="req">required</span></td><td>Your secret key (server-side only).</td></tr>
         <tr><td><code>p_token</code></td><td><span class="req">required</span></td><td>The token returned by the widget in the browser.</td></tr>
       </table></div>
-      <p>Send the public Lifecheck key in the <code>apikey</code> header. The endpoint accepts cross-origin requests, but call it from your backend so <code>p_secret</code> never reaches a browser.</p>
+      <p>Send Lifecheck's public API key (<code>sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf</code> — the same for everyone, not one of your own keys) in the <code>apikey</code> header. The endpoint accepts cross-origin requests, but call it from your backend so <code>p_secret</code> never reaches a browser.</p>
       <p>Response fields:</p>
       <div class="tbl-wrap"><table>
         <tr><th>Field</th><th>Type</th><th>Meaning</th></tr>

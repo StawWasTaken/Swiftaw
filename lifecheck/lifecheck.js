@@ -23,7 +23,7 @@
   // refresh; the hourly bucket below is a safety net so a forgotten bump still
   // self-heals within ~1h. (Loading a NEW page renders a fresh iframe URL; an
   // already-open verification is never disrupted mid-session.)
-  var BUILD = '2026.08.02.1';
+  var BUILD = '2026.08.14.1';
   var CACHE_BUST = BUILD + '.' + Math.floor(Date.now() / 3600000);
 
   // Resolve where THIS script is served from, so the widget iframe and the
@@ -65,7 +65,12 @@
       token: null,
       sitekey: opts.sitekey || el.getAttribute('data-sitekey') || '',
       callback: opts.callback || el.getAttribute('data-callback') || null,
-      expiredCallback: opts['expired-callback'] || el.getAttribute('data-expired-callback') || null
+      expiredCallback: opts['expired-callback'] || el.getAttribute('data-expired-callback') || null,
+      // Fires when the widget can't verify at all (unknown site key, domain not
+      // allow-listed, Lifecheck unreachable). Without it an embedding page has
+      // no way to tell "the user hasn't finished yet" from "this can never
+      // succeed", and just waits on a callback that will never come.
+      errorCallback: opts['error-callback'] || el.getAttribute('data-error-callback') || null
     };
 
     // frame that hosts the sandboxed challenge
@@ -127,6 +132,16 @@
       w.el.removeAttribute('data-lifecheck-verified');
       var ecb = resolveFn(w.expiredCallback);
       if (ecb) { try { ecb(w); } catch (err) {} }
+    } else if (msg.event === 'error') {
+      w.token = null;
+      if (w.input) w.input.value = '';
+      w.el.removeAttribute('data-lifecheck-verified');
+      w.el.setAttribute('data-lifecheck-error', msg.code || 'error');
+      var errCb = resolveFn(w.errorCallback);
+      if (errCb) { try { errCb({ code: msg.code || 'error', message: msg.message || '' }, w); } catch (err) {} }
+      w.el.dispatchEvent(new CustomEvent('lifecheck:error', {
+        bubbles: true, detail: { code: msg.code || 'error', message: msg.message || '' }
+      }));
     }
   });
 
@@ -141,6 +156,7 @@
     w.token = null;
     if (w.input) w.input.value = '';
     w.el.removeAttribute('data-lifecheck-verified');
+    w.el.removeAttribute('data-lifecheck-error');
     // reload the frame to get a fresh challenge
     w.iframe.src = w.iframe.src;
   }

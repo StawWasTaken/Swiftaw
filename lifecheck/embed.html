@@ -361,7 +361,14 @@
   const P = new URLSearchParams(location.search);
   const SITE_KEY = P.get('k') || '';
   const HOST = P.get('host') || '';
-  const SERVER_MODE = /^lc_site_/.test(SITE_KEY);
+  // ANY site key means "server mode" — ask Supabase to mint a real, verifiable
+  // token. The previous build only did this for keys literally prefixed
+  // `lc_site_`; a key named anything else silently fell through to the
+  // local-preview token below, which is unverifiable off swiftaw.com. That
+  // mismatch is invisible from the embedding page (the widget just says it
+  // isn't set up), so treat a supplied key as intent to verify and let the
+  // server be the one that accepts or rejects it.
+  const SERVER_MODE = !!SITE_KEY;
   const DEBUG = P.has('lcdebug');   // ?lcdebug=1 → log telemetry successes too
   let sbClient = null;
 
@@ -395,16 +402,24 @@
     const rnd = () => Math.random().toString(36).slice(2, 12);
     return 'LC1.2_' + rnd() + rnd() + '.' + Date.now().toString(36);
   }
+  // Why a token issue failed, for the host page + our own telemetry. The RPC
+  // returns NULL for both "no such key" and "host not allowed", so we can only
+  // name the class of failure, not which one — but "rejected" vs "the network
+  // died" is the distinction an integrator actually needs.
+  let LAST_TOKEN_ERR = '';
   async function issueToken(passed){
+    LAST_TOKEN_ERR = '';
     if(SERVER_MODE){
       try {
         const sb = await getSb();
         const { data, error } = await sb.rpc('lifecheck_issue_token', { p_site_key: SITE_KEY, p_host: HOST, p_passed: passed || 'challenge' });
-        if(error || !data) return null;
+        if(error){ LAST_TOKEN_ERR = 'issue-request-failed'; return null; }
+        if(!data){ LAST_TOKEN_ERR = 'sitekey-rejected'; return null; }
         return data;
-      } catch(e){ return null; }
+      } catch(e){ LAST_TOKEN_ERR = 'issue-request-failed'; return null; }
     }
     if(FIRST_PARTY) return localToken();
+    LAST_TOKEN_ERR = 'no-sitekey';
     return null;
   }
 
@@ -694,11 +709,24 @@
     });
   }
 
+  // Short label for the collapsed card + the long-form status text, per cause.
+  function tokenFailText(){
+    if(LAST_TOKEN_ERR === 'issue-request-failed')
+      return { short: "Can't reach Lifecheck", title: "Can't verify right now.", detail: "Lifecheck couldn't be reached. Check your connection and try again." };
+    if(LAST_TOKEN_ERR === 'sitekey-rejected')
+      return { short: "Can't verify — site key rejected", title: "Can't verify.", detail: "This site key doesn't exist, or " + (HOST || 'this domain') + " isn't on its allowed-domains list." };
+    return { short: "Can't verify here", title: "Can't verify here.", detail: "Lifecheck isn't set up for this site." };
+  }
+
   function keyFail(){
+    const t = tokenFailText();
     chkBox.classList.remove('spin');
     chkBox.querySelector('i').className = 'fa-solid fa-triangle-exclamation';
-    chkLabel.textContent = SERVER_MODE ? "Can't verify — check the site key" : "Can't verify here";
-    logEvent('key_fail', { outcome:'suspicious', suspicious:!FIRST_PARTY, detail:{ serverMode:SERVER_MODE, firstParty:FIRST_PARTY } });
+    chkLabel.textContent = t.short;
+    logEvent('key_fail', { outcome:'suspicious', suspicious:!FIRST_PARTY, detail:{ serverMode:SERVER_MODE, firstParty:FIRST_PARTY, reason:LAST_TOKEN_ERR } });
+    // Tell the host page, so it can fall back instead of waiting forever on a
+    // callback that is never going to fire.
+    post('error', { code: LAST_TOKEN_ERR || 'no-sitekey', message: t.detail });
     locked = false;
   }
 
@@ -1087,10 +1115,11 @@
     if(pass){
       issueToken('challenge').then(function(token){
         if(!token){
+          const t = tokenFailText();
           statusBox.className = 'status fail';
-          statusBox.innerHTML = SERVER_MODE
-            ? `<i class="fa-solid fa-triangle-exclamation"></i><div>Can't verify.<span class="d">This site's Lifecheck key is invalid or was removed.</span></div>`
-            : `<i class="fa-solid fa-triangle-exclamation"></i><div>Can't verify here.<span class="d">Lifecheck isn't set up for this site.</span></div>`;
+          statusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i><div>${t.title}<span class="d">${t.detail}</span></div>`;
+          logEvent('key_fail', { outcome:'suspicious', suspicious:!FIRST_PARTY, detail:{ serverMode:SERVER_MODE, firstParty:FIRST_PARTY, reason:LAST_TOKEN_ERR, at:'challenge' } });
+          post('error', { code: LAST_TOKEN_ERR || 'no-sitekey', message: t.detail });
           reportSize();
           return;
         }
