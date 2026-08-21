@@ -1,5 +1,5 @@
 /* ════════════════════════════════════════════════════════════
-   Lifecheck v1.2 — client loader / integration API
+   Lifecheck v1.3 — client loader / integration API
    by Swiftaw · https://swiftaw.com/lifecheck/
 
    Drop-in usage
@@ -9,21 +9,32 @@
           data-sitekey="YOUR_SITE_KEY"
           data-callback="onLifecheckPass"></div>
 
+   Invisible mode (v1.3)
+   ─────────────────────
+     <div class="lifecheck"
+          data-sitekey="YOUR_SITE_KEY"
+          data-size="invisible"
+          data-callback="onLifecheckPass"></div>
+
+     …then call Lifecheck.execute() when you actually need a human — on
+     submit, usually. Nothing is drawn unless the check wants a challenge,
+     at which point the widget unfolds in place.
+
    The challenge runs inside an <iframe> served from swiftaw.com. The host
    page receives a one-time token to verify server-side.
    ════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
-  var VERSION = '1.2';
+  var VERSION = '1.3';
 
   // Per-deploy cache-buster for the widget iframe. Without this the frame loads
-  // a constant "embed.html?v=1.2" URL, so a redeployed widget keeps serving the
+  // a constant "embed.html?v=1.3" URL, so a redeployed widget keeps serving the
   // stale cached copy. BUMP `BUILD` on every widget deploy for an instant
   // refresh; the hourly bucket below is a safety net so a forgotten bump still
   // self-heals within ~1h. (Loading a NEW page renders a fresh iframe URL; an
   // already-open verification is never disrupted mid-session.)
-  var BUILD = '2026.08.14.1';
+  var BUILD = '2026.08.21.1';
   var CACHE_BUST = BUILD + '.' + Math.floor(Date.now() / 3600000);
 
   // Resolve where THIS script is served from, so the widget iframe and the
@@ -70,13 +81,17 @@
       // allow-listed, Lifecheck unreachable). Without it an embedding page has
       // no way to tell "the user hasn't finished yet" from "this can never
       // succeed", and just waits on a callback that will never come.
-      errorCallback: opts['error-callback'] || el.getAttribute('data-error-callback') || null
+      errorCallback: opts['error-callback'] || el.getAttribute('data-error-callback') || null,
+      // v1.3 — invisible mode draws nothing until the check wants a challenge.
+      invisible: (opts.size || el.getAttribute('data-size') || '') === 'invisible',
+      expanded: false
     };
 
     // frame that hosts the sandboxed challenge
     var iframe = document.createElement('iframe');
     var src = EMBED_URL + '?v=' + VERSION + '&b=' + encodeURIComponent(CACHE_BUST) +
       (w.sitekey ? '&k=' + encodeURIComponent(w.sitekey) : '') +
+      (w.invisible ? '&mode=invisible' : '') +
       '&host=' + encodeURIComponent(location.hostname);
     iframe.src = src;
     iframe.title = 'Lifecheck verification';
@@ -86,6 +101,11 @@
     iframe.style.cssText =
       'width:100%;max-width:402px;height:74px;border:0;overflow:hidden;' +
       'color-scheme:normal;display:block;';
+    if (w.invisible) {
+      iframe.style.height = '0px';
+      iframe.style.display = 'none';
+      startHostSampling();
+    }
 
     // hidden field so a plain <form> POST carries the token automatically
     var input = document.createElement('input');
@@ -118,7 +138,20 @@
     if (!w) return;
 
     if (msg.event === 'resize' && msg.height) {
-      w.iframe.style.height = Math.max(60, msg.height) + 'px';
+      // An invisible widget stays at zero until it asks to unfold.
+      if (!w.invisible || w.expanded) w.iframe.style.height = Math.max(60, msg.height) + 'px';
+    } else if (msg.event === 'expand') {
+      // The check wasn't convinced and wants to show a challenge.
+      w.expanded = true;
+      w.iframe.style.display = 'block';
+      w.iframe.style.height = '260px';
+      w.el.setAttribute('data-lifecheck-expanded', 'true');
+      w.el.dispatchEvent(new CustomEvent('lifecheck:expand', { bubbles: true }));
+    } else if (msg.event === 'collapse') {
+      w.expanded = false;
+      w.iframe.style.display = 'none';
+      w.iframe.style.height = '0px';
+      w.el.removeAttribute('data-lifecheck-expanded');
     } else if (msg.event === 'verified') {
       w.token = msg.token || '';
       if (w.input) w.input.value = w.token;
@@ -157,8 +190,54 @@
     if (w.input) w.input.value = '';
     w.el.removeAttribute('data-lifecheck-verified');
     w.el.removeAttribute('data-lifecheck-error');
+    w.el.removeAttribute('data-lifecheck-expanded');
+    if (w.invisible) {
+      w.expanded = false;
+      w.iframe.style.display = 'none';
+      w.iframe.style.height = '0px';
+    }
     // reload the frame to get a fresh challenge
     w.iframe.src = w.iframe.src;
+  }
+
+  /* ---------------- v1.3 · invisible-mode host signals ----------------
+     A zero-size frame never sees the pointer, so there is nothing for the
+     challenge to read. The loader keeps a short, throttled trail of the
+     host page's own cursor and hands it over when execute() is called.
+
+     Worth being clear about what this is: signals collected out here are
+     forgeable by any script on the page, unlike the ones the frame gathers
+     for itself. The frame knows they came from the host and holds them to a
+     much higher bar before it will pass anyone on them alone. Nothing is
+     sent anywhere until execute() runs, and it is coordinates and timings
+     only — never keystrokes, never form values. */
+  var hostSamples = [];
+  var hostStart = Date.now();
+  var sampling = false;
+  function startHostSampling() {
+    if (sampling) return;
+    sampling = true;
+    var last = 0;
+    document.addEventListener('pointermove', function (e) {
+      var t = Date.now() - hostStart;
+      if (t - last < 30) return;
+      last = t;
+      hostSamples.push([e.clientX, e.clientY, t]);
+      if (hostSamples.length > 400) hostSamples.shift();
+    }, { passive: true });
+  }
+
+  function execute(ref) {
+    var w = pickWidget(ref);
+    if (!w || !w.iframe || !w.iframe.contentWindow) return null;
+    var target = EMBED_ORIGIN === '*' ? '*' : EMBED_ORIGIN;
+    try {
+      w.iframe.contentWindow.postMessage(
+        { source: 'swiftaw-lifecheck-host', event: 'signals', samples: hostSamples.slice(-400) }, target);
+      w.iframe.contentWindow.postMessage(
+        { source: 'swiftaw-lifecheck-host', event: 'execute' }, target);
+    } catch (e) {}
+    return w;
   }
 
   function pickWidget(ref) {
@@ -182,7 +261,7 @@
     render: function (el, opts) { var w = render(el, opts); return w ? w.id : -1; },
     reset: reset,
     getResponse: getResponse,
-    execute: function (ref) { /* reserved for invisible mode */ return pickWidget(ref); }
+    execute: execute
   };
 
   if (document.readyState === 'loading') {

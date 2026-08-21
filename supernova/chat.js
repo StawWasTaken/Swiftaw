@@ -1758,8 +1758,15 @@
   }
   // Embed the REAL Lifecheck (served at /lifecheck/embed.html on swiftaw.com) and
   // listen for its one-way postMessage bridge: 'resize' sizes the iframe, 'verified'
-  // hands back a token and unlocks the sign-in. Supernova is first-party on
-  // swiftaw.com, so Lifecheck issues a token without needing a site key.
+  // hands back a token and unlocks the sign-in.
+  //
+  // The frame is loaded with the reserved preview key `lc_supernova_public`.
+  // Gating our own sign-in doesn't need a verifiable server token, and asking
+  // for one made the gate depend on Lifecheck recognising the embedding page
+  // as first-party — which is true on swiftaw.com and false on every mirror,
+  // preview deploy and local checkout, where the gate then bricked itself with
+  // no way past it. A `_public` key is honest about being a preview and works
+  // the same everywhere.
   var _lcWired = false;
   function initLifecheck() {
     var frame = $('#lcFrame'); if (!frame || _lcWired) return; _lcWired = true;
@@ -1770,6 +1777,17 @@
       else if (d.event === 'verified') {
         try { localStorage.setItem(LC_KEY, JSON.stringify({ at: Date.now(), token: d.token || null })); } catch (e2) {}
         setTimeout(function () { var v = $('#gateVerify'), s = $('#gateSignin'); if (v) v.hidden = true; if (s) s.hidden = false; }, 900);
+      }
+      else if (d.event === 'error') {
+        // Lifecheck itself can't run. That is our problem, not the visitor's,
+        // so don't strand them in front of a check that will never complete.
+        var note = $('#lcNote');
+        if (note) {
+          note.textContent = "Lifecheck is having a moment — you can carry on without it.";
+          note.hidden = false;
+        }
+        var v2 = $('#gateVerify'), s2 = $('#gateSignin');
+        setTimeout(function () { if (v2) v2.hidden = true; if (s2) s2.hidden = false; }, 2200);
       }
     });
   }
