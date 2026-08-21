@@ -644,6 +644,9 @@ img.sn-emoji { height: 1.2em; width: 1.2em; margin: 0 .05em 0 .1em; vertical-ali
 .lc-brand .lc-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--sn-green); box-shadow: 0 0 0 0 rgba(62,207,110,.6); animation: lcPulse 1.8s infinite; }
 @keyframes lcPulse { 0% { box-shadow: 0 0 0 0 rgba(62,207,110,.5); } 70% { box-shadow: 0 0 0 8px rgba(62,207,110,0); } 100% { box-shadow: 0 0 0 0 rgba(62,207,110,0); } }
 .lc-embed-wrap { margin: 18px auto 14px; width: 100%; display: flex; justify-content: center; }
+/* Shown only when Lifecheck can't run at all — the gate opens anyway rather
+   than trapping someone behind a check that will never finish. */
+.lc-card .lc-note { margin: 0 0 14px; font-size: 13px; line-height: 1.5; color: var(--sn-amber, #ffb020); }
 #lcFrame { width: 100%; max-width: 400px; height: 150px; border: 0; background: transparent; display: block; transition: height .25s ease; color-scheme: light dark; }
 
 /* Feed-data card */

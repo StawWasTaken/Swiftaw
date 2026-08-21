@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Overview - Lifecheck</title>
-<meta name="description" content="Lifecheck is Swiftaw's take on the 'I'm not a robot' box. It watches how your cursor moves, throws a quick challenge if it's unsure, and hands your server a token to verify. On v1.2.">
+<meta name="description" content="Lifecheck is Swiftaw's take on the 'I'm not a robot' box. It watches how your cursor moves, throws a quick challenge if it's unsure, and hands your server a token to verify. On v1.3.">
 <link rel="canonical" href="https://swiftaw.com/lifecheck/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Swiftaw">
 <meta property="og:title" content="Lifecheck by Swiftaw">
-<meta property="og:description" content="The friendlier robot check. Prove you're a life form. On v1.2.">
+<meta property="og:description" content="The friendlier robot check. Prove you're a life form. On v1.3.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/lifecheck/">
 <meta name="twitter:card" content="summary_large_image">
@@ -206,7 +206,7 @@
 <nav class="nav-root">
   <a href="/lifecheck/" class="nav-logo lc-brand" aria-label="Swiftaw Lifecheck">
     <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
-    <span class="lc-vchip">v1.2</span>
+    <span class="lc-vchip">v1.3</span>
   </a>
   <div class="nav-pill-group">
     <a href="/lifecheck/" class="nav-pill active">Overview</a>
@@ -232,7 +232,7 @@
   <div class="deco lc-deco2 float-b"><svg><use href="#i-shield"/></svg></div>
   <div class="lc-hero-grid">
     <div>
-      <div class="lc-eyebrow"><span class="v">v1.2</span> the friendlier robot check</div>
+      <div class="lc-eyebrow"><span class="v">v1.3</span> the friendlier robot check</div>
       <h1>Prove you're a <span class="pop">life form.</span></h1>
       <p class="sub">Lifecheck is Swiftaw's spin on the <b>"I'm not a robot"</b> box. It watches how your cursor moves, throws a quick game if it's unsure, and hands your server a token. That's the whole thing.</p>
       <div class="actions">
@@ -240,8 +240,8 @@
         <a href="#how" class="btn-3d-ghost">How it works</a>
       </div>
       <div class="mini-facts">
-        <div class="lc-mini"><div class="n">5</div><div class="l">quick challenges</div></div>
-        <div class="lc-mini"><div class="n">~300ms</div><div class="l">human reaction floor</div></div>
+        <div class="lc-mini"><div class="n">11</div><div class="l">quick challenges</div></div>
+        <div class="lc-mini"><div class="n">9</div><div class="l">signals scored</div></div>
         <div class="lc-mini"><div class="n">0</div><div class="l">trackers or cookies</div></div>
       </div>
     </div>
@@ -263,8 +263,8 @@
 <!-- HOW IT WORKS -->
 <section class="lc-section" id="how">
   <div class="eye"><svg><use href="#i-cursor"/></svg> how it works</div>
-  <h2>Three checks. No magic.</h2>
-  <p class="lede">The second it loads, Lifecheck records where your cursor goes. When you click, it runs three quick checks on that trail.</p>
+  <h2>Nine signals. One score.</h2>
+  <p class="lede">The second it loads, Lifecheck records where your cursor goes. When you click, it reads nine things off that trail — and adds them up instead of letting any one of them decide.</p>
 
   <div class="signals">
     <div class="signal t1">
@@ -282,22 +282,22 @@
     <div class="signal t3">
       <span class="num">03</span>
       <div class="ic"><svg><use href="#i-clock"/></svg></div>
-      <h3>Too fast?</h3>
-      <p>A click under 300ms after load is quicker than a person can actually react.</p>
+      <h3>Does it hesitate?</h3>
+      <p>People stop to read and aim. A trail that never once paused is doing something else.</p>
     </div>
   </div>
 
   <div class="honest-note">
     <svg><use href="#i-shield"/></svg>
-    <div>Phones skip the first two (no cursor to read) and fall back to timing. And on v1.2, even a clean pass has a <b>25% chance</b> of a challenge anyway, because one signal is never the whole story.</div>
+    <div>Six more join them in v1.3, reading the shape and rhythm of the movement rather than any single moment of it. None of them decides on its own: each costs a little confidence, and the total is what the widget acts on. So an odd reading no longer condemns a real person, and faking one signal convincingly still leaves eight. <b>The lower the score, the likelier a challenge</b> — a clean pass almost never sees one, and phones fall back to what a touch screen can actually tell us.</div>
   </div>
 </section>
 
 <!-- CHALLENGES -->
 <section class="lc-section">
-  <div class="eye"><svg><use href="#i-bolt"/></svg> the five challenges</div>
+  <div class="eye"><svg><use href="#i-bolt"/></svg> the eleven challenges</div>
   <h2>Unsure? It plays a 5-second game.</h2>
-  <p class="lede">No blurry traffic lights. Small, tactile tasks a script can't fake but a person clears in seconds.</p>
+  <p class="lede">No blurry traffic lights. Small, tactile tasks a script can't fake but a person clears in seconds. Three are new in v1.3, and every one of them is keyboard-playable.</p>
 
   <div class="chal-grid">
     <div class="chal c1"><div class="ic">📡</div><div class="n">Spot the life</div></div>
@@ -305,6 +305,12 @@
     <div class="chal c3"><div class="ic">🧭</div><div class="n">Aim the dish</div></div>
     <div class="chal c4"><div class="ic">🔢</div><div class="n">Beacon order</div></div>
     <div class="chal c5"><div class="ic">⌨️</div><div class="n">Signal code</div></div>
+    <div class="chal c1"><div class="ic">🧬</div><div class="n">Odd one out</div></div>
+    <div class="chal c2"><div class="ic">🔎</div><div class="n">Count the living</div></div>
+    <div class="chal c3"><div class="ic">✅</div><div class="n">Select every life form</div></div>
+    <div class="chal c4"><div class="ic">〰️</div><div class="n">Trace the beam</div></div>
+    <div class="chal c5"><div class="ic">🎯</div><div class="n">Tag the probe</div></div>
+    <div class="chal c1"><div class="ic">👯</div><div class="n">Find the twins</div></div>
   </div>
 </section>
 
@@ -327,7 +333,15 @@
     </div>
     <div class="feat">
       <h3><svg><use href="#i-cursor"/></svg> No tracking</h3>
-      <p>Cursor data lives a few seconds in the browser. No cookies, no profiles, nothing sold.</p>
+      <p>No cookies, no profiles, nothing sold. What we do keep is behavioural: how the cursor moved and how the game was played, never what you typed into the page around it.</p>
+    </div>
+    <div class="feat">
+      <h3><svg><use href="#i-code"/></svg> Invisible if you want</h3>
+      <p>New in v1.3. Add <code>data-size="invisible"</code> and nothing is drawn — call <code>Lifecheck.execute()</code> on submit and a challenge only appears if the check isn't convinced.</p>
+    </div>
+    <div class="feat">
+      <h3><svg><use href="#i-compass"/></svg> Playable by keyboard</h3>
+      <p>Every challenge is a real button: tab to it, Enter to pick, arrows to steer the slider and the dial. Nothing needs a mouse.</p>
     </div>
   </div>
 </section>
@@ -357,7 +371,7 @@
 <div class="lc-outro">
   <div class="lc-outro-card reveal">
     <h2>Put a friendlier wall on your forms.</h2>
-    <p>Lifecheck v1.2 is free to try and quick to wire up. Built by the people behind Fortized.</p>
+    <p>Lifecheck v1.3 is free to try and quick to wire up. Built by the people behind Fortized.</p>
     <div class="btns">
       <a href="/lifecheck/keys" class="b-dark">Get a key <svg class="i" style="fill:#fff;"><use href="#i-bolt"/></svg></a>
       <a href="https://swiftaw.com/" class="b-ghost">More from Swiftaw</a>

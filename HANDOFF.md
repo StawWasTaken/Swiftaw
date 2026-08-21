@@ -134,6 +134,148 @@ account is the hub; other-account products are linked, not merged.
 
 ---
 
+## 🔴 SESSION HANDOFF — Lifecheck v1.3 (widget fix + scored signals + demo traces)
+
+Repo **StawWasTaken/Swiftaw**, branch **`claude/lifecheck-1.3-widget-fix-13sxi1`**.
+**Not mirrored to `main` this session** — the session's branch rules allowed only
+the work branch. Mirror it yourself when you're happy with it:
+`git branch -f main <branch> && git push origin main`.
+
+### ⛔ DEPLOY ORDER
+Run **`supabase/migrations/2026-08-21-lifecheck-1.3.sql`** in the Supabase SQL
+editor. It can go before or after the static deploy — the widget tries the new
+5-argument `lifecheck_issue_token` and falls back to the old 3-argument call if
+the migration hasn't run yet (logged as an `rpc_fallback` event), so real
+`lc_site_` keys keep verifying either way. Until it runs, `score` stays the old
+constant `0.9`. Also **bump `BUILD` in `lifecheck/lifecheck.js`** (already set to
+`2026.08.21.1`) so the embed iframe cache-busts.
+
+### 🐛 The bug that started this
+The "Try it, it's real" widget on `/lifecheck` was showing **"Can't verify —
+site key rejected"**, and Supernova's gate was broken in the same family of way.
+
+Making `SERVER_MODE = !!SITE_KEY` (commit `e3578b4`) meant swiftaw.com's own demo
+widgets started asking Supabase about `lc_demo_public` and `lc_account_public` —
+keys that are **not rows in `lifecheck_keys` and never will be**. The RPC returns
+NULL, which the widget correctly reports as "site key rejected"… on the page whose
+entire job is to look like it works. Supernova had the mirror-image problem: it
+passed **no** key and relied on `firstPartyEmbed()`, true on swiftaw.com and false
+on every mirror, preview deploy and local checkout, where the gate bricked itself.
+
+**Fix — reserved preview keys.** A site key ending in **`_public`** never touches
+the server and mints a `LC1.3-preview_…` token that is deliberately unverifiable
+(`lifecheck-verify` answers `invalid-input-token`, by design). Real `lc_site_…`
+keys are untouched. Supernova's frame now loads with `k=lc_supernova_public`, so
+it works everywhere, and its gate no longer strands anyone if Lifecheck errors —
+it shows a note and opens after ~2s.
+
+### ✅ Shipped this session
+- **Preview keys** (above) — fixes the demo, the account page and Supernova.
+- **Scored signal stack** replacing the three pass/fail cursor questions. See the
+  tuning notes below — they are here on purpose, `embed.html` is served source.
+- **Rotating failure copy.** "Clunk! Gears stuck." / "Sput! Belt slipped." /
+  "Bzzt! Fuse blown.", never twice running. The precise cause stays in the detail
+  line; the `error` postMessage `code` is unchanged. The box then offers another
+  crank instead of dead-ending.
+- **Three new mini-games** (11 total): `trace` (drag along a curve), `catchit`
+  (click a drifting probe twice), `pairs` (find the two identical tiles).
+- **Mini-game polish.** All challenges keyboard-operable (`activatable()` adds
+  role/tabindex/Enter/Space) with focus rings; `dragify()` replaces the duplicated
+  mouse+touch handlers that leaked window listeners on every challenge;
+  grab-anywhere slider and dial + arrow-key support; Enter submits the code and
+  the input autofocuses; the grid can't be submitted empty; the sequence gives up
+  after 3 restarts instead of looping forever; the tally board is screen-reader
+  readable (you can't count what isn't named). Phones draw from `TOUCH_TYPES`.
+- **Demonstration traces** — the big one for Supernova, see below.
+- **Invisible mode** — the loader's old `execute()` stub, finished.
+- **Real `score` on the verify endpoint** instead of the hardcoded `0.9`.
+- **Testing aids**: `?lcdebug=1` (mirrors every event to `window.__lcEvents` +
+  console) and `?lcgame=<id>` (pins the challenge). Both documented.
+
+### 🧠 Signal tuning notes (kept OUT of served source on purpose)
+`analyzeCursor()` starts at confidence `1` and subtracts per signal; `human` is
+`score >= 0.5`. Weights as shipped:
+
+| signal | condition | penalty |
+|---|---|---|
+| `automation-env` | webdriver / headless UA / no languages / automation hooks | 0.60 |
+| `no-movement` | fewer than 5 samples | 0.55 |
+| `too-fast` | clicked under 300 ms after load | 0.50 |
+| `barely-moved` | total path under 40 px | 0.45 |
+| `robotic-path` | direction-change ratio < 0.04 | 0.40 |
+| `low-wobble` | ratio < 0.09 | 0.12 |
+| `ruler-straight` | net/travelled > 0.985 (n≥12) | 0.30 |
+| `very-direct` | > 0.94 | 0.10 |
+| `constant-speed` | speed CV < 0.15 (n≥12) | 0.30 |
+| `flat-speed` | CV < 0.32 | 0.10 |
+| `metronome-timing` | inter-event CV < 0.08 (n≥12) | 0.25 |
+| `never-paused` | no gap > 90 ms across n≥25 | 0.15 |
+| `integer-coords` | no fractional coords across n≥30 | 0.08 |
+
+Spot-check probability is `clamp(0.08 + (1 - score) * 0.75, 0.08, 0.5)`.
+Invisible mode passes at `0.78` when signals came from the host page (`PASS_INVISIBLE`),
+`0.5` when the frame gathered them itself.
+
+Measured in Chromium with a human-ish trail: score `1.0` with pauses, `0.85`
+without (only `never-paused` fires). Real Playwright (headless UA) scores `0.25`
+and always gets a challenge — which is the correct answer.
+
+### 🤖 Demonstration traces — the Supernova hook
+Every challenge now emits one `demo_trace` event: the board, the moves and the
+cursor path in a single self-describing row. `schema: "lc-demo-1"`:
+
+```
+{ schema:"lc-demo-1", game:"imagepick", solved:true, solveMs:2140,
+  state:  { kind:"pick-one", prompt:"click the frog", answer:[4],
+            tiles:[{ i:0, label:"bee", life:true, box:[x,y,w,h] }, …] },
+  actions:[{ k:"tap", t:812, at:[.31,.44], on:[.52,.48], i:4,
+             label:"frog", correct:true }, …],
+  path:   { x:[…], y:[…], t:[…] } }
+```
+
+All boxes and coordinates are **0..1 fractions of the challenge area**, so rows
+are resolution- and layout-independent: a policy learns "the frog tile", never
+"the pixel at 412,300". `kind` is the action space — `pick-one`, `pick-many`,
+`count`, `ordered-taps`, `transcribe`, `continuous-1d`, `continuous-angle`,
+`path-follow`, `moving-target`, `find-pair`. That is observation → action →
+outcome, i.e. exactly the shape you'd train a behaviour-cloning policy on, and
+it's the concrete next step for OPEN TODO 0 below.
+
+Caps: 160 path points at ≥35 ms spacing, 60 actions. `TRACE` module in
+`embed.html`; each builder calls `TRACE.measure()` once laid out and
+`TRACE.tapOn()/act()` per interaction; `decide()` closes it with the label.
+
+Query them:
+```sql
+select detail from public.lifecheck_events
+where event_type = 'demo_trace' and detail->>'solved' = 'true';
+```
+
+### 👻 Invisible mode — read before recommending it
+`data-size="invisible"` + `Lifecheck.execute()`. **A zero-size frame never sees
+the pointer**, so the loader forwards the host page's cursor trail in — and
+anything collected on the host page can be fabricated by script on that page,
+unlike samples the frame gathers itself. Host-supplied signals are therefore held
+to `0.78` instead of `0.5`, the environment probe still runs inside the frame, and
+anything short of convincing gets a visible challenge. **It buys less friction,
+not more certainty.** The docs say this in a warning callout; keep it that way.
+
+### ✅ Verified in-browser this session (local server + Playwright)
+All 11 challenges open, are solvable and emit complete traces; the `/lifecheck`
+demo passes and fires its callback with a token in the hidden input; Supernova's
+gate verifies and unlocks sign-in; invisible mode both passes silently on good
+signals and escalates to a challenge on none. **Not verifiable in the sandbox**
+(no egress): Supabase RPCs, so the real `lc_site_` end-to-end path, the new
+`p_score`/`p_mode` arguments and the fallback branch all still need one live pass.
+
+### 🎯 Carried forward
+The v1.2 OPEN TODO list below still stands. Item 0 (start building the AI) now has
+`demo_trace` to work with, not just `session_summary`. Item 1 (cache-busting) was
+done in v1.2. The account page's widget renders with `lc_account_public` but sits
+in a tab that's hidden while signed out, so it was verified by URL, not by clicking.
+
+---
+
 ## 🔴 SESSION HANDOFF — Lifecheck v1.2 (redesign + telemetry + Edge Function)
 
 Repo **StawWasTaken/Swiftaw**, branch **`claude/swiftaw-handoff-legal-brand-gxlmab`**,
