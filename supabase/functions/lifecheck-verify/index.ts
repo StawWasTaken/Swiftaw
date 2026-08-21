@@ -25,8 +25,13 @@
 //    const r = await fetch(
 //      'https://<PROJECT>.supabase.co/functions/v1/lifecheck-verify',
 //      { method:'POST', headers:{ 'content-type':'application/json' },
-//        body: JSON.stringify({ sitekey:'lc_site_...', token:'LC1.2_...' }) });
-//    const verdict = await r.json();   // { success:true, passed, ... }
+//        body: JSON.stringify({ sitekey:'lc_site_...', token:'LC1.3_...' }) });
+//    const verdict = await r.json();   // { success:true, score, passed, mode, ... }
+//
+//  `score` is a real 0..1 human-confidence reading as of v1.3 — the widget
+//  computes it from nine signals and it rides along on the token. Before
+//  v1.3 this field was the constant 0.9, so tokens minted by an older widget
+//  still answer 0.9. Gate on `success`; use `score` for softer decisions.
 //
 //  Tradeoff: this endpoint takes the PUBLIC site key (not the secret), so it
 //  trades a little strictness for browser-callability. It's safe because a
@@ -53,20 +58,20 @@ function json(obj: unknown, status = 200): Response {
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') {
-    return json({ success: false, v: '1.2', 'error-codes': ['method-not-allowed'] }, 405);
+    return json({ success: false, v: '1.3', 'error-codes': ['method-not-allowed'] }, 405);
   }
 
   let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch {
-    return json({ success: false, v: '1.2', 'error-codes': ['bad-json'] }, 400);
+    return json({ success: false, v: '1.3', 'error-codes': ['bad-json'] }, 400);
   }
 
   const token = String(body.token ?? '');
   const sitekey = String(body.sitekey ?? '');
   if (!token || !sitekey) {
-    return json({ success: false, v: '1.2', 'error-codes': ['missing-input'] }, 400);
+    return json({ success: false, v: '1.3', 'error-codes': ['missing-input'] }, 400);
   }
 
   const admin = createClient(
@@ -83,7 +88,7 @@ Deno.serve(async (req: Request) => {
     .maybeSingle();
 
   if (keyErr || !key) {
-    return json({ success: false, v: '1.2', 'error-codes': ['invalid-input-sitekey'] }, 200);
+    return json({ success: false, v: '1.3', 'error-codes': ['invalid-input-sitekey'] }, 200);
   }
 
   const { data, error } = await admin.rpc('lifecheck_verify_token', {
@@ -92,7 +97,7 @@ Deno.serve(async (req: Request) => {
   });
 
   if (error) {
-    return json({ success: false, v: '1.2', 'error-codes': ['verify-failed'] }, 200);
+    return json({ success: false, v: '1.3', 'error-codes': ['verify-failed'] }, 200);
   }
   return json(data, 200);
 });
