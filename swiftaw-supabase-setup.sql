@@ -193,8 +193,19 @@ create table if not exists public.lifecheck_tokens (
   used       boolean not null default false,
   used_at    timestamptz,
   created_at timestamptz not null default now(),
-  expires_at timestamptz not null default (now() + interval '2 minutes')
+  expires_at timestamptz not null default (now() + interval '2 minutes'),
+  -- v1.3: the widget's own 0..1 human-confidence reading, and which mode the
+  -- check ran in. Both ride back out on lifecheck_verify_token.
+  score      numeric(4,3),
+  mode       text
 );
+-- `create table if not exists` above does nothing on an existing install, so
+-- the v1.3 columns are added separately. This keeps re-running the whole file
+-- safe on a database that predates them.
+alter table public.lifecheck_tokens
+  add column if not exists score numeric(4,3),
+  add column if not exists mode  text;
+
 create index if not exists lifecheck_tokens_key_idx on public.lifecheck_tokens(key_id);
 
 alter table public.lifecheck_tokens enable row level security;
@@ -204,7 +215,21 @@ revoke all on public.lifecheck_tokens from anon, authenticated;
 -- Called by the widget (browser, anon key) after a human passes.
 -- Returns a fresh token, or NULL if the site key is unknown/removed
 -- or the host is not in the key's allow-list.
-create or replace function public.lifecheck_issue_token(p_site_key text, p_host text, p_passed text default 'challenge')
+-- IMPORTANT: this must stay in step with
+-- supabase/migrations/2026-08-21-lifecheck-1.3.sql. Two versions of this
+-- function differing only by a defaulted argument would BOTH exist, and
+-- PostgREST cannot choose between them -- every token issuance on the site
+-- would start failing with an ambiguous-function error. The drop below is
+-- what keeps a re-run of this file from resurrecting the v1.2 signature.
+drop function if exists public.lifecheck_issue_token(text, text, text);
+
+create or replace function public.lifecheck_issue_token(
+  p_site_key text,
+  p_host     text,
+  p_passed   text default 'challenge',
+  p_score    numeric default null,
+  p_mode     text default null
+)
 returns text
 language plpgsql
 security definer
@@ -220,11 +245,9 @@ begin
     return null;                    -- key does not exist / was deleted
   end if;
 
-  -- Domain allow-list (empty = any domain). Matches exact host or subdomains.
-  -- p_host is the embedding page's location.hostname, so allow-list entries
-  -- are normalised to bare hostnames before comparing: entries pasted as full
-  -- URLs ("https://example.com/") used to match nothing and silently reject
-  -- every request, with no way to tell that from a wrong key.
+  -- Domain allow-list (empty = any domain). Entries are normalised to bare
+  -- hostnames before comparing, so a domain pasted as a full URL still
+  -- matches the embedding page's location.hostname.
   if array_length(k.domains, 1) is null then
     host_ok := true;
   else
@@ -245,15 +268,20 @@ begin
     return null;
   end if;
 
-  new_token := 'LC1.2_' || replace(gen_random_uuid()::text, '-', '');
-  insert into public.lifecheck_tokens (token, key_id, site_key, host, passed)
-  values (new_token, k.id, p_site_key, p_host, coalesce(p_passed, 'challenge'));
+  new_token := 'LC1.3_' || replace(gen_random_uuid()::text, '-', '');
+  insert into public.lifecheck_tokens (token, key_id, site_key, host, passed, score, mode)
+  values (
+    new_token, k.id, p_site_key, p_host,
+    coalesce(p_passed, 'challenge'),
+    -- the score arrives from a browser, so clamp rather than trust
+    case when p_score is null then null
+         else greatest(0::numeric, least(1::numeric, p_score)) end,
+    left(coalesce(p_mode, ''), 16)
+  );
   return new_token;
 end;
 $$;
 
--- Called by the customer's SERVER with their secret key + the token.
--- Consumes the token (single use) and returns a JSON verdict.
 create or replace function public.lifecheck_verify_token(p_secret text, p_token text)
 returns jsonb
 language plpgsql
@@ -265,39 +293,42 @@ declare
   t public.lifecheck_tokens%rowtype;
 begin
   if p_secret is null or p_secret = '' then
-    return jsonb_build_object('success', false, 'v', '1.2', 'error-codes', jsonb_build_array('missing-input-secret'));
+    return jsonb_build_object('success', false, 'v', '1.3', 'error-codes', jsonb_build_array('missing-input-secret'));
   end if;
   select * into k from public.lifecheck_keys where secret_key = p_secret limit 1;
   if not found then
-    return jsonb_build_object('success', false, 'v', '1.2', 'error-codes', jsonb_build_array('invalid-input-secret'));
+    return jsonb_build_object('success', false, 'v', '1.3', 'error-codes', jsonb_build_array('invalid-input-secret'));
   end if;
   if p_token is null or p_token = '' then
-    return jsonb_build_object('success', false, 'v', '1.2', 'error-codes', jsonb_build_array('missing-input-token'));
+    return jsonb_build_object('success', false, 'v', '1.3', 'error-codes', jsonb_build_array('missing-input-token'));
   end if;
 
   select * into t from public.lifecheck_tokens where token = p_token and key_id = k.id limit 1;
   if not found then
-    return jsonb_build_object('success', false, 'v', '1.2', 'error-codes', jsonb_build_array('invalid-input-token'));
+    return jsonb_build_object('success', false, 'v', '1.3', 'error-codes', jsonb_build_array('invalid-input-token'));
   end if;
   if t.used or t.expires_at < now() then
-    return jsonb_build_object('success', false, 'v', '1.2', 'error-codes', jsonb_build_array('timeout-or-duplicate'));
+    return jsonb_build_object('success', false, 'v', '1.3', 'error-codes', jsonb_build_array('timeout-or-duplicate'));
   end if;
 
   update public.lifecheck_tokens set used = true, used_at = now() where token = t.token;
 
   return jsonb_build_object(
     'success', true,
-    'score', 0.9,
+    -- tokens minted before v1.3 carry no score; 0.9 is what the old endpoint
+    -- always claimed, so those rows keep answering exactly as they did
+    'score', coalesce(t.score, 0.9),
     'passed', t.passed,
+    'mode', coalesce(t.mode, 'checkbox'),
     'challenge_ts', t.created_at,
     'hostname', t.host,
-    'v', '1.2',
+    'v', '1.3',
     'error-codes', jsonb_build_array()
   );
 end;
 $$;
 
-grant execute on function public.lifecheck_issue_token(text, text, text) to anon, authenticated;
+grant execute on function public.lifecheck_issue_token(text, text, text, numeric, text) to anon, authenticated;
 grant execute on function public.lifecheck_verify_token(text, text) to anon, authenticated;
 
 
@@ -376,7 +407,14 @@ begin
         left(coalesce(e ->> 'challenge', ''), 32),
         left(coalesce(e ->> 'outcome', ''), 16),
         coalesce((e ->> 'suspicious')::boolean, false),
-        coalesce(e -> 'detail', '{}'::jsonb)
+        -- Every other field here is length-capped; `detail` was not, which
+        -- left an anonymous endpoint that would store an arbitrarily large
+        -- blob. v1.3's demo_trace rows are the biggest legitimate payload and
+        -- land well under 16 KB, so anything past that is dropped rather than
+        -- stored. The event still records, just without its detail.
+        case when length(coalesce(e -> 'detail', '{}'::jsonb)::text) > 16384
+             then jsonb_build_object('dropped', 'detail-too-large')
+             else coalesce(e -> 'detail', '{}'::jsonb) end
       );
     end if;
     i := i + 1;

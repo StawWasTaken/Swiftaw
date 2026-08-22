@@ -134,21 +134,13 @@ account is the hub; other-account products are linked, not merged.
 
 ---
 
-## 🔴 SESSION HANDOFF — Lifecheck v1.3 (widget fix + scored signals + demo traces)
+## 🔴 SESSION HANDOFF — Lifecheck v1.3 (widget fix + scored signals + demo traces + two-lane policy)
 
-Repo **StawWasTaken/Swiftaw**, branch **`claude/lifecheck-1.3-widget-fix-13sxi1`**.
-**Not mirrored to `main` this session** — the session's branch rules allowed only
-the work branch. Mirror it yourself when you're happy with it:
-`git branch -f main <branch> && git push origin main`.
+Repo **StawWasTaken/Swiftaw**, branch **`claude/lifecheck-1.3-widget-fix-13sxi1`**,
+mirrored to `main`.
 
-### ⛔ DEPLOY ORDER
-Run **`supabase/migrations/2026-08-21-lifecheck-1.3.sql`** in the Supabase SQL
-editor. It can go before or after the static deploy — the widget tries the new
-5-argument `lifecheck_issue_token` and falls back to the old 3-argument call if
-the migration hasn't run yet (logged as an `rpc_fallback` event), so real
-`lc_site_` keys keep verifying either way. Until it runs, `score` stays the old
-constant `0.9`. Also **bump `BUILD` in `lifecheck/lifecheck.js`** (already set to
-`2026.08.21.1`) so the embed iframe cache-busts.
+Deploy steps and anything else needing a human are handed over **in chat**, by
+request — this file is technical reference only, not a to-do list.
 
 ### 🐛 The bug that started this
 The "Try it, it's real" widget on `/lifecheck` was showing **"Can't verify —
@@ -192,6 +184,24 @@ it shows a note and opens after ~2s.
 - **Testing aids**: `?lcdebug=1` (mirrors every event to `window.__lcEvents` +
   console) and `?lcgame=<id>` (pins the challenge). Both documented.
 
+### 🔀 The two lanes (v1.3, second pass)
+A coin flip at widget load puts each session in one of two lanes, recorded as
+`lane` on `widget_open` and `session_summary` so the halves can be compared:
+
+- **`signal`** — behaviour is read and only doubtful sessions get a game
+  (spot-check rate scales with the score, see the table below).
+- **`game`** — a mini-game every time, however clean the signals look. The
+  signals are still read and still recorded, they just can't buy a way out.
+
+Why split rather than pick one: every game played is a labelled demonstration,
+and passing everyone who looks fine means only the *suspicious* half ever
+generates gameplay — the exact biased sample you don't want to train on. The
+forced lane keeps a steady supply of games played by unambiguous humans. It
+also means looking smooth stops being a winning strategy for a bot.
+
+**Invisible mode opts out** (`GAME_LANE = !INVISIBLE && …`). A host picked it
+to avoid interrupting people; a coin-flip challenge would defeat the point.
+
 ### 🧠 Signal tuning notes (kept OUT of served source on purpose)
 `analyzeCursor()` starts at confidence `1` and subtracts per signal; `human` is
 `score >= 0.5`. Weights as shipped:
@@ -211,6 +221,12 @@ it shows a note and opens after ~2s.
 | `metronome-timing` | inter-event CV < 0.08 (n≥12) | 0.25 |
 | `never-paused` | no gap > 90 ms across n≥25 | 0.15 |
 | `integer-coords` | no fractional coords across n≥30 | 0.08 |
+| `synthetic-events` | any pointerdown/up with `isTrusted === false` | 0.65 |
+| `instant-click` | longest press-to-release ≤ 1 ms | 0.35 |
+
+`synthetic-events` listens on pointerdown/pointerup only, never `click` — some
+assistive tech dispatches synthetic *clicks*, and flagging those would punish
+exactly the wrong people.
 
 Spot-check probability is `clamp(0.08 + (1 - score) * 0.75, 0.08, 0.5)`.
 Invisible mode passes at `0.78` when signals came from the host page (`PASS_INVISIBLE`),

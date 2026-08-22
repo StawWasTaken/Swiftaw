@@ -34,7 +34,7 @@
   // refresh; the hourly bucket below is a safety net so a forgotten bump still
   // self-heals within ~1h. (Loading a NEW page renders a fresh iframe URL; an
   // already-open verification is never disrupted mid-session.)
-  var BUILD = '2026.08.21.1';
+  var BUILD = '2026.08.22.1';
   var CACHE_BUST = BUILD + '.' + Math.floor(Date.now() / 3600000);
 
   // Resolve where THIS script is served from, so the widget iframe and the
@@ -240,7 +240,24 @@
     return w;
   }
 
+  // Drop widgets whose iframe has left the document. A page that re-renders
+  // its Lifecheck container (any SPA, or this repo's own verify-test page,
+  // which empties the host div and mounts a fresh widget) leaves the old
+  // entry in the list forever — and since a bare Lifecheck.getResponse() or
+  // .reset() defaults to widgets[0], every one of those calls would keep
+  // talking to a detached iframe that can never verify again.
+  function prune() {
+    for (var i = widgets.length - 1; i >= 0; i--) {
+      var f = widgets[i].iframe;
+      if (!f || !f.isConnected) {
+        if (widgets[i].el) { try { delete widgets[i].el.__lifecheck; } catch (e) { widgets[i].el.__lifecheck = null; } }
+        widgets.splice(i, 1);
+      }
+    }
+  }
+
   function pickWidget(ref) {
+    prune();
     if (ref == null) return widgets[0] || null;
     if (typeof ref === 'number') { for (var i = 0; i < widgets.length; i++) if (widgets[i].id === ref) return widgets[i]; return null; }
     if (typeof ref === 'string') { var el = document.getElementById(ref); return el && el.__lifecheck; }

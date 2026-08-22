@@ -366,7 +366,8 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
         <tr><td><code>invalid-input-secret</code></td><td>The secret key is unknown (or its key was deleted).</td></tr>
         <tr><td><code>missing-input-token</code></td><td>The <code>p_token</code> parameter was not sent.</td></tr>
         <tr><td><code>invalid-input-token</code></td><td>No such token for this key.</td></tr>
-        <tr><td><code>timeout-or-duplicate</code></td><td>The token has expired or was already verified once.</td></tr>
+        <tr><td><code>timeout-or-duplicate</code></td><td>The token has expired or was already verified once. Since v1.3 the widget warns you first: it fires <code>data-expired-callback</code> and resets itself just before a token goes stale, so a form left open no longer submits one that is already dead.</td></tr>
+        <tr><td><code>invalid-input-sitekey</code></td><td>Browser endpoint only. No key registered under the <code>sitekey</code> you sent.</td></tr>
         <tr><td><code>invalid-input-token</code> on a <code>LC1.3-preview_…</code> token</td><td>Not a bug. Preview tokens come from a reserved <code>_public</code> site key, are minted entirely in the browser, and are meant to be unverifiable — that is what makes them safe to demo with. Use a real <code>lc_site_…</code> key to get a token that verifies.</td></tr>
       </table></div>
     </section>
@@ -435,7 +436,11 @@ form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, 
         <div class="rel">
           <span class="v">v1.3</span><span class="d">current</span>
           <ul>
-            <li><b>Nine signals, one score.</b> The cursor checks stopped being pass/fail questions: six more signals joined the original three, and each costs confidence rather than deciding on its own. The odds of being challenged now follow the score rather than a fixed coin flip, so clean sessions see less friction and doubtful ones see more.</li>
+            <li><b>Eleven signals, one score.</b> The cursor checks stopped being pass/fail questions: more signals joined the original three, and each costs confidence rather than deciding on its own. The odds of being challenged now follow the score rather than a fixed coin flip.</li>
+            <li><b>Half of all sessions play a game.</b> The other half are read from behaviour and only interrupted when the signals don't add up. Split at random per visit, so looking smooth is no longer a way through on its own. Invisible mode is exempt, by design.</li>
+            <li><b>Expiring tokens announce themselves.</b> <code>data-expired-callback</code> has been documented since v1.1 and could never actually fire; it does now, and the widget resets itself so the visitor can simply check again.</li>
+            <li><b>Every board is unique.</b> Tiles get their own rotation, scale and mirror, the beacons carry real numbers instead of always 1&ndash;5, and the traced beam is sometimes an S-bend. No two boards render the same pixels.</li>
+            <li><b>The two pointer-only games offer a way out.</b> Trace and Tag need a mouse, so they are never shown on touch, refuse keyboard activation, and carry a one-press swap to a fully keyboard-playable challenge.</li>
             <li><b>Three new mini-games.</b> Trace the beam, tag the probe, find the twins &mdash; eleven in all.</li>
             <li><b>Every challenge is keyboard-playable.</b> Tab and Enter to pick, arrows to steer the slider and the dial, real labels on everything. Grab-anywhere dragging, Enter to submit the code, and no more empty-grid submissions.</li>
             <li><b>Invisible mode.</b> <code>data-size="invisible"</code> plus <code>Lifecheck.execute()</code>. See <a href="#invisible">the section above</a>, including what it trades away.</li>

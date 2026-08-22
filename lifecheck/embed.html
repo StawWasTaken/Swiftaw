@@ -337,6 +337,16 @@
   /* ---- 11 · find the twins (v1.3) ---- */
   .pair-grid{ grid-template-columns:repeat(3,1fr); }
 
+  /* the keyboard escape hatch on the two pointer-only games */
+  .swap-row{ display:flex; justify-content:center; margin-top:8px; }
+  .swap-btn{
+    appearance:none; background:none; border:none; cursor:pointer;
+    color:var(--muted); font-family:'Syne',sans-serif; font-weight:700; font-size:11.5px;
+    text-decoration:underline; text-underline-offset:3px; padding:4px 6px; border-radius:6px;
+  }
+  .swap-btn:hover{ color:var(--text); }
+  .swap-btn:focus-visible{ outline:3px solid var(--blue); outline-offset:2px; }
+
   .retry-btn{
     margin-top:8px; appearance:none; border:none; cursor:pointer;
     background:var(--yellow); border:2.5px solid var(--yellow-s); color:#2a2600;
@@ -441,6 +451,28 @@
   // handler below for how a zero-size frame gets a cursor trail to read, and
   // why that trail is trusted less than one of our own.
   const INVISIBLE = P.get('mode') === 'invisible';
+
+  // v1.3 · TWO LANES, ONE COIN FLIP.
+  //
+  // Half of all sessions are read from behaviour and only interrupted when
+  // the signals don't add up (SIGNAL_LANE). The other half play a mini-game
+  // no matter how clean they look (GAME_LANE).
+  //
+  // Two reasons it's split rather than picking one:
+  //   · Every game played is a labelled demonstration. Passing everyone who
+  //     looks fine means only the suspicious half ever generates gameplay
+  //     data, which is exactly the biased sample you don't want to learn
+  //     from. The forced lane keeps a steady supply of games played by
+  //     people who are unambiguously human.
+  //   · A bot that gets waved through learns that looking smooth is enough.
+  //     When half the doors open onto a game regardless, smooth isn't a
+  //     strategy any more.
+  //
+  // Decided once per widget load, so a visitor never sees the treatment
+  // change under them mid-check. Invisible mode opts out: a host chose it to
+  // avoid interrupting people, and a coin-flip challenge would defeat the
+  // entire point of it — there, behaviour decides, as documented.
+  const GAME_LANE = !INVISIBLE && Math.random() < 0.5;
   const DEBUG = P.has('lcdebug');   // ?lcdebug=1 → log telemetry successes too
   let sbClient = null;
 
@@ -577,6 +609,9 @@
         touch: touchUsed,
         pen: penUsed,
         mode: INVISIBLE ? 'invisible' : 'checkbox',
+        // which lane this session was assigned, so the two halves can be
+        // compared later — that comparison is the whole point of splitting
+        lane: INVISIBLE ? 'invisible' : (GAME_LANE ? 'game' : 'signal'),
         challengesShown: _shown,
         wrongTaps: _wrong,
         suspiciousSignals: _susp,
@@ -613,7 +648,23 @@
       console.warn('[Lifecheck] telemetry failed to send:', (e && e.message) || e);
     }
   }
-  window.addEventListener('beforeunload', () => { try{ sessionSummary(false, 'abandoned'); flushEvents(); }catch(e){} });
+  /* Getting the data out before the tab does.
+     `beforeunload` alone was not enough: flushing is an async request, and a
+     browser tearing the page down cancels it — so a visitor who solved a game
+     and closed the tab within the 1.4s flush window took the whole
+     demonstration with them. That is precisely the row we most want.
+
+     `visibilitychange → hidden` fires while the page is still alive (tab
+     switch, app switch, and on mobile it is often the LAST callback you get),
+     so a plain flush there has time to finish. It deliberately does not send
+     the session summary: someone glancing at another tab hasn't abandoned
+     anything, and sending it early would burn the one-shot guard and lose the
+     real outcome. `pagehide` is the genuine end of the page, so that is where
+     the summary goes. */
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'hidden'){ try{ flushEvents(); }catch(e){} }
+  });
+  window.addEventListener('pagehide', () => { try{ sessionSummary(false, 'abandoned'); flushEvents(); }catch(e){} });
 
   document.addEventListener('contextmenu', e => { e.preventDefault(); logEvent('tamper', { outcome:'suspicious', suspicious:true, detail:{ kind:'contextmenu' } }); });
   document.addEventListener('dragstart', e => e.preventDefault());
@@ -698,6 +749,27 @@
   window.addEventListener('wheel', () => { scrollTicks++; }, { passive:true });
   document.addEventListener('keydown', () => { keyTicks++; }, { passive:true });
 
+  // Two things only the browser itself can tell us about an input event, and
+  // both are cheap: whether the user agent generated it, and how far apart
+  // the click press and release were. A dispatched MouseEvent has
+  // isTrusted === false unless it came from real hardware, and a synthetic
+  // click has no press-to-release gap at all because it never had one.
+  let untrusted = 0, trusted = 0;
+  let clickDowns = [], clickHolds = [];
+  document.addEventListener('pointerdown', (e) => {
+    if(e.isTrusted) trusted++; else untrusted++;
+    clickDowns.push(Date.now());
+    if(clickDowns.length > 20) clickDowns.shift();
+  }, { passive:true, capture:true });
+  document.addEventListener('pointerup', (e) => {
+    if(e.isTrusted) trusted++; else untrusted++;
+    const down = clickDowns[clickDowns.length - 1];
+    if(down != null){
+      clickHolds.push(Date.now() - down);
+      if(clickHolds.length > 20) clickHolds.shift();
+    }
+  }, { passive:true, capture:true });
+
   /* ================== v1.3 · the signal stack ==================
      Scored, not vetoing: every reading contributes to a 0..1 confidence
      figure rather than deciding on its own, and the caller acts on the
@@ -741,6 +813,17 @@
     const hit = (name, penalty) => { hits.push(name); score -= penalty; };
 
     if(env.length) hit('automation-env', 0.6);
+
+    /* ---- 10 · untrusted events. The browser marks any event a script
+           dispatched rather than the user producing it. Cheap and decisive. */
+    if(untrusted > 0) hit('synthetic-events', 0.65);
+
+    /* ---- 11 · click hold. A press and its release are tens of
+           milliseconds apart on real hardware, and zero when dispatched. */
+    if(clickHolds.length){
+      const holdMax = Math.max.apply(null, clickHolds);
+      if(holdMax <= 1) hit('instant-click', 0.35);
+    }
 
     /* ---- touch / pen: no cursor trail to read, so lean on timing ---- */
     if(touchUsed && samples.length < 5){
@@ -839,6 +922,8 @@
         fracCoords: +fracCoords.toFixed(2),
         maxPressure: +maxPressure.toFixed(2),
         scrollTicks, keyTicks,
+        trusted, untrusted,
+        holdMs: clickHolds.length ? Math.max.apply(null, clickHolds) : null,
         touch: touchUsed, pen: penUsed,
         env,
         flags: hits,
@@ -1013,10 +1098,23 @@
     img.src = TWEMOJI_BASE + twemojiCode(emoji) + '.png';
     return c;
   }
+  /* v1.3 · every tile gets its own small rotation, scale and sometimes a
+     mirror. A person reads a frog as a frog through all of it; a script
+     matching artwork against a reference has to actually recognise the thing
+     instead of comparing bytes, because no two boards ever render the same
+     pixels — including, deliberately, the two "identical" tiles in Find the
+     twins, which are the same creature at different angles rather than the
+     same image twice. Kept gentle enough that nothing becomes a guess. */
   function tileWith(emoji){
     const el = document.createElement('div');
     el.className = 'tile';
-    el.appendChild(emojiCanvas(emoji));
+    const art = emojiCanvas(emoji);
+    const rot = (Math.random()*28 - 14).toFixed(1);
+    const scale = 0.90 + Math.random()*0.15;
+    const flip = Math.random() < 0.5 ? -1 : 1;
+    art.style.transform =
+      `rotate(${rot}deg) scale(${(scale*flip).toFixed(3)}, ${scale.toFixed(3)})`;
+    el.appendChild(art);
     return el;
   }
 
@@ -1099,6 +1197,7 @@
         logEvent('verified', { outcome:'pass', detail:{ via:'invisible' } });
         sessionSummary(true, 'invisible');
         post('verified', { token: token });
+        armExpiry();
       });
       return;
     }
@@ -1122,18 +1221,62 @@
       if(!a.human){
         logEvent('cursor_flag', { outcome:'suspicious', suspicious:true, detail:{ reason:a.reason, score:a.score, stats:a.stats } });
       }
-      // v1.3 · the spot-check scales with confidence rather than being a flat
-      // coin flip, so the friction lands on the sessions that earned it.
+
+      // GAME_LANE (see the coin flip up top): this session always plays,
+      // however clean it looks. The signals are still read and still
+      // recorded — we just don't let them buy a way out of the game.
+      if(GAME_LANE){
+        logEvent('lane_challenge', {
+          outcome: a.human ? 'info' : 'suspicious',
+          suspicious: !a.human,
+          detail: Object.assign({ lane:'game' }, a.stats)
+        });
+        openChallenge();
+        return;
+      }
+
+      // SIGNAL_LANE: read the behaviour, and only interrupt if it doesn't
+      // add up. Even a clean read gets spot-checked sometimes, at a rate
+      // that scales with confidence rather than a flat coin flip, so the
+      // friction lands on the sessions that earned it.
       const spotChance = Math.min(0.5, Math.max(0.08, 0.08 + (1 - a.score) * 0.75));
       const spotCheck = a.human && Math.random() < spotChance;
-      if(a.human && spotCheck) logEvent('spot_check', { detail:Object.assign({ spotChance:+spotChance.toFixed(2) }, a.stats) });
+      if(a.human && spotCheck) logEvent('spot_check', { detail:Object.assign({ lane:'signal', spotChance:+spotChance.toFixed(2) }, a.stats) });
       if(a.human && !spotCheck){
-        logEvent('passive_pass', { outcome:'pass', detail:a.stats });
+        logEvent('passive_pass', { outcome:'pass', detail:Object.assign({ lane:'signal' }, a.stats) });
         passCollapsed();
       } else {
         openChallenge();
       }
     }, 700);
+  }
+
+  /* ---------------- token expiry ----------------
+     A server token dies about two minutes after it is minted, and until now
+     nothing told the host page that. `data-expired-callback` has been in the
+     docs since v1.1 and could never fire, so a form left open for five
+     minutes submitted a token the verify endpoint was always going to
+     reject with `timeout-or-duplicate` — and the visitor got the blame for
+     it. The widget now counts down with the token and hands the check back
+     just before it goes stale.
+
+     Preview tokens are never verified by anyone, so they don't expire. */
+  const TOKEN_TTL_MS = 110000;   // just inside the server's ~2 min
+  let _expiryT = null;
+  function armExpiry(){
+    if(_expiryT) clearTimeout(_expiryT);
+    if(!SERVER_MODE) return;
+    _expiryT = setTimeout(function(){
+      _expiryT = null;
+      if(INVISIBLE){ executed = false; post('expired', {}); logEvent('token_expired', {}); return; }
+      logEvent('token_expired', {});
+      post('expired', {});
+      // Put the box back so the visitor can simply click again.
+      locked = false;
+      collapsed.classList.remove('is-verified');
+      resetCollapsed();
+      chkLabel.textContent = 'Check again, that one timed out';
+    }, TOKEN_TTL_MS);
   }
 
   function passCollapsed(){
@@ -1146,6 +1289,7 @@
       logEvent('verified', { outcome:'pass', detail:{ via:'signals' } });
       sessionSummary(true, 'signals');
       post('verified', { token: token });
+      armExpiry();
     });
   }
 
@@ -1157,7 +1301,10 @@
   const FAIL_LINES = [
     'Clunk! Gears stuck.',
     'Sput! Belt slipped.',
-    'Bzzt! Fuse blown.'
+    'Bzzt! Fuse blown.',
+    'Beep, boop. Nothing doing.',
+    'Boop! Wires crossed.',
+    'Beep... beep... no signal.'
   ];
   let _lastFailLine = -1;
   function failLine(){
@@ -1200,19 +1347,24 @@
     locked = false;
   }
 
-  function openChallenge(){
-    const pool = (COARSE || touchUsed) ? TOUCH_TYPES : TEST_TYPES;
+  function openChallenge(restrictTo){
+    const pool = restrictTo || ((COARSE || touchUsed) ? TOUCH_TYPES : TEST_TYPES);
     let type = pool[Math.floor(Math.random()*pool.length)];
     if(type === lastType) type = pool[(pool.indexOf(type)+1) % pool.length];
     // `?lcgame=trace` pins the challenge, so an integrator (or our own test
     // run) can look at one game repeatedly instead of reloading until the
     // dice cooperate. It only chooses WHICH game — there is nothing to gain
     // by picking one, you still have to solve it.
+    // …but an explicit swap request wins over it: the visitor asked for a
+    // different game, and handing them the same one back is not an answer.
     const forced = P.get('lcgame');
-    if(forced && TEST_META[forced]) type = forced;
+    if(!restrictTo && forced && TEST_META[forced]) type = forced;
     lastType = type;
     challengeStart = Date.now();
     TRACE.begin(type);
+    // Each builder wires its own Verify handler; clear the previous one so a
+    // retry can't fire the last challenge's check against the new board.
+    verifyBtn.onclick = null;
 
     collapsed.classList.add('hidden');
     expanded.classList.remove('hidden');
@@ -1241,6 +1393,7 @@
     if(type === 'trace')     buildTrace();
     if(type === 'catchit')   buildCatch();
     if(type === 'pairs')     buildPairs();
+    if(POINTER_ONLY.indexOf(type) >= 0) offerSwap();
     reportSize();
   }
 
@@ -1266,6 +1419,33 @@
     });
     return el;
   }
+  /* Two of the eleven genuinely need a pointer: you cannot trace a curve or
+     chase a drifting target with a keyboard, and pretending otherwise is
+     worse than admitting it — a probe you can tab to and press Enter on
+     twice isn't a challenge at all, it's a two-keystroke bypass. So those
+     two are never handed out on touch, they don't accept keyboard
+     activation, and they carry a way out: one keypress swaps the board for a
+     game that is fully keyboard-playable. That costs an attacker nothing
+     (they still have to solve whatever comes next) and costs a keyboard user
+     nothing either. */
+  const KEYBOARD_TYPES = ['imagepick','oddone','tally','grid','sequence','code','pairs','slider','rotate'];
+  const POINTER_ONLY   = ['trace','catchit'];
+  function offerSwap(){
+    const wrap = document.createElement('div');
+    wrap.className = 'swap-row';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'swap-btn';
+    btn.textContent = 'Needs a mouse? Get a different one';
+    btn.addEventListener('click', () => {
+      logEvent('challenge_swap', { challenge:lastType, detail:{ from:lastType } });
+      TRACE.abort();
+      openChallenge(KEYBOARD_TYPES);
+    });
+    wrap.appendChild(btn);
+    challengeArea.appendChild(wrap);
+  }
+
   // Wrap the Verify button so a submission is recorded before it is judged.
   function onVerify(fn){
     verifyBtn.onclick = (ev) => { TRACE.act('submit', {}); fn(ev); };
@@ -1631,8 +1811,15 @@
   /* ---------------- 7. SEQUENCE ---------------- */
   function buildSequence(){
     promptText.innerHTML = `Tap the beacons in order<span class="sub">Lowest signal number first.</span>`;
-    const order = shuffle([1,2,3,4,5]);
-    let next = 1, restarts = 0;
+    // v1.3: five DISTINCT numbers out of 1..29 rather than always 1,2,3,4,5.
+    // The old board could be solved by looking for the glyph "1" and counting
+    // up from there; this one has to actually be ordered, and it gives the
+    // trace data a real comparison task instead of a fixed answer key.
+    const nums = shuffle(Array.from({length:29}, (_,i)=>i+1)).slice(0,5);
+    const order = shuffle(nums);
+    const sorted = nums.slice().sort((a,b)=>a-b);
+    let step = 0, restarts = 0;
+    let next = sorted[0];
 
     challengeArea.innerHTML = `<div class="seq-grid" id="seqEl"></div>`;
     const seqEl = document.getElementById('seqEl');
@@ -1647,8 +1834,9 @@
         TRACE.tapOn(el, ev, { value:num, expected:next, correct:num === next });
         if(num === next){
           el.classList.add('done');
-          next++;
-          if(next === 6){
+          step++;
+          next = sorted[step];
+          if(step === sorted.length){
             logEvent('minigame_correct', { challenge:'sequence', outcome:'pass', detail:{ restarts } });
             setTimeout(()=> decide(true, ''), 250);
           }
@@ -1661,7 +1849,7 @@
           if(restarts >= 3){ setTimeout(()=> decide(false, 'The beacons never lined up.'), 450); return; }
           setTimeout(()=>{
             [...seqEl.children].forEach(c=>c.classList.remove('done','bad'));
-            next = 1;
+            step = 0; next = sorted[0];
           }, 400);
         }
       });
@@ -1672,7 +1860,7 @@
     TRACE.measure(box => TRACE.state({
       kind: 'ordered-taps',
       prompt: 'tap the beacons in ascending order',
-      answer: [1,2,3,4,5],
+      answer: sorted,
       beacons: order.map((num, i) => ({ i:i, value:num, box:box(els[i]) }))
     }));
   }
@@ -1745,20 +1933,32 @@
     const W = 300, H = 120, TOL = 26;                // tolerance in svg units
     const p0 = { x:22,  y:20 + Math.random()*80 };
     const p2 = { x:278, y:20 + Math.random()*80 };
-    const p1 = { x:150, y:Math.random() < 0.5 ? 8 + Math.random()*22 : H - 8 - Math.random()*22 };
+    // Half the time it's a simple arc, half the time an S-bend that doubles
+    // back on itself. A single curve shape would be learnable in one look.
+    const sBend = Math.random() < 0.5;
+    const p1 = { x: sBend ? 105 : 150, y:Math.random() < 0.5 ? 8 + Math.random()*22 : H - 8 - Math.random()*22 };
+    const p1b = { x:200, y: sBend ? (H - p1.y) : p1.y };
 
     const pts = [];
     for(let i=0;i<=64;i++){
       const t = i/64, u = 1-t;
-      pts.push({ x: u*u*p0.x + 2*u*t*p1.x + t*t*p2.x,
-                 y: u*u*p0.y + 2*u*t*p1.y + t*t*p2.y });
+      if(sBend){
+        pts.push({ x: u*u*u*p0.x + 3*u*u*t*p1.x + 3*u*t*t*p1b.x + t*t*t*p2.x,
+                   y: u*u*u*p0.y + 3*u*u*t*p1.y + 3*u*t*t*p1b.y + t*t*t*p2.y });
+      } else {
+        pts.push({ x: u*u*p0.x + 2*u*t*p1.x + t*t*p2.x,
+                   y: u*u*p0.y + 2*u*t*p1.y + t*t*p2.y });
+      }
     }
+    const pathD = sBend
+      ? `M${p0.x} ${p0.y} C${p1.x} ${p1.y} ${p1b.x} ${p1b.y} ${p2.x} ${p2.y}`
+      : `M${p0.x} ${p0.y} Q${p1.x} ${p1.y} ${p2.x} ${p2.y}`;
 
     challengeArea.innerHTML = `
       <div class="trace-wrap" id="traceWrap">
         <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="trace-svg">
-          <path d="M${p0.x} ${p0.y} Q${p1.x} ${p1.y} ${p2.x} ${p2.y}" class="beam-track"/>
-          <path d="M${p0.x} ${p0.y} Q${p1.x} ${p1.y} ${p2.x} ${p2.y}" class="beam-live" id="beamLive"/>
+          <path d="${pathD}" class="beam-track"/>
+          <path d="${pathD}" class="beam-live" id="beamLive"/>
           <circle cx="${p0.x}" cy="${p0.y}" r="9" class="beam-start" id="beamStart"/>
           <circle cx="${p2.x}" cy="${p2.y}" r="9" class="beam-end"/>
         </svg>
@@ -1867,8 +2067,9 @@
       // gentle random walk so the drift never becomes a predictable bounce
       vx += (Math.random()-0.5) * 0.00035;
       vy += (Math.random()-0.5) * 0.00035;
-      vx = Math.max(-0.007, Math.min(0.007, vx));
-      vy = Math.max(-0.006, Math.min(0.006, vy));
+      const cap = 0.007 + hits*0.004;
+      vx = Math.max(-cap, Math.min(cap, vx));
+      vy = Math.max(-(cap*0.86), Math.min(cap*0.86, vy));
       px += vx; py += vy;
       if(px < 0.06){ px = 0.06; vx = Math.abs(vx); }
       if(px > 0.94){ px = 0.94; vx = -Math.abs(vx); }
@@ -1881,7 +2082,10 @@
     raf = requestAnimationFrame(step);
     function stop(){ done = true; if(raf) cancelAnimationFrame(raf); }
 
-    activatable(probe, 'probe', (ev) => {
+    // Deliberately NOT `activatable`: a keyboard Enter on a moving target
+    // proves nothing, and accepting one would make this the easiest challenge
+    // in the set to automate. Keyboard users take the swap offered below.
+    probe.addEventListener('click', (ev) => {
       if(done) return;
       ev.stopPropagation();
       hits++;
@@ -1890,6 +2094,9 @@
       probe.classList.add('tagged');
       setTimeout(()=> probe.classList.remove('tagged'), 220);
       tally.textContent = hits + ' / 2';
+      // It gets away from you a little after the first tag, so the second one
+      // isn't just the first one repeated.
+      vx *= 1.45; vy *= 1.45;
       if(hits >= 2){
         stop();
         probe.classList.add('locked');
@@ -2022,6 +2229,7 @@
           logEvent('verified', { challenge:lastType, outcome:'pass', detail:{ via:'challenge' } });
           sessionSummary(true, 'challenge');
           post('verified', { token: token });
+          armExpiry();
           if(INVISIBLE){
             // Nothing to fold back to — the frame goes away again.
             expanded.classList.add('hidden');
@@ -2056,7 +2264,7 @@
   }
   if(ro) ro.observe(document.querySelector('.stage'));
   window.addEventListener('load', reportSize);
-  logEvent('widget_open', { detail:{ firstParty:FIRST_PARTY, serverMode:SERVER_MODE, mode:INVISIBLE ? 'invisible' : 'checkbox' } });
+  logEvent('widget_open', { detail:{ firstParty:FIRST_PARTY, serverMode:SERVER_MODE, mode:INVISIBLE ? 'invisible' : 'checkbox', lane:INVISIBLE ? 'invisible' : (GAME_LANE ? 'game' : 'signal') } });
   post('ready');
   reportSize();
 })();

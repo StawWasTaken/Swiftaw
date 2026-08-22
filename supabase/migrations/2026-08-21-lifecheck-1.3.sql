@@ -146,7 +146,59 @@ $$;
 
 grant execute on function public.lifecheck_verify_token(text, text) to anon, authenticated;
 
--- ── Part 4: nothing to change for events, but worth knowing ──
+-- ── Part 4: cap the size of a single telemetry detail blob ──
+-- Every other field lifecheck_log_events writes is length-capped; `detail`
+-- was not, which left an anonymous endpoint that would store an arbitrarily
+-- large blob. v1.3's demo_trace rows are the biggest legitimate payload and
+-- land well under 16 KB.
+create or replace function public.lifecheck_log_events(
+  p_events   jsonb,
+  p_site_key text default null,
+  p_host     text default null,
+  p_session  text default null
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  e jsonb;
+  n int;
+  i int;
+begin
+  if p_events is null or jsonb_typeof(p_events) <> 'array' then
+    return;
+  end if;
+  n := jsonb_array_length(p_events);
+  if n > 50 then n := 50; end if;   -- cap batch size
+  i := 0;
+  while i < n loop
+    e := p_events -> i;
+    if jsonb_typeof(e) = 'object' then
+      insert into public.lifecheck_events
+        (session_id, site_key, host, event_type, challenge, outcome, suspicious, detail)
+      values (
+        left(coalesce(p_session, ''), 64),
+        left(coalesce(p_site_key, ''), 128),
+        left(coalesce(p_host, ''), 255),
+        left(coalesce(e ->> 't', 'unknown'), 48),
+        left(coalesce(e ->> 'challenge', ''), 32),
+        left(coalesce(e ->> 'outcome', ''), 16),
+        coalesce((e ->> 'suspicious')::boolean, false),
+        case when length(coalesce(e -> 'detail', '{}'::jsonb)::text) > 16384
+             then jsonb_build_object('dropped', 'detail-too-large')
+             else coalesce(e -> 'detail', '{}'::jsonb) end
+      );
+    end if;
+    i := i + 1;
+  end loop;
+end;
+$$;
+
+grant execute on function public.lifecheck_log_events(jsonb, text, text, text) to anon, authenticated;
+
+-- ── Part 5: nothing to change for events, but worth knowing ──
 -- v1.3 adds a `demo_trace` event type to lifecheck_events. Its `detail` is a
 -- self-describing record of one solved (or failed) mini-game:
 --
