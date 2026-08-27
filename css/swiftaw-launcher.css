@@ -1,0 +1,266 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SWIFTAW LAUNCHER — one door between everything we make
+   Pairs with /css/swiftaw-launcher.js. Reads /css/swiftaw-nb.css tokens where
+   they exist and falls back to literals where they don't, so it drops onto a
+   site that has not been rebuilt yet without dragging the whole system in.
+
+   What it is: ecosystem NAVIGATION. It moves you between products. It does
+   not join their accounts together, and nothing in here should suggest it
+   does — hence the standing footnote at the bottom of the panel.
+═══════════════════════════════════════════════════════════════════════════ */
+
+.swl-root {
+  position: relative;
+  display: inline-block;
+  font-family: var(--nb-font-body, system-ui, -apple-system, sans-serif);
+  --swl-line:    var(--nb-line, #000);
+  --swl-surface: var(--nb-surface, #fff);
+  --swl-surf-2:  var(--nb-surface-2, #F4F4EF);
+  --swl-fg:      var(--nb-fg, #000);
+  --swl-muted:   var(--nb-fg-muted, #4A4A4A);
+}
+.swl-root[data-theme="dark"] {
+  --swl-line:    #FFFFFF;
+  --swl-surface: #12161F;
+  --swl-surf-2:  #191F2B;
+  --swl-fg:      #FFFFFF;
+  --swl-muted:   #97A1B4;
+}
+
+/* ── the trigger ────────────────────────────────────────────────────────────
+   A 2×2 of Rainbaw squares. Four of the five colours, because a 2×2 is the
+   shape that reads as "apps" at 20px and a 3×3 turns to mush. */
+.swl-btn {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3px;
+  width: 42px; height: 42px;
+  padding: 9px;
+  background: var(--swl-surface);
+  border: var(--nb-bd-w, 3px) solid var(--swl-line);
+  border-radius: var(--nb-r-sm, 10px);
+  box-shadow: var(--nb-sh-sm, 2px 3px 0 #000);
+  cursor: pointer;
+  transition: transform var(--nb-fast, .14s) var(--nb-ease, ease),
+              box-shadow var(--nb-fast, .14s) var(--nb-ease, ease);
+}
+.swl-btn > i { border-radius: 2px; }
+.swl-btn > i:nth-child(1) { background: var(--nb-red,    #FF0033); }
+.swl-btn > i:nth-child(2) { background: var(--nb-blue,   #2CAFFC); }
+.swl-btn > i:nth-child(3) { background: var(--nb-yellow, #FFF93E); }
+.swl-btn > i:nth-child(4) { background: var(--nb-pink,   #FF77E4); }
+
+.swl-btn:hover  { transform: translate(-1px, -1px); box-shadow: 3px 4px 0 #000; }
+.swl-btn:active,
+.swl-btn[aria-expanded="true"] {
+  transform: translate(2px, 3px);
+  box-shadow: var(--nb-sh-press, 1px 2px 0 #000);
+}
+
+/* ── the panel ─────────────────────────────────────────────────────────── */
+.swl-panel {
+  position: absolute;
+  top: calc(100% + 12px); right: 0;
+  z-index: 9400;
+  width: 372px;
+  background: var(--swl-surface);
+  color: var(--swl-fg);
+  border: var(--nb-bd-w, 3px) solid var(--swl-line);
+  border-radius: var(--nb-r, 18px);
+  box-shadow: var(--nb-sh-lg, 8px 10px 0 #000);
+  overflow: hidden;
+  animation: swlIn .2s var(--nb-ease, ease) backwards;
+}
+.swl-panel[hidden] { display: none; }
+.swl-root.align-left .swl-panel { right: auto; left: 0; }
+@keyframes swlIn { from { opacity: 0; transform: translateY(-8px); } }
+
+.swl-stripe { display: flex; height: 7px; }
+.swl-stripe > i { flex: 1; }
+.swl-stripe > i:nth-child(1) { background: var(--nb-red,    #FF0033); }
+.swl-stripe > i:nth-child(2) { background: var(--nb-green,  #3ECF6E); }
+.swl-stripe > i:nth-child(3) { background: var(--nb-blue,   #2CAFFC); }
+.swl-stripe > i:nth-child(4) { background: var(--nb-yellow, #FFF93E); }
+.swl-stripe > i:nth-child(5) { background: var(--nb-pink,   #FF77E4); }
+
+.swl-scroll { max-height: min(72vh, 560px); overflow-y: auto; padding: 16px; }
+
+.swl-sec + .swl-sec { margin-top: 18px; }
+.swl-sec-label {
+  font-family: var(--nb-font-head, 'Syne', sans-serif);
+  font-weight: 700; font-size: 11px;
+  letter-spacing: .13em; text-transform: uppercase;
+  color: var(--swl-muted);
+  margin-bottom: 9px;
+}
+
+/* ── a tile ─────────────────────────────────────────────────────────────── */
+.swl-grid { display: flex; flex-direction: column; gap: 8px; }
+
+.swl-tile {
+  position: relative;
+  display: flex; align-items: center; gap: 13px;
+  width: 100%;
+  padding: 10px 12px;
+  text-align: left;
+  background: var(--swl-surface);
+  color: inherit;
+  border: var(--nb-bd-w-thin, 2px) solid transparent;
+  border-radius: var(--nb-r-sm, 10px);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--nb-fast, .14s), border-color var(--nb-fast, .14s),
+              transform var(--nb-fast, .14s);
+}
+.swl-tile:hover, .swl-tile:focus-visible {
+  background: var(--swl-surf-2);
+  border-color: var(--swl-line);
+  transform: translateX(2px);
+}
+
+.swl-ico {
+  flex: none;
+  width: 44px; height: 44px;
+  border: var(--nb-bd-w-thin, 2px) solid var(--swl-line);
+  border-radius: var(--nb-r-sm, 10px);
+  box-shadow: var(--nb-sh-sm, 2px 3px 0 #000);
+  object-fit: cover;
+  background: var(--swl-surf-2);
+}
+
+.swl-meta { min-width: 0; flex: 1; display: block; }
+.swl-name {
+  font-family: var(--nb-font-head, 'Syne', sans-serif);
+  font-weight: 700; font-size: 15px; line-height: 1.2;
+  display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+}
+.swl-what {
+  display: block;
+  font-size: 12.5px; line-height: 1.35;
+  color: var(--swl-muted);
+  margin-top: 2px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* "You're here" and "Coming soon" are the same shape so neither reads as a
+   promotion of the other. */
+.swl-flag {
+  font-family: var(--nb-font-head, 'Syne', sans-serif);
+  font-weight: 700; font-size: 9.5px;
+  letter-spacing: .08em; text-transform: uppercase;
+  border: 2px solid var(--swl-line);
+  border-radius: 999px;
+  padding: 1px 7px;
+  white-space: nowrap;
+}
+.swl-flag--here { background: var(--nb-yellow, #FFF93E); color: #000; border-color: #000; }
+.swl-flag--soon { color: var(--swl-muted); }
+
+/* Hereld has no domain yet. A tile that cannot go anywhere must not pretend
+   it can — no pointer, no hover travel, and it is not a link element. */
+.swl-tile.is-soon { cursor: default; opacity: .72; }
+.swl-tile.is-soon:hover { background: none; border-color: transparent; transform: none; }
+
+/* ── the favourite star ─────────────────────────────────────────────────── */
+.swl-star {
+  flex: none;
+  width: 30px; height: 30px;
+  display: grid; place-items: center;
+  background: none; border: 0; border-radius: 8px;
+  cursor: pointer;
+  color: var(--swl-muted);
+  /* Faint at rest rather than invisible. A control nobody can see is a
+     control nobody finds, and the empty state above promises it exists. */
+  opacity: .32;
+  transition: opacity var(--nb-fast, .14s), color var(--nb-fast, .14s),
+              transform var(--nb-fast, .14s);
+}
+.swl-star svg { width: 16px; height: 16px; fill: currentColor; }
+.swl-tile:hover .swl-star,
+.swl-tile:focus-within .swl-star,
+.swl-star:focus-visible,
+.swl-star.on { opacity: 1; }
+.swl-star.on { color: var(--nb-yellow, #FFF93E); }
+.swl-star:hover { transform: scale(1.14); color: var(--nb-yellow, #FFF93E); }
+
+.swl-empty {
+  font-size: 12.5px; line-height: 1.5;
+  color: var(--swl-muted);
+  border: var(--nb-bd-w-thin, 2px) dashed var(--swl-line);
+  border-radius: var(--nb-r-sm, 10px);
+  padding: 12px 14px;
+  opacity: .8;
+}
+
+/* ── the account foot ───────────────────────────────────────────────────── */
+.swl-foot {
+  border-top: var(--nb-bd-w-thin, 2px) solid var(--swl-line);
+  background: var(--swl-surf-2);
+  padding: 13px 16px 14px;
+}
+.swl-acct {
+  display: flex; align-items: center; gap: 11px;
+  width: 100%;
+  background: none; border: 0; padding: 0;
+  color: inherit; text-align: left; text-decoration: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.swl-av {
+  flex: none;
+  width: 34px; height: 34px;
+  border: var(--nb-bd-w-thin, 2px) solid var(--swl-line);
+  border-radius: 999px;
+  background-size: cover; background-position: center;
+  background-color: var(--nb-yellow, #FFF93E);
+  color: #000;
+  display: grid; place-items: center;
+  font-family: var(--nb-font-head, 'Syne', sans-serif);
+  font-weight: 700; font-size: 14px;
+}
+.swl-acct-meta { min-width: 0; flex: 1; display: block; }
+.swl-acct-name {
+  display: block;
+  font-family: var(--nb-font-head, 'Syne', sans-serif);
+  font-weight: 700; font-size: 13.5px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.swl-acct-sub {
+  display: block;
+  font-size: 11.5px; color: var(--swl-muted);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* The one line that keeps this honest. It is not fine print to be trimmed
+   when the panel gets crowded — three separate account systems is a fact
+   about the products, not a disclaimer. */
+.swl-note {
+  margin-top: 11px;
+  font-size: 11px; line-height: 1.45;
+  color: var(--swl-muted);
+}
+
+/* ── mobile: a sheet from the bottom, not a 372px popover on a 360px screen */
+@media (max-width: 560px) {
+  .swl-backdrop {
+    position: fixed; inset: 0; z-index: 9390;
+    background: rgba(0, 0, 0, .45);
+    animation: swlFade .2s var(--nb-ease, ease) backwards;
+  }
+  @keyframes swlFade { from { opacity: 0; } }
+  .swl-panel {
+    position: fixed;
+    top: auto; bottom: 0; left: 0; right: 0;
+    width: auto;
+    border-radius: var(--nb-r, 18px) var(--nb-r, 18px) 0 0;
+    border-bottom: 0;
+    animation-name: swlInSheet;
+  }
+  @keyframes swlInSheet { from { opacity: 0; transform: translateY(26px); } }
+  .swl-scroll { max-height: 74dvh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swl-panel, .swl-backdrop { animation: none; }
+  .swl-btn, .swl-tile, .swl-star { transition: none; }
+}

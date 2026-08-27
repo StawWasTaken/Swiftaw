@@ -42,14 +42,18 @@
      same-origin on swiftaw.com and cross-origin everywhere else without a
      second hardcoded host to keep in sync. Falls back to the canonical
      origin if we cannot see our own tag (inlined, bundled, injected). */
-  var DECO_BASE = (function () {
-    var s = document.currentScript ||
-            document.querySelector('script[src*="swiftaw-consent"]');
-    try {
-      if (s && s.src) return new URL('../SWFT-Deco/', s.src).href;
-    } catch (e) { /* malformed src — fall through */ }
-    return 'https://swiftaw.com/SWFT-Deco/';
-  })();
+  /* Captured now, at execution time, because document.currentScript is only
+     ours while this file is running — anything reading it later gets null. */
+  var SELF = document.currentScript ||
+             document.querySelector('script[src*="swiftaw-consent"]');
+  var SELF_SRC = (SELF && SELF.src) || '';
+
+  function beside(file, fallback) {
+    try { if (SELF_SRC) return new URL(file, SELF_SRC).href; } catch (e) {}
+    return fallback;
+  }
+
+  var DECO_BASE = beside('../SWFT-Deco/', 'https://swiftaw.com/SWFT-Deco/');
 
   var SWIFTAW_PRIVACY = { label: 'Swiftaw Privacy Policy',
                           href: 'https://swiftaw.com/legal/privacy-policy' };
@@ -113,12 +117,25 @@
     }
   }
 
+  /* The card carries its own stylesheet, resolved next to this file the same
+     way the deco is. A consent notice that renders unstyled because a site
+     forgot one <link> is a consent notice nobody can read — and the header
+     above promises a single script tag is enough. Harmless if the site has
+     already linked it: the [data-swc-css] guard means we never add a second. */
+  function ensureCss() {
+    if (document.querySelector('link[data-swc-css]')) return;
+    var href = beside('swiftaw-consent.css',
+                      'https://swiftaw.com/css/swiftaw-consent.css');
+    if (document.querySelector('link[href="' + href + '"]')) return;
+    var l = document.createElement('link');
+    l.rel = 'stylesheet'; l.href = href; l.setAttribute('data-swc-css', '');
+    document.head.appendChild(l);
+  }
+
   /* ── config ──────────────────────────────────────────────────────────── */
   function fromScriptTag() {
-    var s = document.currentScript ||
-            document.querySelector('script[src*="swiftaw-consent"]');
-    if (!s) return {};
-    var d = s.dataset || {};
+    if (!SELF) return {};
+    var d = SELF.dataset || {};
     var links = [SWIFTAW_PRIVACY];
     if (d.privacySelf && d.product) {
       links.push({ label: d.product + ' Privacy Policy', href: d.privacySelf });
@@ -382,6 +399,7 @@
   /* ── public API ──────────────────────────────────────────────────────── */
   var api = {
     init: function (opts) {
+      ensureCss();
       state.cfg = resolve(opts);
       var saved = read();
       if (saved) { state.choice = saved; emit(saved); return saved; }
@@ -419,8 +437,7 @@
 
   /* Auto-start when the tag carries a data-product, so a site can drop in a
      single <script> and be done. */
-  var self = document.currentScript;
-  if (self && self.dataset && self.dataset.product) {
+  if (SELF && SELF.dataset && SELF.dataset.product) {
     api.init();
   }
 })(window);

@@ -38,6 +38,46 @@
   document.head.appendChild(s);
 })();
 
+// ════════════════════════════════════════════
+//   Shared ecosystem components
+//   Every page served from this origin gets the same launcher and the same
+//   consent card. Which SITE you are on is read from the path, because
+//   swiftaw.com, /lifecheck/ and /supernova/ are three products sharing one
+//   origin — and the consent record is per-origin, so they share it too.
+//
+//   swiftaw-nb.css is deliberately NOT loaded here. It restyles base elements,
+//   and these pages have not been rebuilt on it yet. Both components carry
+//   literal fallbacks for exactly that reason, so they look right either way.
+// ════════════════════════════════════════════
+(function () {
+  const path = location.pathname;
+  const site = path.indexOf('/lifecheck') === 0 ? 'Lifecheck'
+             : path.indexOf('/supernova') === 0 ? 'Supernova'
+             : 'Swiftaw';
+
+  function load(id, src, data) {
+    if (document.getElementById(id)) return;
+    const s = document.createElement('script');
+    s.id = id; s.src = src; s.defer = true;
+    Object.keys(data).forEach(k => s.dataset[k] = data[k]);
+    document.head.appendChild(s);
+  }
+
+  // The launcher flags the site you are on so it can say "You're here".
+  // Swiftaw itself is not a tile — it is the thing the tiles belong to.
+  load('swiftaw-launcher-loader', '/css/swiftaw-launcher.js', {
+    current: site === 'Swiftaw' ? '' : site.toLowerCase(),
+    theme: 'dark'
+  });
+
+  // All three of these link Swiftaw's privacy policy and only that one,
+  // because it is the policy that actually covers them.
+  load('swiftaw-consent-loader', '/css/swiftaw-consent.js', {
+    product: site,
+    theme: 'dark'
+  });
+})();
+
 // Copy button on code blocks (docs + overview), like AI code blocks
 (function () {
   function ready(fn) { if (document.readyState !== 'loading') fn(); else document.addEventListener('DOMContentLoaded', fn); }

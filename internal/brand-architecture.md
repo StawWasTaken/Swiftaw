@@ -317,14 +317,61 @@ Privacy links per site, using **only routes that exist**:
 | Fortized | Swiftaw + Fortized |
 | Hereld | Swiftaw only, **until Hereld has a privacy page** |
 
-## The app launcher
+## `css/swiftaw-launcher.js` + `css/swiftaw-launcher.css`
 
-Ecosystem navigation only — three sections, **Favourites**, **Swiftaw
-Products** (Fortized, Hereld) and **Swiftaw Services** (Lifecheck,
-Supernova), plus the Swiftaw profile picture and account menu when signed in.
+Ecosystem navigation only. A Rainbaw 2×2 button opens a panel with three
+sections — **Favourites**, **Swiftaw Products** (Fortized, Hereld) and
+**Swiftaw Services** (Lifecheck, Supernova) — and the Swiftaw account at the
+foot. Same single script tag as the consent card:
+
+```html
+<script src="https://swiftaw.com/css/swiftaw-launcher.js"
+        data-current="fortized" data-theme="dark"></script>
+```
+
+`data-current` puts a **You're here** flag on the tile you are standing on.
+Swiftaw itself is not a tile — it is the thing the tiles belong to.
+
+Favourites are pinned with the star on each tile and kept in `localStorage`
+per browser. Nothing about them leaves the device.
+
+**Hereld has no domain, so its tile has no link.** It is a `<div>` flagged
+*Coming soon*, not an `<a href="#">` — a tile that leads nowhere must not
+behave like one that does. It becomes a link the moment a domain exists.
 
 It navigates between products. It does **not** unify the account systems
-underneath them, and nothing about it should imply that it does.
+underneath them, and the panel says so in a standing line above the fold of
+its own footer: *"Swiftaw accounts are separate from Fortized and Hereld
+accounts. Each product signs you in itself."* That line is not fine print to
+be trimmed when the panel gets crowded.
+
+The account row only ever describes a **Swiftaw** account, and only when
+`swiftaw-account.js` has actually resolved one on that origin. On a product's
+own domain there is no Swiftaw session to read, so the row is a plain link to
+`swiftaw.com/account` — never a claim about a session it cannot see.
+
+### Icons
+
+`product-logos/` holds a square icon per entry. Fortized's shipped as one;
+Hereld's is the app icon lifted out of its own logomark; Supernova's is its
+existing square mark; Lifecheck's is its gradient arrow seated on the same
+near-black Supernova uses, because its wordmark is white and does not survive
+on its own. Every pixel comes from an asset that already existed — none of it
+is drawn from scratch.
+
+## Loading them
+
+`css/swiftaw.js` loads both components on every page served from this origin
+and works out which site you are on from the path, because swiftaw.com,
+`/lifecheck/` and `/supernova/` are three products sharing one origin.
+
+`swiftaw-nb.css` is deliberately **not** loaded there. It restyles base
+elements and these pages have not been rebuilt on it yet, so both components
+carry their own literal fallbacks for the tokens and the two nb classes they
+use. They look correct with the design system and without it.
+
+Fortized and Hereld are served elsewhere and need their own script tags, plus
+a CSP that allows `https://swiftaw.com` as a script and style source.
 
 ---
 

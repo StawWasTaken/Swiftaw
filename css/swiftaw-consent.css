@@ -22,6 +22,85 @@
 }
 .swc-root[hidden] { display: none; }
 
+/* ── standing on its own ────────────────────────────────────────────────────
+   This card ships to sites that have not been rebuilt on swiftaw-nb.css yet,
+   so it cannot assume those tokens exist. The values below are the same ones
+   nb.css defines; when nb.css IS present they agree, and these simply win on
+   specificity. Without them a dark site got a white card with unstyled text
+   buttons — which is how a consent notice becomes unreadable. */
+.swc-root[data-nb] {
+  --nb-red: #FF0033; --nb-green: #3ECF6E; --nb-blue: #2CAFFC;
+  --nb-yellow: #FFF93E; --nb-pink: #FF77E4; --nb-ink: #000000;
+  --nb-bd-w: 3px; --nb-bd-w-thin: 2px;
+  --nb-r-sm: 10px; --nb-r: 18px;
+  --nb-fast: .14s; --nb-ease: cubic-bezier(.2, .9, .25, 1);
+  --nb-sh: 4px 6px 0 #000; --nb-sh-lg: 8px 10px 0 #000; --nb-sh-press: 1px 2px 0 #000;
+}
+.swc-root[data-nb="light"], .swc-root[data-nb="yellow"] {
+  --nb-surface: #FFFFFF; --nb-surface-2: #F4F4EF;
+  --nb-fg: #000000; --nb-fg-muted: #4A4A4A; --nb-line: #000000;
+}
+.swc-root[data-nb="yellow"] { --nb-surface-2: #FFF93E; --nb-fg-muted: #3A3A2A; }
+.swc-root[data-nb="dark"] {
+  --nb-surface: #12161F; --nb-surface-2: #191F2B;
+  --nb-fg: #FFFFFF; --nb-fg-muted: #97A1B4; --nb-line: #FFFFFF;
+}
+.swc-root[data-nb] { --nb-bd: var(--nb-bd-w) solid var(--nb-line); }
+
+/* The one button recipe, scoped so it can never leak onto a host page:
+   rest sits on its shadow, hover lifts a pixel, press travels INTO it.
+   The radius is pinned in every state — a press must not square it off. */
+.swc-card .nb-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  font-family: var(--nb-font-head, 'Syne', sans-serif);
+  font-weight: 700; font-size: 18px; line-height: 1;
+  text-align: center; white-space: nowrap;
+  padding: 17px 30px;
+  background: var(--btn-bg, var(--nb-surface)); color: var(--btn-fg, var(--nb-fg));
+  border: var(--nb-bd); border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh);
+  cursor: pointer; user-select: none;
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast),
+              background var(--nb-fast);
+}
+.swc-card .nb-btn:hover  { transform: translate(-1px, -1px); box-shadow: 5px 7px 0 #000; }
+.swc-card .nb-btn:active { transform: translate(3px, 4px);   box-shadow: var(--nb-sh-press); }
+.swc-card .nb-btn--primary { --btn-bg: var(--nb-yellow); --btn-fg: var(--nb-ink); }
+
+/* Same reasoning for the preference checkboxes. A tick box that renders as a
+   naked <input> on half the estate is not a choice anyone trusts. */
+.swc-card .nb-sr {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.swc-card .nb-check { display: inline-flex; align-items: flex-start; gap: 11px; cursor: pointer; }
+.swc-card .nb-check input { position: absolute; opacity: 0; width: 0; height: 0; }
+.swc-card .nb-box {
+  width: 24px; height: 24px; flex: none;
+  background: var(--nb-surface);
+  border: var(--nb-bd); border-radius: 6px;
+  display: grid; place-items: center;
+  transition: background var(--nb-fast);
+}
+.swc-card .nb-box::after {
+  content: ""; width: 11px; height: 6px; margin-top: -3px;
+  border-left: 3px solid var(--nb-ink); border-bottom: 3px solid var(--nb-ink);
+  transform: rotate(-45deg) scale(0); transform-origin: center;
+  transition: transform var(--nb-fast);
+}
+.swc-card .nb-check input:checked + .nb-box { background: var(--nb-yellow); }
+.swc-card .nb-check input:checked + .nb-box::after { transform: rotate(-45deg) scale(1); }
+.swc-card .nb-check input:focus-visible + .nb-box {
+  outline: 3px solid var(--nb-blue); outline-offset: 2px;
+}
+/* Necessary storage: ticked, and not yours to untick. It reads as decided
+   rather than as an option you failed to notice. */
+.swc-card .swc-pref-fixed {
+  background: var(--nb-yellow); cursor: not-allowed; opacity: .85;
+}
+.swc-card .swc-pref-fixed::after { transform: rotate(-45deg) scale(1); }
+
 /* ── the dim + blur, only ever painted in the centred state ─────────────── */
 .swc-backdrop {
   position: absolute; inset: 0;
