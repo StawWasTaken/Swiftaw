@@ -52,13 +52,21 @@
   --nb-night-3:    #191F2B;
 
   /* ── SURFACE CONTEXT ─────────────────────────────────────────────────
-     Every component reads these four, never a literal. Flip the context
-     (see [data-nb] below) and the whole block re-skins with no overrides. */
+     Every component reads these, never a literal. Flip the context
+     (see [data-nb] below) and the whole block re-skins with no overrides.
+
+     --nb-bg / --nb-fg   = the PAGE ground and the text written on it.
+     --nb-surface / --nb-surface-fg = a raised PANEL and the text on it.
+     They are two different pairs because on a dark page the ground is dark
+     and the panels are paper; on a light page both are paper and the split
+     costs nothing. */
   --nb-bg:        var(--nb-paper);
   --nb-surface:   var(--nb-paper);
   --nb-surface-2: var(--nb-paper-2);
   --nb-fg:        var(--nb-ink);
+  --nb-surface-fg: var(--nb-ink);
   --nb-fg-muted:  #4A4A4A;
+  --nb-surface-fg-muted: #4A4A4A;
   --nb-line:      var(--nb-ink);
 
   /* ── BORDERS & SHADOWS ───────────────────────────────────────────────── */
@@ -96,15 +104,20 @@
 
 /* ── SURFACE CONTEXTS ──────────────────────────────────────────────────────
    Put data-nb="dark" on <html>, a <section>, or a single card. Children
-   inherit. The border stays black on light ground and turns to the accent
-   or white on dark ground, because a black border on a black background
-   is not a border. ─────────────────────────────────────────────────────── */
+   inherit. ONLY THE FILL CHANGES between contexts: the border is black and
+   the shadow is black on every surface, light or dark. A white border with
+   a black shadow reads as two different objects; keeping both black is what
+   makes a raised panel read as one solid thing cut out of the page. On dark
+   ground the separation comes from the panel being PAPER against the dark
+   page, not from the stroke. ───────────────────────────────────────────── */
 [data-nb="light"] {
   --nb-bg:        var(--nb-paper);
   --nb-surface:   var(--nb-paper);
   --nb-surface-2: var(--nb-paper-2);
   --nb-fg:        var(--nb-ink);
+  --nb-surface-fg: var(--nb-ink);
   --nb-fg-muted:  #4A4A4A;
+  --nb-surface-fg-muted: #4A4A4A;
   --nb-line:      var(--nb-ink);
 }
 [data-nb="yellow"] {
@@ -112,18 +125,23 @@
   --nb-surface:   var(--nb-paper);
   --nb-surface-2: var(--nb-yellow);
   --nb-fg:        var(--nb-ink);
+  --nb-surface-fg: var(--nb-ink);
   --nb-fg-muted:  #3A3A2A;
+  --nb-surface-fg-muted: #3A3A2A;
   --nb-line:      var(--nb-ink);
 }
 [data-nb="dark"] {
+  /* The page ground is night and its text is white. The PANELS on it are
+     paper with black text, so the black stroke and black shadow the spec
+     calls for have something to sit against. Only the fill changes. */
   --nb-bg:        var(--nb-night);
-  --nb-surface:   var(--nb-night-2);
-  --nb-surface-2: var(--nb-night-3);
+  --nb-surface:   var(--nb-paper);
+  --nb-surface-2: var(--nb-paper-2);
   --nb-fg:        #FFFFFF;
+  --nb-surface-fg: var(--nb-ink);
   --nb-fg-muted:  #97A1B4;
-  --nb-line:      #FFFFFF;
-  /* On dark ground the hard shadow is drawn in the true black of the page
-     ground, which still reads as depth because the border is white. */
+  --nb-surface-fg-muted: #4A4A4A;
+  --nb-line:      var(--nb-ink);
   --nb-sh:      4px 6px 0 #000000;
   --nb-sh-sm:   2px 3px 0 #000000;
   --nb-sh-lg:   8px 10px 0 #000000;
@@ -253,7 +271,7 @@ h1, h2, h3, h4, h5, h6, .nb-h {
    so a press can never square a button off. ───────────────────────────── */
 .nb-btn {
   --btn-bg: var(--nb-surface);
-  --btn-fg: var(--nb-fg);
+  --btn-fg: var(--nb-surface-fg);
   display: inline-flex; align-items: center; justify-content: center; gap: 9px;
   font-family: var(--nb-font-head); font-weight: 700; font-size: 15px;
   line-height: 1; text-align: center; white-space: nowrap;
@@ -298,7 +316,7 @@ h1, h2, h3, h4, h5, h6, .nb-h {
 .nb-icon-btn {
   display: inline-flex; align-items: center; justify-content: center;
   width: 42px; height: 42px; flex: none;
-  background: var(--nb-surface); color: var(--nb-fg);
+  background: var(--nb-surface); color: var(--nb-surface-fg);
   border: var(--nb-bd); border-radius: var(--nb-r-sm);
   box-shadow: var(--nb-sh-sm);
   transition: transform var(--nb-fast), box-shadow var(--nb-fast), background var(--nb-fast);
@@ -308,10 +326,20 @@ h1, h2, h3, h4, h5, h6, .nb-h {
 .nb-icon-btn:active { transform: translate(2px, 3px); box-shadow: 0 0 0 var(--nb-ink); }
 .nb-icon-btn--round { border-radius: 50%; }
 
-/* ═══════ SURFACES ═══════════════════════════════════════════════════════ */
+/* ═══════ SURFACES ═══════════════════════════════════════════════════════
+   Standing on a raised surface re-points the two text tokens at the surface
+   pair, so anything nested inside — a hint, a muted line, an empty state —
+   is coloured for the paper it is printed on rather than for the page ground
+   behind it. Without this, one `.nb-hint` inside a card on a dark page comes
+   out white on white. ─────────────────────────────────────────────────── */
+.nb-card, .nb-panel, .nb-dialog, .nb-nav, .nb-footer, .nb-alert {
+  --nb-fg:       var(--nb-surface-fg);
+  --nb-fg-muted: var(--nb-surface-fg-muted);
+}
+
 .nb-card {
   background: var(--nb-surface);
-  color: var(--nb-fg);
+  color: var(--nb-surface-fg);
   border: var(--nb-bd);
   border-radius: var(--nb-r);
   box-shadow: var(--nb-sh);
@@ -340,6 +368,7 @@ h1, h2, h3, h4, h5, h6, .nb-h {
 
 .nb-panel {
   background: var(--nb-surface-2);
+  color: var(--nb-surface-fg);
   border: var(--nb-bd-thin);
   border-radius: var(--nb-r-sm);
   padding: 16px;
@@ -364,7 +393,7 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   font-family: var(--nb-font-head); font-weight: 700;
   font-size: 12px; letter-spacing: .02em;
   padding: 5px 10px;
-  background: var(--nb-surface); color: var(--nb-fg);
+  background: var(--nb-surface); color: var(--nb-surface-fg);
   border: var(--nb-bd-thin); border-radius: 7px;
 }
 .nb-tag--yellow { background: var(--nb-yellow); color: var(--nb-ink); }
@@ -382,14 +411,14 @@ h1, h2, h3, h4, h5, h6, .nb-h {
 .nb-input, .nb-textarea, .nb-select {
   width: 100%;
   background: var(--nb-surface);
-  color: var(--nb-fg);
+  color: var(--nb-surface-fg);
   border: var(--nb-bd);
   border-radius: var(--nb-r-sm);
   padding: 12px 14px;
   font-size: 15px;
   transition: box-shadow var(--nb-fast), border-color var(--nb-fast);
 }
-.nb-input::placeholder, .nb-textarea::placeholder { color: var(--nb-fg-muted); }
+.nb-input::placeholder, .nb-textarea::placeholder { color: var(--nb-surface-fg-muted); }
 .nb-input:focus, .nb-textarea:focus, .nb-select:focus {
   outline: none;
   box-shadow: var(--nb-sh-sm);
@@ -404,9 +433,8 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   background-size: 12px;
   padding-right: 38px;
 }
-[data-nb="dark"] .nb-select {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
-}
+/* No dark-ground override for the chevron: the field itself is paper in every
+   context now, so a white arrow would disappear into it. */
 .nb-hint  { font-size: 13px; color: var(--nb-fg-muted); }
 .nb-error { font-size: 13px; font-weight: 600; color: var(--nb-red); }
 .nb-input[aria-invalid="true"], .nb-textarea[aria-invalid="true"] { border-color: var(--nb-red); }
@@ -456,7 +484,7 @@ h1, h2, h3, h4, h5, h6, .nb-h {
    A real bar with a real bottom edge — not a floating blurred capsule. */
 .nb-nav {
   position: sticky; top: 0; z-index: 400;
-  background: var(--nb-surface);
+  background: var(--nb-surface); color: var(--nb-surface-fg);
   border-bottom: var(--nb-bd);
 }
 .nb-nav-in {
@@ -498,7 +526,7 @@ h1, h2, h3, h4, h5, h6, .nb-h {
 
 /* ═══════ FOOTER ═════════════════════════════════════════════════════════ */
 .nb-footer {
-  background: var(--nb-surface);
+  background: var(--nb-surface); color: var(--nb-surface-fg);
   border-top: var(--nb-bd);
   padding: clamp(40px, 6vw, 72px) 0 32px;
 }
@@ -513,14 +541,14 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   margin-bottom: 14px;
 }
 .nb-footer-list { display: flex; flex-direction: column; gap: 9px; }
-.nb-footer-list a { font-size: 14.5px; color: var(--nb-fg-muted); width: fit-content; }
-.nb-footer-list a:hover { color: var(--nb-fg); text-decoration: underline; text-underline-offset: 3px; }
+.nb-footer-list a { font-size: 14.5px; color: var(--nb-surface-fg-muted); width: fit-content; }
+.nb-footer-list a:hover { color: var(--nb-surface-fg); text-decoration: underline; text-underline-offset: 3px; }
 .nb-footer-base {
   margin-top: 38px; padding-top: 22px;
   border-top: var(--nb-bd-thin);
   display: flex; justify-content: space-between; align-items: center;
   gap: 16px; flex-wrap: wrap;
-  font-size: 13.5px; color: var(--nb-fg-muted);
+  font-size: 13.5px; color: var(--nb-surface-fg-muted);
 }
 
 /* ═══════ THE RAINBAW BAR ════════════════════════════════════════════════
@@ -592,9 +620,6 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   background: linear-gradient(90deg, transparent, rgba(0,0,0,.06), transparent);
   animation: nbSkel 1.3s linear infinite;
 }
-[data-nb="dark"] .nb-skel::after {
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
-}
 @keyframes nbSkel { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
 @media (prefers-reduced-motion: reduce) { .nb-skel::after { animation: none; } }
 .nb-skel--line { height: 13px; border-radius: 5px; }
@@ -613,7 +638,7 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   border: var(--nb-bd); border-radius: var(--nb-r-sm);
   box-shadow: var(--nb-sh-sm);
   padding: 14px 16px; font-size: 14.5px;
-  background: var(--nb-surface);
+  background: var(--nb-surface); color: var(--nb-surface-fg);
 }
 .nb-alert--error   { background: var(--nb-red);    color: #fff; }
 .nb-alert--ok      { background: var(--nb-green);  color: var(--nb-ink); }
@@ -624,8 +649,11 @@ h1, h2, h3, h4, h5, h6, .nb-h {
 /* Spinner — a square that rotates. Round spinners are everyone's; this
    one belongs to the system. */
 .nb-spin {
+  /* currentColor, NOT --nb-line: the spinner is a glyph sitting on the page,
+     not a panel edge, so it has to stay visible on a dark ground where the
+     line colour is black. */
   width: 20px; height: 20px; flex: none;
-  border: 3px solid var(--nb-line);
+  border: 3px solid currentColor;
   border-top-color: transparent;
   border-radius: 4px;
   animation: nbSpin .8s linear infinite;
@@ -642,7 +670,7 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   animation: nbFade .18s var(--nb-ease);
 }
 .nb-dialog {
-  background: var(--nb-surface); color: var(--nb-fg);
+  background: var(--nb-surface); color: var(--nb-surface-fg);
   border: var(--nb-bd); border-radius: var(--nb-r);
   box-shadow: var(--nb-sh-lg);
   width: min(520px, 100%);

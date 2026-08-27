@@ -169,9 +169,33 @@ The radius is pinned in every state. A press must never square a button off.
 
 ## Surfaces
 
-`[data-nb="light" | "yellow" | "dark"]` re-skins the whole component set. In
-`dark`, the border colour flips to white — a black border on a black
-background is not a border.
+`[data-nb="light" | "yellow" | "dark"]` re-skins the whole component set.
+
+**Only the fill changes. The stroke is black and the shadow is black on every
+surface, light or dark** — that is the whole rule, and it is the one the spec
+card shows: black stroke, black shadow, white fill. A white stroke with a
+black shadow reads as two different objects stuck together; both black is
+what makes a raised panel read as one solid thing cut out of the page.
+
+That has a consequence worth stating plainly: **on a dark page the panels are
+paper, not near-black.** A black stroke needs paper to read against. So
+`dark` splits its tokens in two:
+
+| | page ground | raised panel |
+| --- | --- | --- |
+| background | `--nb-bg` — night `#0C0F15` | `--nb-surface` — paper |
+| text | `--nb-fg` — white | `--nb-surface-fg` — ink |
+| muted text | `--nb-fg-muted` | `--nb-surface-fg-muted` |
+
+In `light` and `yellow` both columns are the same thing, so the split costs
+nothing. Anything sitting **on** a surface (`.nb-card`, `.nb-panel`,
+`.nb-dialog`, `.nb-nav`, `.nb-footer`, `.nb-btn`, `.nb-input`, `.nb-tag`,
+`.nb-alert`) reads `--nb-surface-fg`; anything sitting on the page ground
+reads `--nb-fg`.
+
+Two things deliberately do **not** use `--nb-line`, because they are glyphs on
+the page rather than panel edges and a black one would vanish on night ground:
+`.nb-spin` and any icon stroke. Both use `currentColor`.
 
 ## Artwork
 
@@ -321,8 +345,8 @@ Privacy links per site, using **only routes that exist**:
 
 Ecosystem navigation only. A Rainbaw 2×2 button opens a panel with three
 sections — **Favourites**, **Swiftaw Products** (Fortized, Hereld) and
-**Swiftaw Services** (Lifecheck, Supernova) — and the Swiftaw account at the
-foot. Same single script tag as the consent card:
+**Swiftaw Services** (Lifecheck, Supernova). Same single script tag as the
+consent card:
 
 ```html
 <script src="https://swiftaw.com/css/swiftaw-launcher.js"
@@ -340,35 +364,82 @@ per browser. Nothing about them leaves the device.
 behave like one that does. It becomes a link the moment a domain exists.
 
 It navigates between products. It does **not** unify the account systems
-underneath them, and the panel says so in a standing line above the fold of
-its own footer: *"Swiftaw accounts are separate from Fortized and Hereld
-accounts. Each product signs you in itself."* That line is not fine print to
-be trimmed when the panel gets crowded.
+underneath them, and the panel says so in a standing line in its own footer:
+*"Swiftaw, Fortized and Hereld accounts are separate. Each product signs you
+in itself."* That line is not fine print to be trimmed when the panel gets
+crowded — this panel puts three products a click apart, and the natural
+assumption is that clicking through carries you with it.
 
-The account row only ever describes a **Swiftaw** account, and only when
-`swiftaw-account.js` has actually resolved one on that origin. On a product's
-own domain there is no Swiftaw session to read, so the row is a plain link to
-`swiftaw.com/account` — never a claim about a session it cannot see.
+**There is no account in here.** The account is its own button, sitting beside
+this one — see below. They were briefly one control and that was wrong twice
+over: it buried the account inside a products menu, and a launcher that also
+holds your session is precisely the thing that makes people believe the
+products share one.
 
 ### Icons
 
-`product-logos/` holds a square icon per entry. Fortized's shipped as one;
-Hereld's is the app icon lifted out of its own logomark; Supernova's is its
-existing square mark; Lifecheck's is its gradient arrow seated on the same
-near-black Supernova uses, because its wordmark is white and does not survive
-on its own. Every pixel comes from an asset that already existed — none of it
-is drawn from scratch.
+`product-logos/` holds a square icon per entry — a favicon, essentially.
+Fortized's shipped as one; Supernova's is its real `supernova/Supernova
+favicon.png`; Hereld's is the app icon lifted out of its own logomark;
+Lifecheck's is its gradient arrow seated on the same near-black Supernova
+uses, because its wordmark is white and does not survive on its own. Every
+pixel comes from an asset that already existed — none of it is drawn from
+scratch.
+
+**They carry no stroke and no shadow.** Each is already drawn with its own
+rounded edge, and an outline around them just draws a second box around a box.
+This is the one place in the system where a raised-looking thing is bare.
+
+## `css/swiftaw-account.js` — the account button
+
+The second button in the dock, and a separate control on purpose, the way
+Google separates the apps grid from the avatar. Two buttons, two jobs: one
+moves you between products, one is who you are.
+
+- **Signed out** it is a plain `<a>` to `/account` with a person glyph. No
+  dropdown — there is nothing to choose between, and a menu holding one row is
+  a door with a hallway behind it.
+- **Signed in** it is the avatar, opening a panel: avatar, username, email,
+  *Manage your Swiftaw account*, any other accounts on the roster to switch
+  to, add another, settings, log out.
+- The footer repeats the account rule in the place it actually bites:
+  *"Swiftaw, Fortized and Hereld accounts are separate. Signing in here does
+  not sign you into a product."*
+
+If Supabase cannot be reached it still draws the signed-out button rather than
+nothing. We cannot know who you are, and `/account` is the one route that can
+recover the session — a gap in the corner helps no one.
+
+Its styles are injected by the script rather than pulled from `nb.css`,
+because it loads on pages that have not been rebuilt on the system yet and an
+account control has to render. Same recipe either way: black stroke, black
+hard shadow, paper fill.
+
+### The dock
+
+Both floating controls mount into one `#swiftaw-dock` — a fixed flex row,
+top-right, `gap:10px`. Whichever script loads first creates it and the other
+finds it by id, so neither has to guess an offset the other must match. Order
+is pinned in CSS (`[data-swl-dock-item]` order 1, `[data-swa-dock-item]`
+order 2), so the grid is always left of the avatar regardless of load order.
+The dock is positioned with an inline style rather than from the stylesheet,
+so it lands correctly before the CSS link has resolved — a control that jumps
+across the corner on load is worse than none.
+
+A page can place either control itself with `[data-swiftaw-launcher]` or
+`[data-swiftaw-account]`, in which case it does not join the dock.
 
 ## Loading them
 
-`css/swiftaw.js` loads both components on every page served from this origin
-and works out which site you are on from the path, because swiftaw.com,
-`/lifecheck/` and `/supernova/` are three products sharing one origin.
+`css/swiftaw.js` loads the launcher and the consent card on every page served
+from this origin and works out which site you are on from the path, because
+swiftaw.com, `/lifecheck/` and `/supernova/` are three products sharing one
+origin. The account script was already loaded there.
 
 `swiftaw-nb.css` is deliberately **not** loaded there. It restyles base
-elements and these pages have not been rebuilt on it yet, so both components
-carry their own literal fallbacks for the tokens and the two nb classes they
-use. They look correct with the design system and without it.
+elements and these pages have not been rebuilt on it yet, so all three
+components carry their own literal fallbacks for the tokens and the nb classes
+they use. They look correct with the design system and without it.
 
 Fortized and Hereld are served elsewhere and need their own script tags, plus
 a CSP that allows `https://swiftaw.com` as a script and style source.

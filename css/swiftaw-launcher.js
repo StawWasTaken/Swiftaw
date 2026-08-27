@@ -16,10 +16,12 @@
    Hereld accounts and Swiftaw accounts are three separate systems; the panel
    says so out loud rather than leaving people to assume otherwise.
 
-   The account row shows the SWIFTAW account only, and only because
-   swiftaw-account.js already resolved one on this origin. On a product's own
-   domain there is no Swiftaw session to read, so the row simply offers a link
-   to swiftaw.com/account — never a "you are signed in" claim it cannot back.
+   THE ACCOUNT IS NOT IN HERE. It is its own button, sitting beside this one
+   in the same dock — swiftaw-account.js owns it. Two buttons, two jobs: this
+   one moves you between products, that one is who you are. Folding them into
+   one control was the earlier mistake; a launcher that also holds your
+   session is exactly the thing that makes people think the accounts are
+   joined up.
 
    Public API (window.SwiftawLauncher):
      .mount(el, opts)   mount into a specific element
@@ -179,7 +181,7 @@
              : '';
 
     return '<' + tag + attr + ' data-id="' + esc(e.id) + '">' +
-      '<img class="swl-ico" src="' + esc(e.icon) + '" alt="" width="44" height="44" loading="lazy">' +
+      '<img class="swl-ico" src="' + esc(e.icon) + '" alt="" width="40" height="40" loading="lazy">' +
       '<span class="swl-meta">' +
         '<span class="swl-name">' + esc(e.name) + flag + '</span>' +
         '<span class="swl-what">' + esc(e.what) + '</span>' +
@@ -229,48 +231,15 @@
     this.render();
   };
 
-  /* ── the account row ────────────────────────────────────────────────────
-     Only ever describes a SWIFTAW account, and only when the shared account
-     script has actually resolved one on this origin. Everywhere else it is a
-     plain link — never a claim about a session we cannot see. */
+  /* ── the foot ───────────────────────────────────────────────────────────
+     One sentence, and it earns its place: this panel puts three products a
+     click apart, and the natural assumption is that clicking through carries
+     you with it. It does not. No account row here — the account is its own
+     button next door. */
   Launcher.prototype.renderFoot = function () {
-    var self = this;
-    var note = '<div class="swl-note">Swiftaw accounts are separate from ' +
-               'Fortized and Hereld accounts. Each product signs you in itself.</div>';
-
-    function signedOut() {
-      self.foot.innerHTML =
-        '<a class="swl-acct" href="' + ORIGIN + '/account">' +
-          '<span class="swl-av">S</span>' +
-          '<span class="swl-acct-meta">' +
-            '<span class="swl-acct-name">Swiftaw account</span>' +
-            '<span class="swl-acct-sub">Sign in or create one</span>' +
-          '</span>' +
-        '</a>' + note;
-    }
-
-    var A = window.SwiftawAccount;
-    if (!A || typeof A.ready !== 'function') { signedOut(); return; }
-
-    A.ready(function () {
-      var u = A.user();
-      if (!u) { signedOut(); return; }
-      var meta = u.user_metadata || {};
-      var name = meta.username || (u.email || '').split('@')[0] || 'account';
-      var av = meta.avatar_url
-        ? ' style="background-image:url(' + esc(meta.avatar_url) + ')"'
-        : '';
-      self.foot.innerHTML =
-        '<a class="swl-acct" href="' + ORIGIN + '/account">' +
-          '<span class="swl-av"' + av + '>' +
-            (meta.avatar_url ? '' : esc(name.charAt(0).toUpperCase())) +
-          '</span>' +
-          '<span class="swl-acct-meta">' +
-            '<span class="swl-acct-name">' + esc(name) + '</span>' +
-            '<span class="swl-acct-sub">' + esc(u.email || 'Swiftaw account') + '</span>' +
-          '</span>' +
-        '</a>' + note;
-    });
+    this.foot.innerHTML =
+      '<div class="swl-note">Swiftaw, Fortized and Hereld accounts are ' +
+      'separate. Each product signs you in itself.</div>';
   };
 
   Launcher.prototype.open = function () {
@@ -317,6 +286,22 @@
     return instance;
   }
 
+  /* The dock both floating controls share. Created by whichever of the two
+     scripts gets there first; the other finds it by id. Kept inline rather
+     than in the stylesheet so it is correct before the CSS link resolves —
+     a control that jumps across the corner on load is worse than none. */
+  function dock() {
+    var d = document.getElementById('swiftaw-dock');
+    if (!d) {
+      d = document.createElement('div');
+      d.id = 'swiftaw-dock';
+      d.style.cssText = 'position:fixed;top:16px;right:16px;z-index:9300;' +
+                        'display:flex;align-items:center;gap:10px';
+      document.body.appendChild(d);
+    }
+    return d;
+  }
+
   function autoMount() {
     var s = document.currentScript ||
             document.querySelector('script[src*="swiftaw-launcher"]');
@@ -326,13 +311,16 @@
       try { ensureCss(new URL('swiftaw-launcher.css', s.src).href); } catch (e) {}
     }
 
-    // The page can say where it wants the button. If it does not, the button
-    // parks itself top-right and stays out of the layout entirely.
+    // The page can say where it wants the button. If it does not, it joins
+    // the shared dock top-right, which the account button also mounts into —
+    // that is what keeps the two side by side instead of each guessing an
+    // offset the other has to match. Order is pinned in CSS, so whichever
+    // script loads first, the grid is left of the avatar.
     var slot = document.querySelector('[data-swiftaw-launcher]');
     if (!slot) {
       slot = document.createElement('div');
-      slot.style.cssText = 'position:fixed;top:16px;right:74px;z-index:9300';
-      document.body.appendChild(slot);
+      slot.setAttribute('data-swl-dock-item', '');
+      dock().appendChild(slot);
     }
     mount(slot, {
       current: d.current || '',

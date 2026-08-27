@@ -16,15 +16,19 @@
   --swl-line:    var(--nb-line, #000);
   --swl-surface: var(--nb-surface, #fff);
   --swl-surf-2:  var(--nb-surface-2, #F4F4EF);
-  --swl-fg:      var(--nb-fg, #000);
-  --swl-muted:   var(--nb-fg-muted, #4A4A4A);
+  --swl-fg:      var(--nb-surface-fg, #000);
+  --swl-muted:   var(--nb-surface-fg-muted, #4A4A4A);
 }
+/* data-theme="dark" describes the PAGE the button sits on, not the panel.
+   The stroke and the shadow are black on every surface in this system, so
+   the panel stays paper — it is the fill that would change, and a black
+   stroke needs paper to read against. */
 .swl-root[data-theme="dark"] {
-  --swl-line:    #FFFFFF;
-  --swl-surface: #12161F;
-  --swl-surf-2:  #191F2B;
-  --swl-fg:      #FFFFFF;
-  --swl-muted:   #97A1B4;
+  --swl-line:    #000000;
+  --swl-surface: #FFFFFF;
+  --swl-surf-2:  #F4F4EF;
+  --swl-fg:      #000000;
+  --swl-muted:   #4A4A4A;
 }
 
 /* ── the trigger ────────────────────────────────────────────────────────────
@@ -118,14 +122,16 @@
   transform: translateX(2px);
 }
 
+/* No stroke and no shadow on these. They are each product's own icon, already
+   drawn with its own rounded edge — an outline around them just draws a second
+   box around a box. */
 .swl-ico {
   flex: none;
-  width: 44px; height: 44px;
-  border: var(--nb-bd-w-thin, 2px) solid var(--swl-line);
+  width: 40px; height: 40px;
+  border: 0;
   border-radius: var(--nb-r-sm, 10px);
-  box-shadow: var(--nb-sh-sm, 2px 3px 0 #000);
   object-fit: cover;
-  background: var(--swl-surf-2);
+  background: transparent;
 }
 
 .swl-meta { min-width: 0; flex: 1; display: block; }
@@ -192,53 +198,27 @@
   opacity: .8;
 }
 
-/* ── the account foot ───────────────────────────────────────────────────── */
+/* ── the foot ───────────────────────────────────────────────────────────────
+   The one line that keeps this honest. It is not fine print to be trimmed
+   when the panel gets crowded — three separate account systems is a fact
+   about the products, not a disclaimer. There is no account row here: the
+   account is its own button in the dock. */
 .swl-foot {
   border-top: var(--nb-bd-w-thin, 2px) solid var(--swl-line);
   background: var(--swl-surf-2);
-  padding: 13px 16px 14px;
+  padding: 12px 16px 13px;
 }
-.swl-acct {
-  display: flex; align-items: center; gap: 11px;
-  width: 100%;
-  background: none; border: 0; padding: 0;
-  color: inherit; text-align: left; text-decoration: none;
-  cursor: pointer;
-  font-family: inherit;
-}
-.swl-av {
-  flex: none;
-  width: 34px; height: 34px;
-  border: var(--nb-bd-w-thin, 2px) solid var(--swl-line);
-  border-radius: 999px;
-  background-size: cover; background-position: center;
-  background-color: var(--nb-yellow, #FFF93E);
-  color: #000;
-  display: grid; place-items: center;
-  font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; font-size: 14px;
-}
-.swl-acct-meta { min-width: 0; flex: 1; display: block; }
-.swl-acct-name {
-  display: block;
-  font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; font-size: 13.5px;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.swl-acct-sub {
-  display: block;
-  font-size: 11.5px; color: var(--swl-muted);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-
-/* The one line that keeps this honest. It is not fine print to be trimmed
-   when the panel gets crowded — three separate account systems is a fact
-   about the products, not a disclaimer. */
 .swl-note {
-  margin-top: 11px;
   font-size: 11px; line-height: 1.45;
   color: var(--swl-muted);
 }
+
+/* ── the dock ───────────────────────────────────────────────────────────────
+   Launcher first, account second, whichever script happened to load first.
+   The dock element itself is positioned inline by whichever script creates
+   it, so it is right before this file has even arrived. */
+#swiftaw-dock > [data-swl-dock-item] { order: 1; }
+#swiftaw-dock > [data-swa-dock-item] { order: 2; }
 
 /* ── mobile: a sheet from the bottom, not a 372px popover on a 360px screen */
 @media (max-width: 560px) {

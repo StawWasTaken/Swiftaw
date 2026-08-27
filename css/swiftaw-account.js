@@ -140,6 +140,11 @@
     injectStyle(); renderWidget(); swapNavCta(); fireChange();
   }).catch(function (e) {
     isReady = true; readyCbs.forEach(function (cb) { try { cb(); } catch (e2) {} }); readyCbs = [];
+    // Supabase unreachable — we cannot know who you are, so draw the
+    // signed-out button rather than no button. The launcher beside it would
+    // otherwise sit alone with a gap where the account belongs, and the
+    // route it points at is the one place that can recover the session.
+    injectStyle(); renderWidget(); swapNavCta(); fireChange();
   });
 
   // ── main-site nav CTA: "Create an account" when logged out ──
@@ -153,91 +158,273 @@
     else { cta.textContent = 'Create an account'; cta.setAttribute('href', ACCOUNT_PAGE); }
   }
 
-  // ── detached top-right account widget (shown when logged in) ──
+  /* ══════════════════════════════════════════════════════════════════════
+     THE ACCOUNT BUTTON
+     Its own control, sitting beside the app launcher in the shared dock —
+     two buttons, the way Google does it. They were one thing briefly and
+     that was wrong twice over: it hid the account behind a products menu,
+     and a launcher holding your session is exactly what makes people
+     assume the products share one.
+
+     Drawn in the Neo-Brutalist system: black stroke, black hard shadow,
+     paper fill on every ground. The styles are injected here rather than
+     pulled from nb.css because this file loads on pages that have not been
+     rebuilt on the system yet, and an account control has to render.
+     ══════════════════════════════════════════════════════════════════════ */
+
+  var DOCK_ID = 'swiftaw-dock';
+
+  /* Shared with swiftaw-launcher.js by id. Whichever script arrives first
+     creates it; the other finds it. Positioned inline so it is correct
+     before any stylesheet has resolved. */
+  function dock() {
+    var d = document.getElementById(DOCK_ID);
+    if (!d) {
+      d = document.createElement('div');
+      d.id = DOCK_ID;
+      d.style.cssText = 'position:fixed;top:16px;right:16px;z-index:9300;' +
+                        'display:flex;align-items:center;gap:10px';
+      document.body.appendChild(d);
+    }
+    return d;
+  }
+
   function avatarHtml(acc, cls) {
     var url = acc.avatar_url || (acc.user_metadata && acc.user_metadata.avatar_url);
     var nm = acc.username || nameOf(acc);
     if (url) return '<span class="' + cls + '" style="background-image:url(' + esc(url) + ')"></span>';
     return '<span class="' + cls + ' initials">' + esc(initials(nm)) + '</span>';
   }
+
   function injectStyle() {
     if (document.getElementById('swiftaw-acct-style')) return;
+    var L = 'var(--swa-line)', S = 'var(--swa-surface)', S2 = 'var(--swa-surf-2)';
     var css =
-    '#swiftaw-acct{position:fixed;top:16px;right:16px;z-index:400;font-family:var(--font-body,sans-serif);}' +
-    '#swiftaw-acct .chip{display:flex;align-items:center;gap:9px;padding:6px 10px 6px 6px;background:rgba(22,28,40,.82);backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,255,.10);border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.4);cursor:pointer;transition:border-color .2s,transform .12s;}' +
-    '#swiftaw-acct .chip:hover{border-color:rgba(254,248,61,.30);transform:translateY(-1px);}' +
-    '#swiftaw-acct .av{width:30px;height:30px;border-radius:50%;background-size:cover;background-position:center;flex-shrink:0;display:flex;align-items:center;justify-content:center;}' +
-    '#swiftaw-acct .av.initials{background:linear-gradient(135deg,var(--accent,#fef83d),var(--accent-2,#fff000));color:#0d1117;font-family:var(--font-display,sans-serif);font-weight:800;font-size:14px;}' +
-    '#swiftaw-acct .uname{font-family:var(--font-display,sans-serif);font-weight:700;font-size:13.5px;color:#fff;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
-    '#swiftaw-acct .cv{width:9px;height:9px;fill:#8b96a8;transition:transform .2s;}' +
-    '#swiftaw-acct.open .cv{transform:rotate(180deg);}' +
-    '#swiftaw-acct .panel{position:absolute;top:calc(100% + 8px);right:0;width:290px;background:rgba(18,23,31,.97);backdrop-filter:blur(22px) saturate(160%);border:1px solid rgba(255,255,255,.10);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.55);padding:8px;opacity:0;transform:translateY(-6px) scale(.98);pointer-events:none;transition:opacity .18s,transform .18s;}' +
-    '#swiftaw-acct.open .panel{opacity:1;transform:none;pointer-events:auto;}' +
-    '#swiftaw-acct .cur{display:flex;align-items:center;gap:12px;padding:12px 12px 12px;}' +
-    '#swiftaw-acct .cur .av{width:44px;height:44px;font-size:18px;}' +
-    '#swiftaw-acct .cur .who{min-width:0;}' +
-    '#swiftaw-acct .cur .who .n{font-family:var(--font-display,sans-serif);font-weight:800;font-size:15px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
-    '#swiftaw-acct .cur .who .e{font-size:12px;color:#8b96a8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
-    '#swiftaw-acct .sep{height:1px;background:rgba(255,255,255,.08);margin:6px 4px;}' +
-    '#swiftaw-acct .row{display:flex;align-items:center;gap:11px;width:100%;padding:9px 11px;border-radius:11px;background:none;border:0;cursor:pointer;text-align:left;color:#d5dce8;font-size:13.5px;font-family:inherit;transition:background .15s;}' +
-    '#swiftaw-acct .row:hover{background:rgba(255,255,255,.06);}' +
-    '#swiftaw-acct .row .av{width:28px;height:28px;font-size:12px;}' +
-    '#swiftaw-acct .row .lbl{min-width:0;flex:1;}' +
-    '#swiftaw-acct .row .lbl .n{font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
-    '#swiftaw-acct .row .lbl .e{font-size:11px;color:#8b96a8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
-    '#swiftaw-acct .row .ic{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;flex-shrink:0;}' +
-    '#swiftaw-acct .row .ic svg{width:13px;height:13px;fill:#8b96a8;}' +
-    '#swiftaw-acct .row.out{color:#ff8ea3;}' +
-    '#swiftaw-acct .row.out .ic svg{fill:#ff8ea3;}' +
-    '#swiftaw-acct .foot{padding:9px 12px 7px;font-size:10.5px;color:#5b6678;line-height:1.4;}' +
-    '@media(max-width:520px){#swiftaw-acct .uname{display:none;}#swiftaw-acct .panel{width:260px;}}';
+    /* Black stroke + black shadow on every ground; only the fill changes. */
+    '#swiftaw-acct{position:relative;display:inline-block;' +
+      '--swa-line:#000;--swa-surface:#fff;--swa-surf-2:#F4F4EF;' +
+      '--swa-fg:#000;--swa-muted:#4A4A4A;--swa-yellow:var(--nb-yellow,#FFF93E);' +
+      'font-family:var(--nb-font-body,system-ui,-apple-system,sans-serif);}' +
+
+    /* trigger — 42px square to match the launcher button beside it */
+    '#swiftaw-acct .swa-btn{display:grid;place-items:center;width:42px;height:42px;padding:3px;' +
+      'background:' + S + ';border:var(--nb-bd-w,3px) solid ' + L + ';' +
+      'border-radius:var(--nb-r-sm,10px);box-shadow:var(--nb-sh-sm,2px 3px 0 #000);' +
+      'cursor:pointer;color:var(--swa-fg);text-decoration:none;' +
+      'transition:transform .14s,box-shadow .14s;}' +
+    '#swiftaw-acct .swa-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 4px 0 #000;}' +
+    '#swiftaw-acct .swa-btn:active,#swiftaw-acct .swa-btn[aria-expanded="true"]' +
+      '{transform:translate(2px,3px);box-shadow:1px 2px 0 #000;}' +
+    '#swiftaw-acct .swa-btn > svg{width:20px;height:20px;fill:currentColor;}' +
+
+    /* avatar — the one round thing in the system, because a face is round */
+    '#swiftaw-acct .av{border-radius:50%;background-size:cover;background-position:center;' +
+      'flex-shrink:0;display:grid;place-items:center;border:2px solid ' + L + ';' +
+      'background-color:var(--swa-yellow);color:#000;' +
+      'font-family:var(--nb-font-head,\'Syne\',sans-serif);font-weight:700;}' +
+    '#swiftaw-acct .swa-btn .av{width:32px;height:32px;font-size:14px;}' +
+
+    /* panel */
+    '#swiftaw-acct .swa-panel{position:absolute;top:calc(100% + 12px);right:0;z-index:9400;' +
+      'width:300px;background:' + S + ';color:var(--swa-fg);' +
+      'border:var(--nb-bd-w,3px) solid ' + L + ';border-radius:var(--nb-r,18px);' +
+      'box-shadow:var(--nb-sh-lg,8px 10px 0 #000);overflow:hidden;' +
+      'animation:swaIn .2s cubic-bezier(.2,.9,.25,1) backwards;}' +
+    '#swiftaw-acct .swa-panel[hidden]{display:none;}' +
+    '@keyframes swaIn{from{opacity:0;transform:translateY(-8px);}}' +
+    '#swiftaw-acct .swa-stripe{display:flex;height:7px;}' +
+    '#swiftaw-acct .swa-stripe > i{flex:1;}' +
+    '#swiftaw-acct .swa-stripe > i:nth-child(1){background:var(--nb-red,#FF0033);}' +
+    '#swiftaw-acct .swa-stripe > i:nth-child(2){background:var(--nb-green,#3ECF6E);}' +
+    '#swiftaw-acct .swa-stripe > i:nth-child(3){background:var(--nb-blue,#2CAFFC);}' +
+    '#swiftaw-acct .swa-stripe > i:nth-child(4){background:var(--nb-yellow,#FFF93E);}' +
+    '#swiftaw-acct .swa-stripe > i:nth-child(5){background:var(--nb-pink,#FF77E4);}' +
+
+    '#swiftaw-acct .swa-cur{display:flex;flex-direction:column;align-items:center;' +
+      'text-align:center;gap:3px;padding:20px 18px 16px;}' +
+    '#swiftaw-acct .swa-cur .av{width:66px;height:66px;font-size:26px;border-width:3px;' +
+      'box-shadow:2px 3px 0 #000;margin-bottom:7px;}' +
+    '#swiftaw-acct .swa-cur .n{display:block;font-family:var(--nb-font-head,\'Syne\',sans-serif);' +
+      'font-weight:700;font-size:17px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+    '#swiftaw-acct .swa-cur .e{display:block;font-size:12.5px;color:var(--swa-muted);max-width:100%;' +
+      'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+    '#swiftaw-acct .swa-manage{margin-top:13px;display:inline-flex;align-items:center;' +
+      'justify-content:center;padding:10px 18px;background:' + S + ';color:var(--swa-fg);' +
+      'font-family:var(--nb-font-head,\'Syne\',sans-serif);font-weight:700;font-size:13.5px;' +
+      'text-decoration:none;border:var(--nb-bd-w,3px) solid ' + L + ';' +
+      'border-radius:var(--nb-r-sm,10px);box-shadow:2px 3px 0 #000;' +
+      'transition:transform .14s,box-shadow .14s;}' +
+    '#swiftaw-acct .swa-manage:hover{transform:translate(-1px,-1px);box-shadow:3px 4px 0 #000;}' +
+    '#swiftaw-acct .swa-manage:active{transform:translate(2px,3px);box-shadow:1px 1px 0 #000;}' +
+
+    '#swiftaw-acct .swa-rows{border-top:2px solid ' + L + ';padding:8px;background:' + S2 + ';}' +
+    '#swiftaw-acct .swa-row{display:flex;align-items:center;gap:11px;width:100%;' +
+      'padding:9px 10px;border:2px solid transparent;border-radius:var(--nb-r-sm,10px);' +
+      'background:none;cursor:pointer;text-align:left;color:var(--swa-fg);' +
+      'font-size:13.5px;font-family:inherit;text-decoration:none;' +
+      'transition:background .14s,border-color .14s,transform .14s;}' +
+    '#swiftaw-acct .swa-row:hover,#swiftaw-acct .swa-row:focus-visible' +
+      '{background:' + S + ';border-color:' + L + ';transform:translateX(2px);}' +
+    '#swiftaw-acct .swa-row .av{width:28px;height:28px;font-size:12px;}' +
+    /* display:block on both, or the two <span>s run together on one line and
+       the row reads "otherstawother@swiftaw.com". */
+    '#swiftaw-acct .swa-row .lbl{min-width:0;flex:1;display:block;}' +
+    '#swiftaw-acct .swa-row .lbl .n{display:block;font-weight:600;' +
+      'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+    '#swiftaw-acct .swa-row .lbl .e{display:block;font-size:11px;color:var(--swa-muted);' +
+      'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
+    '#swiftaw-acct .swa-row .ic{width:28px;height:28px;flex-shrink:0;display:grid;place-items:center;}' +
+    '#swiftaw-acct .swa-row .ic svg{width:15px;height:15px;fill:currentColor;}' +
+    '#swiftaw-acct .swa-row.out{color:var(--nb-red,#FF0033);}' +
+    '#swiftaw-acct .swa-seclabel{font-family:var(--nb-font-head,\'Syne\',sans-serif);' +
+      'font-weight:700;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;' +
+      'color:var(--swa-muted);padding:5px 10px 6px;}' +
+    '#swiftaw-acct .swa-note{border-top:2px solid ' + L + ';padding:11px 16px 12px;' +
+      'font-size:11px;line-height:1.45;color:var(--swa-muted);background:' + S + ';}' +
+
+    '#swiftaw-acct .swa-backdrop{position:fixed;inset:0;z-index:9390;background:rgba(0,0,0,.45);}' +
+    '@media(max-width:560px){' +
+      '#swiftaw-acct .swa-panel{position:fixed;top:auto;bottom:0;left:0;right:0;width:auto;' +
+        'border-radius:var(--nb-r,18px) var(--nb-r,18px) 0 0;border-bottom:0;}}' +
+    '@media(prefers-reduced-motion:reduce){' +
+      '#swiftaw-acct .swa-panel{animation:none;}' +
+      '#swiftaw-acct .swa-btn,#swiftaw-acct .swa-row,#swiftaw-acct .swa-manage{transition:none;}}';
     var st = document.createElement('style'); st.id = 'swiftaw-acct-style'; st.textContent = css;
     document.head.appendChild(st);
   }
 
-  var CV = '<svg class="cv" viewBox="0 0 384 512"><path d="M169.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L192 205.3 54.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/></svg>';
-  var IC_ADD = '<svg viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>';
-  var IC_GEAR = '<svg viewBox="0 0 512 512"><path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6 4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2 5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8 8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/></svg>';
-  var IC_OUT = '<svg viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>';
+  var IC_ADD  = '<svg viewBox="0 0 448 512" aria-hidden="true"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>';
+  var IC_GEAR = '<svg viewBox="0 0 512 512" aria-hidden="true"><path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6 4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2 5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8 8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/></svg>';
+  var IC_OUT  = '<svg viewBox="0 0 512 512" aria-hidden="true"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>';
+  var IC_USER = '<svg viewBox="0 0 448 512" aria-hidden="true"><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/></svg>';
+
+  /* The one line that keeps this honest. It is a fact about the products,
+     not fine print to be trimmed when the panel gets crowded. */
+  var NOTE = 'Swiftaw, Fortized and Hereld accounts are separate. ' +
+             'Signing in here does not sign you into a product.';
+
+  var host = null, panelOpen = false, onDoc = null, onKey = null, backdrop = null;
+
+  function closePanel() {
+    if (!panelOpen || !host) return;
+    panelOpen = false;
+    var p = host.querySelector('.swa-panel');
+    var b = host.querySelector('.swa-btn');
+    if (p) p.hidden = true;
+    if (b) b.setAttribute('aria-expanded', 'false');
+    if (backdrop) { backdrop.remove(); backdrop = null; }
+    document.removeEventListener('click', onDoc);
+    document.removeEventListener('keydown', onKey);
+  }
+  function openPanel() {
+    if (panelOpen || !host) return;
+    panelOpen = true;
+    host.querySelector('.swa-panel').hidden = false;
+    host.querySelector('.swa-btn').setAttribute('aria-expanded', 'true');
+    if (window.matchMedia && window.matchMedia('(max-width:560px)').matches) {
+      backdrop = document.createElement('div');
+      backdrop.className = 'swa-backdrop';
+      backdrop.addEventListener('click', closePanel);
+      host.appendChild(backdrop);
+    }
+    document.addEventListener('click', onDoc);
+    document.addEventListener('keydown', onKey);
+  }
+
+  function ensureHost() {
+    if (host && host.isConnected) return host;
+    host = document.getElementById('swiftaw-acct');
+    if (!host) {
+      host = document.createElement('div');
+      host.id = 'swiftaw-acct';
+      host.setAttribute('data-swa-dock-item', '');
+      // A page can place it itself; otherwise it joins the shared dock.
+      (document.querySelector('[data-swiftaw-account]') || dock()).appendChild(host);
+    }
+    onDoc = function (e) { if (!host.contains(e.target)) closePanel(); };
+    onKey = function (e) {
+      if (e.key === 'Escape' && panelOpen) {
+        closePanel();
+        var b = host.querySelector('.swa-btn');
+        if (b) b.focus();
+      }
+    };
+    return host;
+  }
 
   function renderWidget() {
-    var host = document.getElementById('swiftaw-acct');
-    if (!activeUser) { if (host) host.remove(); return; }
-    if (!host) { host = document.createElement('div'); host.id = 'swiftaw-acct'; document.body.appendChild(host); }
+    ensureHost();
+    closePanel();
+
+    /* Signed out: a plain link, not a menu. There is nothing to choose
+       between, and a dropdown holding one row is a door with a hallway. */
+    if (!activeUser) {
+      host.innerHTML =
+        '<a class="swa-btn" href="' + ACCOUNT_PAGE + '" ' +
+           'aria-label="Sign in to Swiftaw" title="Sign in to Swiftaw">' +
+          IC_USER +
+        '</a>';
+      return;
+    }
 
     var u = activeUser, uname = nameOf(u);
+    var meta = u.user_metadata || {};
     var others = readRoster().filter(function (a) { return a.id !== u.id; });
-    var othersHtml = others.map(function (a) {
-      return '<button class="row" data-switch="' + esc(a.id) + '">' +
-        avatarHtml(a, 'av') +
-        '<span class="lbl"><div class="n">' + esc(a.username || (a.email || '').split('@')[0]) + '</div><div class="e">' + esc(a.email || '') + '</div></span>' +
-        '</button>';
-    }).join('');
+    var othersHtml = others.length
+      ? '<div class="swa-seclabel">Your other accounts</div>' +
+        others.map(function (a) {
+          return '<button class="swa-row" type="button" data-switch="' + esc(a.id) + '">' +
+            avatarHtml(a, 'av') +
+            '<span class="lbl"><span class="n">' +
+              esc(a.username || (a.email || '').split('@')[0]) +
+            '</span><span class="e">' + esc(a.email || '') + '</span></span>' +
+          '</button>';
+        }).join('')
+      : '';
 
     host.innerHTML =
-      '<div class="chip" data-toggle>' + avatarHtml({ avatar_url: (u.user_metadata || {}).avatar_url, username: uname }, 'av') +
-        '<span class="uname">' + esc(uname) + '</span>' + CV +
-      '</div>' +
-      '<div class="panel">' +
-        '<div class="cur">' + avatarHtml({ avatar_url: (u.user_metadata || {}).avatar_url, username: uname }, 'av') +
-          '<div class="who"><div class="n">' + esc(uname) + '</div><div class="e">' + esc(u.email || '') + '</div></div>' +
+      '<button class="swa-btn" type="button" aria-expanded="false" aria-haspopup="true" ' +
+              'aria-label="Swiftaw account: ' + esc(uname) + '">' +
+        avatarHtml({ avatar_url: meta.avatar_url, username: uname }, 'av') +
+      '</button>' +
+      '<div class="swa-panel" hidden role="dialog" aria-label="Swiftaw account">' +
+        '<div class="swa-stripe"><i></i><i></i><i></i><i></i><i></i></div>' +
+        '<div class="swa-cur">' +
+          avatarHtml({ avatar_url: meta.avatar_url, username: uname }, 'av') +
+          '<span class="n">' + esc(uname) + '</span>' +
+          '<span class="e">' + esc(u.email || '') + '</span>' +
+          '<a class="swa-manage" href="' + ACCOUNT_PAGE + '?view=settings">' +
+            'Manage your Swiftaw account</a>' +
         '</div>' +
-        (othersHtml ? '<div class="sep"></div>' + othersHtml : '') +
-        '<div class="sep"></div>' +
-        '<button class="row" data-settings><span class="ic">' + IC_GEAR + '</span><span class="lbl"><div class="n">Account settings</div></span></button>' +
-        '<button class="row" data-add><span class="ic">' + IC_ADD + '</span><span class="lbl"><div class="n">Add another account</div></span></button>' +
-        '<button class="row out" data-out><span class="ic">' + IC_OUT + '</span><span class="lbl"><div class="n">Log out</div></span></button>' +
-        '<div class="foot">Swiftaw accounts are separate from Fortized accounts.</div>' +
+        '<div class="swa-rows">' +
+          othersHtml +
+          '<button class="swa-row" type="button" data-add>' +
+            '<span class="ic">' + IC_ADD + '</span>' +
+            '<span class="lbl"><span class="n">Add another account</span></span>' +
+          '</button>' +
+          '<button class="swa-row" type="button" data-settings>' +
+            '<span class="ic">' + IC_GEAR + '</span>' +
+            '<span class="lbl"><span class="n">Account settings</span></span>' +
+          '</button>' +
+          '<button class="swa-row out" type="button" data-out>' +
+            '<span class="ic">' + IC_OUT + '</span>' +
+            '<span class="lbl"><span class="n">Log out</span></span>' +
+          '</button>' +
+        '</div>' +
+        '<div class="swa-note">' + NOTE + '</div>' +
       '</div>';
 
-    var toggle = host.querySelector('[data-toggle]');
-    toggle.addEventListener('click', function (e) { e.stopPropagation(); host.classList.toggle('open'); });
-    host.querySelector('[data-settings]').addEventListener('click', function () { location.href = ACCOUNT_PAGE + '?view=settings'; });
+    host.querySelector('.swa-btn').addEventListener('click', function (e) {
+      e.stopPropagation();
+      panelOpen ? closePanel() : openPanel();
+    });
+    host.querySelector('[data-settings]').addEventListener('click', function () {
+      location.href = ACCOUNT_PAGE + '?view=settings';
+    });
     host.querySelector('[data-add]').addEventListener('click', addAccount);
     host.querySelector('[data-out]').addEventListener('click', signOut);
     host.querySelectorAll('[data-switch]').forEach(function (b) {
       b.addEventListener('click', function () { switchTo(b.getAttribute('data-switch')); });
     });
-    document.addEventListener('click', function () { host.classList.remove('open'); });
   }
 })();
