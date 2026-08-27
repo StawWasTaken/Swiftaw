@@ -1,0 +1,695 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SWIFTAW — NEO-BRUTALIST DESIGN SYSTEM
+   The shared visual language for swiftaw.com, Lifecheck, Supernova,
+   Fortized's web pages and Hereld.
+
+   ~85% Neo-Brutalism, ~15% dark-mode cyber, 1960s influence.
+   Hard edges, real borders, flat colour, offset shadows that never blur.
+
+   THE RULES, so nothing drifts:
+   · Borders are BLACK and THICK (--nb-bd, 3px). Not hairlines, not alpha.
+   · Shadows are HARD: 4px 6px 0 #000. Blur is 0. Opacity is 100%.
+   · Colour is FLAT. No gradients on surfaces, no glassmorphism, no glow.
+   · Radius is generous but consistent (--nb-r, 18px) so blocks read as blocks.
+   · Motion is short, physical and eased-out. Buttons travel INTO the shadow.
+   · The Rainbaw is five colours. Never invent a sixth.
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Tropicon: Swiftaw's display face. Drop the files in /fonts/ and this
+      picks them up; until then every .nb-display falls back to Syne 800,
+      which is the closest weight/width we already load. ────────────────── */
+@font-face {
+  font-family: 'Tropicon';
+  src: url('/fonts/Tropicon.woff2') format('woff2'),
+       url('/fonts/Tropicon.woff')  format('woff');
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+:root {
+  /* ── THE RAINBAW ─────────────────────────────────────────────────────── */
+  --nb-red:    #FF0033;
+  --nb-green:  #3ECF6E;
+  --nb-blue:   #2CAFFC;
+  --nb-yellow: #FFF93E;
+  --nb-pink:   #FF77E4;
+
+  --nb-red-rgb:    255, 0, 51;
+  --nb-green-rgb:  62, 207, 110;
+  --nb-blue-rgb:   44, 175, 252;
+  --nb-yellow-rgb: 255, 249, 62;
+  --nb-pink-rgb:   255, 119, 228;
+
+  /* Yellow leads. Everything else supports. */
+  --nb-brand: var(--nb-yellow);
+
+  /* ── INK & PAPER ─────────────────────────────────────────────────────── */
+  --nb-ink:        #000000;   /* borders + shadows are always true black    */
+  --nb-paper:      #FFFFFF;
+  --nb-paper-2:    #F4F4EF;   /* a warm off-white for nested surfaces       */
+  --nb-night:      #0C0F15;   /* the ecosystem's dark ground (Hereld's bg)  */
+  --nb-night-2:    #12161F;
+  --nb-night-3:    #191F2B;
+
+  /* ── SURFACE CONTEXT ─────────────────────────────────────────────────
+     Every component reads these four, never a literal. Flip the context
+     (see [data-nb] below) and the whole block re-skins with no overrides. */
+  --nb-bg:        var(--nb-paper);
+  --nb-surface:   var(--nb-paper);
+  --nb-surface-2: var(--nb-paper-2);
+  --nb-fg:        var(--nb-ink);
+  --nb-fg-muted:  #4A4A4A;
+  --nb-line:      var(--nb-ink);
+
+  /* ── BORDERS & SHADOWS ───────────────────────────────────────────────── */
+  --nb-bd-w:      3px;
+  --nb-bd-w-thin: 2px;
+  --nb-bd:        var(--nb-bd-w) solid var(--nb-line);
+  --nb-bd-thin:   var(--nb-bd-w-thin) solid var(--nb-line);
+
+  /* The one shadow, straight off the spec sheet: #000 · X4 · Y6 · blur 0. */
+  --nb-sh:      4px 6px 0 var(--nb-ink);
+  --nb-sh-sm:   2px 3px 0 var(--nb-ink);
+  --nb-sh-lg:   8px 10px 0 var(--nb-ink);
+  --nb-sh-press: 1px 2px 0 var(--nb-ink);
+
+  /* ── RADII ───────────────────────────────────────────────────────────── */
+  --nb-r-sm: 10px;
+  --nb-r:    18px;
+  --nb-r-lg: 26px;
+  --nb-r-pill: 999px;
+
+  /* ── TYPE ────────────────────────────────────────────────────────────── */
+  --nb-font-display: 'Tropicon', 'Syne', system-ui, sans-serif;
+  --nb-font-head:    'Syne', system-ui, sans-serif;
+  --nb-font-body:    'DM Sans', system-ui, -apple-system, sans-serif;
+  --nb-font-mono:    ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+
+  /* ── SPACE & MOTION ──────────────────────────────────────────────────── */
+  --nb-gap:   20px;
+  --nb-pad:   24px;
+  --nb-max:   1200px;
+  --nb-ease:  cubic-bezier(.2, .9, .25, 1);
+  --nb-fast:  .14s var(--nb-ease);
+  --nb-med:   .28s var(--nb-ease);
+}
+
+/* ── SURFACE CONTEXTS ──────────────────────────────────────────────────────
+   Put data-nb="dark" on <html>, a <section>, or a single card. Children
+   inherit. The border stays black on light ground and turns to the accent
+   or white on dark ground, because a black border on a black background
+   is not a border. ─────────────────────────────────────────────────────── */
+[data-nb="light"] {
+  --nb-bg:        var(--nb-paper);
+  --nb-surface:   var(--nb-paper);
+  --nb-surface-2: var(--nb-paper-2);
+  --nb-fg:        var(--nb-ink);
+  --nb-fg-muted:  #4A4A4A;
+  --nb-line:      var(--nb-ink);
+}
+[data-nb="yellow"] {
+  --nb-bg:        var(--nb-yellow);
+  --nb-surface:   var(--nb-paper);
+  --nb-surface-2: var(--nb-yellow);
+  --nb-fg:        var(--nb-ink);
+  --nb-fg-muted:  #3A3A2A;
+  --nb-line:      var(--nb-ink);
+}
+[data-nb="dark"] {
+  --nb-bg:        var(--nb-night);
+  --nb-surface:   var(--nb-night-2);
+  --nb-surface-2: var(--nb-night-3);
+  --nb-fg:        #FFFFFF;
+  --nb-fg-muted:  #97A1B4;
+  --nb-line:      #FFFFFF;
+  /* On dark ground the hard shadow is drawn in the true black of the page
+     ground, which still reads as depth because the border is white. */
+  --nb-sh:      4px 6px 0 #000000;
+  --nb-sh-sm:   2px 3px 0 #000000;
+  --nb-sh-lg:   8px 10px 0 #000000;
+  --nb-sh-press: 1px 2px 0 #000000;
+}
+
+/* ═══════ RESET & BASE ═══════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  background: var(--nb-bg);
+  color: var(--nb-fg);
+  font-family: var(--nb-font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img, svg, video, canvas { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; }
+::selection { background: var(--nb-yellow); color: var(--nb-ink); }
+[data-nb="dark"] ::selection { background: var(--nb-blue); color: var(--nb-ink); }
+
+/* Focus is a real, visible object — never a removed outline. */
+:focus-visible {
+  outline: 3px solid var(--nb-blue);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+[data-nb="dark"] :focus-visible { outline-color: var(--nb-yellow); }
+
+.nb-sr {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+/* Skip link — visible the moment it is focused. */
+.nb-skip {
+  position: fixed; top: -100px; left: 16px; z-index: 9999;
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border: var(--nb-bd); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh); padding: 10px 16px;
+  font-family: var(--nb-font-head); font-weight: 700;
+  transition: top var(--nb-fast);
+}
+.nb-skip:focus { top: 16px; }
+
+/* ═══════ TYPOGRAPHY ═════════════════════════════════════════════════════
+   Tropicon carries the big statements. Syne Bold carries every heading
+   below that. Body text is DM Sans and stays out of the way — a page where
+   every sentence is a decorative title is a poster, not a product. ────── */
+.nb-display {
+  font-family: var(--nb-font-display);
+  font-weight: 800;
+  line-height: .92;
+  letter-spacing: -.02em;
+  text-transform: none;
+}
+.nb-d1 { font-size: clamp(46px, 8.5vw, 116px); }
+.nb-d2 { font-size: clamp(36px, 5.6vw, 76px); }
+.nb-d3 { font-size: clamp(28px, 4vw, 52px); }
+
+h1, h2, h3, h4, h5, h6, .nb-h {
+  font-family: var(--nb-font-head);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+}
+.nb-h1 { font-size: clamp(30px, 4vw, 46px); }
+.nb-h2 { font-size: clamp(24px, 3vw, 34px); }
+.nb-h3 { font-size: clamp(19px, 2.2vw, 24px); }
+.nb-h4 { font-size: 17px; }
+
+.nb-eyebrow {
+  font-family: var(--nb-font-head);
+  font-weight: 700; font-size: 12px;
+  letter-spacing: .14em; text-transform: uppercase;
+}
+.nb-lead   { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.5; }
+.nb-muted  { color: var(--nb-fg-muted); }
+.nb-mono   { font-family: var(--nb-font-mono); font-size: .92em; }
+
+/* Marker highlight — a flat block of colour behind a word, drawn slightly
+   off-square so it reads as a hand-laid sticker rather than a CSS box. */
+.nb-mark {
+  background: var(--nb-yellow); color: var(--nb-ink);
+  padding: 0 .18em; box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.nb-mark--red   { background: var(--nb-red);   color: #fff; }
+.nb-mark--blue  { background: var(--nb-blue);  color: var(--nb-ink); }
+.nb-mark--green { background: var(--nb-green); color: var(--nb-ink); }
+.nb-mark--pink  { background: var(--nb-pink);  color: var(--nb-ink); }
+
+/* Underline scribble, drawn not blurred. */
+.nb-scribble { position: relative; display: inline-block; }
+.nb-scribble::after {
+  content: ""; position: absolute; left: -2px; right: -2px; bottom: -.14em;
+  height: .16em; background: currentColor; border-radius: 2px;
+}
+
+/* ═══════ LAYOUT ═════════════════════════════════════════════════════════ */
+.nb-wrap { width: 100%; max-width: var(--nb-max); margin: 0 auto; padding: 0 24px; }
+.nb-wrap--wide { max-width: 1440px; }
+.nb-section { padding: clamp(56px, 8vw, 110px) 0; }
+.nb-stack   { display: flex; flex-direction: column; gap: var(--nb-gap); }
+.nb-row     { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.nb-grid    { display: grid; gap: var(--nb-gap); }
+.nb-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.nb-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.nb-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 900px) { .nb-grid--3, .nb-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .nb-grid--2, .nb-grid--3, .nb-grid--4 { grid-template-columns: 1fr; } }
+
+/* A rule that is a real rule: thick, black, no apology. */
+.nb-rule { height: var(--nb-bd-w); background: var(--nb-line); border: 0; }
+
+/* ═══════ THE BUTTON ═════════════════════════════════════════════════════
+   One recipe, ecosystem-wide, inherited from Fortized's 3D buttons.
+   Rest sits on its shadow · hover lifts a pixel and the shadow grows ·
+   press travels DOWN INTO the shadow. The radius is pinned in every state
+   so a press can never square a button off. ───────────────────────────── */
+.nb-btn {
+  --btn-bg: var(--nb-surface);
+  --btn-fg: var(--nb-fg);
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 15px;
+  line-height: 1; text-align: center; white-space: nowrap;
+  padding: 13px 22px;
+  background: var(--btn-bg); color: var(--btn-fg);
+  border: var(--nb-bd);
+  border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh);
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast), background var(--nb-fast);
+  user-select: none;
+}
+.nb-btn:hover  { transform: translate(-1px, -1px); box-shadow: 5px 7px 0 var(--nb-ink); }
+.nb-btn:active { transform: translate(3px, 4px);   box-shadow: var(--nb-sh-press); }
+.nb-btn:disabled, .nb-btn[aria-disabled="true"] {
+  opacity: .5; cursor: not-allowed;
+  transform: none; box-shadow: var(--nb-sh);
+}
+.nb-btn svg { width: 1.05em; height: 1.05em; fill: currentColor; flex: none; }
+
+.nb-btn--primary { --btn-bg: var(--nb-yellow); --btn-fg: var(--nb-ink); }
+.nb-btn--blue    { --btn-bg: var(--nb-blue);   --btn-fg: var(--nb-ink); }
+.nb-btn--green   { --btn-bg: var(--nb-green);  --btn-fg: var(--nb-ink); }
+.nb-btn--pink    { --btn-bg: var(--nb-pink);   --btn-fg: var(--nb-ink); }
+.nb-btn--red     { --btn-bg: var(--nb-red);    --btn-fg: #FFFFFF; }
+.nb-btn--ink     { --btn-bg: var(--nb-ink);    --btn-fg: #FFFFFF; }
+.nb-btn--paper   { --btn-bg: #FFFFFF;          --btn-fg: var(--nb-ink); }
+.nb-btn--ghost   { --btn-bg: transparent;      box-shadow: none; }
+.nb-btn--ghost:hover  { background: var(--nb-surface-2); box-shadow: none; transform: none; }
+.nb-btn--ghost:active { transform: translateY(1px); box-shadow: none; }
+
+.nb-btn--lg  { font-size: 18px; padding: 17px 30px; border-radius: var(--nb-r); }
+.nb-btn--xl  { font-size: 21px; padding: 21px 38px; border-radius: var(--nb-r); box-shadow: var(--nb-sh-lg); }
+.nb-btn--xl:hover  { box-shadow: 9px 11px 0 var(--nb-ink); }
+.nb-btn--xl:active { transform: translate(6px, 8px); box-shadow: 2px 3px 0 var(--nb-ink); }
+.nb-btn--sm  { font-size: 13px; padding: 9px 15px; box-shadow: var(--nb-sh-sm); }
+.nb-btn--sm:hover  { box-shadow: 3px 4px 0 var(--nb-ink); }
+.nb-btn--sm:active { transform: translate(2px, 3px); box-shadow: 1px 1px 0 var(--nb-ink); }
+.nb-btn--block { display: flex; width: 100%; }
+.nb-btn--pill  { border-radius: var(--nb-r-pill); }
+
+/* Icon-only control. Square, never a circle unless asked. */
+.nb-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px; flex: none;
+  background: var(--nb-surface); color: var(--nb-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm);
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast), background var(--nb-fast);
+}
+.nb-icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
+.nb-icon-btn:hover  { transform: translate(-1px, -1px); box-shadow: 3px 4px 0 var(--nb-ink); }
+.nb-icon-btn:active { transform: translate(2px, 3px); box-shadow: 0 0 0 var(--nb-ink); }
+.nb-icon-btn--round { border-radius: 50%; }
+
+/* ═══════ SURFACES ═══════════════════════════════════════════════════════ */
+.nb-card {
+  background: var(--nb-surface);
+  color: var(--nb-fg);
+  border: var(--nb-bd);
+  border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh);
+  padding: var(--nb-pad);
+}
+.nb-card--flat  { box-shadow: none; }
+.nb-card--lg    { box-shadow: var(--nb-sh-lg); border-radius: var(--nb-r-lg); }
+.nb-card--tight { padding: 16px; }
+.nb-card--bare  { padding: 0; overflow: hidden; }
+
+/* Interactive card: lifts on hover, presses on click, keyboard-reachable. */
+.nb-card--live {
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast);
+  cursor: pointer;
+}
+.nb-card--live:hover  { transform: translate(-2px, -3px); box-shadow: 7px 9px 0 var(--nb-ink); }
+.nb-card--live:active { transform: translate(2px, 3px);   box-shadow: var(--nb-sh-sm); }
+
+/* Colour-topped card — a flat band, not a gradient. */
+.nb-card--band { padding-top: 0; overflow: hidden; }
+.nb-card--band > .nb-band {
+  margin: 0 calc(-1 * var(--nb-pad)) var(--nb-pad);
+  height: 14px; background: var(--nb-yellow);
+  border-bottom: var(--nb-bd);
+}
+
+.nb-panel {
+  background: var(--nb-surface-2);
+  border: var(--nb-bd-thin);
+  border-radius: var(--nb-r-sm);
+  padding: 16px;
+}
+
+/* Sticker — the off-axis 1960s touch. Used sparingly, on labels only. */
+.nb-sticker {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px;
+  padding: 7px 14px;
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+  box-shadow: var(--nb-sh-sm);
+  transform: rotate(-2.5deg);
+}
+.nb-sticker--r { transform: rotate(2deg); }
+.nb-sticker--flat { transform: none; }
+
+/* Tag / chip — quiet, square, countable. */
+.nb-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 12px; letter-spacing: .02em;
+  padding: 5px 10px;
+  background: var(--nb-surface); color: var(--nb-fg);
+  border: var(--nb-bd-thin); border-radius: 7px;
+}
+.nb-tag--yellow { background: var(--nb-yellow); color: var(--nb-ink); }
+.nb-tag--blue   { background: var(--nb-blue);   color: var(--nb-ink); }
+.nb-tag--green  { background: var(--nb-green);  color: var(--nb-ink); }
+.nb-tag--pink   { background: var(--nb-pink);   color: var(--nb-ink); }
+.nb-tag--red    { background: var(--nb-red);    color: #fff; }
+
+/* ═══════ FORM CONTROLS ══════════════════════════════════════════════════ */
+.nb-field { display: flex; flex-direction: column; gap: 7px; }
+.nb-label {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px;
+  letter-spacing: .01em;
+}
+.nb-input, .nb-textarea, .nb-select {
+  width: 100%;
+  background: var(--nb-surface);
+  color: var(--nb-fg);
+  border: var(--nb-bd);
+  border-radius: var(--nb-r-sm);
+  padding: 12px 14px;
+  font-size: 15px;
+  transition: box-shadow var(--nb-fast), border-color var(--nb-fast);
+}
+.nb-input::placeholder, .nb-textarea::placeholder { color: var(--nb-fg-muted); }
+.nb-input:focus, .nb-textarea:focus, .nb-select:focus {
+  outline: none;
+  box-shadow: var(--nb-sh-sm);
+  border-radius: var(--nb-r-sm);   /* pinned: focus must never square a field */
+}
+.nb-textarea { resize: vertical; min-height: 110px; line-height: 1.5; }
+.nb-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='black' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px;
+  padding-right: 38px;
+}
+[data-nb="dark"] .nb-select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
+}
+.nb-hint  { font-size: 13px; color: var(--nb-fg-muted); }
+.nb-error { font-size: 13px; font-weight: 600; color: var(--nb-red); }
+.nb-input[aria-invalid="true"], .nb-textarea[aria-invalid="true"] { border-color: var(--nb-red); }
+
+/* Checkbox — a real box with a real tick. */
+.nb-check { display: inline-flex; align-items: flex-start; gap: 11px; cursor: pointer; }
+.nb-check input { position: absolute; opacity: 0; width: 0; height: 0; }
+.nb-check .nb-box {
+  width: 24px; height: 24px; flex: none; margin-top: 1px;
+  background: var(--nb-surface);
+  border: var(--nb-bd); border-radius: 6px;
+  display: grid; place-items: center;
+  transition: background var(--nb-fast);
+}
+.nb-check .nb-box::after {
+  content: ""; width: 11px; height: 6px;
+  border-left: 3px solid var(--nb-ink); border-bottom: 3px solid var(--nb-ink);
+  transform: rotate(-45deg) scale(0); transform-origin: center;
+  transition: transform var(--nb-fast);
+  margin-top: -3px;
+}
+.nb-check input:checked + .nb-box { background: var(--nb-yellow); }
+.nb-check input:checked + .nb-box::after { transform: rotate(-45deg) scale(1); }
+.nb-check input:focus-visible + .nb-box { outline: 3px solid var(--nb-blue); outline-offset: 2px; }
+
+/* Toggle — a switch that physically slides. */
+.nb-toggle { display: inline-flex; align-items: center; gap: 11px; cursor: pointer; }
+.nb-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.nb-toggle .nb-track {
+  width: 52px; height: 30px; flex: none;
+  background: var(--nb-surface-2);
+  border: var(--nb-bd); border-radius: var(--nb-r-pill);
+  padding: 2px; display: flex; align-items: center;
+  transition: background var(--nb-fast);
+}
+.nb-toggle .nb-knob {
+  width: 22px; height: 22px;
+  background: var(--nb-ink); border-radius: 50%;
+  transition: transform var(--nb-med);
+}
+.nb-toggle input:checked + .nb-track { background: var(--nb-green); }
+.nb-toggle input:checked + .nb-track .nb-knob { transform: translateX(22px); }
+.nb-toggle input:disabled + .nb-track { opacity: .5; }
+.nb-toggle input:focus-visible + .nb-track { outline: 3px solid var(--nb-blue); outline-offset: 2px; }
+
+/* ═══════ NAVIGATION ═════════════════════════════════════════════════════
+   A real bar with a real bottom edge — not a floating blurred capsule. */
+.nb-nav {
+  position: sticky; top: 0; z-index: 400;
+  background: var(--nb-surface);
+  border-bottom: var(--nb-bd);
+}
+.nb-nav-in {
+  max-width: var(--nb-max); margin: 0 auto;
+  padding: 0 24px; height: 68px;
+  display: flex; align-items: center; gap: 14px;
+}
+.nb-nav-logo { display: flex; align-items: center; flex: none; }
+.nb-nav-logo img { height: 26px; width: auto; }
+.nb-nav-links { display: flex; align-items: center; gap: 4px; margin-left: 10px; }
+.nb-nav-link {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 14px;
+  padding: 9px 14px; border-radius: var(--nb-r-sm);
+  border: 2px solid transparent;
+  transition: background var(--nb-fast), border-color var(--nb-fast);
+}
+.nb-nav-link:hover { background: var(--nb-surface-2); border-color: var(--nb-line); }
+.nb-nav-link[aria-current="page"] {
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border-color: var(--nb-ink); box-shadow: var(--nb-sh-sm);
+}
+.nb-nav-spacer { flex: 1; }
+.nb-nav-actions { display: flex; align-items: center; gap: 10px; flex: none; }
+.nb-nav-burger { display: none; }
+
+@media (max-width: 880px) {
+  .nb-nav-links {
+    position: absolute; top: 68px; left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 6px;
+    background: var(--nb-surface);
+    border-bottom: var(--nb-bd);
+    padding: 14px 24px 20px;
+    margin: 0;
+    display: none;
+  }
+  .nb-nav.is-open .nb-nav-links { display: flex; }
+  .nb-nav-burger { display: inline-flex; }
+}
+
+/* ═══════ FOOTER ═════════════════════════════════════════════════════════ */
+.nb-footer {
+  background: var(--nb-surface);
+  border-top: var(--nb-bd);
+  padding: clamp(40px, 6vw, 72px) 0 32px;
+}
+.nb-footer-grid {
+  display: grid; gap: 34px;
+  grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+}
+@media (max-width: 860px) { .nb-footer-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .nb-footer-grid { grid-template-columns: 1fr; } }
+.nb-footer h4 {
+  font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.nb-footer-list { display: flex; flex-direction: column; gap: 9px; }
+.nb-footer-list a { font-size: 14.5px; color: var(--nb-fg-muted); width: fit-content; }
+.nb-footer-list a:hover { color: var(--nb-fg); text-decoration: underline; text-underline-offset: 3px; }
+.nb-footer-base {
+  margin-top: 38px; padding-top: 22px;
+  border-top: var(--nb-bd-thin);
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 16px; flex-wrap: wrap;
+  font-size: 13.5px; color: var(--nb-fg-muted);
+}
+
+/* ═══════ THE RAINBAW BAR ════════════════════════════════════════════════
+   Five flat stripes. The ecosystem's signature — it goes at the very top
+   or the very bottom of a page, never in the middle of content. */
+.nb-rainbaw { display: flex; height: 8px; width: 100%; }
+.nb-rainbaw > i { flex: 1; display: block; }
+.nb-rainbaw > i:nth-child(1) { background: var(--nb-red); }
+.nb-rainbaw > i:nth-child(2) { background: var(--nb-green); }
+.nb-rainbaw > i:nth-child(3) { background: var(--nb-blue); }
+.nb-rainbaw > i:nth-child(4) { background: var(--nb-yellow); }
+.nb-rainbaw > i:nth-child(5) { background: var(--nb-pink); }
+.nb-rainbaw--tall { height: 14px; }
+
+/* ═══════ DECO ═══════════════════════════════════════════════════════════
+   The 1960s geometry. Flat shapes with a black outline, positioned by hand,
+   never scattered at random and always aria-hidden. */
+.nb-deco { position: absolute; pointer-events: none; z-index: 0; }
+.nb-deco-img { max-width: 100%; height: auto; }
+
+.nb-shape { display: block; border: var(--nb-bd); }
+.nb-shape--sq     { width: 54px; height: 54px; background: var(--nb-yellow); }
+.nb-shape--circle { width: 54px; height: 54px; border-radius: 50%; background: var(--nb-blue); }
+.nb-shape--tri {
+  width: 0; height: 0; border: 0;
+  border-left: 30px solid transparent; border-right: 30px solid transparent;
+  border-bottom: 52px solid var(--nb-green);
+  filter: drop-shadow(0 0 0 var(--nb-ink));
+}
+.nb-dots {
+  background-image: radial-gradient(var(--nb-ink) 1.6px, transparent 1.6px);
+  background-size: 14px 14px;
+}
+.nb-hatch {
+  background-image: repeating-linear-gradient(
+    45deg, var(--nb-ink) 0 2px, transparent 2px 9px);
+}
+
+/* Marquee — a moving band of statement text. Pauses for reduced motion. */
+.nb-marquee {
+  overflow: hidden; border-top: var(--nb-bd); border-bottom: var(--nb-bd);
+  background: var(--nb-yellow); color: var(--nb-ink);
+  padding: 13px 0;
+}
+.nb-marquee-track {
+  display: flex; gap: 40px; width: max-content;
+  animation: nbMarquee 26s linear infinite;
+}
+.nb-marquee span {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 16px; letter-spacing: .06em; text-transform: uppercase;
+  white-space: nowrap;
+}
+@keyframes nbMarquee { to { transform: translateX(-50%); } }
+.nb-marquee:hover .nb-marquee-track { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .nb-marquee-track { animation: none; }
+}
+
+/* ═══════ STATES: loading · empty · error ════════════════════════════════
+   Every surface that fetches gets all three. A blank box is a bug. */
+.nb-skel {
+  background: var(--nb-surface-2);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  position: relative; overflow: hidden;
+}
+.nb-skel::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,.06), transparent);
+  animation: nbSkel 1.3s linear infinite;
+}
+[data-nb="dark"] .nb-skel::after {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+}
+@keyframes nbSkel { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { .nb-skel::after { animation: none; } }
+.nb-skel--line { height: 13px; border-radius: 5px; }
+.nb-skel--av   { width: 44px; height: 44px; border-radius: 50%; flex: none; }
+
+.nb-state {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 12px; padding: clamp(32px, 6vw, 56px) 24px;
+}
+.nb-state img { width: clamp(120px, 22vw, 180px); height: auto; margin-bottom: 4px; }
+.nb-state h3 { font-size: 20px; }
+.nb-state p  { color: var(--nb-fg-muted); max-width: 42ch; }
+
+.nb-alert {
+  display: flex; gap: 12px; align-items: flex-start;
+  border: var(--nb-bd); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm);
+  padding: 14px 16px; font-size: 14.5px;
+  background: var(--nb-surface);
+}
+.nb-alert--error   { background: var(--nb-red);    color: #fff; }
+.nb-alert--ok      { background: var(--nb-green);  color: var(--nb-ink); }
+.nb-alert--info    { background: var(--nb-blue);   color: var(--nb-ink); }
+.nb-alert--warn    { background: var(--nb-yellow); color: var(--nb-ink); }
+.nb-alert svg { width: 19px; height: 19px; flex: none; margin-top: 1px; fill: currentColor; }
+
+/* Spinner — a square that rotates. Round spinners are everyone's; this
+   one belongs to the system. */
+.nb-spin {
+  width: 20px; height: 20px; flex: none;
+  border: 3px solid var(--nb-line);
+  border-top-color: transparent;
+  border-radius: 4px;
+  animation: nbSpin .8s linear infinite;
+}
+@keyframes nbSpin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .nb-spin { animation-duration: 2.4s; } }
+
+/* ═══════ DIALOG ═════════════════════════════════════════════════════════ */
+.nb-dialog-back {
+  position: fixed; inset: 0; z-index: 900;
+  background: rgba(0, 0, 0, .55);
+  display: grid; place-items: center;
+  padding: 20px;
+  animation: nbFade .18s var(--nb-ease);
+}
+.nb-dialog {
+  background: var(--nb-surface); color: var(--nb-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh-lg);
+  width: min(520px, 100%);
+  max-height: min(86vh, 760px);
+  display: flex; flex-direction: column;
+  animation: nbPop .22s var(--nb-ease);
+}
+.nb-dialog-head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 20px; border-bottom: var(--nb-bd);
+}
+.nb-dialog-body { padding: 20px; overflow-y: auto; min-height: 0; }
+.nb-dialog-foot {
+  display: flex; gap: 10px; justify-content: flex-end;
+  padding: 16px 20px; border-top: var(--nb-bd); flex-wrap: wrap;
+}
+@keyframes nbFade { from { opacity: 0; } }
+@keyframes nbPop  { from { opacity: 0; transform: translateY(14px) scale(.97); } }
+@media (prefers-reduced-motion: reduce) {
+  .nb-dialog-back, .nb-dialog { animation: none; }
+}
+
+/* ═══════ REVEAL ═════════════════════════════════════════════════════════
+   Entrance for on-scroll blocks. `backwards`, never `both` — a forwards
+   fill keeps transform:none applied forever and silently swallows the
+   :hover lift on every card it touches. */
+.nb-reveal {
+  opacity: 0; transform: translateY(18px);
+}
+.nb-reveal.is-in {
+  animation: nbReveal .5s var(--nb-ease) backwards;
+  opacity: 1; transform: none;
+}
+@keyframes nbReveal { from { opacity: 0; transform: translateY(18px); } }
+@media (prefers-reduced-motion: reduce) {
+  .nb-reveal { opacity: 1; transform: none; }
+  .nb-reveal.is-in { animation: none; }
+}
+
+/* ═══════ UTILITIES ══════════════════════════════════════════════════════ */
+.nb-tilt-l  { transform: rotate(-1.6deg); }
+.nb-tilt-r  { transform: rotate(1.6deg); }
+.nb-center  { text-align: center; }
+.nb-hide    { display: none !important; }
+@media (max-width: 720px) { .nb-hide-sm { display: none !important; } }
+@media (min-width: 721px) { .nb-only-sm { display: none !important; } }
+.nb-fill    { flex: 1; }
+.nb-nowrap  { white-space: nowrap; }
+.nb-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.nb-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
