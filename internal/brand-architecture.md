@@ -14,6 +14,10 @@ about ourselves internally, and the rule for deciding where a new thing goes.
 
 The parent company. Everything below belongs to it.
 
+**Tagline: Make It Matter.** Three words, that capitalisation, that full stop.
+It is not a sentence opener — nothing follows it, and it does not get expanded
+into a longer line of marketing.
+
 ---
 
 ## Swiftaw Services
@@ -29,6 +33,11 @@ everything Swiftaw already has rather than standing up its own.
 | **Scope** | Focused. One job, done well. |
 
 **Today:** Lifecheck · Supernova
+
+> ⚠️ **The address row is aspiration, not fact.** Both services ship at a path
+> today — `swiftaw.com/lifecheck/` and `swiftaw.com/supernova/` — and the
+> sitemap says so. Either move them to subdomains or change this row; right
+> now the doc and the estate disagree, and the doc is the one that is wrong.
 
 ---
 
@@ -79,3 +88,250 @@ rename.
 - **Legal copy already leans on this.** `/legal/products-policy` covers
   Products, and Lifecheck carries its own integration terms as a Service.
   Keep the wording in step when this goes public.
+
+---
+---
+
+# The design language
+
+Roughly **85% Neo-Brutalism, 15% dark-mode cyber**, with a strong 1960s
+influence in the type and the flat colour. It should read as made by people
+who like making things — community-centric, playful, technical, confident.
+
+It should **not** read as an AI-generated SaaS site. Concretely, that means no
+glassmorphism, no gradient washes, no floating blobs, no endless rounded
+cards, no soft shadow stacks, no fake futuristic HUD chrome, no glow.
+
+The whole system is one file: **`css/swiftaw-nb.css`**, served from
+swiftaw.com and loaded by every site in the estate. There is one copy. A site
+that needs something different gets a surface context, not a fork.
+
+## The rules that decide everything else
+
+| | |
+|---|---|
+| **Borders** | Black and thick. 3px (`--nb-bd-w`), 2px for fine work. |
+| **Shadows** | Hard. `4px 6px 0 #000` — **blur 0, opacity 100%**. Never soft, never coloured. |
+| **Colour** | Flat. One colour per surface. No gradients. |
+| **Radius** | Generous and consistent — 10 / 18 / 26 / pill (`--nb-r-*`). |
+| **Motion** | Short and eased-out. Buttons travel *into* their shadow. |
+
+A neutral drop shadow for depth is fine. A coloured blur halo is a glow, and
+glows are out.
+
+## The Rainbaw
+
+Five colours. There is no sixth, and we do not invent one.
+
+| | Hex | Token |
+|---|---|---|
+| Red | `#FF0033` | `--nb-red` |
+| Green | `#3ECF6E` | `--nb-green` |
+| Blue | `#2CAFFC` | `--nb-blue` |
+| Yellow | `#FFF93E` | `--nb-yellow` |
+| Pink | `#FF77E4` | `--nb-pink` |
+
+**Yellow is primary.** The others are accents, structure and play — the
+`.nb-rainbaw` stripe, category marks, state colours.
+
+> ⚠️ **Two live near-misses to correct.** Supernova's `--sn-blue` is `#30aefc`
+> and Lifecheck uses `#fef83d` — both are a few points off the official blue
+> and yellow. They read as the Rainbaw and are not the Rainbaw. Fix them to
+> the tokens when each site is rebuilt.
+
+## Type
+
+| Role | Face |
+|---|---|
+| Biggest display / headline titles | **Tropicon** |
+| Section headings, card headings, important UI headings | **Syne Bold** |
+| Body | DM Sans |
+
+Tropicon is the ecosystem's display face — it is what makes a Swiftaw page
+recognisable at a glance. Syne Bold carries everything below the hero.
+
+**Syne Extra Bold is Fortized's logo weight and stays there.** It does not
+become the general heading weight for the ecosystem; new work sits at 500–700.
+
+Tropicon is not in this repo yet. `@font-face` points at
+`/fonts/Tropicon.woff2` with a Syne fallback, so nothing breaks before the
+file lands.
+
+## Buttons
+
+Inherited from Fortized, because it was already right:
+
+- **Rest** sits on its shadow.
+- **Hover** lifts a pixel and the shadow grows.
+- **Press** travels *into* the shadow — `translate(3px,4px)`, shadow shrinks.
+
+The radius is pinned in every state. A press must never square a button off.
+
+## Surfaces
+
+`[data-nb="light" | "yellow" | "dark"]` re-skins the whole component set. In
+`dark`, the border colour flips to white — a black border on a black
+background is not a border.
+
+## Artwork
+
+Two libraries exist and both are real:
+
+- **`SWFT-Deco/`** — Swiftaw's own deco art. Place it where it *means*
+  something: `infos-safe-deco.png` beside security information,
+  `privacy-deco.png` beside privacy information. Not scattered as decoration.
+- **`Icons/CharacterIcons/`** (Fortized repo) — Fortized's character art,
+  keyed by mood rather than filename.
+
+Icons are **free Font Awesome SVGs** and emoji are **Twemoji**. Nothing paid,
+nothing invented.
+
+Hereld has logos and a favicon and nothing else yet; its own artwork is coming
+from the user later.
+
+---
+
+# Per brand
+
+Each entry records what is **true today**. Where something is undecided it
+says so rather than guessing — an invented domain or an invented hex is worse
+than a blank.
+
+## Fortized — Product
+
+| | |
+|---|---|
+| **What it is** | A chat platform. Bastions, channels, DMs, group chats. |
+| **Tagline** | **More Than A Chat App** |
+| **Domain** | `fortized.com` (+ `invite.fortized.com` for invites only) |
+| **Accounts** | Its own. Not to be merged with anything. |
+| **Primary** | `#FFF93E` — Rainbaw yellow |
+| **Logo type** | Syne Extra Bold |
+| **Surface** | Dark |
+| **Hosting** | Express (`server.js`), not Pages |
+| **Privacy** | `/legal/privacy-policy` and `/privacy` |
+| **Scope here** | **Web pages only.** The app is not in this redesign. |
+
+"Build Your Fortress" is retired. It does not appear in new copy.
+
+The character art is a genuine asset and part of the brand — the Heroic Search
+knight, Joyster, the herald. Use it where the mood fits; an empty state that
+is a *win* does not get a defeated knight.
+
+## Hereld — Product *(incoming)*
+
+| | |
+|---|---|
+| **What it is** | A professional social network. |
+| **Tagline** | Not chosen. Must be original — not "What's happening?!". |
+| **Domain** | **Undecided.** Products get their own domain; nobody has picked one. |
+| **Accounts** | Its own, independent. Not merged with Swiftaw or Fortized. |
+| **Primary** | `#2CAFFC` — Rainbaw blue |
+| **Background** | `#0C0F15` |
+| **Text** | White primary |
+| **Surface** | Dark |
+| **Privacy** | **None exists.** Needs writing before its consent card can link one. |
+| **Assets** | Logomarks + favicons only. Artwork coming from the user. |
+
+Swiftaw Neo-Brutalism with a **restrained** medieval character — the name
+carries the heraldry, the interface should not cosplay it.
+
+Notifications have a signature: a **white bubble with a thick `#2CAFFC`
+outline**. That is Hereld's, and it should stay distinctive to Hereld.
+
+The splash animation uses the Hereld logo. **Fortized's splash is untouched.**
+
+The `index.html` in the repo today is a scraped X.com page — minified React
+and nonces. It is not a starting point; only the logo PNGs are real.
+
+## Lifecheck — Service
+
+| | |
+|---|---|
+| **What it is** | The CAPTCHA / human-verification service. |
+| **Lives at** | `swiftaw.com/lifecheck/` |
+| **Accounts** | Swiftaw accounts. |
+| **Colour** | `#fef83d` today — **should be `#FFF93E`**. |
+| **Surface** | Dark (`#0d1117` / `#0a0e14`) |
+| **Privacy** | Swiftaw's, `/legal/privacy-policy` |
+| **Consumers** | Fortized uses it live. Hereld will. |
+
+Site keys are `lc_site_<12>`; secrets are `lc_secret_…` and belong in a request
+body, never in an `apikey` header. The domain allow-list matches bare
+hostnames, not full URLs.
+
+Where Hereld uses it: signup, suspicious auth, account creation, company
+verification, abuse prevention. **Not everywhere** — a CAPTCHA on every action
+is just friction.
+
+## Supernova — Service
+
+| | |
+|---|---|
+| **What it is** | The AI service. |
+| **Lives at** | `swiftaw.com/supernova/` |
+| **Accounts** | Swiftaw accounts. |
+| **Colours** | Blue `#30aefc` → **should be `#2CAFFC`**; pink `#FF77E4` ✓; green `#3ECF6E` ✓ |
+| **Surface** | Dark |
+| **Privacy** | Swiftaw's, `/legal/privacy-policy` |
+
+Two of its three colours are already exactly Rainbaw. The blue is the odd one
+out and should be corrected rather than the Rainbaw bent to match it.
+
+Where Hereld uses it: the **Ask Supernova** page, and topic summaries on
+Explore. Anything Supernova writes is **labelled as AI-generated** wherever it
+appears. Credentials stay server-side — never in client JavaScript.
+
+---
+
+# Shared components
+
+Built once, in this repo, loaded by all five sites.
+
+## `css/swiftaw-nb.css`
+
+The design system above. Every site loads it.
+
+## `css/swiftaw-consent.js` + `css/swiftaw-consent.css`
+
+The cookie consent card. One implementation, config-driven by a single script
+tag:
+
+```html
+<script src="https://swiftaw.com/css/swiftaw-consent.js"
+        data-product="Hereld" data-theme="dark"></script>
+```
+
+It opens as a card in the bottom-left, and after about a minute of being
+ignored it moves to a centred modal with the page dimmed behind it. Escalation
+raises **prominence, not stakes** — "Necessary only" sits beside "Accept" at
+the same size and weight in both states.
+
+Privacy links per site, using **only routes that exist**:
+
+| Site | Links |
+|---|---|
+| Swiftaw | Swiftaw |
+| Lifecheck | Swiftaw |
+| Supernova | Swiftaw |
+| Fortized | Swiftaw + Fortized |
+| Hereld | Swiftaw only, **until Hereld has a privacy page** |
+
+## The app launcher
+
+Ecosystem navigation only — three sections, **Favourites**, **Swiftaw
+Products** (Fortized, Hereld) and **Swiftaw Services** (Lifecheck,
+Supernova), plus the Swiftaw profile picture and account menu when signed in.
+
+It navigates between products. It does **not** unify the account systems
+underneath them, and nothing about it should imply that it does.
+
+---
+
+# The account rule, restated because it keeps mattering
+
+Fortized accounts, Hereld accounts and Swiftaw accounts are **three separate
+systems** and stay that way through this work. The launcher is navigation. The
+consent component is per-origin. Neither is a step toward merging anything.
+
+Account architecture is a separate job, for later.
