@@ -177,25 +177,38 @@ card shows: black stroke, black shadow, white fill. A white stroke with a
 black shadow reads as two different objects stuck together; both black is
 what makes a raised panel read as one solid thing cut out of the page.
 
-That has a consequence worth stating plainly: **on a dark page the panels are
-paper, not near-black.** A black stroke needs paper to read against. So
-`dark` splits its tokens in two:
+**A dark UI stays dark.** The spec card is white because that is the example
+it happens to be drawn on, not because a black stroke demands paper. What it
+demands is a *seam*: the panel is a lighter dark than the page it sits on, the
+black stroke lands in the gap between the two, and the black shadow reads as
+the page falling away underneath. Night `#0C0F15` page, `#161B24` panel,
+`#1F2634` for the second surface inside it.
+
+Tokens come in two pairs — the page ground and the raised panel:
 
 | | page ground | raised panel |
 | --- | --- | --- |
-| background | `--nb-bg` — night `#0C0F15` | `--nb-surface` — paper |
-| text | `--nb-fg` — white | `--nb-surface-fg` — ink |
+| background | `--nb-bg` — `#0C0F15` | `--nb-surface` — `#161B24` |
+| text | `--nb-fg` | `--nb-surface-fg` |
 | muted text | `--nb-fg-muted` | `--nb-surface-fg-muted` |
 
-In `light` and `yellow` both columns are the same thing, so the split costs
-nothing. Anything sitting **on** a surface (`.nb-card`, `.nb-panel`,
+On `dark` both columns are white text, and on `light` and `yellow` both are
+ink, so today the split costs nothing — it exists so that a surface which ever
+*does* diverge from its page (a yellow card on a dark section, say) colours
+its own text correctly instead of inheriting the page's. Anything sitting
+**on** a surface (`.nb-card`, `.nb-panel`,
 `.nb-dialog`, `.nb-nav`, `.nb-footer`, `.nb-btn`, `.nb-input`, `.nb-tag`,
 `.nb-alert`) reads `--nb-surface-fg`; anything sitting on the page ground
 reads `--nb-fg`.
 
-Two things deliberately do **not** use `--nb-line`, because they are glyphs on
-the page rather than panel edges and a black one would vanish on night ground:
-`.nb-spin` and any icon stroke. Both use `currentColor`.
+Some things deliberately do **not** use `--nb-line`, because they are glyphs
+*printed on* a surface rather than edges *of* one, and a black one would
+vanish into a dark panel: `.nb-spin`, `.nb-toggle .nb-knob`, `.swl-empty`'s
+dashed rule, the "coming soon" pill, and any icon stroke. They use
+`currentColor` or a surface token. Three things carry a baked-in colour that
+cannot inherit and so get an explicit dark override instead: the `.nb-select`
+chevron (a data URI), the `.nb-skel` sheen (a gradient), and the consent
+card's REQUIRED chip.
 
 ## Artwork
 
@@ -413,7 +426,27 @@ recover the session — a gap in the corner helps no one.
 Its styles are injected by the script rather than pulled from `nb.css`,
 because it loads on pages that have not been rebuilt on the system yet and an
 account control has to render. Same recipe either way: black stroke, black
-hard shadow, paper fill.
+hard shadow, and a fill that follows the page. It reads `data-theme` off its
+own `<script>` tag and **defaults to `dark`**, since every Swiftaw property
+is dark today; a light page opts out with `data-theme="light"`.
+
+**The avatar is a rounded square that fills the button**, not a circle inside
+it. Nothing else in this system is round, and a circle floating inside a
+rounded square reads as two shapes arguing over the same 42px. On the trigger
+it takes the button's whole content box with no stroke of its own — the button
+already has one — and an inner radius of the outer radius less the border
+width, so the two curves are concentric rather than one cutting across the
+other.
+
+### Only one popover at a time
+
+Clicking either dock control closes the other. It cannot be done with an
+outside-click listener, because each script calls `stopPropagation()` on its
+own button so the other's `document` handler never hears the click. Instead,
+opening dispatches a `swiftaw:popover` CustomEvent on `document` carrying its
+own id, and every other popover closes on any event that is not its own.
+Neither script imports the other, neither has to load first, and either can be
+absent.
 
 ### The dock
 

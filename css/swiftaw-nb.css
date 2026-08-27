@@ -108,8 +108,9 @@
    the shadow is black on every surface, light or dark. A white border with
    a black shadow reads as two different objects; keeping both black is what
    makes a raised panel read as one solid thing cut out of the page. On dark
-   ground the separation comes from the panel being PAPER against the dark
-   page, not from the stroke. ───────────────────────────────────────────── */
+   ground the panel is LIFTED off the page — a lighter dark against a darker
+   dark — and the black stroke sits in the seam between them. The UI stays
+   dark; it is the fill that changes, never the stroke. ─────────────────── */
 [data-nb="light"] {
   --nb-bg:        var(--nb-paper);
   --nb-surface:   var(--nb-paper);
@@ -131,16 +132,18 @@
   --nb-line:      var(--nb-ink);
 }
 [data-nb="dark"] {
-  /* The page ground is night and its text is white. The PANELS on it are
-     paper with black text, so the black stroke and black shadow the spec
-     calls for have something to sit against. Only the fill changes. */
+  /* Dark stays dark. The panel is a LIGHTER dark than the page, so the black
+     stroke reads in the seam between them and the black shadow reads as the
+     page falling away underneath. Both text tokens are white because both the
+     page and the panel are dark here — the split only does work on light and
+     yellow ground. */
   --nb-bg:        var(--nb-night);
-  --nb-surface:   var(--nb-paper);
-  --nb-surface-2: var(--nb-paper-2);
+  --nb-surface:   #161B24;
+  --nb-surface-2: #1F2634;
   --nb-fg:        #FFFFFF;
-  --nb-surface-fg: var(--nb-ink);
+  --nb-surface-fg: #FFFFFF;
   --nb-fg-muted:  #97A1B4;
-  --nb-surface-fg-muted: #4A4A4A;
+  --nb-surface-fg-muted: #97A1B4;
   --nb-line:      var(--nb-ink);
   --nb-sh:      4px 6px 0 #000000;
   --nb-sh-sm:   2px 3px 0 #000000;
@@ -433,8 +436,11 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   background-size: 12px;
   padding-right: 38px;
 }
-/* No dark-ground override for the chevron: the field itself is paper in every
-   context now, so a white arrow would disappear into it. */
+/* The chevron is baked into a data URI, so it cannot inherit a colour — it has
+   to be swapped outright when the field it sits in goes dark. */
+[data-nb="dark"] .nb-select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
+}
 .nb-hint  { font-size: 13px; color: var(--nb-fg-muted); }
 .nb-error { font-size: 13px; font-weight: 600; color: var(--nb-red); }
 .nb-input[aria-invalid="true"], .nb-textarea[aria-invalid="true"] { border-color: var(--nb-red); }
@@ -472,7 +478,9 @@ h1, h2, h3, h4, h5, h6, .nb-h {
 }
 .nb-toggle .nb-knob {
   width: 22px; height: 22px;
-  background: var(--nb-ink); border-radius: 50%;
+  /* The knob rides on the track, so it takes the surface's own text colour —
+     black ink on a dark track would be a hole, not a switch. */
+  background: var(--nb-surface-fg); border-radius: 50%;
   transition: transform var(--nb-med);
 }
 .nb-toggle input:checked + .nb-track { background: var(--nb-green); }
@@ -621,6 +629,11 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   animation: nbSkel 1.3s linear infinite;
 }
 @keyframes nbSkel { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+/* A black sheen over a dark skeleton is invisible — the sweep has to invert
+   with the ground it runs across. */
+[data-nb="dark"] .nb-skel::after {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.07), transparent);
+}
 @media (prefers-reduced-motion: reduce) { .nb-skel::after { animation: none; } }
 .nb-skel--line { height: 13px; border-radius: 5px; }
 .nb-skel--av   { width: 44px; height: 44px; border-radius: 50%; flex: none; }

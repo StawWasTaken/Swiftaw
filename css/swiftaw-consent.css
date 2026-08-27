@@ -41,13 +41,13 @@
   --nb-fg: #000000; --nb-fg-muted: #4A4A4A; --nb-line: #000000;
 }
 .swc-root[data-nb="yellow"] { --nb-surface-2: #FFF93E; --nb-fg-muted: #3A3A2A; }
-/* Dark means the PAGE behind the card is dark. The card itself is paper in
-   every context, because the stroke and the shadow are black everywhere —
-   only the fill would change, and a black stroke needs paper to read
-   against. Matching nb.css's [data-nb="dark"]. */
+/* On a dark page the card stays dark — a lighter dark than the page, so the
+   black stroke reads in the seam and the black shadow reads as the page
+   dropping away behind it. The stroke never changes colour; the fill does.
+   Matching nb.css's [data-nb="dark"]. */
 .swc-root[data-nb="dark"] {
-  --nb-surface: #FFFFFF; --nb-surface-2: #F4F4EF;
-  --nb-fg: #000000; --nb-fg-muted: #4A4A4A; --nb-line: #000000;
+  --nb-surface: #161B24; --nb-surface-2: #1F2634;
+  --nb-fg: #FFFFFF; --nb-fg-muted: #97A1B4; --nb-line: #000000;
 }
 .swc-root[data-nb] { --nb-bd: var(--nb-bd-w) solid var(--nb-line); }
 
@@ -273,6 +273,9 @@
   background: var(--nb-ink, #000); color: #fff;
   border-radius: 5px; padding: 2px 7px;
 }
+/* Black on a dark panel is a hole, not a chip. It inverts so the label stays
+   as readable as the row it is labelling. */
+.swc-root[data-nb="dark"] .swc-pref-lock { background: #FFFFFF; color: #000; }
 
 /* ── mobile: a bottom sheet, not a shrunken desktop card ────────────────── */
 @media (max-width: 720px) {

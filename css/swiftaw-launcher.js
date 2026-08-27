@@ -35,6 +35,10 @@
 
   var FAV_KEY = 'swiftaw.launcher.favourites.v1';
   var ORIGIN  = 'https://swiftaw.com';
+  /* Announced on document whenever a dock popover opens, so the others close.
+     Shared with swiftaw-account.js by name only — neither script imports the
+     other, and either can be absent. */
+  var POPOVER_EVT = 'swiftaw:popover';
 
   /* Assets live beside this file, wherever it is served from. Deriving the
      base from our own <script src> means the icons resolve same-origin on
@@ -257,6 +261,7 @@
     }
     document.addEventListener('click', this._onDoc);
     document.addEventListener('keydown', this._onKey);
+    document.dispatchEvent(new CustomEvent(POPOVER_EVT, { detail: { id: 'launcher' } }));
   };
 
   Launcher.prototype.close = function () {
@@ -270,6 +275,13 @@
   };
 
   Launcher.prototype.toggle = function () { this.open_ ? this.close() : this.open(); };
+
+  /* The account button is a separate script that stops its own click from
+     reaching document, so this panel's outside-click listener never hears it.
+     Opening announces itself instead, and whoever else is open stands down. */
+  document.addEventListener(POPOVER_EVT, function (e) {
+    if (instance && (!e.detail || e.detail.id !== 'launcher')) instance.close();
+  });
 
   /* ── boot ───────────────────────────────────────────────────────────────── */
   var instance = null;

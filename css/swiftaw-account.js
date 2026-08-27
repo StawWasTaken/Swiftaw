@@ -22,6 +22,13 @@
   'use strict';
   if (window.SwiftawAccount) return;
 
+  /* currentScript is only readable while this file is executing, so the tag is
+     captured now rather than looked up later. Every Swiftaw property is dark
+     today, so dark is the default and a light page opts out explicitly with
+     data-theme="light". */
+  var SELF = document.currentScript;
+  var THEME = (SELF && SELF.getAttribute('data-theme')) || 'dark';
+
   var SUPA_URL = 'https://mwszvynzzugbowdngzab.supabase.co';
   var SUPA_KEY = 'sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf';
   var SUPA_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
@@ -205,24 +212,37 @@
       '--swa-line:#000;--swa-surface:#fff;--swa-surf-2:#F4F4EF;' +
       '--swa-fg:#000;--swa-muted:#4A4A4A;--swa-yellow:var(--nb-yellow,#FFF93E);' +
       'font-family:var(--nb-font-body,system-ui,-apple-system,sans-serif);}' +
+    /* Dark describes the page this sits on, and the panel goes dark with it —
+       a lighter dark than the page, so the black stroke reads in the seam.
+       Matching nb.css [data-nb="dark"]. */
+    '#swiftaw-acct[data-theme="dark"]{--swa-line:#000;--swa-surface:#161B24;' +
+      '--swa-surf-2:#1F2634;--swa-fg:#FFFFFF;--swa-muted:#97A1B4;}' +
 
     /* trigger — 42px square to match the launcher button beside it */
     '#swiftaw-acct .swa-btn{display:grid;place-items:center;width:42px;height:42px;padding:3px;' +
       'background:' + S + ';border:var(--nb-bd-w,3px) solid ' + L + ';' +
       'border-radius:var(--nb-r-sm,10px);box-shadow:var(--nb-sh-sm,2px 3px 0 #000);' +
-      'cursor:pointer;color:var(--swa-fg);text-decoration:none;' +
+      'cursor:pointer;color:var(--swa-fg);text-decoration:none;overflow:hidden;' +
       'transition:transform .14s,box-shadow .14s;}' +
     '#swiftaw-acct .swa-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 4px 0 #000;}' +
     '#swiftaw-acct .swa-btn:active,#swiftaw-acct .swa-btn[aria-expanded="true"]' +
       '{transform:translate(2px,3px);box-shadow:1px 2px 0 #000;}' +
     '#swiftaw-acct .swa-btn > svg{width:20px;height:20px;fill:currentColor;}' +
 
-    /* avatar — the one round thing in the system, because a face is round */
-    '#swiftaw-acct .av{border-radius:50%;background-size:cover;background-position:center;' +
-      'flex-shrink:0;display:grid;place-items:center;border:2px solid ' + L + ';' +
-      'background-color:var(--swa-yellow);color:#000;' +
+    /* The avatar is a rounded square, not a circle. Nothing else in this
+       system is round, and a circle floating inside a rounded square reads as
+       two shapes fighting over the same 42px. */
+    '#swiftaw-acct .av{border-radius:var(--nb-r-sm,10px);background-size:cover;' +
+      'background-position:center;flex-shrink:0;display:grid;place-items:center;' +
+      'border:2px solid ' + L + ';background-color:var(--swa-yellow);color:#000;' +
       'font-family:var(--nb-font-head,\'Syne\',sans-serif);font-weight:700;}' +
-    '#swiftaw-acct .swa-btn .av{width:32px;height:32px;font-size:14px;}' +
+    /* On the trigger it FILLS the button: no padding to sit in, no stroke of
+       its own (the button already has one), and an inner radius that is the
+       outer radius less the border it is pressed against, so the two curves
+       are concentric instead of one cutting across the other. */
+    '#swiftaw-acct .swa-btn--av{padding:0;}' +
+    '#swiftaw-acct .swa-btn .av{width:100%;height:100%;font-size:16px;border:0;' +
+      'border-radius:calc(var(--nb-r-sm,10px) - 3px);}' +
 
     /* panel */
     '#swiftaw-acct .swa-panel{position:absolute;top:calc(100% + 12px);right:0;z-index:9400;' +
@@ -243,7 +263,7 @@
     '#swiftaw-acct .swa-cur{display:flex;flex-direction:column;align-items:center;' +
       'text-align:center;gap:3px;padding:20px 18px 16px;}' +
     '#swiftaw-acct .swa-cur .av{width:66px;height:66px;font-size:26px;border-width:3px;' +
-      'box-shadow:2px 3px 0 #000;margin-bottom:7px;}' +
+      'border-radius:var(--nb-r,18px);box-shadow:2px 3px 0 #000;margin-bottom:7px;}' +
     '#swiftaw-acct .swa-cur .n{display:block;font-family:var(--nb-font-head,\'Syne\',sans-serif);' +
       'font-weight:700;font-size:17px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
     '#swiftaw-acct .swa-cur .e{display:block;font-size:12.5px;color:var(--swa-muted);max-width:100%;' +
@@ -303,6 +323,13 @@
   var NOTE = 'Swiftaw, Fortized and Hereld accounts are separate. ' +
              'Signing in here does not sign you into a product.';
 
+  /* Two independent scripts own the two buttons in the dock, and each stops
+     its own click from reaching document — which is exactly why the other
+     one's outside-click listener never hears it. So opening announces itself
+     on document and every other popover stands down. Decoupled on purpose:
+     neither script has to know the other exists, or load first. */
+  var POPOVER_EVT = 'swiftaw:popover';
+
   var host = null, panelOpen = false, onDoc = null, onKey = null, backdrop = null;
 
   function closePanel() {
@@ -329,7 +356,12 @@
     }
     document.addEventListener('click', onDoc);
     document.addEventListener('keydown', onKey);
+    document.dispatchEvent(new CustomEvent(POPOVER_EVT, { detail: { id: 'account' } }));
   }
+
+  document.addEventListener(POPOVER_EVT, function (e) {
+    if (!e.detail || e.detail.id !== 'account') closePanel();
+  });
 
   function ensureHost() {
     if (host && host.isConnected) return host;
@@ -341,6 +373,7 @@
       // A page can place it itself; otherwise it joins the shared dock.
       (document.querySelector('[data-swiftaw-account]') || dock()).appendChild(host);
     }
+    host.setAttribute('data-theme', THEME);
     onDoc = function (e) { if (!host.contains(e.target)) closePanel(); };
     onKey = function (e) {
       if (e.key === 'Escape' && panelOpen) {
@@ -383,7 +416,7 @@
       : '';
 
     host.innerHTML =
-      '<button class="swa-btn" type="button" aria-expanded="false" aria-haspopup="true" ' +
+      '<button class="swa-btn swa-btn--av" type="button" aria-expanded="false" aria-haspopup="true" ' +
               'aria-label="Swiftaw account: ' + esc(uname) + '">' +
         avatarHtml({ avatar_url: meta.avatar_url, username: uname }, 'av') +
       '</button>' +

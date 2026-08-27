@@ -19,16 +19,16 @@
   --swl-fg:      var(--nb-surface-fg, #000);
   --swl-muted:   var(--nb-surface-fg-muted, #4A4A4A);
 }
-/* data-theme="dark" describes the PAGE the button sits on, not the panel.
-   The stroke and the shadow are black on every surface in this system, so
-   the panel stays paper — it is the fill that would change, and a black
-   stroke needs paper to read against. */
+/* data-theme="dark" describes the PAGE the button sits on. The panel stays
+   dark with it — a lighter dark than the page, so the black stroke reads in
+   the seam between the two. The stroke and the shadow are black on every
+   surface in this system; only the fill changes. */
 .swl-root[data-theme="dark"] {
   --swl-line:    #000000;
-  --swl-surface: #FFFFFF;
-  --swl-surf-2:  #F4F4EF;
-  --swl-fg:      #000000;
-  --swl-muted:   #4A4A4A;
+  --swl-surface: #161B24;
+  --swl-surf-2:  #1F2634;
+  --swl-fg:      #FFFFFF;
+  --swl-muted:   #97A1B4;
 }
 
 /* ── the trigger ────────────────────────────────────────────────────────────
@@ -160,7 +160,9 @@
   white-space: nowrap;
 }
 .swl-flag--here { background: var(--nb-yellow, #FFF93E); color: #000; border-color: #000; }
-.swl-flag--soon { color: var(--swl-muted); }
+/* currentColor, not the line colour: this pill sits ON the panel rather than
+   being an edge of it, so on a dark panel a black outline would disappear. */
+.swl-flag--soon { color: var(--swl-muted); border-color: currentColor; }
 
 /* Hereld has no domain yet. A tile that cannot go anywhere must not pretend
    it can — no pointer, no hover travel, and it is not a link element. */
@@ -192,7 +194,7 @@
 .swl-empty {
   font-size: 12.5px; line-height: 1.5;
   color: var(--swl-muted);
-  border: var(--nb-bd-w-thin, 2px) dashed var(--swl-line);
+  border: var(--nb-bd-w-thin, 2px) dashed currentColor;
   border-radius: var(--nb-r-sm, 10px);
   padding: 12px 14px;
   opacity: .8;
