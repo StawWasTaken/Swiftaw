@@ -16,11 +16,21 @@
     --stroke:#232c39;
     --stroke-soft:#1a212b;
     --track:#181f29;
-    --yellow:#fdf846; --yellow-s:#e6d21f;
-    --green:#36c05f;  --green-s:#268f45;
-    --blue:#2daffb;   --blue-s:#1f8ad6;
-    --red:#fd0235;    --red-s:#c00229;
-    --pink:#ff77e4;   --pink-s:#e065c8;
+    /* THE RAINBAW, exactly. These were each a hair off the official values
+       (#fdf846 for #FFF93E, #36c05f for #3ECF6E, #2daffb for #2CAFFC,
+       #fd0235 for #FF0033) — close enough that nothing looked wrong on its
+       own, and far enough that the widget never quite matched a Swiftaw page
+       sitting behind it. Pink was already right.
+
+       The -s companions are the hand-tuned darker strokes and are LEFT ALONE
+       on purpose: they are shades, they were already darker than these, and
+       they still are. Retuning them would be redesigning a widget that does
+       not need redesigning. */
+    --yellow:#FFF93E; --yellow-s:#e6d21f;
+    --green:#3ECF6E;  --green-s:#268f45;
+    --blue:#2CAFFC;   --blue-s:#1f8ad6;
+    --red:#FF0033;    --red-s:#c00229;
+    --pink:#FF77E4;   --pink-s:#e065c8;
     --ink:#0d1117;
     --text:#f4f6fa;
     --muted:#8b96a8;
@@ -81,7 +91,26 @@
     transition:border-color .2s ease, background .2s ease, transform .15s ease;
   }
   .chk-box:hover{ transform:scale(1.05); border-color:#aeb8c8; }
+
   .chk-box i{ font-size:14px; color:var(--ink); transform:scale(0); opacity:0; }
+  /* SWIFTAW'S CHECKMARK — the same mark the cookie card draws, and drawn the
+     same way: two borders on an empty 11×6 box, rotated -45°. Not a glyph.
+
+     It used to be FontAwesome's fa-check, which made the single most
+     important mark in the whole widget — the one that says you passed —
+     depend on a CDN stylesheet arriving. It is geometry now, so it cannot
+     fail to appear, and it is identical to the tick on the consent card
+     because it is literally the same box.
+
+     The jammed and retry states keep their FA glyphs: a gear and a refresh
+     arrow are not two borders, and pretending otherwise would be worse than
+     the dependency. Hence the class — the tick is `.chk-tick`, everything
+     else in this slot is still an <i>. */
+  .chk-box i.chk-tick{
+    width:11px; height:6px; margin-top:-3px; font-size:0;
+    border-left:3px solid var(--ink); border-bottom:3px solid var(--ink);
+    transform:rotate(-45deg) scale(0); transform-origin:center;
+  }
   .chk-box.spin i{ display:none; }
   .spinner-ring{
     display:none;
@@ -92,7 +121,11 @@
   }
   .chk-box.spin .spinner-ring{ display:block; animation:spin .75s linear infinite; }
   .chk-box.checked{ background:#0d1117; border-color:var(--yellow-s); animation:checkPop .45s cubic-bezier(.34,1.9,.64,1) both; }
+  /* The tick is borders, so it takes a border-colour rather than a colour —
+     and it has to keep its own -45° in every state, or scaling it up draws a
+     right angle instead of a check. */
   .chk-box.checked i{ color:var(--yellow); transform:scale(1); opacity:1; transition:transform .3s cubic-bezier(.34,1.9,.64,1) .06s, opacity .2s ease .06s; }
+  .chk-box.checked i.chk-tick{ border-color:var(--yellow); transform:rotate(-45deg) scale(1); }
   .collapsed.is-verified .chk-box,
   .collapsed.is-verified .chk-label{ cursor:default; pointer-events:none; }
   .collapsed.is-verified .chk-box:hover{ transform:none; border-color:var(--yellow-s); }
@@ -304,7 +337,12 @@
   .trace-wrap{ position:relative; touch-action:none; cursor:crosshair; padding:2px 0; }
   .trace-svg{ width:100%; height:120px; display:block; overflow:visible; }
   .beam-track{ fill:none; stroke:var(--stroke); stroke-width:16; stroke-linecap:round; }
-  .beam-live{ fill:none; stroke:var(--blue); stroke-width:8; stroke-linecap:round; transition:stroke-dashoffset .08s linear; }
+  /* This is the visitor's OWN line — the actual path their pointer took, not
+     the ideal curve unveiled. So no dash transition to animate: the geometry
+     changes on every move, and linejoin has to be round or a hand that
+     wobbles draws spikes at every sample. */
+  .beam-live{ fill:none; stroke:var(--blue); stroke-width:8;
+              stroke-linecap:round; stroke-linejoin:round; }
   .beam-start{ fill:var(--yellow); stroke:var(--yellow-s); stroke-width:3; animation:beamPulse 1.5s ease-in-out infinite; }
   .beam-end{ fill:var(--green); stroke:var(--green-s); stroke-width:3; }
   @keyframes beamPulse{ 0%,100%{ opacity:1; r:9; } 50%{ opacity:.6; r:11; } }
@@ -362,7 +400,7 @@
   <!-- COLLAPSED -->
   <div class="collapsed" id="collapsed">
     <div class="chk-row">
-      <div class="chk-box" id="chkBox"><i class="fa-solid fa-check"></i><span class="spinner-ring"></span></div>
+      <div class="chk-box" id="chkBox"><i class="chk-tick"></i><span class="spinner-ring"></span></div>
       <div class="chk-label" id="chkLabel">I'm not a robot</div>
       <div class="lc-badge">
         <img class="wm" src="LifeCheck%20logo.png" alt="Lifecheck" draggable="false" />
@@ -1122,7 +1160,7 @@
     loadedAt = Date.now();
     samples = [];
     chkBox.className = 'chk-box';
-    chkBox.querySelector('i').className = 'fa-solid fa-check';
+    chkBox.querySelector('i').className = 'chk-tick';
     chkLabel.textContent = "I'm not a robot";
     expanded.classList.add('hidden');
     collapsed.classList.remove('hidden');
@@ -1954,11 +1992,13 @@
       ? `M${p0.x} ${p0.y} C${p1.x} ${p1.y} ${p1b.x} ${p1b.y} ${p2.x} ${p2.y}`
       : `M${p0.x} ${p0.y} Q${p1.x} ${p1.y} ${p2.x} ${p2.y}`;
 
+    /* The live path starts EMPTY. It is the visitor's own trail — it gets its
+       geometry from where their pointer actually goes, never from pathD. */
     challengeArea.innerHTML = `
       <div class="trace-wrap" id="traceWrap">
         <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="trace-svg">
           <path d="${pathD}" class="beam-track"/>
-          <path d="${pathD}" class="beam-live" id="beamLive"/>
+          <path d="" class="beam-live" id="beamLive"/>
           <circle cx="${p0.x}" cy="${p0.y}" r="9" class="beam-start" id="beamStart"/>
           <circle cx="${p2.x}" cy="${p2.y}" r="9" class="beam-end"/>
         </svg>
@@ -1968,17 +2008,50 @@
     const wrap = document.getElementById('traceWrap');
     const live = document.getElementById('beamLive');
     const hint = document.getElementById('traceHint');
-    const len = live.getTotalLength ? live.getTotalLength() : 400;
-    live.style.strokeDasharray = len;
-    live.style.strokeDashoffset = len;
 
     let started = false, done = false, idx = 0, strays = 0;
+    let trail = [];
 
     function toSvg(e){
       const r = wrap.getBoundingClientRect();
       return { x: ((e.clientX - r.left)/r.width)*W, y: ((e.clientY - r.top)/r.height)*H };
     }
-    function dist(a,b){ return Math.hypot(a.x-b.x, a.y-b.y); }
+    /* The svg is preserveAspectRatio="none", so one unit of x and one unit of
+       y are not the same number of screen pixels. Measuring the gap in raw svg
+       units therefore makes the tolerance an ellipse — noticeably slacker on
+       one axis than the other — which is exactly the kind of thing a hand
+       feels and cannot name. Measured in real pixels it is a circle. */
+    function dist(a,b){
+      const r = wrap.getBoundingClientRect();
+      return Math.hypot((a.x-b.x) * (r.width/W), (a.y-b.y) * (r.height/H));
+    }
+
+    /* ── the trail ───────────────────────────────────────────────────────
+       This is the whole point of the challenge. The earlier build revealed
+       the IDEAL curve behind a stroke-dashoffset as you advanced, so the line
+       that appeared was perfect no matter how badly you actually moved — it
+       looked like a drawing playing back, not like something you drew. Now
+       the stroke IS the pointer's path: it wobbles where the hand wobbled and
+       it goes off into the margin when you leave the track, which is also the
+       honest picture of why a stray was counted. */
+    function pushTrail(p){
+      const last = trail[trail.length - 1];
+      if(last && Math.hypot(p.x - last.x, p.y - last.y) < 1.2) return;
+      trail.push(p);
+      // A drag long enough to matter is a few hundred samples; the cap only
+      // exists so a visitor who scribbles for a minute cannot grow the path
+      // data without bound.
+      if(trail.length > 600) trail.shift();
+      redraw();
+    }
+    function redraw(){
+      if(!trail.length){ live.setAttribute('d', ''); return; }
+      const seg = trail.map(q => q.x.toFixed(1) + ' ' + q.y.toFixed(1));
+      // One sample is a dot, and 'M x y' alone paints nothing even with a
+      // round cap — it needs somewhere to go, so it goes to itself.
+      live.setAttribute('d', 'M' + seg[0] + (seg.length > 1 ? 'L' + seg.slice(1).join('L') : 'L' + seg[0]));
+    }
+    function clearTrail(){ trail = []; redraw(); }
 
     function move(e){
       if(done) return;
@@ -1989,11 +2062,11 @@
         hint.textContent = 'Keep going…';
         wrap.classList.add('live');
       }
+      pushTrail(p);
       // Walk the cursor forward along the curve while it stays near it.
       let advanced = 0;
       while(idx < pts.length-1 && dist(p, pts[idx+1]) < TOL){ idx++; advanced++; }
       if(advanced){
-        live.style.strokeDashoffset = len * (1 - idx/(pts.length-1));
         TRACE.act('drag', { seg:idx, at:[+(p.x/W).toFixed(3), +(p.y/H).toFixed(3)] });
       } else if(dist(p, pts[idx]) > TOL*1.9){
         strays++;
@@ -2012,7 +2085,7 @@
       if(done || !started) return;
       // Let go early: reset rather than fail, the curve is the whole game.
       started = false; idx = 0;
-      live.style.strokeDashoffset = len;
+      clearTrail();
       wrap.classList.remove('live');
       hint.textContent = 'Lost it. Start again at the dot';
       strays++;

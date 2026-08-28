@@ -134,10 +134,19 @@ Five colours. There is no sixth, and we do not invent one.
 **Yellow is primary.** The others are accents, structure and play — the
 `.nb-rainbaw` stripe, category marks, state colours.
 
-> ⚠️ **Two live near-misses to correct.** Supernova's `--sn-blue` is `#30aefc`
-> and Lifecheck uses `#fef83d` — both are a few points off the official blue
-> and yellow. They read as the Rainbaw and are not the Rainbaw. Fix them to
-> the tokens when each site is rebuilt.
+> ⚠️ **One live near-miss left.** Supernova's `--sn-blue` is `#30aefc` — a few
+> points off the official blue. It reads as the Rainbaw and is not the
+> Rainbaw. Fix it to the token when that site is rebuilt.
+>
+> Lifecheck's set is **corrected**: it had five of its own (`#fdf846`,
+> `#36c05f`, `#2daffb`, `#fd0235`, and pink already right) across
+> `embed.html`, `verify-test.html` and three `theme-color` metas. Each was
+> close enough to look fine alone and far enough that the widget never quite
+> matched a Swiftaw page behind it. The `-s` stroke shades beside them
+> (`--yellow-s`, `--green-s`, …) are **deliberately untouched** — they are
+> hand-tuned darker companions, they were already darker than the corrected
+> bases, and retuning them would be redesigning a widget that does not need
+> redesigning.
 
 ## Type
 
@@ -305,7 +314,7 @@ and nonces. It is not a starting point; only the logo PNGs are real.
 | **What it is** | The CAPTCHA / human-verification service. |
 | **Lives at** | `swiftaw.com/lifecheck/` |
 | **Accounts** | Swiftaw accounts. |
-| **Colour** | `#fef83d` today — **should be `#FFF93E`**. |
+| **Colour** | `#FFF93E` — the Rainbaw yellow. |
 | **Surface** | Dark (`#0d1117` / `#0a0e14`) |
 | **Privacy** | Swiftaw's, `/legal/privacy-policy` |
 | **Consumers** | Fortized uses it live. Hereld will. |
@@ -317,6 +326,49 @@ hostnames, not full URLs.
 Where Hereld uses it: signup, suspicious auth, account creation, company
 verification, abuse prevention. **Not everywhere** — a CAPTCHA on every action
 is just friction.
+
+### The widget was kept, not redesigned
+
+`lifecheck/embed.html` is the good one. It was brought onto the Rainbaw and
+onto Swiftaw's checkmark, and one challenge was rebuilt because it was lying
+about what it measured. Everything else about it stands.
+
+**The checkmark is Swiftaw's, and it is not a glyph.** It used
+`<i class="fa-solid fa-check">`. It now draws the same mark the consent card
+draws, the same way: two 3px borders on an empty 11×6 box, rotated -45°. That
+matters beyond consistency — FontAwesome is a CDN, this widget renders inside
+*other people's pages*, and the one mark that says "you passed" should not
+depend on a third party being reachable. Verified with the CDN blocked.
+
+The tick is scoped as `.chk-tick` rather than replacing `.chk-box i`
+wholesale, because two states in that same slot legitimately want real
+glyphs: the jam state sets `fa-gear` and its retry sets `fa-rotate-right`.
+And the checked rule has to restate `rotate(-45deg)` alongside its `scale(1)`
+— a bare `scale(1)` drops the rotation and draws a right angle.
+
+### Trace the beam now traces the pointer
+
+The old build was a reveal, not a trace. `.beam-live` carried the **ideal**
+curve and `stroke-dashoffset` unveiled it as you advanced, so the line that
+appeared was perfect no matter how badly the hand actually moved — a drawing
+playing back. It measured nothing about the pointer that the checkpoint hits
+did not already measure, and it *looked* like an animation, which is the
+opposite of what a proof-of-human control should feel like.
+
+The stroke is now the pointer's own path: samples collected on `move()`,
+thinned at 1.2 units, capped at 600, redrawn as `M x yL x y…` with
+`stroke-linejoin:round` (a wobbling hand spikes at every sample without it).
+It wobbles where you wobbled and it wanders into the margin when you leave
+the track, which is also the honest picture of why a stray was counted.
+
+Two details that are easy to get wrong:
+
+- **One sample paints nothing.** `M x y` alone draws no pixel even with a
+  round cap, so a single point emits `M x yL x y` — it goes to itself.
+- **The tolerance has to be measured in screen pixels.** The svg is
+  `preserveAspectRatio="none"`, so one x unit and one y unit are different
+  numbers of real pixels; a radius in svg units is an *ellipse* on screen.
+  `dist()` scales by `rect.width/W` and `rect.height/H` first.
 
 ## Supernova — Service
 
