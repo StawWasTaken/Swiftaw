@@ -1,158 +1,288 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-nb="dark">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="robots" content="noindex" />
+<meta name="theme-color" content="#0C0F15" />
 <title>Lifecheck Token Verifier - Swiftaw</title>
+<link rel="icon" href="/lifecheck/LifeCheck%20logo.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw-nb.css">
+<link rel="stylesheet" href="/css/lifecheck.css">
 <style>
-  :root{
-    --bg:#0d1117; --card:#12171f; --card-2:#0f141c; --stroke:#232c39; --stroke-soft:#1a212b;
-    --text:#f4f6fa; --muted:#8b96a8;
-    /* The Rainbaw, matching embed.html exactly. This page exists to look like
-       the widget's surroundings, so a near-miss here would make the widget
-       look wrong in the one place we go to check it. */
-    --yellow:#FFF93E; --green:#3ECF6E; --green-s:#268f45; --blue:#2CAFFC; --red:#FF0033; --red-s:#c00229;
-  }
-  *{ box-sizing:border-box; }
-  body{ margin:0; background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; line-height:1.5; padding:34px 18px 80px; }
-  .wrap{ max-width:680px; margin:0 auto; }
-  .hd{ display:flex; align-items:center; gap:12px; margin-bottom:6px; }
-  .hd img{ height:20px; width:auto; filter:brightness(0) invert(1); }
-  .hd .v{ font-family:'Syne',sans-serif; font-weight:800; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
-  .hd .v b{ color:var(--yellow); }
-  h1{ font-family:'Syne',sans-serif; font-weight:700; font-size:24px; margin:10px 0 4px; }
-  .lede{ color:var(--muted); font-size:14px; margin-bottom:26px; }
-  .lede a{ color:var(--blue); }
-  .step{ background:var(--card); border:2px solid var(--stroke); border-radius:16px; padding:18px 18px 20px; margin-bottom:16px; }
-  .step h2{ font-family:'Syne',sans-serif; font-weight:700; font-size:15px; margin:0 0 4px; display:flex; align-items:center; gap:9px; }
-  .step h2 .n{ width:22px; height:22px; border-radius:7px; background:var(--yellow); color:#2a2600; font-size:12px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; }
-  .step p{ color:var(--muted); font-size:13px; margin:0 0 14px; }
-  label{ display:block; font-family:'Syne',sans-serif; font-weight:600; font-size:11px; letter-spacing:.4px; text-transform:uppercase; color:var(--muted); margin:12px 0 5px; }
-  input{ width:100%; background:var(--card-2); border:2px solid var(--stroke); border-radius:10px; color:var(--text);
-    font-family:'DM Sans',sans-serif; font-size:13.5px; padding:10px 12px; outline:none; }
-  input:focus{ border-color:var(--blue); }
-  .row{ display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
-  .row > div{ flex:1 1 220px; }
-  button.act{ font-family:'Syne',sans-serif; font-weight:800; font-size:13px; border:none; cursor:pointer; border-radius:11px; padding:11px 18px; }
-  .go{ background:var(--green); border:2px solid var(--green-s); color:#06210f; }
-  .go:active{ transform:translateY(1px); }
-  .ghost{ background:transparent; border:2px solid var(--stroke); color:var(--text); }
-  #widgetHost{ margin-top:6px; }
-  .result{ margin-top:14px; border-radius:12px; border:2px solid var(--stroke); background:var(--card-2); overflow:hidden; display:none; }
-  .result.show{ display:block; }
-  .result .bar{ padding:10px 14px; font-family:'Syne',sans-serif; font-weight:700; font-size:13px; display:flex; align-items:center; gap:9px; }
-  .result.ok .bar{ background:rgba(62,207,110,.14); color:var(--green); border-bottom:2px solid var(--green-s); }
-  .result.bad .bar{ background:rgba(255,1,50,.14); color:var(--red); border-bottom:2px solid var(--red-s); }
-  .result pre{ margin:0; padding:14px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; white-space:pre-wrap; word-break:break-word; color:var(--text); }
-  .meta{ font-size:12px; color:var(--muted); padding:0 14px 12px; }
-  .hint{ font-size:12px; color:var(--muted); margin-top:10px; }
-  code{ background:var(--card-2); border:1px solid var(--stroke); border-radius:5px; padding:1px 5px; font-size:12px; }
+.vt-wrap { max-width: 760px; margin: 0 auto; padding: clamp(96px, 11vw, 128px) 24px 72px; }
+@media (max-width: 620px) { .vt-wrap { padding: 104px 18px 60px; } }
+
+.vt-head { margin-bottom: 26px; }
+.vt-head h1 {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(28px, 4vw, 40px); line-height: 1.08;
+  letter-spacing: -.02em; margin: 12px 0 12px;
+}
+.vt-head p { font-size: 15px; color: var(--nb-fg-muted); line-height: 1.65; max-width: 62ch; }
+
+.step {
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  --nb-fg: var(--nb-surface-fg); --nb-fg-muted: var(--nb-surface-fg-muted);
+  border: var(--nb-bd); border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh); padding: var(--nb-pad);
+  margin-bottom: 18px;
+}
+.step h2 {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 17px;
+  margin: 0 0 6px; display: flex; align-items: center; gap: 11px;
+}
+.step h2 .n {
+  width: 30px; height: 30px; border-radius: 9px; flex: none;
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border: var(--nb-bd-thin); box-shadow: var(--nb-sh-sm);
+  font-size: 14px; display: inline-flex; align-items: center; justify-content: center;
+}
+.step > p { color: var(--nb-fg-muted); font-size: 14px; line-height: 1.6; margin: 0 0 16px; }
+
+label {
+  display: block; font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 11.5px; letter-spacing: .04em; color: var(--nb-fg-muted); margin: 14px 0 7px;
+}
+input {
+  width: 100%; background: var(--nb-surface-2); color: var(--nb-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  font-family: var(--nb-font-mono); font-size: 13.5px; padding: 12px 14px; outline: none;
+  transition: box-shadow var(--nb-fast), border-color var(--nb-fast);
+}
+input:focus { border-color: var(--nb-ink); box-shadow: var(--nb-sh-sm); }
+input::placeholder { color: var(--nb-fg-muted); font-family: var(--nb-font-body); }
+
+.row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+.row > div { flex: 1 1 240px; }
+.row label { margin-top: 0; }
+
+#widgetHost { margin-top: 18px; }
+
+.result {
+  margin-top: 16px; border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  background: var(--nb-surface-2); overflow: hidden; display: none;
+}
+.result.show { display: block; }
+.result .bar {
+  padding: 11px 15px; font-family: var(--nb-font-head); font-weight: 700; font-size: 13.5px;
+  display: flex; align-items: center; gap: 9px; color: var(--nb-ink);
+}
+.result.ok  .bar { background: var(--nb-green); }
+.result.bad .bar { background: var(--nb-red); color: #FFFFFF; }
+.result pre {
+  margin: 0; padding: 15px; font-family: var(--nb-font-mono); font-size: 12.5px;
+  white-space: pre-wrap; word-break: break-word; color: var(--nb-fg); line-height: 1.6;
+}
+.result .meta { font-size: 12px; color: var(--nb-fg-muted); padding: 0 15px 13px; }
+
+.hint { font-size: 12.5px; color: var(--nb-fg-muted); margin-top: 20px; line-height: 1.6; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="hd">
-    <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
-    <span class="v">v<b>1.3</b> · token verifier</span>
+
+<a class="nb-skip" href="#main">Skip to content</a>
+
+<div class="nb-rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<nav class="nb-nav" id="nav">
+  <div class="nb-nav-in">
+    <a href="/lifecheck/" class="lc-brand" aria-label="Lifecheck by Swiftaw">
+      <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
+      <span class="lc-ver">v1.3</span>
+    </a>
+
+    <div class="nb-nav-links" id="navLinks">
+      <div class="lc-pills">
+        <a class="lc-pill" href="/lifecheck/">Overview</a>
+        <a class="lc-pill" href="/lifecheck/docs">Docs</a>
+        <a class="lc-pill" href="/lifecheck/keys">API keys</a>
+      </div>
+    </div>
+
+    <span class="nb-nav-spacer"></span>
+
+    <div class="nb-nav-actions">
+      <span data-swiftaw-launcher></span>
+      <span data-swiftaw-account></span>
+      <a class="nb-btn nb-btn--primary nb-btn--sm lc-nav-cta" href="/lifecheck/keys">Get a key</a>
+      <button class="nb-icon-btn nb-nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
+    </div>
   </div>
-  <h1>Verify a Lifecheck token in the browser</h1>
-  <p class="lede">This calls the <code>lifecheck-verify</code> Edge Function, which holds your secret server-side and returns a CORS-enabled verdict — so a static page can verify without a backend and without leaking the secret. See the <a href="/lifecheck/docs#verify">docs</a>.</p>
+</nav>
+
+<main class="vt-wrap" id="main">
+  <div class="vt-head">
+    <span class="nb-eyebrow">Lifecheck v1.3 &middot; token verifier</span>
+    <h1>Verify a token in the browser.</h1>
+    <p>
+      This calls the <code class="lc-inline">lifecheck-verify</code> Edge Function, which keeps
+      your secret key on the server and answers with a CORS-enabled verdict. That is what lets a
+      static page check a token without a backend of its own and without ever shipping the secret.
+      The full flow is written up in the <a href="/lifecheck/docs#verify">docs</a>.
+    </p>
+  </div>
 
   <div class="step">
     <h2><span class="n">1</span> Pass the check to mint a token</h2>
-    <p>Enter a site key, load the widget, and pass it. A real <code>lc_site_</code> key (registered on the API-keys page) mints a server token you can truly verify; a demo key mints a local token that will come back <code>invalid-input-token</code> — still a clean test of the endpoint + CORS.</p>
+    <p>
+      Paste a site key, load the widget, and pass it. A real <code class="lc-inline">lc_site_</code>
+      key from the API keys page mints a server token you can genuinely verify. A preview key mints
+      a local one, which comes back <code class="lc-inline">invalid-input-token</code> - still a
+      clean test that the endpoint and CORS are alive.
+    </p>
     <div class="row">
       <div>
         <label for="sitekey">Site key</label>
-        <input id="sitekey" value="lc_account_public" spellcheck="false" autocomplete="off">
+        <input id="sitekey" placeholder="lc_site_..." spellcheck="false" autocomplete="off">
       </div>
-      <button class="act ghost" id="loadWidget">Load widget</button>
+      <button class="nb-btn" id="loadWidget">Load widget</button>
     </div>
     <div id="widgetHost"></div>
   </div>
 
   <div class="step">
     <h2><span class="n">2</span> Verify the token</h2>
-    <p>Sends <code>{ sitekey, token }</code> to the function. Watch for a CORS/network failure vs a real JSON verdict.</p>
+    <p>Sends <code class="lc-inline">{ sitekey, token }</code> to the function. Watch for a network or CORS failure against a real JSON verdict.</p>
     <label for="fnurl">Function URL</label>
     <input id="fnurl" value="https://mwszvynzzugbowdngzab.supabase.co/functions/v1/lifecheck-verify" spellcheck="false" autocomplete="off">
     <label for="token">Token</label>
-    <input id="token" placeholder="LC1.3_… (auto-filled when you pass above)" spellcheck="false" autocomplete="off">
-    <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-      <button class="act go" id="verifyBtn">Verify token</button>
+    <input id="token" placeholder="LC1.3_... (filled in when you pass above)" spellcheck="false" autocomplete="off">
+    <div style="margin-top:18px;">
+      <button class="nb-btn nb-btn--green" id="verifyBtn">Verify token</button>
     </div>
     <div class="result" id="result">
       <div class="bar" id="resultBar"></div>
       <pre id="resultBody"></pre>
       <div class="meta" id="resultMeta"></div>
     </div>
-    <div class="hint">Not deployed yet? Run <code>supabase functions deploy lifecheck-verify</code> (config already sets <code>verify_jwt=false</code>), then reload this page.</div>
+    <p class="hint">
+      Not deployed yet? Run <code class="lc-inline">supabase functions deploy lifecheck-verify</code>
+      - the config already sets <code class="lc-inline">verify_jwt=false</code> - then reload this page.
+    </p>
   </div>
-</div>
+</main>
+
+<footer class="nb-footer">
+  <div class="nb-wrap">
+    <div class="nb-footer-grid">
+      <div class="lc-foot-brand">
+        <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
+        <p class="nb-muted" style="font-size:14px; max-width:32ch;">
+          Human verification, made by Swiftaw in Île-de-France, France.
+        </p>
+      </div>
+      <div>
+        <h4>Lifecheck</h4>
+        <div class="nb-footer-list">
+          <a href="/lifecheck/">Overview</a>
+          <a href="/lifecheck/docs">Docs</a>
+          <a href="/lifecheck/keys">API keys</a>
+          <a href="/lifecheck/verify-test">Token verifier</a>
+        </div>
+      </div>
+      <div>
+        <h4>Swiftaw</h4>
+        <div class="nb-footer-list">
+          <a href="https://swiftaw.com/">Home</a>
+          <a href="https://swiftaw.com/about-us">About</a>
+          <a href="https://swiftaw.com/newsroom">Newsroom</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="nb-footer-list">
+          <a href="https://swiftaw.com/legal/terms-of-service">Terms of Service</a>
+          <a href="https://swiftaw.com/legal/privacy-policy">Privacy Policy</a>
+          <a href="https://swiftaw.com/legal/products-policy">Products Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="nb-footer-base">
+      <span>© 2026 Swiftaw</span>
+      <span>Make It Matter.</span>
+    </div>
+  </div>
+  <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
+</footer>
 
 <script src="/lifecheck/lifecheck.js" defer></script>
+<script src="/css/swiftaw.js" defer></script>
 <script>
+(function () {
   var tokenInput = document.getElementById('token');
+  var siteInput = document.getElementById('sitekey');
 
-  function mountWidget(){
+  window.__lcOnPass = function (token) { tokenInput.value = token || ''; };
+
+  function mountWidget() {
     var host = document.getElementById('widgetHost');
+    var key = siteInput.value.trim();
     host.innerHTML = '';
+    if (!key) return;
     var div = document.createElement('div');
     host.appendChild(div);
-    window.__lcToken = null;
-    function onPass(token){ tokenInput.value = token || ''; }
-    if(window.Lifecheck && window.Lifecheck.render){
-      window.Lifecheck.render(div, { sitekey: document.getElementById('sitekey').value.trim(), callback: onPass });
+    if (window.Lifecheck && window.Lifecheck.render) {
+      window.Lifecheck.render(div, { sitekey: key, callback: window.__lcOnPass });
     } else {
-      // loader not ready yet — use the data-attribute path
       div.className = 'lifecheck';
-      div.setAttribute('data-sitekey', document.getElementById('sitekey').value.trim());
+      div.setAttribute('data-sitekey', key);
       div.setAttribute('data-callback', '__lcOnPass');
     }
   }
-  window.__lcOnPass = function(token){ tokenInput.value = token || ''; };
 
   document.getElementById('loadWidget').addEventListener('click', mountWidget);
-  window.addEventListener('load', function(){ setTimeout(mountWidget, 60); });
 
-  document.getElementById('verifyBtn').addEventListener('click', async function(){
+  document.getElementById('verifyBtn').addEventListener('click', async function () {
     var result = document.getElementById('result');
     var bar = document.getElementById('resultBar');
     var body = document.getElementById('resultBody');
     var meta = document.getElementById('resultMeta');
     var url = document.getElementById('fnurl').value.trim();
-    var sitekey = document.getElementById('sitekey').value.trim();
+    var sitekey = siteInput.value.trim();
     var token = tokenInput.value.trim();
 
     result.className = 'result show';
-    bar.innerHTML = 'Verifying…'; body.textContent = ''; meta.textContent = '';
+    bar.textContent = 'Verifying...';
+    body.textContent = '';
+    meta.textContent = '';
 
-    if(!token){ result.className = 'result show bad'; bar.textContent = 'No token — pass the check first.'; return; }
+    if (!token) {
+      result.className = 'result show bad';
+      bar.textContent = 'No token. Pass the check first.';
+      return;
+    }
 
     var started = Date.now();
-    try{
+    try {
       var res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sitekey: sitekey, token: token })
       });
       var text = await res.text();
-      var data; try{ data = JSON.parse(text); }catch(e){ data = text; }
+      var data;
+      try { data = JSON.parse(text); } catch (e) { data = text; }
       var ok = data && data.success === true;
       result.className = 'result show ' + (ok ? 'ok' : 'bad');
-      bar.textContent = ok ? '✓ Verified — success: true' : '✗ Not verified (endpoint reached, CORS OK)';
+      bar.textContent = ok
+        ? 'Verified. success: true'
+        : 'Not verified. The endpoint answered, so CORS is fine.';
       body.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
-      meta.textContent = 'HTTP ' + res.status + ' · ' + (Date.now()-started) + 'ms · CORS request succeeded';
-    }catch(err){
+      meta.textContent = 'HTTP ' + res.status + ' · ' + (Date.now() - started) + 'ms · CORS request succeeded';
+    } catch (err) {
       result.className = 'result show bad';
-      bar.textContent = '✗ Network / CORS error';
-      body.textContent = String(err && err.message || err);
-      meta.textContent = 'The function is likely not deployed yet, or the URL is wrong. This is the same class of error a direct-to-RPC browser call gives.';
+      bar.textContent = 'Network or CORS error';
+      body.textContent = String((err && err.message) || err);
+      meta.textContent = 'The function is most likely not deployed yet, or the URL is wrong. A direct browser call to the RPC fails the same way.';
     }
   });
+})();
 </script>
 </body>
 </html>
