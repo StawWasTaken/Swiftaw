@@ -567,7 +567,7 @@ h1, h2, h3, h4, h5, h6, .nb-h {
 /* ── Dropdown ──────────────────────────────────────────────────────────── */
 .nb-drop {
   position: absolute; top: calc(100% + 10px); left: 0;
-  min-width: 262px; z-index: 10;
+  min-width: 288px; z-index: 10;
   background: var(--nb-surface); color: var(--nb-surface-fg);
   --nb-fg: var(--nb-surface-fg);
   --nb-fg-muted: var(--nb-surface-fg-muted);
@@ -603,6 +603,16 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   color: var(--nb-fg-muted);
 }
 .nb-drop-sep { height: 2px; background: var(--nb-line); margin: 7px 6px; opacity: .18; }
+
+/* A heading over a run of items. It names the kind of thing below it, so the
+   separator is not asked to carry a meaning a bare line cannot carry. */
+.nb-drop-label {
+  display: block; padding: 10px 10px 5px;
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--nb-fg-muted);
+}
+.nb-drop-label:first-child { padding-top: 4px; }
 .nb-drop-item.is-soon { opacity: .5; cursor: default; }
 .nb-drop-item.is-soon:hover { background: none; border-color: transparent; transform: none; }
 .nb-drop-item[aria-current="page"] {
@@ -663,6 +673,13 @@ h1, h2, h3, h4, h5, h6, .nb-h {
 }
 @media (max-width: 860px) { .nb-footer-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 520px) { .nb-footer-grid { grid-template-columns: 1fr; } }
+
+/* The footer mark is its own component, not the nav logo. The nav one stacks
+   two absolutely positioned images inside a fixed box so it can swap the
+   wordmark for the mark on scroll, which only works while it is a flex item.
+   Dropped into a plain footer column it collapses to nothing. */
+.nb-foot-brand { display: inline-block; margin-bottom: 14px; }
+.nb-foot-brand img { height: 26px; width: auto; display: block; }
 .nb-footer h4 {
   font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
   margin-bottom: 14px;

@@ -45,26 +45,45 @@ html { scroll-padding-top: 88px; }
 .hp-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .hp-nav-cta { display: none; } }
 
-.hp-hero { position: relative; overflow: hidden; padding: clamp(46px, 6vw, 78px) 0 clamp(56px, 7vw, 92px); }
+.hp-hero { position: relative; overflow: hidden; padding: clamp(40px, 5vw, 68px) 0 clamp(56px, 7vw, 92px); }
+
+.hp-hero-grid {
+  position: relative; z-index: 2;
+  display: grid; align-items: center;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(16px, 2vw, 30px);
+}
 
 .hp-slab {
-  position: relative; z-index: 2;
   background: var(--nb-yellow); color: var(--nb-ink);
   border: var(--nb-bd);
   border-radius: var(--nb-r-lg);
   box-shadow: var(--nb-sh-lg);
-  padding: clamp(30px, 4.4vw, 58px);
+  padding: clamp(28px, 3.4vw, 46px);
 
   --nb-fg: var(--nb-ink);
   --nb-fg-muted: #3A3A2A;
 }
 
-.hp-slab .hp-eyebrow { display: block; margin-bottom: 20px; }
+.hp-slab .hp-eyebrow { display: block; margin-bottom: 18px; }
 
-.hp-tagline { margin: 0; }
+.hp-tagline { margin: 0; font-size: clamp(38px, 4.9vw, 68px); }
 .hp-tagline .stop { color: var(--nb-red); }
-.hp-lede { max-width: 46ch; margin: 24px 0 0; }
-.hp-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+.hp-lede { max-width: 34ch; margin: 20px 0 0; font-size: clamp(14.5px, 1.1vw, 16.5px); }
+.hp-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+
+.hp-art {
+  position: relative;
+  margin-right: calc(-24px - max(0px, (100vw - var(--nb-max)) / 2));
+}
+.hp-art img { width: 100%; max-width: none; height: auto; display: block; }
+
+@media (max-width: 1040px) {
+  .hp-hero-grid { grid-template-columns: 1fr; }
+  .hp-art { margin: 6px -24px 0 -24px; order: 2; }
+  .hp-art img { width: 100%; }
+  .hp-lede { max-width: 46ch; }
+}
 
 .hp-facts {
   position: relative; z-index: 2;
@@ -81,15 +100,15 @@ html { scroll-padding-top: 88px; }
 }
 .hp-fact .v { display: block; margin-top: 6px; font-size: 13.5px; }
 
-.hp-deco-1 { top: 8%;  right: 4%;  --nb-rot: 12deg; }
-.hp-deco-2 { bottom: 14%; left: 2%; --nb-rot: -8deg; }
-.hp-deco-3 { top: 56%; right: 2.5%; }
+.hp-deco-1 { top: 11%; left: 1.4%; --nb-rot: 12deg; }
+.hp-deco-2 { bottom: 9%; left: 3%;  --nb-rot: -8deg; }
+.hp-deco-3 { bottom: 3%; left: 34%; }
 
 .hp-deco-4 {
-  top: 2%; left: 32%; width: 120px; height: 120px; border-radius: 50%;
+  top: 1%; left: 26%; width: 120px; height: 120px; border-radius: 50%;
   background-image: radial-gradient(rgba(255,255,255,.30) 1.6px, transparent 1.6px);
 }
-@media (max-width: 980px) { .hp-deco-1, .hp-deco-2, .hp-deco-3, .hp-deco-4 { display: none; } }
+@media (max-width: 1340px) { .hp-deco-1, .hp-deco-2, .hp-deco-3, .hp-deco-4 { display: none; } }
 
 .hp-head { max-width: 640px; margin-bottom: clamp(28px, 3.4vw, 44px); }
 .hp-head .nb-eyebrow { color: var(--nb-yellow); display: block; margin-bottom: 14px; }
@@ -289,34 +308,40 @@ html { scroll-padding-top: 88px; }
 
     <div class="nb-nav-links" id="navLinks">
       <div class="nb-nav-item">
-        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
-        <div class="nb-drop" id="drop-company">
-          <a class="nb-drop-item" href="/about-us"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
-          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
-          <a class="nb-drop-item" href="/innovation-room"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
-          <a class="nb-drop-item" href="/newsroom"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
-        </div>
-      </div>
-      <div class="nb-nav-item">
         <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-products">Products <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
         <div class="nb-drop" id="drop-products">
+          <span class="nb-drop-label">Platforms</span>
           <a class="nb-drop-item" href="https://fortized.com" rel="noopener"><img class="nb-drop-ico" src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Fortized</span><span class="nb-drop-d">Bastions, channels and DMs</span></span></a>
           <span class="nb-drop-item is-soon" aria-disabled="true"><img class="nb-drop-ico" src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Hereld</span><span class="nb-drop-d">A professional network. Soon.</span></span></span>
-          <span class="nb-drop-sep" aria-hidden="true"></span>
+          <span class="nb-drop-label">Services</span>
           <a class="nb-drop-item" href="/lifecheck/"><img class="nb-drop-ico" src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Lifecheck</span><span class="nb-drop-d">Human verification</span></span></a>
           <a class="nb-drop-item" href="/supernova/"><img class="nb-drop-ico" src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Supernova</span><span class="nb-drop-d">The AI service</span></span></a>
         </div>
       </div>
       <div class="nb-nav-item">
-        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-legal">Legal <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
-        <div class="nb-drop" id="drop-legal">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-company">
+          <a class="nb-drop-item" href="/about-us"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
+          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
+          <a class="nb-drop-item" href="/newsroom"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
+          <a class="nb-drop-item" href="/innovation-room"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-resources">Resources <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-resources">
+          <span class="nb-drop-label">Press</span>
+          <a class="nb-drop-item" href="/presskit"><span class="nb-drop-txt"><span class="nb-drop-t">Press kit</span><span class="nb-drop-d">Logos, colours and the facts</span></span></a>
+          <span class="nb-drop-label">Legal</span>
           <a class="nb-drop-item" href="/legal/terms-of-service/"><span class="nb-drop-txt"><span class="nb-drop-t">Terms of Service</span><span class="nb-drop-d">The rules of using Swiftaw</span></span></a>
           <a class="nb-drop-item" href="/legal/privacy-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Privacy Policy</span><span class="nb-drop-d">What we hold, and why</span></span></a>
           <a class="nb-drop-item" href="/legal/products-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Products Policy</span><span class="nb-drop-d">Rules that apply per product</span></span></a>
         </div>
       </div>
+      <div class="nb-nav-item">
+        <a class="nb-nav-link" href="/contact">Contact</a>
+      </div>
     </div>
-
     <span class="nb-nav-spacer"></span>
 
     <div class="nb-nav-actions">
@@ -340,16 +365,22 @@ html { scroll-padding-top: 88px; }
   <span class="nb-deco nb-dots nb-float hp-deco-4" data-depth="7" aria-hidden="true"></span>
 
   <div class="nb-wrap">
-    <div class="hp-slab nb-reveal">
-      <span class="nb-eyebrow hp-eyebrow">Île-de-France, France</span>
-      <h1 class="nb-display nb-d1 hp-tagline">Make It Matter<span class="stop">.</span></h1>
-      <p class="nb-lead hp-lede">
-        We build platforms people actually live in, and the services that keep
-        them standing.
-      </p>
-      <div class="hp-actions">
-        <a class="nb-btn nb-btn--ink nb-btn--lg" href="#make">See what we make</a>
-        <a class="nb-btn nb-btn--paper nb-btn--lg" href="/mission">Why we do it</a>
+    <div class="hp-hero-grid">
+      <div class="hp-slab nb-reveal">
+        <span class="nb-eyebrow hp-eyebrow">Île-de-France, France</span>
+        <h1 class="nb-display hp-tagline">Make It Matter<span class="stop">.</span></h1>
+        <p class="nb-lead hp-lede">
+          We build platforms people actually live in, and the services that keep
+          them standing.
+        </p>
+        <div class="hp-actions">
+          <a class="nb-btn nb-btn--ink" href="#make">See what we make</a>
+          <a class="nb-btn nb-btn--paper" href="/contact">Get in touch</a>
+        </div>
+      </div>
+
+      <div class="hp-art nb-reveal" aria-hidden="true">
+        <img src="/Swft-header.png" alt="" width="2747" height="1634" fetchpriority="high" decoding="async">
       </div>
     </div>
 
@@ -623,7 +654,7 @@ html { scroll-padding-top: 88px; }
   <div class="nb-wrap">
     <div class="nb-footer-grid">
       <div>
-        <a href="/" class="nb-nav-logo" style="margin-bottom:14px;"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+        <a href="/" class="nb-foot-brand"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
         <p class="nb-muted" style="font-size:14px; max-width:32ch;">
           A European software company. Île-de-France, France.
         </p>
@@ -635,6 +666,8 @@ html { scroll-padding-top: 88px; }
           <a href="/mission">Mission</a>
           <a href="/innovation-room">Lab</a>
           <a href="/newsroom">Newsroom</a>
+          <a href="/presskit">Press kit</a>
+          <a href="/contact">Contact</a>
         </div>
       </div>
       <div>
