@@ -253,7 +253,9 @@
   });
 
   // .nb-float drifts against the pointer; .nb-magnet leans toward it.
-  const floats = Array.from(document.querySelectorAll('.nb-float, .nb-magnet'));
+  // Images sit this one out: the shapes are furniture and can move, an
+  // illustration is content and drifting it just makes the page feel loose.
+  const floats = Array.from(document.querySelectorAll('.nb-float:not(img), .nb-magnet:not(img)'));
   if (floats.length && !reduced.matches && matchMedia('(hover: hover)').matches) {
     let queued = false, mx = 0, my = 0;
     window.addEventListener('pointermove', e => {

@@ -45,67 +45,33 @@ html { scroll-padding-top: 88px; }
 .hp-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .hp-nav-cta { display: none; } }
 
-.hp-hero { position: relative; overflow: hidden; padding: clamp(40px, 5vw, 68px) 0 clamp(56px, 7vw, 92px); }
+.hp-hero { position: relative; overflow: hidden; padding: clamp(30px, 4.4vw, 60px) 0 0; }
 
-.hp-hero-grid {
-  position: relative; z-index: 2;
-  display: grid; align-items: center;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-  gap: clamp(16px, 2vw, 30px);
-}
+.hp-head-top { position: relative; z-index: 2; text-align: center; max-width: 900px; margin: 0 auto; }
+.hp-head-top .hp-eyebrow { display: block; color: var(--nb-yellow); margin-bottom: 16px; }
 
-.hp-slab {
-  background: var(--nb-yellow); color: var(--nb-ink);
-  border: var(--nb-bd);
-  border-radius: var(--nb-r-lg);
-  box-shadow: var(--nb-sh-lg);
-  padding: clamp(28px, 3.4vw, 46px);
-
-  --nb-fg: var(--nb-ink);
-  --nb-fg-muted: #3A3A2A;
-}
-
-.hp-slab .hp-eyebrow { display: block; margin-bottom: 18px; }
-
-.hp-tagline { margin: 0; font-size: clamp(38px, 4.9vw, 68px); }
+.hp-tagline { margin: 0; font-size: clamp(46px, 8.4vw, 118px); }
 .hp-tagline .stop { color: var(--nb-red); }
-.hp-lede { max-width: 34ch; margin: 20px 0 0; font-size: clamp(14.5px, 1.1vw, 16.5px); }
-.hp-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.hp-lede { max-width: 42ch; margin: 20px auto 0; font-size: clamp(15px, 1.2vw, 17.5px); }
+.hp-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; justify-content: center; }
 
 .hp-art {
-  position: relative;
-  margin-right: calc(-24px - max(0px, (100vw - var(--nb-max)) / 2));
+  position: relative; z-index: 1;
+  margin-top: clamp(-52px, -2.4vw, -8px);
+  margin-bottom: clamp(-84px, -4vw, -12px);
 }
-.hp-art img { width: 100%; max-width: none; height: auto; display: block; }
+.hp-art img { display: block; width: 100%; max-width: 1560px; height: auto; margin: 0 auto; }
 
-@media (max-width: 1040px) {
-  .hp-hero-grid { grid-template-columns: 1fr; }
-  .hp-art { margin: 6px -24px 0 -24px; order: 2; }
-  .hp-art img { width: 100%; }
-  .hp-lede { max-width: 46ch; }
+@media (max-width: 640px) {
+  .hp-art { margin-left: -6vw; margin-right: -6vw; width: 112vw; }
 }
 
-.hp-facts {
-  position: relative; z-index: 2;
-  margin-top: 22px;
-  display: grid; gap: 12px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-@media (max-width: 720px) { .hp-facts { grid-template-columns: 1fr; } }
-.hp-fact { padding: 16px 18px; }
-.hp-fact .k {
-  display: block;
-  font-family: var(--nb-font-head); font-weight: 700;
-  font-size: 26px; line-height: 1; letter-spacing: -.02em;
-}
-.hp-fact .v { display: block; margin-top: 6px; font-size: 13.5px; }
-
-.hp-deco-1 { top: 11%; left: 1.4%; --nb-rot: 12deg; }
-.hp-deco-2 { bottom: 9%; left: 3%;  --nb-rot: -8deg; }
-.hp-deco-3 { bottom: 3%; left: 34%; }
+.hp-deco-1 { top: 6%; left: 1.4%; --nb-rot: 12deg; }
+.hp-deco-2 { top: 30%; left: 4%;  --nb-rot: -8deg; }
+.hp-deco-3 { top: 12%; right: 3%; left: auto; }
 
 .hp-deco-4 {
-  top: 1%; left: 26%; width: 120px; height: 120px; border-radius: 50%;
+  top: 30%; right: 5%; left: auto; width: 120px; height: 120px; border-radius: 50%;
   background-image: radial-gradient(rgba(255,255,255,.30) 1.6px, transparent 1.6px);
 }
 @media (max-width: 1340px) { .hp-deco-1, .hp-deco-2, .hp-deco-3, .hp-deco-4 { display: none; } }
@@ -365,39 +331,22 @@ html { scroll-padding-top: 88px; }
   <span class="nb-deco nb-dots nb-float hp-deco-4" data-depth="7" aria-hidden="true"></span>
 
   <div class="nb-wrap">
-    <div class="hp-hero-grid">
-      <div class="hp-slab nb-reveal">
-        <span class="nb-eyebrow hp-eyebrow">Île-de-France, France</span>
-        <h1 class="nb-display hp-tagline">Make It Matter<span class="stop">.</span></h1>
-        <p class="nb-lead hp-lede">
-          We build platforms people actually live in, and the services that keep
-          them standing.
-        </p>
-        <div class="hp-actions">
-          <a class="nb-btn nb-btn--ink" href="#make">See what we make</a>
-          <a class="nb-btn nb-btn--paper" href="/contact">Get in touch</a>
-        </div>
-      </div>
-
-      <div class="hp-art nb-reveal" aria-hidden="true">
-        <img src="/Swft-header.png" alt="" width="2747" height="1634" fetchpriority="high" decoding="async">
+    <div class="hp-head-top nb-reveal">
+      <span class="nb-eyebrow hp-eyebrow">Île-de-France, France</span>
+      <h1 class="nb-display hp-tagline">Make It Matter<span class="stop">.</span></h1>
+      <p class="nb-lead hp-lede">
+        We build platforms people actually live in, and the services that keep
+        them standing.
+      </p>
+      <div class="hp-actions">
+        <a class="nb-btn nb-btn--primary nb-btn--lg" href="#make">See what we make</a>
+        <a class="nb-btn nb-btn--lg" href="/contact">Get in touch</a>
       </div>
     </div>
+  </div>
 
-    <div class="hp-facts">
-      <div class="nb-card hp-fact nb-reveal">
-        <span class="k">2</span>
-        <span class="v nb-muted">Platforms. Fortized, plus Hereld on the way</span>
-      </div>
-      <div class="nb-card hp-fact nb-reveal">
-        <span class="k">2</span>
-        <span class="v nb-muted">Services. Lifecheck and Supernova, both live</span>
-      </div>
-      <div class="nb-card hp-fact nb-reveal">
-        <span class="k">2025</span>
-        <span class="v nb-muted">Founded, in Île-de-France</span>
-      </div>
-    </div>
+  <div class="hp-art" aria-hidden="true">
+    <img src="/Swft-header.png" alt="" width="2747" height="1634" fetchpriority="high" decoding="async">
   </div>
 </section>
 

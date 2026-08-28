@@ -434,6 +434,7 @@ html { scroll-padding-top: 88px; }
   <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
 </footer>
 
+<script src="/css/swiftaw-account.js"></script>
 <script src="/css/swiftaw.js"></script>
 <script>
 (function () {
@@ -579,17 +580,27 @@ html { scroll-padding-top: 88px; }
     v.textContent = user.email || 'your account';
     var client = window.SwiftawAccount.client();
     client.from('profiles').select('username').eq('id', user.id).single().then(function (r) {
-      if (r && r.data && r.data.username) v.textContent = r.data.username;
+      var name = r && r.data && r.data.username;
+      if (name) { v.textContent = name; return; }
+
+      v.innerHTML = '<a href="/account#profile">Set your Swiftaw ID</a>';
     }).catch(function () {});
   }
 
-  if (window.SwiftawAccount) {
+  function boot() {
     window.SwiftawAccount.ready(function () {
       paintAuth(window.SwiftawAccount.user());
       window.SwiftawAccount.onChange(paintAuth);
     });
-  } else {
-    show(gate, true);
+  }
+
+  if (window.SwiftawAccount) boot();
+  else {
+    var tries = 0;
+    var poll = setInterval(function () {
+      if (window.SwiftawAccount) { clearInterval(poll); boot(); }
+      else if (++tries > 100) { clearInterval(poll); show(gate, true); }
+    }, 60);
   }
 })();
 </script>

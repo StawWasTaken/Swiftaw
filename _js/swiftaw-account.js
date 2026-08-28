@@ -94,19 +94,49 @@
     if (!client) return Promise.resolve();
     return client.auth.getSession().then(function (r) { if (r.data.session) upsertRoster(r.data.session); }).catch(function () {});
   }
+  function reAuth(acc) {
+    location.href = ACCOUNT_PAGE + '?next=' + encodeURIComponent(location.pathname + location.search) +
+      '&hint=' + encodeURIComponent(acc.email || '');
+  }
+
   function switchTo(id) {
+    // The click can land before Supabase has finished booting, and a button
+    // that silently does nothing reads as a broken feature.
+    if (!isReady) { readyCbs.push(function () { switchTo(id); }); return; }
     var acc = readRoster().filter(function (a) { return a.id === id; })[0];
     if (!acc || !client) return;
+    if (!acc.refresh_token) { reAuth(acc); return; }
+
     snapshot().then(function () {
-      return client.auth.setSession({ access_token: acc.access_token, refresh_token: acc.refresh_token });
+      return client.auth.setSession({
+        access_token: acc.access_token || '',
+        refresh_token: acc.refresh_token
+      });
     }).then(function (r) {
-      if (r && r.error) {
-        // token stale - send to account page to re-auth this address
-        location.href = ACCOUNT_PAGE + '?next=' + encodeURIComponent(location.pathname + location.search) + '&hint=' + encodeURIComponent(acc.email || '');
-      } else {
-        location.reload();
+      var sess = r && r.data && r.data.session;
+      if (!r || r.error || !sess) {
+        // The stored access token can be spent while the refresh token is
+        // still good, so ask the server for a fresh pair before giving up.
+        return client.auth.refreshSession({ refresh_token: acc.refresh_token });
       }
-    });
+      return r;
+    }).then(function (r) {
+      var sess = r && r.data && r.data.session;
+      if (!r || r.error || !sess || (sess.user && sess.user.id !== id)) {
+        // Whatever we held for this account no longer opens it. Drop the dead
+        // tokens so the next click goes straight to signing in, and keep the
+        // entry so the account still shows up by name.
+        var roster = readRoster();
+        for (var k = 0; k < roster.length; k++) {
+          if (roster[k].id === id) { roster[k].access_token = null; roster[k].refresh_token = null; }
+        }
+        writeRoster(roster);
+        reAuth(acc);
+        return;
+      }
+      upsertRoster(sess);
+      location.reload();
+    }).catch(function () { reAuth(acc); });
   }
   function addAccount() {
     location.href = ACCOUNT_PAGE + '?next=' + encodeURIComponent(location.pathname + location.search) + '&add=1';

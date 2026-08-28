@@ -209,7 +209,7 @@ el.addEventListener('keydown', ev => {
 if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); el.click(); }
 });
 });
-const floats = Array.from(document.querySelectorAll('.nb-float, .nb-magnet'));
+const floats = Array.from(document.querySelectorAll('.nb-float:not(img), .nb-magnet:not(img)'));
 if (floats.length && !reduced.matches && matchMedia('(hover: hover)').matches) {
 let queued = false, mx = 0, my = 0;
 window.addEventListener('pointermove', e => {
