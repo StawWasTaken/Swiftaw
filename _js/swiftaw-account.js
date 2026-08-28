@@ -208,7 +208,12 @@
     var L = 'var(--swa-line)', S = 'var(--swa-surface)', S2 = 'var(--swa-surf-2)';
     var css =
     /* Black stroke + black shadow on every ground; only the fill changes. */
-    '#swiftaw-acct{position:relative;display:inline-block;' +
+    /* flex, not inline-block. An inline-block sits on a text baseline, and
+       its own baseline depends on what is inside it - so the button lined up
+       signed out and drifted a couple of pixels up the moment signing in
+       swapped the anchor for a button and added the panel. A flex box has no
+       baseline to sit on, so the alignment cannot depend on the state. */
+    '#swiftaw-acct{position:relative;display:flex;align-items:center;' +
       '--swa-line:#000;--swa-surface:#fff;--swa-surf-2:#F4F4EF;' +
       '--swa-fg:#000;--swa-muted:#4A4A4A;--swa-yellow:var(--nb-yellow,#FFF93E);' +
       'font-family:var(--nb-font-body,system-ui,-apple-system,sans-serif);}' +
@@ -391,8 +396,13 @@
       host = document.createElement('div');
       host.id = 'swiftaw-acct';
       host.setAttribute('data-swa-dock-item', '');
-      // A page can place it itself; otherwise it joins the shared dock.
-      (document.querySelector('[data-swiftaw-account]') || dock()).appendChild(host);
+      // A page can place it itself; otherwise it joins the shared dock. A
+      // page-provided slot is ordinary markup, so it still carries a line box
+      // that would push the button off centre. Neutralise it here rather than
+      // asking five sites to remember.
+      var slot = document.querySelector('[data-swiftaw-account]');
+      if (slot) { slot.style.display = 'flex'; slot.style.alignItems = 'center'; }
+      (slot || dock()).appendChild(host);
     }
     host.setAttribute('data-theme', THEME);
     onDoc = function (e) { if (!host.contains(e.target)) closePanel(); };

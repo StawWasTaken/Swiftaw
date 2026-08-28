@@ -14,7 +14,10 @@
 
 .swl-root {
   position: relative;
-  display: inline-block;
+  /* flex, not inline-block: nothing here may sit on a text baseline, or the
+     button drifts off centre against whatever is beside it. */
+  display: flex;
+  align-items: center;
   font-family: var(--nb-font-body, system-ui, -apple-system, sans-serif);
   --swl-line:    var(--nb-line, #000);
   --swl-surface: var(--nb-surface, #fff);

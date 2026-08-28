@@ -218,6 +218,7 @@ if (!document.querySelector('link[data-swl-css]') && s && s.src) {
 try { ensureCss(new URL('swiftaw-launcher.css', s.src).href); } catch (e) {}
 }
 var slot = document.querySelector('[data-swiftaw-launcher]');
+if (slot) { slot.style.display = 'flex'; slot.style.alignItems = 'center'; }
 if (!slot) {
 slot = document.createElement('div');
 slot.setAttribute('data-swl-dock-item', '');

@@ -140,7 +140,7 @@ function injectStyle() {
 if (document.getElementById('swiftaw-acct-style')) return;
 var L = 'var(--swa-line)', S = 'var(--swa-surface)', S2 = 'var(--swa-surf-2)';
 var css =
-'#swiftaw-acct{position:relative;display:inline-block;' +
+'#swiftaw-acct{position:relative;display:flex;align-items:center;' +
 '--swa-line:#000;--swa-surface:#fff;--swa-surf-2:#F4F4EF;' +
 '--swa-fg:#000;--swa-muted:#4A4A4A;--swa-yellow:var(--nb-yellow,#FFF93E);' +
 'font-family:var(--nb-font-body,system-ui,-apple-system,sans-serif);}' +
@@ -273,7 +273,9 @@ if (!host) {
 host = document.createElement('div');
 host.id = 'swiftaw-acct';
 host.setAttribute('data-swa-dock-item', '');
-(document.querySelector('[data-swiftaw-account]') || dock()).appendChild(host);
+var slot = document.querySelector('[data-swiftaw-account]');
+if (slot) { slot.style.display = 'flex'; slot.style.alignItems = 'center'; }
+(slot || dock()).appendChild(host);
 }
 host.setAttribute('data-theme', THEME);
 onDoc = function (e) { if (!host.contains(e.target)) closePanel(); };

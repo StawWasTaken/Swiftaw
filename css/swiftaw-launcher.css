@@ -1,6 +1,7 @@
 .swl-root {
 position: relative;
-display: inline-block;
+display: flex;
+align-items: center;
 font-family: var(--nb-font-body, system-ui, -apple-system, sans-serif);
 --swl-line:    var(--nb-line, #000);
 --swl-surface: var(--nb-surface, #fff);

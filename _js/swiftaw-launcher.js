@@ -317,6 +317,7 @@
     // offset the other has to match. Order is pinned in CSS, so whichever
     // script loads first, the grid is left of the avatar.
     var slot = document.querySelector('[data-swiftaw-launcher]');
+    if (slot) { slot.style.display = 'flex'; slot.style.alignItems = 'center'; }
     if (!slot) {
       slot = document.createElement('div');
       slot.setAttribute('data-swl-dock-item', '');
