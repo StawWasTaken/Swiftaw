@@ -521,9 +521,9 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   transition: opacity var(--nb-med);
 }
 .nb-nav-logo .nb-logo-mark { opacity: 0; }
-.nb-nav.is-scrolled .nb-nav-logo { width: 21px; }
-.nb-nav.is-scrolled .nb-logo-word { opacity: 0; }
-.nb-nav.is-scrolled .nb-logo-mark { opacity: 1; }
+.nb-nav.is-far .nb-nav-logo { width: 21px; }
+.nb-nav.is-far .nb-logo-word { opacity: 0; }
+.nb-nav.is-far .nb-logo-mark { opacity: 1; }
 .nb-nav-logo:hover img { transform: rotate(-2deg); }
 .nb-nav-logo img { transition: opacity var(--nb-med), transform var(--nb-fast); }
 

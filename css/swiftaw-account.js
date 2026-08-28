@@ -8,6 +8,8 @@ var SUPA_KEY = 'sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf';
 var SUPA_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
 var ACCOUNT_PAGE = '/account';
 var ROSTER_KEY = 'swiftaw.accounts.v1';
+var AUTH_KEY = 'swiftaw-auth';
+var STASH = 'swiftaw-auth.';
 var client = null, activeUser = null, isReady = false;
 var readyCbs = [], changeCbs = [];
 window.SwiftawAccount = {
@@ -57,9 +59,24 @@ function initials(s) { return (s || 'S').trim().charAt(0).toUpperCase(); }
 function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
 function nameOf(u) { var m = u && u.user_metadata || {}; return m.username || (u && u.email ? u.email.split('@')[0] : 'account'); }
 function fireChange() { changeCbs.forEach(function (cb) { try { cb(activeUser); } catch (e) {} }); }
+function stashOf(id) { try { return localStorage.getItem(STASH + id); } catch (e) { return null; } }
+function park(id) {
+try {
+var live = localStorage.getItem(AUTH_KEY);
+if (live && id) localStorage.setItem(STASH + id, live);
+} catch (e) {}
+}
+function unpark(id) {
+var raw = stashOf(id);
+if (!raw) return false;
+try { localStorage.setItem(AUTH_KEY, raw); return true; } catch (e) { return false; }
+}
+function dropStash(id) { try { localStorage.removeItem(STASH + id); } catch (e) {} }
 function snapshot() {
 if (!client) return Promise.resolve();
-return client.auth.getSession().then(function (r) { if (r.data.session) upsertRoster(r.data.session); }).catch(function () {});
+return client.auth.getSession().then(function (r) {
+if (r.data.session) { upsertRoster(r.data.session); park(r.data.session.user.id); }
+}).catch(function () {});
 }
 function reAuth(acc) {
 location.href = ACCOUNT_PAGE + '?next=' + encodeURIComponent(location.pathname + location.search) +
@@ -68,58 +85,47 @@ location.href = ACCOUNT_PAGE + '?next=' + encodeURIComponent(location.pathname +
 function switchTo(id) {
 if (!isReady) { readyCbs.push(function () { switchTo(id); }); return; }
 var acc = readRoster().filter(function (a) { return a.id === id; })[0];
-if (!acc || !client) return;
-if (!acc.refresh_token) { reAuth(acc); return; }
-snapshot().then(function () {
-return client.auth.setSession({
-access_token: acc.access_token || '',
-refresh_token: acc.refresh_token
-});
-}).then(function (r) {
+if (!acc) return;
+if (activeUser && activeUser.id === id) return;
+if (activeUser) park(activeUser.id);
+if (unpark(id)) { location.reload(); return; }
+if (client && acc.refresh_token) {
+client.auth.setSession({ access_token: acc.access_token || '', refresh_token: acc.refresh_token })
+.then(function (r) {
 var sess = r && r.data && r.data.session;
-if (!r || r.error || !sess) {
-return client.auth.refreshSession({ refresh_token: acc.refresh_token });
-}
-return r;
-}).then(function (r) {
-var sess = r && r.data && r.data.session;
-if (!r || r.error || !sess || (sess.user && sess.user.id !== id)) {
-var roster = readRoster();
-for (var k = 0; k < roster.length; k++) {
-if (roster[k].id === id) { roster[k].access_token = null; roster[k].refresh_token = null; }
-}
-writeRoster(roster);
+if (r && !r.error && sess && sess.user && sess.user.id === id) { location.reload(); return; }
 reAuth(acc);
+})
+.catch(function () { reAuth(acc); });
 return;
 }
-upsertRoster(sess);
-location.reload();
-}).catch(function () { reAuth(acc); });
+reAuth(acc);
 }
 function addAccount() {
+if (activeUser) park(activeUser.id);
 location.href = ACCOUNT_PAGE + '?next=' + encodeURIComponent(location.pathname + location.search) + '&add=1';
 }
 function signOut() {
 var cur = activeUser;
 return client.auth.signOut().then(function () {
-if (cur) removeFromRoster(cur.id);
+if (cur) { removeFromRoster(cur.id); dropStash(cur.id); }
 var rest = readRoster();
-if (rest.length) switchTo(rest[0].id);
+if (rest.length && unpark(rest[0].id)) location.reload();
 else location.reload();
 });
 }
 ensureSupabase().then(function () {
 client = window.supabase.createClient(SUPA_URL, SUPA_KEY, {
-auth: { persistSession: true, autoRefreshToken: true, storageKey: 'swiftaw-auth' }
+auth: { persistSession: true, autoRefreshToken: true, storageKey: AUTH_KEY }
 });
 return client.auth.getSession();
 }).then(function (r) {
 var session = r.data.session;
 activeUser = session ? session.user : null;
-if (session) upsertRoster(session);
+if (session) { upsertRoster(session); park(session.user.id); }
 client.auth.onAuthStateChange(function (event, sess) {
 activeUser = sess ? sess.user : null;
-if (sess) upsertRoster(sess);
+if (sess) { upsertRoster(sess); park(sess.user.id); }
 renderWidget(); swapNavCta(); fireChange();
 });
 window.addEventListener('pagehide', snapshot);

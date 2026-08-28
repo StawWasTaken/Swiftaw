@@ -200,9 +200,18 @@
     });
   }
 
-  // The nav logo swaps to the mark once the page has moved.
+  // Two separate thresholds. The bar takes its shadow as soon as the page
+  // moves, but the wordmark holds on for a while longer - swapping it on the
+  // first notch of the wheel reads as a glitch rather than a decision. The
+  // gap between 260 and 180 is there so a scroll that idles on the boundary
+  // cannot flip it back and forth.
   if (nbNav) {
-    const onNbScroll = () => nbNav.classList.toggle('is-scrolled', window.scrollY > 24);
+    const onNbScroll = () => {
+      const y = window.scrollY;
+      nbNav.classList.toggle('is-scrolled', y > 24);
+      if (y > 260) nbNav.classList.add('is-far');
+      else if (y < 180) nbNav.classList.remove('is-far');
+    };
     onNbScroll();
     window.addEventListener('scroll', onNbScroll, { passive: true });
   }

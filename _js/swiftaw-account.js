@@ -34,6 +34,8 @@
   var SUPA_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
   var ACCOUNT_PAGE = '/account';
   var ROSTER_KEY = 'swiftaw.accounts.v1';
+  var AUTH_KEY = 'swiftaw-auth';
+  var STASH = 'swiftaw-auth.';
 
   var client = null, activeUser = null, isReady = false;
   var readyCbs = [], changeCbs = [];
@@ -89,10 +91,33 @@
   function nameOf(u) { var m = u && u.user_metadata || {}; return m.username || (u && u.email ? u.email.split('@')[0] : 'account'); }
   function fireChange() { changeCbs.forEach(function (cb) { try { cb(activeUser); } catch (e) {} }); }
 
-  // ── multi-account actions ──
+  /* ── multi-account ──────────────────────────────────────────────────────
+     Switching keeps one Supabase session live at a time and parks the others.
+     Supabase reads its session from a single localStorage key, so parking a
+     copy of that key per account and swapping which copy is under the live
+     key is the whole mechanism: on the next load Supabase picks the session
+     up, refreshes it if it needs to, and nothing has to replay tokens by hand.
+     Replaying them was what broke - a stored access token is spent within the
+     hour and the refresh token rotates underneath it. */
+  function stashOf(id) { try { return localStorage.getItem(STASH + id); } catch (e) { return null; } }
+  function park(id) {
+    try {
+      var live = localStorage.getItem(AUTH_KEY);
+      if (live && id) localStorage.setItem(STASH + id, live);
+    } catch (e) {}
+  }
+  function unpark(id) {
+    var raw = stashOf(id);
+    if (!raw) return false;
+    try { localStorage.setItem(AUTH_KEY, raw); return true; } catch (e) { return false; }
+  }
+  function dropStash(id) { try { localStorage.removeItem(STASH + id); } catch (e) {} }
+
   function snapshot() {
     if (!client) return Promise.resolve();
-    return client.auth.getSession().then(function (r) { if (r.data.session) upsertRoster(r.data.session); }).catch(function () {});
+    return client.auth.getSession().then(function (r) {
+      if (r.data.session) { upsertRoster(r.data.session); park(r.data.session.user.id); }
+    }).catch(function () {});
   }
   function reAuth(acc) {
     location.href = ACCOUNT_PAGE + '?next=' + encodeURIComponent(location.pathname + location.search) +
@@ -104,49 +129,37 @@
     // that silently does nothing reads as a broken feature.
     if (!isReady) { readyCbs.push(function () { switchTo(id); }); return; }
     var acc = readRoster().filter(function (a) { return a.id === id; })[0];
-    if (!acc || !client) return;
-    if (!acc.refresh_token) { reAuth(acc); return; }
+    if (!acc) return;
+    if (activeUser && activeUser.id === id) return;
 
-    snapshot().then(function () {
-      return client.auth.setSession({
-        access_token: acc.access_token || '',
-        refresh_token: acc.refresh_token
-      });
-    }).then(function (r) {
-      var sess = r && r.data && r.data.session;
-      if (!r || r.error || !sess) {
-        // The stored access token can be spent while the refresh token is
-        // still good, so ask the server for a fresh pair before giving up.
-        return client.auth.refreshSession({ refresh_token: acc.refresh_token });
-      }
-      return r;
-    }).then(function (r) {
-      var sess = r && r.data && r.data.session;
-      if (!r || r.error || !sess || (sess.user && sess.user.id !== id)) {
-        // Whatever we held for this account no longer opens it. Drop the dead
-        // tokens so the next click goes straight to signing in, and keep the
-        // entry so the account still shows up by name.
-        var roster = readRoster();
-        for (var k = 0; k < roster.length; k++) {
-          if (roster[k].id === id) { roster[k].access_token = null; roster[k].refresh_token = null; }
-        }
-        writeRoster(roster);
-        reAuth(acc);
-        return;
-      }
-      upsertRoster(sess);
-      location.reload();
-    }).catch(function () { reAuth(acc); });
+    if (activeUser) park(activeUser.id);
+
+    if (unpark(id)) { location.reload(); return; }
+
+    // No parked session for this account. Older roster entries carry raw
+    // tokens, so give those one go before sending anyone back to a login form.
+    if (client && acc.refresh_token) {
+      client.auth.setSession({ access_token: acc.access_token || '', refresh_token: acc.refresh_token })
+        .then(function (r) {
+          var sess = r && r.data && r.data.session;
+          if (r && !r.error && sess && sess.user && sess.user.id === id) { location.reload(); return; }
+          reAuth(acc);
+        })
+        .catch(function () { reAuth(acc); });
+      return;
+    }
+    reAuth(acc);
   }
   function addAccount() {
+    if (activeUser) park(activeUser.id);
     location.href = ACCOUNT_PAGE + '?next=' + encodeURIComponent(location.pathname + location.search) + '&add=1';
   }
   function signOut() {
     var cur = activeUser;
     return client.auth.signOut().then(function () {
-      if (cur) removeFromRoster(cur.id);
+      if (cur) { removeFromRoster(cur.id); dropStash(cur.id); }
       var rest = readRoster();
-      if (rest.length) switchTo(rest[0].id);
+      if (rest.length && unpark(rest[0].id)) location.reload();
       else location.reload();
     });
   }
@@ -154,17 +167,20 @@
   // ── init ──
   ensureSupabase().then(function () {
     client = window.supabase.createClient(SUPA_URL, SUPA_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true, storageKey: 'swiftaw-auth' }
+      auth: { persistSession: true, autoRefreshToken: true, storageKey: AUTH_KEY }
     });
     return client.auth.getSession();
   }).then(function (r) {
     var session = r.data.session;
     activeUser = session ? session.user : null;
-    if (session) upsertRoster(session);
+    if (session) { upsertRoster(session); park(session.user.id); }
 
     client.auth.onAuthStateChange(function (event, sess) {
       activeUser = sess ? sess.user : null;
-      if (sess) upsertRoster(sess);
+      // Park on every change, not only when the tab goes away: a token
+      // refresh rewrites the live blob, and a parked copy from before the
+      // refresh is a copy that will not open the door again.
+      if (sess) { upsertRoster(sess); park(sess.user.id); }
       renderWidget(); swapNavCta(); fireChange();
     });
 

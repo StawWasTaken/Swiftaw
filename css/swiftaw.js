@@ -170,7 +170,12 @@ if (!item.contains(e.relatedTarget)) setDrop(item, false);
 });
 }
 if (nbNav) {
-const onNbScroll = () => nbNav.classList.toggle('is-scrolled', window.scrollY > 24);
+const onNbScroll = () => {
+const y = window.scrollY;
+nbNav.classList.toggle('is-scrolled', y > 24);
+if (y > 260) nbNav.classList.add('is-far');
+else if (y < 180) nbNav.classList.remove('is-far');
+};
 onNbScroll();
 window.addEventListener('scroll', onNbScroll, { passive: true });
 }

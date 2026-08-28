@@ -45,36 +45,31 @@ html { scroll-padding-top: 88px; }
 .hp-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .hp-nav-cta { display: none; } }
 
-.hp-hero { position: relative; overflow: hidden; padding: clamp(30px, 4.4vw, 60px) 0 0; }
+.hp-hero { position: relative; overflow: hidden; padding: clamp(24px, 3.4vw, 54px) 0 clamp(18px, 2.6vw, 44px); }
 
-.hp-head-top { position: relative; z-index: 2; text-align: center; max-width: 900px; margin: 0 auto; }
-.hp-head-top .hp-eyebrow { display: block; color: var(--nb-yellow); margin-bottom: 16px; }
+.hp-hero-in { display: grid; grid-template-columns: minmax(0, 41fr) minmax(0, 59fr); align-items: center; gap: clamp(14px, 2.2vw, 32px); }
 
-.hp-tagline { margin: 0; font-size: clamp(46px, 8.4vw, 118px); }
+.hp-copy { position: relative; z-index: 2; padding-left: max(24px, calc((100vw - var(--nb-max)) / 2)); padding-right: 6px; }
+
+.hp-tagline { margin: 0; font-size: clamp(44px, 5.6vw, 92px); }
 .hp-tagline .stop { color: var(--nb-red); }
-.hp-lede { max-width: 42ch; margin: 20px auto 0; font-size: clamp(15px, 1.2vw, 17.5px); }
-.hp-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; justify-content: center; }
+.hp-lede { max-width: 44ch; margin: 20px 0 0; font-size: clamp(15px, 1.15vw, 17.5px); }
+.hp-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
 
-.hp-art {
-  position: relative; z-index: 1;
-  margin-top: clamp(-52px, -2.4vw, -8px);
-  margin-bottom: clamp(-84px, -4vw, -12px);
+.hp-art { position: relative; z-index: 1; }
+.hp-art img { display: block; width: 100%; height: auto; }
+
+@media (max-width: 900px) {
+  .hp-hero-in { grid-template-columns: 1fr; gap: 4px; }
+  .hp-copy { padding-right: max(24px, calc((100vw - var(--nb-max)) / 2)); text-align: center; }
+  .hp-lede { margin-left: auto; margin-right: auto; }
+  .hp-actions { justify-content: center; }
+  .hp-art { margin: 0 -4vw; width: 108vw; }
 }
-.hp-art img { display: block; width: 100%; max-width: 1560px; height: auto; margin: 0 auto; }
 
-@media (max-width: 640px) {
-  .hp-art { margin-left: -6vw; margin-right: -6vw; width: 112vw; }
-}
-
-.hp-deco-1 { top: 6%; left: 1.4%; --nb-rot: 12deg; }
-.hp-deco-2 { top: 30%; left: 4%;  --nb-rot: -8deg; }
-.hp-deco-3 { top: 12%; right: 3%; left: auto; }
-
-.hp-deco-4 {
-  top: 30%; right: 5%; left: auto; width: 120px; height: 120px; border-radius: 50%;
-  background-image: radial-gradient(rgba(255,255,255,.30) 1.6px, transparent 1.6px);
-}
-@media (max-width: 1340px) { .hp-deco-1, .hp-deco-2, .hp-deco-3, .hp-deco-4 { display: none; } }
+.hp-deco-1 { top: 12%;  left: 1.2%; --nb-rot: 12deg; }
+.hp-deco-2 { bottom: 16%; top: auto; left: 3.4%; --nb-rot: -8deg; }
+@media (max-width: 1340px) { .hp-deco-1, .hp-deco-2 { display: none; } }
 
 .hp-head { max-width: 640px; margin-bottom: clamp(28px, 3.4vw, 44px); }
 .hp-head .nb-eyebrow { color: var(--nb-yellow); display: block; margin-bottom: 14px; }
@@ -327,26 +322,23 @@ html { scroll-padding-top: 88px; }
 <section class="hp-hero">
   <span class="nb-deco nb-shape nb-shape--sq nb-poke nb-float hp-deco-1" data-depth="18" aria-hidden="true"></span>
   <span class="nb-deco nb-shape nb-shape--circle nb-poke nb-float hp-deco-2" data-depth="26" aria-hidden="true"></span>
-  <span class="nb-deco nb-shape nb-shape--tri nb-poke nb-float hp-deco-3" data-depth="11" aria-hidden="true"></span>
-  <span class="nb-deco nb-dots nb-float hp-deco-4" data-depth="7" aria-hidden="true"></span>
 
-  <div class="nb-wrap">
-    <div class="hp-head-top nb-reveal">
-      <span class="nb-eyebrow hp-eyebrow">Île-de-France, France</span>
+  <div class="hp-hero-in">
+    <div class="hp-copy nb-reveal">
       <h1 class="nb-display hp-tagline">Make It Matter<span class="stop">.</span></h1>
       <p class="nb-lead hp-lede">
-        We build platforms people actually live in, and the services that keep
-        them standing.
+        A place people actually hang out in. An assistant worth asking. A check
+        at the door that stops bots without getting in anyone else's way.
       </p>
       <div class="hp-actions">
         <a class="nb-btn nb-btn--primary nb-btn--lg" href="#make">See what we make</a>
         <a class="nb-btn nb-btn--lg" href="/contact">Get in touch</a>
       </div>
     </div>
-  </div>
 
-  <div class="hp-art" aria-hidden="true">
-    <img src="/Swft-header.png" alt="" width="2747" height="1634" fetchpriority="high" decoding="async">
+    <div class="hp-art" aria-hidden="true">
+      <img src="/Swft-header.png" alt="" width="2747" height="1634" fetchpriority="high" decoding="async">
+    </div>
   </div>
 </section>
 

@@ -8,8 +8,6 @@
 --
 -- Idempotent. Safe to run more than once.
 
-create extension if not exists pgcrypto;
-
 -- ── Tables ───────────────────────────────────────────────────────────────────
 
 create table if not exists public.support_tickets (
@@ -170,7 +168,10 @@ begin
   end if;
 
   loop
-    v_ref := 'SWFT-' || upper(encode(gen_random_bytes(3), 'hex'));
+    -- md5 of random text rather than pgcrypto's gen_random_bytes: on hosted
+    -- Postgres pgcrypto lives in the extensions schema, which is not on this
+    -- function's search_path, so calling it here fails at runtime.
+    v_ref := 'SWFT-' || upper(substr(md5(random()::text || clock_timestamp()::text), 1, 6));
     exit when not exists (select 1 from public.support_tickets t where t.ref = v_ref);
   end loop;
 
