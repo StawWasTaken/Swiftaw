@@ -31,53 +31,67 @@ html { scroll-padding-top: 88px; }
 .nb-nav-actions .swl-btn, .nb-nav-actions .swa-btn { flex: none; }
 @media (max-width: 560px) { .lc-nav-cta { display: none; } }
 
-.lc-hero { position: relative; padding: clamp(56px, 8vw, 104px) 0 clamp(30px, 4vw, 48px); overflow: hidden; }
+.lc-split { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: clamp(26px, 4vw, 60px); align-items: start; }
+@media (max-width: 940px) { .lc-split { grid-template-columns: 1fr; gap: 26px; } }
+.lc-split-head h2 { margin: 10px 0 12px; }
+.lc-split-head p { font-size: 15px; line-height: 1.6; }
+.lc-note { margin-top: 18px; padding-top: 16px; border-top: var(--nb-bd-thin); font-size: 13.5px; line-height: 1.6; }
+
+.lc-hero { position: relative; padding: clamp(44px, 6vw, 80px) 0 clamp(26px, 3.4vw, 44px); overflow: hidden; }
 .lc-hero-grid {
   position: relative; z-index: 2;
-  display: grid; grid-template-columns: 1.02fr .98fr; gap: clamp(28px, 4vw, 52px); align-items: center;
+  display: grid; grid-template-columns: 1fr minmax(0, 480px); gap: clamp(28px, 4vw, 56px); align-items: center;
 }
 @media (max-width: 940px) { .lc-hero-grid { grid-template-columns: 1fr; } }
 
-.lc-hero h1 { margin: 14px 0 18px; }
+.lc-hero h1 { margin: 14px 0 18px; font-size: clamp(34px, 4.6vw, 62px); }
 .lc-hero h1 .dot { color: var(--nb-yellow); }
-.lc-hero-lede { max-width: 46ch; margin-bottom: 26px; }
-
-.lc-facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
-.lc-fact {
-  padding: 12px 16px;
-  background: var(--nb-surface); color: var(--nb-surface-fg);
-  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
-  box-shadow: var(--nb-sh-sm);
-}
-.lc-fact .k { display: block; font-family: var(--nb-font-head); font-weight: 700; font-size: 22px; line-height: 1; }
-.lc-fact .v { display: block; margin-top: 5px; font-size: 12.5px; color: var(--nb-surface-fg-muted); }
+.lc-hero-lede { max-width: 44ch; margin-bottom: 26px; }
 
 .lc-deco-1 { top: 78px; right: 4%; --nb-rot: 12deg; }
 .lc-deco-2 { bottom: 34px; right: 9%; --nb-rot: -14deg; }
 @media (max-width: 1080px) { .lc-deco-1, .lc-deco-2 { display: none; } }
 
-.lc-shead { max-width: 620px; margin-bottom: clamp(26px, 3.4vw, 40px); }
-.lc-shead h2 { margin: 10px 0 12px; }
-
-.lc-signal { position: relative; }
-.lc-signal .g {
-  width: 46px; height: 46px; margin-bottom: 14px;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--lcx); border: var(--nb-bd); border-radius: var(--nb-r-sm);
-  box-shadow: var(--nb-sh-sm);
+.lc-part + .lc-part { margin-top: 26px; padding-top: 24px; border-top: var(--nb-bd-thin); }
+.lc-part-label {
+  display: block; margin-bottom: 16px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 11.5px;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--nb-surface-fg-muted);
 }
-.lc-signal .g svg { width: 20px; height: 20px; fill: var(--nb-ink); }
-.lc-signal h3 { margin-bottom: 8px; }
 
-.lc-feat h3 { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
-.lc-feat h3 svg { width: 17px; height: 17px; flex: none; fill: var(--nb-yellow); }
+.lc-signal { display: flex; gap: 14px; align-items: flex-start; }
+.lc-signal + .lc-signal { margin-top: 16px; }
+.lc-signal .g {
+  width: 34px; height: 34px; flex: none; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--lcx); border: var(--nb-bd-thin); border-radius: 8px;
+}
+.lc-signal .g svg { width: 15px; height: 15px; fill: var(--nb-ink); }
+.lc-signal h3 { font-size: 16px; margin: 0 0 4px; }
+.lc-signal p { font-size: 13.5px; line-height: 1.55; margin: 0; }
 
-.lc-install { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(22px, 3vw, 36px); align-items: center; }
-@media (max-width: 880px) { .lc-install { grid-template-columns: 1fr; } }
+.lc-names { display: flex; flex-wrap: wrap; gap: 8px; }
+.lc-name {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px;
+  padding: 7px 13px; border-radius: var(--nb-r-pill);
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd-thin);
+}
+.lc-name.is-new { background: var(--nb-yellow); color: var(--nb-ink); }
+.lc-names-note { margin: 14px 0 0; font-size: 13px; line-height: 1.6; }
+
+.lc-points { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 34px; }
+@media (max-width: 700px) { .lc-points { grid-template-columns: 1fr; } }
+.lc-point { border-top: var(--nb-bd-w) solid var(--lcx, var(--nb-yellow)); padding-top: 14px; }
+.lc-point h3 { font-size: 17px; margin: 0 0 7px; }
+.lc-point p { font-size: 13.5px; line-height: 1.6; margin: 0; }
 
 .lc-outro { text-align: center; }
 .lc-outro h2 { margin-bottom: 12px; }
 .lc-outro p { max-width: 48ch; margin: 0 auto 24px; }
+
+.nb-section { padding: clamp(44px, 5.6vw, 82px) 0; }
 
 </style>
 </head>
@@ -147,11 +161,6 @@ html { scroll-padding-top: 88px; }
           <a class="nb-btn nb-btn--primary nb-btn--lg" href="/lifecheck/keys">Get a key</a>
           <a class="nb-btn nb-btn--paper nb-btn--lg" href="#how">How it works</a>
         </div>
-        <div class="lc-facts">
-          <div class="lc-fact"><span class="k">11</span><span class="v">challenges in the pool</span></div>
-          <div class="lc-fact"><span class="k">50/50</span><span class="v">read or play</span></div>
-          <div class="lc-fact"><span class="k">0</span><span class="v">cookies or trackers</span></div>
-        </div>
       </div>
 
       <div class="nb-card nb-card--lg nb-reveal">
@@ -178,115 +187,72 @@ html { scroll-padding-top: 88px; }
 
 <section class="nb-section" id="how">
   <div class="nb-wrap">
-    <div class="lc-shead nb-reveal">
-      <span class="nb-eyebrow">How it works</span>
-      <h2 class="nb-h1">We read you, or we play you.</h2>
-      <p class="nb-muted">
-        Half of all visits are judged on how the pointer moved, and only
-        interrupted when that does not add up. The other half get a game no
-        matter how they moved. Which half you land in is decided fresh on
-        every visit, so nobody can learn their way past it.
-      </p>
-    </div>
+    <div class="lc-split">
+      <div class="lc-split-head nb-reveal">
+        <span class="nb-eyebrow">How it works</span>
+        <h2 class="nb-h2">We read you, or we play you.</h2>
+        <p class="nb-muted">
+          Half of all visits are judged on how the pointer moved, and only
+          interrupted when that does not add up. The other half get a game no
+          matter how they moved. Which half you land in is decided fresh on
+          every visit, so nobody can learn their way past it.
+        </p>
+        <p class="nb-muted lc-note">
+          No single reading decides anything. Each one costs a little
+          confidence and the widget acts on the total, so one odd moment never
+          condemns a real person. On a phone it falls back to what a touch
+          screen can honestly report.
+        </p>
+      </div>
 
-    <div class="nb-grid nb-grid--3">
-      <div class="nb-card lc-signal nb-reveal" style="--lcx: var(--nb-blue);">
-        <span class="lc-num">01</span>
-        <span class="g"><svg><use href="#i-cursor"/></svg></span>
-        <h3 class="nb-h3">Did it move?</h3>
-        <p class="nb-muted">A pointer that barely twitched, or a click with no travel in front of it, is not somebody reaching for a button.</p>
-      </div>
-      <div class="nb-card lc-signal nb-reveal" style="--lcx: var(--nb-pink);">
-        <span class="lc-num">02</span>
-        <span class="g"><svg><use href="#i-wave"/></svg></span>
-        <h3 class="nb-h3">Does it wobble?</h3>
-        <p class="nb-muted">Hands shake constantly, even steady ones. A path drawn by maths barely changes direction on the way.</p>
-      </div>
-      <div class="nb-card lc-signal nb-reveal" style="--lcx: var(--nb-green);">
-        <span class="lc-num">03</span>
-        <span class="g"><svg><use href="#i-clock"/></svg></span>
-        <h3 class="nb-h3">Does it hesitate?</h3>
-        <p class="nb-muted">People stop to read, then stop again to aim. A trail that never once paused is doing something other than deciding.</p>
-      </div>
-    </div>
+      <div class="nb-card nb-card--lg nb-reveal">
+        <div class="lc-part">
+          <span class="lc-part-label">When we read you</span>
+          <div class="lc-signal" style="--lcx: var(--nb-blue);">
+            <span class="g"><svg><use href="#i-cursor"/></svg></span>
+            <div>
+              <h3 class="nb-h4">Did it move?</h3>
+              <p class="nb-muted">A pointer that barely twitched, or a click with no travel in front of it, is not somebody reaching for a button.</p>
+            </div>
+          </div>
+          <div class="lc-signal" style="--lcx: var(--nb-pink);">
+            <span class="g"><svg><use href="#i-wave"/></svg></span>
+            <div>
+              <h3 class="nb-h4">Does it wobble?</h3>
+              <p class="nb-muted">Hands shake constantly, even steady ones. A path drawn by maths barely changes direction on the way.</p>
+            </div>
+          </div>
+          <div class="lc-signal" style="--lcx: var(--nb-green);">
+            <span class="g"><svg><use href="#i-clock"/></svg></span>
+            <div>
+              <h3 class="nb-h4">Does it hesitate?</h3>
+              <p class="nb-muted">People stop to read, then stop again to aim. A trail that never once paused is doing something other than deciding.</p>
+            </div>
+          </div>
+        </div>
 
-    <div class="nb-alert nb-alert--info nb-reveal" style="margin-top:20px;">
-      <svg viewBox="0 0 512 512" aria-hidden="true"><use href="#i-shield"/></svg>
-      <div>
-        <b>No single reading decides anything.</b> Each one costs a little
-        confidence and the widget acts on the total, so one odd moment never
-        condemns a real person, and faking one convincingly still leaves the
-        rest. On a phone it falls back to what a touch screen can honestly
-        report.
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="nb-rule">
-
-<section class="nb-section">
-  <div class="nb-wrap">
-    <div class="lc-shead nb-reveal">
-      <span class="nb-eyebrow">The eleven challenges</span>
-      <h2 class="nb-h1">Not sure? It plays a five second game.</h2>
-      <p class="nb-muted">
-        No blurry traffic lights and no crosswalks. Small tasks that are
-        awkward to script and quick for a person, drawn fresh every time.
-        Three of them are new in v1.3, and every one can be played on a
-        keyboard alone.
-      </p>
-    </div>
-
-    <div class="lc-chals nb-reveal">
-      <div class="lc-chal" style="--lcx: var(--nb-blue);"><span class="g">📡</span><span class="n">Spot the life</span></div>
-      <div class="lc-chal" style="--lcx: var(--nb-green);"><span class="g">🛸</span><span class="n">Guide it home</span></div>
-      <div class="lc-chal" style="--lcx: var(--nb-pink);"><span class="g">🧭</span><span class="n">Aim the dish</span></div>
-      <div class="lc-chal" style="--lcx: var(--nb-yellow);"><span class="g">🔢</span><span class="n">Beacon order</span></div>
-      <div class="lc-chal" style="--lcx: var(--nb-red);"><span class="g">⌨️</span><span class="n">Signal code</span></div>
-      <div class="lc-chal" style="--lcx: var(--nb-blue);"><span class="g">🧬</span><span class="n">Odd one out</span></div>
-      <div class="lc-chal" style="--lcx: var(--nb-green);"><span class="g">🔎</span><span class="n">Count the living</span></div>
-      <div class="lc-chal" style="--lcx: var(--nb-pink);"><span class="g">✅</span><span class="n">Select every life form</span></div>
-      <div class="lc-chal" style="--lcx: var(--nb-yellow);"><span class="g">〰️</span><span class="n">Trace the beam</span></div>
-      <div class="lc-chal" style="--lcx: var(--nb-red);"><span class="g">🎯</span><span class="n">Tag the probe</span></div>
-      <div class="lc-chal" style="--lcx: var(--nb-blue);"><span class="g">👯</span><span class="n">Find the twins</span></div>
-    </div>
-  </div>
-</section>
-
-<hr class="nb-rule">
-
-<section class="nb-section">
-  <div class="nb-wrap">
-    <div class="lc-shead nb-reveal">
-      <span class="nb-eyebrow">Why teams pick it</span>
-      <h2 class="nb-h1">Small, kind, hard to fake.</h2>
-    </div>
-
-    <div class="nb-grid nb-grid--3">
-      <div class="nb-card lc-feat nb-reveal">
-        <h3 class="nb-h3"><svg><use href="#i-bolt"/></svg> It gets out of the way</h3>
-        <p class="nb-muted">Most real people go straight through without seeing a game. The people you want are not the ones who should be paying for this.</p>
-      </div>
-      <div class="nb-card lc-feat nb-reveal">
-        <h3 class="nb-h3"><svg><use href="#i-lock"/></svg> Yours to verify</h3>
-        <p class="nb-muted">Every pass mints a one time token. Check it from your own server with your secret key before you trust anything the form said.</p>
-      </div>
-      <div class="nb-card lc-feat nb-reveal">
-        <h3 class="nb-h3"><svg><use href="#i-shield"/></svg> It cannot be lifted</h3>
-        <p class="nb-muted">The checking runs inside a sandboxed frame on our domain. What you embed is a URL, not code somebody can read and copy.</p>
-      </div>
-      <div class="nb-card lc-feat nb-reveal">
-        <h3 class="nb-h3"><svg><use href="#i-cursor"/></svg> Nothing follows you out</h3>
-        <p class="nb-muted">No cookies, no profile, nothing sold. What we do keep is behaviour: how the pointer moved and how the game was played. Never what you typed into the page around it.</p>
-      </div>
-      <div class="nb-card lc-feat nb-reveal">
-        <h3 class="nb-h3"><svg><use href="#i-code"/></svg> Invisible when you want it</h3>
-        <p class="nb-muted">New in v1.3. Add <code class="lc-inline">data-size="invisible"</code> and nothing is drawn. Call <code class="lc-inline">Lifecheck.execute()</code> on submit and a game only appears if the check is unconvinced.</p>
-      </div>
-      <div class="nb-card lc-feat nb-reveal">
-        <h3 class="nb-h3"><svg><use href="#i-keyboard"/></svg> Playable without a mouse</h3>
-        <p class="nb-muted">Every challenge is a real button. Tab to it, Enter to pick, arrow keys to steer the slider and the dial. The two that want a pointer offer you a different one instead.</p>
+        <div class="lc-part">
+          <span class="lc-part-label">When we play you</span>
+          <div class="lc-names">
+            <span class="lc-name">Spot the life</span>
+            <span class="lc-name">Guide it home</span>
+            <span class="lc-name">Aim the dish</span>
+            <span class="lc-name">Beacon order</span>
+            <span class="lc-name">Signal code</span>
+            <span class="lc-name">Odd one out</span>
+            <span class="lc-name">Count the living</span>
+            <span class="lc-name">Select every life form</span>
+            <span class="lc-name is-new">Trace the beam</span>
+            <span class="lc-name is-new">Tag the probe</span>
+            <span class="lc-name is-new">Find the twins</span>
+          </div>
+          <p class="nb-muted lc-names-note">
+            Eleven of them, five seconds each. No blurry traffic lights and no
+            crosswalks, just small tasks that are awkward to script and quick
+            for a person. The three in yellow are new in v1.3, and every one
+            can be played on a keyboard alone.
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -296,10 +262,53 @@ html { scroll-padding-top: 88px; }
 
 <section class="nb-section">
   <div class="nb-wrap">
-    <div class="lc-install nb-reveal">
-      <div>
+    <div class="lc-split">
+      <div class="lc-split-head nb-reveal">
+        <span class="nb-eyebrow">Why teams pick it</span>
+        <h2 class="nb-h2">Small, kind, hard to fake.</h2>
+        <p class="nb-muted">
+          Six things it does that the box on everyone else's form does not.
+        </p>
+      </div>
+
+      <div class="lc-points nb-reveal">
+        <div class="lc-point" style="--lcx: var(--nb-yellow);">
+          <h3 class="nb-h4">It gets out of the way</h3>
+          <p class="nb-muted">Most real people go straight through without seeing a game. The people you want are not the ones who should be paying for this.</p>
+        </div>
+        <div class="lc-point" style="--lcx: var(--nb-blue);">
+          <h3 class="nb-h4">Yours to verify</h3>
+          <p class="nb-muted">Every pass mints a one time token. Check it from your own server with your secret key before you trust anything the form said.</p>
+        </div>
+        <div class="lc-point" style="--lcx: var(--nb-green);">
+          <h3 class="nb-h4">It cannot be lifted</h3>
+          <p class="nb-muted">The checking runs inside a sandboxed frame on our domain. What you embed is a URL, not code somebody can read and copy.</p>
+        </div>
+        <div class="lc-point" style="--lcx: var(--nb-pink);">
+          <h3 class="nb-h4">Nothing follows you out</h3>
+          <p class="nb-muted">No cookies, no profile, nothing sold. What we do keep is behaviour: how the pointer moved and how the game was played. Never what you typed into the page around it.</p>
+        </div>
+        <div class="lc-point" style="--lcx: var(--nb-red);">
+          <h3 class="nb-h4">Invisible when you want it</h3>
+          <p class="nb-muted">New in v1.3. Add <code class="lc-inline">data-size="invisible"</code> and nothing is drawn. Call <code class="lc-inline">Lifecheck.execute()</code> on submit and a game only appears if the check is unconvinced.</p>
+        </div>
+        <div class="lc-point" style="--lcx: var(--nb-yellow);">
+          <h3 class="nb-h4">Playable without a mouse</h3>
+          <p class="nb-muted">Every challenge is a real button. Tab to it, Enter to pick, arrow keys to steer the slider and the dial. The two that want a pointer offer you a different one instead.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="nb-rule">
+
+<section class="nb-section">
+  <div class="nb-wrap">
+    <div class="lc-split nb-reveal">
+      <div class="lc-split-head">
         <span class="nb-eyebrow">Install</span>
-        <h2 class="nb-h1" style="margin:10px 0 12px;">Two lines and you are done.</h2>
+        <h2 class="nb-h2">Two lines and you are done.</h2>
         <p class="nb-muted" style="margin-bottom:20px;">
           Take a key, load the script once, and drop a
           <code class="lc-inline">.lifecheck</code> box into your form. The
