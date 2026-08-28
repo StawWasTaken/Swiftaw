@@ -6,7 +6,10 @@
 
    What it is: ecosystem NAVIGATION. It moves you between products. It does
    not join their accounts together, and nothing in here should suggest it
-   does — hence the standing footnote at the bottom of the panel.
+   does — which is why there is no account row, no session, and no sign-in
+   anywhere in this panel. The account is its own button next door, and the
+   line about the three account systems being separate lives there, where
+   somebody reading about accounts is actually looking.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 .swl-root {
@@ -98,15 +101,25 @@
   margin-bottom: 9px;
 }
 
-/* ── a tile ─────────────────────────────────────────────────────────────── */
-.swl-grid { display: flex; flex-direction: column; gap: 8px; }
+/* ── a tile ───────────────────────────────────────────────────────────────
+   A square cell: icon on top, name underneath, nothing beside either. The
+   earlier row layout put a description next to every icon, which made the
+   panel a list to read rather than a board to aim at — you already know what
+   Fortized is, you are here to click it. So the icon is the target and grows,
+   the name is a label and shrinks, and the one-line description survives only
+   as the tile's title attribute for anyone who does want it. */
+.swl-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
 
 .swl-tile {
   position: relative;
-  display: flex; align-items: center; gap: 13px;
-  width: 100%;
-  padding: 10px 12px;
-  text-align: left;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  gap: 9px;
+  padding: 14px 6px 12px;
+  text-align: center;
   background: var(--swl-surface);
   color: inherit;
   border: var(--nb-bd-w-thin, 2px) solid transparent;
@@ -116,10 +129,12 @@
   transition: background var(--nb-fast, .14s), border-color var(--nb-fast, .14s),
               transform var(--nb-fast, .14s);
 }
+/* Up rather than sideways. In a grid a tile that slides right walks into its
+   neighbour; lifting is the move that works in both axes. */
 .swl-tile:hover, .swl-tile:focus-visible {
   background: var(--swl-surf-2);
   border-color: var(--swl-line);
-  transform: translateX(2px);
+  transform: translateY(-2px);
 }
 
 /* No stroke and no shadow on these. They are each product's own icon, already
@@ -127,36 +142,33 @@
    box around a box. */
 .swl-ico {
   flex: none;
-  width: 40px; height: 40px;
+  width: 52px; height: 52px;
   border: 0;
   border-radius: var(--nb-r-sm, 10px);
   object-fit: cover;
   background: transparent;
 }
 
-.swl-meta { min-width: 0; flex: 1; display: block; }
+.swl-meta { min-width: 0; width: 100%; display: block; }
 .swl-name {
-  font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; font-size: 15px; line-height: 1.2;
-  display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
-}
-.swl-what {
   display: block;
-  font-size: 12.5px; line-height: 1.35;
-  color: var(--swl-muted);
-  margin-top: 2px;
+  font-family: var(--nb-font-head, 'Syne', sans-serif);
+  font-weight: 700; font-size: 12.5px; line-height: 1.25;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 
 /* "You're here" and "Coming soon" are the same shape so neither reads as a
-   promotion of the other. */
+   promotion of the other. Under the name, not beside it — at this width there
+   is no beside. */
 .swl-flag {
+  display: inline-block;
+  margin-top: 4px;
   font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; font-size: 9.5px;
-  letter-spacing: .08em; text-transform: uppercase;
+  font-weight: 700; font-size: 8.5px;
+  letter-spacing: .07em; text-transform: uppercase;
   border: 2px solid var(--swl-line);
   border-radius: 999px;
-  padding: 1px 7px;
+  padding: 0 6px;
   white-space: nowrap;
 }
 .swl-flag--here { background: var(--nb-yellow, #FFF93E); color: #000; border-color: #000; }
@@ -169,12 +181,17 @@
 .swl-tile.is-soon { cursor: default; opacity: .72; }
 .swl-tile.is-soon:hover { background: none; border-color: transparent; transform: none; }
 
-/* ── the favourite star ─────────────────────────────────────────────────── */
+/* ── the favourite star ───────────────────────────────────────────────────
+   Pinned to the tile's own top-right corner now that the tile is a square.
+   It overlaps the icon's corner by a couple of pixels on purpose: a star
+   given its own row would cost the tile another 30px of height for a control
+   most people touch once. */
 .swl-star {
-  flex: none;
-  width: 30px; height: 30px;
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 24px; height: 24px;
   display: grid; place-items: center;
-  background: none; border: 0; border-radius: 8px;
+  background: none; border: 0; border-radius: 7px;
   cursor: pointer;
   color: var(--swl-muted);
   /* Faint at rest rather than invisible. A control nobody can see is a
@@ -183,7 +200,7 @@
   transition: opacity var(--nb-fast, .14s), color var(--nb-fast, .14s),
               transform var(--nb-fast, .14s);
 }
-.swl-star svg { width: 16px; height: 16px; fill: currentColor; }
+.swl-star svg { width: 13px; height: 13px; fill: currentColor; }
 .swl-tile:hover .swl-star,
 .swl-tile:focus-within .swl-star,
 .swl-star:focus-visible,
@@ -198,21 +215,6 @@
   border-radius: var(--nb-r-sm, 10px);
   padding: 12px 14px;
   opacity: .8;
-}
-
-/* ── the foot ───────────────────────────────────────────────────────────────
-   The one line that keeps this honest. It is not fine print to be trimmed
-   when the panel gets crowded — three separate account systems is a fact
-   about the products, not a disclaimer. There is no account row here: the
-   account is its own button in the dock. */
-.swl-foot {
-  border-top: var(--nb-bd-w-thin, 2px) solid var(--swl-line);
-  background: var(--swl-surf-2);
-  padding: 12px 16px 13px;
-}
-.swl-note {
-  font-size: 11px; line-height: 1.45;
-  color: var(--swl-muted);
 }
 
 /* ── the dock ───────────────────────────────────────────────────────────────

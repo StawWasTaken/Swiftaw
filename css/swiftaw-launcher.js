@@ -13,8 +13,10 @@
    ── WHAT THIS IS, AND IS NOT ─────────────────────────────────────────────
    Navigation between products. Nothing here signs you into anything, reads a
    product's session, or implies one account spans them. Fortized accounts,
-   Hereld accounts and Swiftaw accounts are three separate systems; the panel
-   says so out loud rather than leaving people to assume otherwise.
+   Hereld accounts and Swiftaw accounts are three separate systems. That fact
+   is stated in the ACCOUNT panel next door rather than here — this panel has
+   no account in it at all, so a paragraph about accounts at the bottom of it
+   was answering a question nobody was asking in this menu.
 
    THE ACCOUNT IS NOT IN HERE. It is its own button, sitting beside this one
    in the same dock — swiftaw-account.js owns it. Two buttons, two jobs: this
@@ -132,14 +134,12 @@
       '<div class="swl-panel" hidden role="dialog" aria-label="Swiftaw ecosystem">' +
         '<div class="swl-stripe"><i></i><i></i><i></i><i></i><i></i></div>' +
         '<div class="swl-scroll"></div>' +
-        '<div class="swl-foot"></div>' +
       '</div>';
 
     this.root  = root;
     this.btn   = root.querySelector('.swl-btn');
     this.panel = root.querySelector('.swl-panel');
     this.body  = root.querySelector('.swl-scroll');
-    this.foot  = root.querySelector('.swl-foot');
 
     this.btn.addEventListener('click', function (e) {
       e.stopPropagation();
@@ -175,20 +175,22 @@
     // A tile that leads nowhere is a <div>, not an <a href="#">. Screen
     // readers and middle-clicks both deserve the truth about that.
     var tag  = soon ? 'div' : 'a';
-    var attr = soon
+    // The description no longer has a line of its own in the tile, so it
+    // becomes the title. Nothing is lost; it just stops competing with the
+    // name for a 109px column.
+    var attr = ' title="' + esc(e.name + ' — ' + e.what) + '"' + (soon
       ? ' class="swl-tile is-soon"'
       : ' class="swl-tile" href="' + esc(e.href) + '"' +
-        (here ? '' : ' rel="noopener"');
+        (here ? '' : ' rel="noopener"'));
 
     var flag = here ? '<span class="swl-flag swl-flag--here">You\'re here</span>'
              : soon ? '<span class="swl-flag swl-flag--soon">Coming soon</span>'
              : '';
 
     return '<' + tag + attr + ' data-id="' + esc(e.id) + '">' +
-      '<img class="swl-ico" src="' + esc(e.icon) + '" alt="" width="40" height="40" loading="lazy">' +
+      '<img class="swl-ico" src="' + esc(e.icon) + '" alt="" width="52" height="52" loading="lazy">' +
       '<span class="swl-meta">' +
-        '<span class="swl-name">' + esc(e.name) + flag + '</span>' +
-        '<span class="swl-what">' + esc(e.what) + '</span>' +
+        '<span class="swl-name">' + esc(e.name) + '</span>' + flag +
       '</span>' +
       '<button class="swl-star' + (fav ? ' on' : '') + '" type="button" ' +
               'data-fav="' + esc(e.id) + '" aria-pressed="' + (fav ? 'true' : 'false') + '" ' +
@@ -202,9 +204,19 @@
     var favs = readFavs();
     var self = this;
 
+    /* Starring MOVES a product up here rather than copying it. Two tiles for
+       one product, one of them starred and one of them not, is the panel
+       disagreeing with itself — and it makes the star look like it did
+       nothing, because the tile you clicked is still sitting where it was.
+       Favourites is a section, not a badge. */
+    function unstarred(kind) {
+      return ENTRIES.filter(function (e) {
+        return e.kind === kind && favs.indexOf(e.id) < 0;
+      });
+    }
     var favItems = favs.map(byId).filter(Boolean);
-    var products = ENTRIES.filter(function (e) { return e.kind === 'product'; });
-    var services = ENTRIES.filter(function (e) { return e.kind === 'service'; });
+    var products = unstarred('product');
+    var services = unstarred('service');
 
     var favSection = favItems.length
       ? this.sectionHTML('Favourites', favItems, favs)
@@ -224,8 +236,6 @@
         self.toggleFav(b.getAttribute('data-fav'));
       });
     });
-
-    this.renderFoot();
   };
 
   Launcher.prototype.toggleFav = function (id) {
@@ -233,17 +243,6 @@
     if (i >= 0) favs.splice(i, 1); else favs.push(id);
     writeFavs(favs);
     this.render();
-  };
-
-  /* ── the foot ───────────────────────────────────────────────────────────
-     One sentence, and it earns its place: this panel puts three products a
-     click apart, and the natural assumption is that clicking through carries
-     you with it. It does not. No account row here — the account is its own
-     button next door. */
-  Launcher.prototype.renderFoot = function () {
-    this.foot.innerHTML =
-      '<div class="swl-note">Swiftaw, Fortized and Hereld accounts are ' +
-      'separate. Each product signs you in itself.</div>';
   };
 
   Launcher.prototype.open = function () {

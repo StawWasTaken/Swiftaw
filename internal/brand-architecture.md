@@ -369,25 +369,46 @@ consent card:
 `data-current` puts a **You're here** flag on the tile you are standing on.
 Swiftaw itself is not a tile — it is the thing the tiles belong to.
 
-Favourites are pinned with the star on each tile and kept in `localStorage`
-per browser. Nothing about them leaves the device.
+### The tile is a square, not a row
+
+Icon on top, name underneath, nothing beside either — three to a row. The
+first build put a one-line description next to every icon, which turned the
+panel into a list to *read* when it should be a board to *aim at*. You already
+know what Fortized is; you are here to click it. So the icon is the target and
+grew to 52px, the name is a label and shrank to 12.5px, and the description
+survives only as the tile's `title`.
+
+The star moved into the tile's top-right corner for the same reason: a row of
+its own would have cost every tile another 30px of height for a control most
+people touch once. Hover lifts the tile rather than sliding it — in a grid, a
+tile that slides right walks into its neighbour.
+
+### Starring MOVES a product
+
+Favourites are pinned with the star and kept in `localStorage` per browser;
+nothing about them leaves the device. A starred product **leaves its category
+and appears only under Favourites**. It is not listed twice. Two tiles for one
+product — one starred, one not — is the panel disagreeing with itself, and it
+makes the star look like it did nothing, because the tile you just clicked is
+still sitting exactly where it was. Favourites is a section, not a badge.
 
 **Hereld has no domain, so its tile has no link.** It is a `<div>` flagged
 *Coming soon*, not an `<a href="#">` — a tile that leads nowhere must not
 behave like one that does. It becomes a link the moment a domain exists.
 
-It navigates between products. It does **not** unify the account systems
-underneath them, and the panel says so in a standing line in its own footer:
-*"Swiftaw, Fortized and Hereld accounts are separate. Each product signs you
-in itself."* That line is not fine print to be trimmed when the panel gets
-crowded — this panel puts three products a click apart, and the natural
-assumption is that clicking through carries you with it.
+### There is no account in here, and no footnote about accounts either
 
-**There is no account in here.** The account is its own button, sitting beside
-this one — see below. They were briefly one control and that was wrong twice
-over: it buried the account inside a products menu, and a launcher that also
-holds your session is precisely the thing that makes people believe the
-products share one.
+The account is its own button, sitting beside this one — see below. They were
+briefly one control and that was wrong twice over: it buried the account
+inside a products menu, and a launcher that also holds your session is
+precisely the thing that makes people believe the products share one.
+
+The panel used to carry a standing line at the bottom about the three account
+systems being separate. **That line now lives only in the account panel**,
+which is where somebody thinking about accounts is actually looking. The fact
+has not been softened or dropped — it moved to the door it belongs behind. A
+paragraph about accounts at the bottom of a menu with no account in it was
+answering a question nobody was asking there.
 
 ### Icons
 
@@ -412,12 +433,29 @@ moves you between products, one is who you are.
 - **Signed out** it is a plain `<a>` to `/account` with a person glyph. No
   dropdown — there is nothing to choose between, and a menu holding one row is
   a door with a hallway behind it.
-- **Signed in** it is the avatar, opening a panel: avatar, username, email,
-  *Manage your Swiftaw account*, any other accounts on the roster to switch
-  to, add another, settings, log out.
+- **Signed in** it is the avatar, opening a panel that reads in Google's order
+  and for Google's reason: **email first**, small, then the avatar, then the
+  username, then *Manage your Swiftaw account*. On a machine with three
+  accounts saved, the only question you have when you open this is which one
+  you are currently signed in as — so the address answers it before anything
+  else does. Below that: the other accounts on the roster, add another,
+  settings, log out.
+- ***Manage your Swiftaw account* is yellow with black text.** It was a paper
+  button on a paper panel, which is the one combination in this system that
+  has no fill of its own to show — a 3px stroke drawing a rectangle around
+  nothing. Yellow is the primary Rainbaw and this is the panel's primary
+  action, so it is the one thing in here allowed to be loud. It is also
+  smaller than it was: at 13.5px in a 3px stroke it carried the same weight as
+  the 66px avatar above it and outranked the account it belongs to. Black text
+  is not a choice — nothing else is readable on `#FFF93E`.
 - The footer repeats the account rule in the place it actually bites:
   *"Swiftaw, Fortized and Hereld accounts are separate. Signing in here does
-  not sign you into a product."*
+  not sign you into a product."* This is now the **only** place that line
+  appears; the launcher used to carry a copy and no longer does.
+- Under it, **Privacy Policy** and **Terms of Service**, absolute to
+  `swiftaw.com/legal/…`. Absolute rather than root-relative because this panel
+  also renders on Lifecheck and Supernova, where a root-relative path would
+  land somewhere else entirely. Both routes exist; neither is invented.
 
 If Supabase cannot be reached it still draws the signed-out button rather than
 nothing. We cannot know who you are, and `/account` is the one route that can

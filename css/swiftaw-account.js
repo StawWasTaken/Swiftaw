@@ -260,19 +260,31 @@
     '#swiftaw-acct .swa-stripe > i:nth-child(4){background:var(--nb-yellow,#FFF93E);}' +
     '#swiftaw-acct .swa-stripe > i:nth-child(5){background:var(--nb-pink,#FF77E4);}' +
 
+    /* The header reads in Google's order, because that order is right: the
+       address first, small, because on a machine with three accounts saved
+       the ONLY question you have when you open this is which one you are
+       currently signed in as. Then the face, then the name, then the one
+       thing you came here to do. */
     '#swiftaw-acct .swa-cur{display:flex;flex-direction:column;align-items:center;' +
-      'text-align:center;gap:3px;padding:20px 18px 16px;}' +
+      'text-align:center;gap:0;padding:14px 18px 16px;}' +
+    '#swiftaw-acct .swa-cur .e{display:block;font-size:12px;color:var(--swa-muted);max-width:100%;' +
+      'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:12px;}' +
     '#swiftaw-acct .swa-cur .av{width:66px;height:66px;font-size:26px;border-width:3px;' +
-      'border-radius:var(--nb-r,18px);box-shadow:2px 3px 0 #000;margin-bottom:7px;}' +
+      'border-radius:var(--nb-r,18px);box-shadow:2px 3px 0 #000;margin-bottom:9px;}' +
     '#swiftaw-acct .swa-cur .n{display:block;font-family:var(--nb-font-head,\'Syne\',sans-serif);' +
       'font-weight:700;font-size:17px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
-    '#swiftaw-acct .swa-cur .e{display:block;font-size:12.5px;color:var(--swa-muted);max-width:100%;' +
-      'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}' +
-    '#swiftaw-acct .swa-manage{margin-top:13px;display:inline-flex;align-items:center;' +
-      'justify-content:center;padding:10px 18px;background:' + S + ';color:var(--swa-fg);' +
-      'font-family:var(--nb-font-head,\'Syne\',sans-serif);font-weight:700;font-size:13.5px;' +
-      'text-decoration:none;border:var(--nb-bd-w,3px) solid ' + L + ';' +
-      'border-radius:var(--nb-r-sm,10px);box-shadow:2px 3px 0 #000;' +
+    /* Yellow with black on it. It was a paper button on a paper panel, which
+       is the one combination in this system that has no fill of its own to
+       show — a 3px stroke drawing a rectangle around nothing. Yellow is the
+       primary Rainbaw and this is the panel's primary action, so it is the
+       one thing in here allowed to be loud. Smaller too: it sat at the same
+       weight as the avatar above it and outranked the account it belongs to.
+       Black text is not a choice — nothing else is readable on #FFF93E. */
+    '#swiftaw-acct .swa-manage{margin-top:12px;display:inline-flex;align-items:center;' +
+      'justify-content:center;padding:6px 14px;background:var(--swa-yellow);color:#000;' +
+      'font-family:var(--nb-font-head,\'Syne\',sans-serif);font-weight:700;font-size:12px;' +
+      'text-decoration:none;border:2px solid #000;' +
+      'border-radius:999px;box-shadow:2px 3px 0 #000;' +
       'transition:transform .14s,box-shadow .14s;}' +
     '#swiftaw-acct .swa-manage:hover{transform:translate(-1px,-1px);box-shadow:3px 4px 0 #000;}' +
     '#swiftaw-acct .swa-manage:active{transform:translate(2px,3px);box-shadow:1px 1px 0 #000;}' +
@@ -299,8 +311,17 @@
     '#swiftaw-acct .swa-seclabel{font-family:var(--nb-font-head,\'Syne\',sans-serif);' +
       'font-weight:700;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;' +
       'color:var(--swa-muted);padding:5px 10px 6px;}' +
-    '#swiftaw-acct .swa-note{border-top:2px solid ' + L + ';padding:11px 16px 12px;' +
+    '#swiftaw-acct .swa-note{border-top:2px solid ' + L + ';padding:11px 16px 10px;' +
       'font-size:11px;line-height:1.45;color:var(--swa-muted);background:' + S + ';}' +
+    /* Real routes, both of them — /legal/privacy-policy and
+       /legal/terms-of-service exist in this repo. Absolute to swiftaw.com
+       because this panel also renders on Lifecheck and Supernova, where a
+       root-relative path would land somewhere else entirely. */
+    '#swiftaw-acct .swa-legal{display:flex;justify-content:center;gap:6px;' +
+      'padding:0 16px 12px;background:' + S + ';font-size:10.5px;color:var(--swa-muted);}' +
+    '#swiftaw-acct .swa-legal a{color:inherit;text-decoration:none;}' +
+    '#swiftaw-acct .swa-legal a:hover{text-decoration:underline;}' +
+    '#swiftaw-acct .swa-legal i{font-style:normal;opacity:.6;}' +
 
     '#swiftaw-acct .swa-backdrop{position:fixed;inset:0;z-index:9390;background:rgba(0,0,0,.45);}' +
     '@media(max-width:560px){' +
@@ -423,9 +444,9 @@
       '<div class="swa-panel" hidden role="dialog" aria-label="Swiftaw account">' +
         '<div class="swa-stripe"><i></i><i></i><i></i><i></i><i></i></div>' +
         '<div class="swa-cur">' +
+          '<span class="e">' + esc(u.email || '') + '</span>' +
           avatarHtml({ avatar_url: meta.avatar_url, username: uname }, 'av') +
           '<span class="n">' + esc(uname) + '</span>' +
-          '<span class="e">' + esc(u.email || '') + '</span>' +
           '<a class="swa-manage" href="' + ACCOUNT_PAGE + '?view=settings">' +
             'Manage your Swiftaw account</a>' +
         '</div>' +
@@ -445,6 +466,11 @@
           '</button>' +
         '</div>' +
         '<div class="swa-note">' + NOTE + '</div>' +
+        '<div class="swa-legal">' +
+          '<a href="https://swiftaw.com/legal/privacy-policy">Privacy Policy</a>' +
+          '<i>&bull;</i>' +
+          '<a href="https://swiftaw.com/legal/terms-of-service">Terms of Service</a>' +
+        '</div>' +
       '</div>';
 
     host.querySelector('.swa-btn').addEventListener('click', function (e) {
