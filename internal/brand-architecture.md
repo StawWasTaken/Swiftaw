@@ -741,6 +741,76 @@ it just jumped to.
 
 ---
 
+# `innovation-room.html` and `newsroom.html`
+
+Both are list-plus-detail pages driven by one data object, and both keep the
+URL contract the old build had: `?innoproject=<id>` and `?article=<id>` still
+resolve, so any link anyone has already shared still lands on the right thing.
+
+## The Lab has exactly one project, and that is what it shows
+
+`PROJECTS` holds **swiftign**, because swiftign is the only Innoproject there
+is. Nothing was added to make the grid look busier. `SwiftawLab-Soundboard.png`
+sits in the repo root and is **not** a project — an orphan asset is not
+evidence of one, and inventing an entry to give it a home would be inventing a
+product.
+
+The status taxonomy — Live · Cooking · Dreaming · Shelved · Killed — is real
+and stays, rendered as a chip row with counts read off `PROJECTS` at runtime.
+It cannot drift, because nothing states a number by hand. Five of the six chips
+currently read `0`, and that is the honest shape of a lab with one project on
+the bench.
+
+⚠️ **Killed projects stay on the page.** A lab that only shows the wins is a
+showroom.
+
+⚠️ The "this is an Innoproject, not an announced product" note used to appear
+only on non-live project pages. It now **also** sits on the list page as a
+standing `nb-alert--info`, because the sentence is the point of the whole
+section, not a disclaimer bolted to individual entries.
+
+### 🐞 The signoff said "this page is built with it"
+
+swiftign's write-up is dated 13 jun 2026 and describes the *old* language:
+dark canvas, one yellow accent, tilts, capsule nav, Syne + DM Sans. The body is
+carried over verbatim — it is a record of a real project and not mine to
+rewrite. But its last line claimed the page you were reading was built in it,
+and after the neo-brutalist rebuild that is simply false. **That one sentence
+is changed**, and only that one, to say the page is the record of swiftign
+rather than a demonstration of it.
+
+## The Newsroom is empty, on purpose
+
+`SW_ARTICLES = {}`. Nothing has been published, so nothing is listed, and no
+placeholder release was written to fill the grid. When there is a post, the
+comment above the object says exactly which keys it needs.
+
+⚠️ **With no posts there is no search box and no category chips.** Both are
+hidden until there is something to search: a filter over zero rows is
+furniture. The chip row also stays hidden while only one category exists — an
+"All" chip standing next to a single category filters nothing.
+
+## Two shared details, worth not relearning
+
+⚠️ **A card is a real `<button>`, so every part inside it is a `<span>`.** A
+`<div>` inside a button is invalid, and browsers reparent it silently — the
+banner ends up *outside* the card and nothing errors. `bannerHTML()` takes a
+tag argument for exactly this: `span` in the card, `div` on the detail page.
+Each span then has to be told to be a block.
+
+⚠️ **Cards are built after the shared reveal observer's first sweep**, so
+`renderGrid()` hands the new nodes to `window.SwiftawObserveReveals(grid)`.
+Skip it and a filtered grid renders at `opacity: 0` — present, measurable, and
+invisible.
+
+⚠️ **The empty-state and missing-banner art is same-origin.** It was
+`fortized.com/Icons/FortizedHelmet.png`. A placeholder that only ever appears
+when something is already missing must not itself depend on another site's CDN;
+it is now `/SWFT-Deco/pretty-logo.png` (Lab) and
+`/SWFT-Deco/we-create-content-deco.png` (Newsroom).
+
+---
+
 # The account rule, restated because it keeps mattering
 
 Fortized accounts, Hereld accounts and Swiftaw accounts are **three separate

@@ -1,380 +1,349 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-nb="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab - Swiftaw</title>
-<meta name="description" content="The Lab - where Swiftaw cooks up weird, ambitious, european-built software.">
+<title>Lab — Swiftaw</title>
+<meta name="description" content="The Lab is where Swiftaw works on things that are not products yet. Innoprojects, in the open, before anyone announces anything.">
+<meta name="author" content="Swiftaw">
+<meta name="theme-color" content="#0C0F15">
 <link rel="canonical" href="https://swiftaw.com/innovation-room">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Swiftaw - Lab">
-<meta property="og:description" content="Where weird ideas grow up.">
+<meta property="og:site_name" content="Swiftaw">
+<meta property="og:title" content="Lab — Swiftaw">
+<meta property="og:description" content="Where the weird ideas grow up. Most don't make it out.">
 <meta property="og:image" content="https://swiftaw.com/SwiftawLab-Swiftign.png">
 <meta property="og:url" content="https://swiftaw.com/innovation-room">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#fef83d">
+<meta name="twitter:title" content="Lab — Swiftaw">
+<meta name="twitter:description" content="Where the weird ideas grow up. Most don't make it out.">
+<meta name="twitter:image" content="https://swiftaw.com/SwiftawLab-Swiftign.png">
 <link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/swiftaw.css">
+<link rel="stylesheet" href="/css/swiftaw-nb.css">
 <style>
-.page-top { padding: 130px 0 44px; position: relative; }
-.eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--font-display);
-  font-size: 13px; font-weight: 700;
-  color: var(--c-lilac);
-  background: rgba(196,181,253,.08);
-  border: 1.5px solid rgba(196,181,253,.25);
-  padding: 7px 14px; border-radius: 100px;
-  margin-bottom: 22px;
-  transform: rotate(-2deg);
-}
-.page-top h1 {
-  font-family: var(--font-display);
-  font-size: clamp(40px, 7vw, 92px);
-  font-weight: 800;
-  letter-spacing: -2.5px;
-  line-height: .92;
-  margin-bottom: 20px;
-  max-width: 900px;
-}
-.page-top h1 .pop {
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  display: inline-block; transform: rotate(-2deg);
-}
-.page-top .lede { font-size: 18px; color: var(--text); max-width: 540px; line-height: 1.55; }
+/* ══════════════════════════════════════════════════════════════════════════
+   LAB — layout for THIS page only.
+   ══════════════════════════════════════════════════════════════════════════ */
 
-/* ───── Shell: sticky status rail + card grid ───── */
-.lab-wrap { padding: 0 28px; }
-.lab-shell {
-  max-width: 1240px;
-  margin: 36px auto 0;
-  display: grid;
-  grid-template-columns: 230px 1fr;
-  gap: 30px;
-}
-@media (max-width: 880px) { .lab-shell { grid-template-columns: 1fr; gap: 18px; } }
+html { scroll-padding-top: 88px; }
 
-.lab-cats {
-  position: sticky; top: 100px; align-self: flex-start;
-  display: flex; flex-direction: column; gap: 6px;
-  padding: 18px;
-  background: #171d28;
-  border: 1.5px solid rgba(255,255,255,.08);
-  border-radius: 18px;
-  box-shadow: 0 6px 0 0 #000;
-  transform: rotate(-.4deg);
-}
-@media (max-width: 880px) {
-  .lab-cats { position: static; flex-direction: row; flex-wrap: wrap; padding: 12px; transform: none; }
-}
-.lab-cats-head {
-  font-family: var(--font-display);
-  font-size: 11px; font-weight: 800;
-  letter-spacing: .16em; text-transform: uppercase;
-  color: var(--muted-light, #8a8f9c);
-  padding: 4px 10px 10px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  margin-bottom: 4px;
-}
-@media (max-width: 880px) { .lab-cats-head { display: none; } }
-.lab-cat {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  font-family: var(--font-display);
-  font-size: 13px; font-weight: 700;
-  color: var(--muted-light, #8a8f9c);
-  padding: 9px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: color .15s, background .15s, border-color .15s;
-  background: none;
-  width: 100%;
-  text-align: left;
-}
-.lab-cat .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; box-shadow: 0 0 6px currentColor; }
-.lab-cat:hover { color: #fff; background: rgba(255,255,255,.04); }
-.lab-cat.active {
-  color: #050608;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  box-shadow: 0 3px 0 0 #000;
-}
-.lab-cat.active .dot { background: #050608; box-shadow: none; }
-.lab-cat .count {
-  font-family: var(--font-display);
-  font-size: 11px; font-weight: 800;
-  background: rgba(255,255,255,.08);
-  padding: 2px 8px; border-radius: 100px;
-  margin-left: auto;
-}
-.lab-cat.active .count { background: rgba(0,0,0,.18); }
+.nb-nav-actions .swl-btn, .nb-nav-actions .swa-btn { flex: none; }
+.pg-nav-cta { margin-left: 2px; }
+@media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-.lab-main { min-width: 0; }
+/* ── Page head ─────────────────────────────────────────────────────────── */
+.pg-head { position: relative; padding: clamp(64px, 9vw, 116px) 0 clamp(26px, 3.6vw, 44px); overflow: hidden; }
+.pg-slab {
+  position: relative; z-index: 2;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r-lg);
+  box-shadow: var(--nb-sh-lg);
+  padding: clamp(28px, 4vw, 52px);
+  max-width: 880px;
+  /* The slab is a surface, so muted text inside it is coloured for the paper
+     it is printed on, not for the page ground behind it. */
+  --nb-fg: var(--nb-surface-fg);
+  --nb-fg-muted: var(--nb-surface-fg-muted);
+}
+.pg-slab .dot { color: var(--nb-red); }
+.pg-slab .nb-lead { margin-top: 18px; max-width: 54ch; }
+.pg-slab .nb-eyebrow { display: block; margin-bottom: 14px; color: var(--nb-fg-muted); }
+
+/* .nb-dots draws in ink. On #0C0F15 that is black on nearly black, so the
+   dark context redraws it in light. */
+[data-nb="dark"] .nb-dots {
+  background-image: radial-gradient(rgba(255,255,255,.28) 1.6px, transparent 1.6px);
+}
+.pg-head .nb-dots {
+  position: absolute; inset: auto -40px -30px auto;
+  width: 320px; height: 220px; z-index: 1; opacity: .55;
+}
+
+/* ── Controls: search + status chips ───────────────────────────────────── */
 .lab-controls {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 26px;
 }
-.lab-cat-label {
-  font-family: var(--font-display);
-  font-size: 21px; font-weight: 800;
-  letter-spacing: -.5px;
+.lab-search { position: relative; flex: 1 1 260px; max-width: 380px; }
+.lab-search svg {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  width: 15px; height: 15px; fill: var(--nb-fg-muted); pointer-events: none;
 }
-.lab-search { position: relative; flex: 1; max-width: 340px; min-width: 220px; }
-.lab-search svg { position: absolute; top: 50%; left: 14px; transform: translateY(-50%); width: 15px; height: 15px; fill: var(--muted-light,#8a8f9c); pointer-events: none; }
-.lab-search input {
-  width: 100%; padding: 11px 14px 11px 38px;
-  background: #171d28;
-  border: 1.5px solid rgba(255,255,255,.08);
-  border-radius: 12px;
-  font-family: var(--font-body); font-size: 13.5px; color: #fff;
-  outline: none;
-  transition: border-color .15s, box-shadow .15s;
-}
-.lab-search input::placeholder { color: var(--muted-light,#8a8f9c); }
-.lab-search input:focus { border-color: rgba(254,248,61,.45); box-shadow: 0 0 0 3px rgba(254,248,61,.10); }
+.lab-search .nb-input { padding-left: 40px; }
 
-.lab-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 18px;
-}
-.lab-card {
-  position: relative;
-  background: #171d28;
-  border: 1.5px solid rgba(255,255,255,.08);
-  border-radius: 20px;
-  overflow: hidden;
-  cursor: pointer;
-  display: flex; flex-direction: column;
-  transition: transform .22s cubic-bezier(.22,1,.36,1), border-color .22s;
-}
-.lab-card:nth-child(odd) { transform: rotate(-.5deg); }
-.lab-card:nth-child(even) { transform: rotate(.5deg); }
-.lab-card:hover { transform: rotate(0) translateY(-3px); border-color: rgba(254,248,61,.30); }
-.lab-card-img { height: 148px; background-size: cover; background-position: center; position: relative; display:flex; align-items:center; justify-content:center; background-color:#12161f; }
-.lab-card-img.placeholder img { width: 56px; height: auto; }
-.lab-card-body { padding: 17px 19px 19px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-.lab-card-top { display:flex; align-items:center; justify-content: space-between; gap: 8px; }
-.lab-card-num { font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--muted-light,#8a8f9c); }
-.lab-card-title { font-family: var(--font-display); font-size: 17px; font-weight: 800; letter-spacing: -.4px; line-height: 1.25; color: #fff; }
-.lab-card-tagline { font-size: 12.5px; color: var(--muted-light,#8a8f9c); line-height: 1.5; }
-.lab-card-meta { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.05); }
-.lab-card-readmore { font-family: var(--font-display); font-size: 12px; font-weight: 700; color: var(--accent); margin-left: auto; transition: transform .2s; }
-.lab-card:hover .lab-card-readmore { transform: translateX(4px); }
-
-.state { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; font-family: var(--font-display); font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; }
-.state .d { width: 5px; height: 5px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor; }
-.state img.d { width: 12px; height: 12px; border-radius: 0; box-shadow: none; }
-.state.live { color: var(--accent); background: rgba(254,248,61,.10); border: 1px solid rgba(254,248,61,.30); }
-.state.live .d { animation: liveBlink 1.6s ease infinite; }
-.state.cooking { color: var(--c-lilac); background: rgba(196,181,253,.08); border: 1px solid rgba(196,181,253,.22); }
-.state.shelved { color: var(--c-blue); background: rgba(var(--blue-rgb),.08); border: 1px solid rgba(var(--blue-rgb),.22); }
-.state.dreaming { color: var(--c-green); background: rgba(var(--green-rgb),.08); border: 1px solid rgba(var(--green-rgb),.22); }
-.state.killed { color: #eb4545; background: rgba(235,69,69,.08); border: 1px solid rgba(235,69,69,.30); text-decoration: line-through; }
-@keyframes liveBlink { 0%,100%{opacity:1} 50%{opacity:.35} }
-
-.lab-empty { text-align: center; padding: 50px 20px; font-size: 14.5px; color: var(--muted-light,#8a8f9c); grid-column: 1 / -1; background: #171d28; border: 1.5px dashed rgba(255,255,255,.10); border-radius: 20px; }
-.lab-empty img { width: 60px; height: auto; display: block; margin: 0 auto 14px; }
-
-/* ───── Project detail view ───── */
-#project-view { display: none; max-width: 860px; margin: 0 auto; padding: 130px 28px 80px; }
-#project-view.open { display: block; }
-#lab-list-view.hidden { display: none; }
-
-.lab-back {
+.lab-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+/* A status chip is a button, so it presses; it is not a link that pretends. */
+.lab-chip {
   display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--font-display); font-size: 13px; font-weight: 700;
-  color: var(--muted-light,#8a8f9c);
-  padding: 9px 14px; border-radius: 100px;
-  border: 1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.03);
-  margin-bottom: 26px; cursor: pointer;
-  transition: color .15s, border-color .15s, background .15s;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 12.5px;
+  padding: 8px 13px;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+  box-shadow: var(--nb-sh-sm);
+  cursor: pointer;
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast), background var(--nb-fast);
 }
-.lab-back:hover { color: #fff; border-color: rgba(254,248,61,.30); background: rgba(254,248,61,.06); }
-
-.proj-banner-card {
-  border-radius: 24px; overflow: hidden;
-  border: 1.5px solid rgba(254,248,61,.22);
-  background: #171d28;
-  margin-bottom: 24px;
-  transform: rotate(-.6deg);
-  box-shadow: 0 8px 0 0 #000, 0 24px 60px rgba(0,0,0,.5);
+.lab-chip:hover  { transform: translate(-1px, -1px); box-shadow: 3px 4px 0 var(--nb-ink); }
+.lab-chip:active { transform: translate(2px, 3px);   box-shadow: 0 0 0 var(--nb-ink); }
+.lab-chip[aria-pressed="true"] { background: var(--nb-yellow); color: var(--nb-ink); }
+.lab-chip .n {
+  font-size: 11px; padding: 1px 6px; border-radius: var(--nb-r-pill);
+  background: rgba(0,0,0,.14); color: inherit;
 }
-.proj-banner-img { width: 100%; height: 240px; background-size: cover; background-position: center; display:flex; align-items:center; justify-content:center; background-color:#12161f; }
-.proj-banner-img.placeholder img { width: 84px; height: auto; }
-.proj-banner-meta { padding: 26px 30px; }
-.proj-eyebrow { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--muted-light,#8a8f9c); margin-bottom: 12px; }
-.proj-title {
-  font-family: var(--font-display);
-  font-size: clamp(30px, 5vw, 54px); font-weight: 800;
-  letter-spacing: -1.4px; line-height: 1.02;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  margin-bottom: 10px;
+[data-nb="dark"] .lab-chip:not([aria-pressed="true"]) .n { background: rgba(255,255,255,.12); }
+/* The dot carries the status colour so the chip reads before the label does. */
+.lab-chip .d { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--nb-ink); background: var(--nb-surface-2); }
+.lab-chip[data-status="live"]     .d { background: var(--nb-green); }
+.lab-chip[data-status="cooking"]  .d { background: var(--nb-yellow); }
+.lab-chip[data-status="dreaming"] .d { background: var(--nb-blue); }
+.lab-chip[data-status="shelved"]  .d { background: var(--nb-pink); }
+.lab-chip[data-status="killed"]   .d { background: var(--nb-red); }
+.lab-chip[data-status="All"]      .d { display: none; }
+
+/* ── Cards ─────────────────────────────────────────────────────────────── */
+.lab-grid { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+/* The card is a real <button>, so its parts are spans and each one has to be
+   told to behave like a block. */
+.lab-card { display: flex; flex-direction: column; text-align: left; width: 100%; font-family: var(--nb-font-body); }
+.lab-card-img {
+  display: block;
+  height: 168px; background: var(--nb-surface-2) center/cover no-repeat;
+  border-bottom: var(--nb-bd);
 }
-.proj-tagline { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -.3px; margin-bottom: 14px; }
-.proj-meta-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.innoproject-tag { font-family: var(--font-display); font-weight: 800; color: var(--c-lilac); }
-.inno-note {
-  display: flex; gap: 12px; align-items: flex-start;
-  background: rgba(196,181,253,.06); border: 1px solid rgba(196,181,253,.22);
-  border-radius: 14px; padding: 15px 19px; margin: 0 0 26px;
-  font-size: 14px; line-height: 1.65; color: var(--text);
+.lab-card-title, .lab-card-tagline, .lab-card-more { display: block; }
+.lab-card-img.placeholder { display: grid; place-items: center; }
+.lab-card-img.placeholder img { width: 56px; height: auto; opacity: .5; }
+.lab-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+.lab-card-top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.lab-card-num { font-family: var(--nb-font-mono); font-size: 11.5px; color: var(--nb-fg-muted); letter-spacing: .04em; }
+.lab-card-title { font-family: var(--nb-font-head); font-weight: 800; font-size: 22px; }
+.lab-card-tagline { font-size: 14px; color: var(--nb-fg-muted); line-height: 1.5; }
+.lab-card-more {
+  margin-top: auto; padding-top: 12px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px; color: var(--nb-blue);
 }
-.inno-note .ico { flex-shrink: 0; line-height: 1.3; }
-.inno-note .ico svg { width: 17px; height: 17px; fill: var(--c-lilac); margin-top: 2px; }
-.inno-note b { color: #fff; font-weight: 600; }
-.inno-note a { color: var(--c-lilac); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(196,181,253,.4); }
 
+/* State pills reuse the tag recipe, one colour per status. */
+.st { display: inline-flex; align-items: center; gap: 6px; }
+.st .d { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
 
-.proj-works { display: flex; align-items: center; gap: 10px; padding: 16px 20px; background: rgba(254,248,61,.04); border: 1px solid rgba(254,248,61,.16); border-radius: 16px; margin-bottom: 30px; flex-wrap: wrap; }
-.proj-works .lbl { font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-right: 4px; }
-.proj-works .logo-chip { display: inline-flex; align-items: center; gap: 7px; background: #171d28; border: 1px solid rgba(255,255,255,.10); padding: 6px 12px 6px 8px; border-radius: 100px; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: #fff; }
-.proj-works .logo-chip img { width: 18px; height: 18px; object-fit: contain; background: transparent; }
+/* ── Detail view ───────────────────────────────────────────────────────── */
+#lab-list-view.hidden { display: none; }
+#project-view { display: none; padding: clamp(28px, 5vw, 56px) 0 clamp(50px, 8vw, 100px); }
+#project-view.open { display: block; }
 
-.proj-body p { font-size: 15.5px; color: var(--text); line-height: 1.8; margin-bottom: 16px; }
-.proj-body p b { color: #fff; font-weight: 600; }
-.proj-body h3 { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -.4px; color: #fff; margin: 32px 0 12px; display: flex; align-items: center; gap: 10px; }
-.proj-body h3::before { content:""; width: 5px; height: 20px; flex-shrink: 0; background: linear-gradient(180deg, var(--accent), var(--accent-2)); border-radius: 3px; }
-.proj-body .sub-label { font-family: var(--font-display); font-size: 12.5px; font-weight: 700; color: var(--accent); margin: -4px 0 12px; display: block; }
-.proj-body ul { list-style: none; margin: 12px 0 22px; display: flex; flex-direction: column; gap: 8px; }
-.proj-body ul li { display: flex; align-items: flex-start; gap: 11px; font-size: 14.5px; color: var(--text); line-height: 1.6; padding: 12px 15px; background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.05); border-radius: 12px; }
-.proj-body ul li::before { content: "✦"; color: var(--accent); font-size: 9px; flex-shrink: 0; margin-top: 5px; }
-.proj-body ul li b { color: #fff; font-weight: 600; }
-.proj-callout { position: relative; background: rgba(254,248,61,.05); border: 1px solid rgba(254,248,61,.20); border-left: 3px solid var(--accent); border-radius: 14px; padding: 17px 21px; margin: 20px 0; font-size: 14.5px; line-height: 1.7; color: var(--text); transform: rotate(-.5deg); }
-.proj-callout strong { color: #fff; font-weight: 600; }
+.proj-banner-img {
+  height: clamp(180px, 26vw, 320px);
+  background: var(--nb-surface-2) center/cover no-repeat;
+  border-bottom: var(--nb-bd);
+}
+.proj-banner-img.placeholder { display: grid; place-items: center; }
+.proj-banner-img.placeholder img { width: 74px; height: auto; opacity: .5; }
+.proj-banner-meta { padding: 22px clamp(20px, 3vw, 34px) 26px; display: flex; flex-direction: column; gap: 10px; }
+.proj-eyebrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.proj-title { font-family: var(--nb-font-display); font-weight: 800; font-size: clamp(32px, 5vw, 58px); line-height: .95; }
+.proj-tagline { font-size: clamp(16px, 1.5vw, 19px); color: var(--nb-fg-muted); max-width: 56ch; }
+.proj-date { font-family: var(--nb-font-mono); font-size: 12.5px; color: var(--nb-fg-muted); }
+
+.proj-body {
+  max-width: 760px; margin-top: 30px;
+  font-size: 16px; line-height: 1.72;
+}
+.proj-body p  { margin-bottom: 16px; color: var(--nb-fg-muted); }
+.proj-body b  { color: var(--nb-fg); font-weight: 700; }
+.proj-body h3 {
+  font-family: var(--nb-font-head); font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 26px);
+  margin: 34px 0 4px; color: var(--nb-fg);
+}
+.proj-body .sub-label {
+  display: block; margin-bottom: 14px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 12px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--nb-fg-muted);
+}
+.proj-body ul { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 10px; }
+.proj-body ul li {
+  position: relative; padding-left: 26px; color: var(--nb-fg-muted);
+}
+.proj-body ul li::before {
+  content: ""; position: absolute; left: 0; top: .55em;
+  width: 12px; height: 12px; background: var(--nb-blue);
+  border: var(--nb-bd-w-thin) solid var(--nb-line);
+}
+.proj-body code {
+  font-family: var(--nb-font-mono); font-size: .88em;
+  background: var(--nb-surface-2); color: var(--nb-fg);
+  border: var(--nb-bd-thin); border-radius: 5px; padding: 1px 6px;
+}
+.proj-callout {
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm);
+  padding: 16px 18px; margin: 22px 0;
+  --nb-fg: var(--nb-surface-fg);
+  --nb-fg-muted: var(--nb-surface-fg-muted);
+}
+.proj-callout strong { font-family: var(--nb-font-head); }
 .proj-directive {
-  position: relative; margin: 28px 0 6px; padding: 22px 24px 20px;
-  background: linear-gradient(140deg, rgba(254,248,61,.10), rgba(254,248,61,.03));
-  border: 1.5px solid rgba(254,248,61,.32); border-radius: 18px; transform: rotate(.5deg);
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border: var(--nb-bd); border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh);
+  padding: 22px 24px; margin: 30px 0 8px;
+  --nb-fg: var(--nb-ink);
+  --nb-fg-muted: #3A3A2A;
 }
-.proj-directive .head { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #050608; background: var(--accent); padding: 5px 12px; border-radius: 100px; margin-bottom: 14px; }
-.proj-directive p { font-size: 15px; line-height: 1.7; color: var(--text); margin-bottom: 10px; }
-.proj-directive p b { color: #fff; font-weight: 600; }
-.proj-directive ul { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; }
-.proj-directive ul li { position: relative; padding-left: 22px; font-size: 14px; color: var(--text); background: none; border: none; }
-.proj-directive ul li::before { content: "→"; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 800; }
-.proj-signoff { color: var(--muted-light,#8a8f9c); font-size: 13.5px; font-style: italic; border-top: 1px solid rgba(255,255,255,.08); padding-top: 18px; margin-top: 6px; }
+.proj-directive .head {
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  font-family: var(--nb-font-head); font-weight: 800; font-size: 11px;
+  letter-spacing: .16em; text-transform: uppercase;
+  background: var(--nb-ink); color: var(--nb-yellow);
+  padding: 6px 12px; border-radius: var(--nb-r-pill);
+}
+.proj-directive ul li::before { background: var(--nb-ink); }
+.proj-signoff {
+  border-top: var(--nb-bd-thin); padding-top: 18px; margin-top: 26px;
+  font-size: 14px; color: var(--nb-fg-muted);
+}
+.proj-works { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.proj-works .lbl { font-family: var(--nb-font-head); font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--nb-fg-muted); }
+.proj-works .logo-chip img { width: 16px; height: 16px; object-fit: contain; }
+
+.lab-back { margin-bottom: 22px; }
 </style>
 </head>
 <body>
 
-<div class="bg-blob b1"></div>
-<div class="bg-blob b2"></div>
+<a class="nb-skip" href="#main">Skip to content</a>
 
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-  <symbol id="i-fire" viewBox="0 0 448 512"><path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2zM225.7 416c25.3 0 47.7-7 68.8-21 42.1-29.4 53.4-88.2 28.1-134.4-4.5-9-16-9.6-22.5-2l-25.2 29.3c-6.6 7.6-18.5 7.4-24.7-.5-17.3-22.1-49.1-62.4-65.3-83-5.4-6.9-15.2-8-21.5-1.9-18.3 17.8-51.5 56.8-51.5 104.3 0 68.6 50.6 109.2 113.7 109.2z"/></symbol>
-  <symbol id="i-chevron" viewBox="0 0 384 512"><path d="M169.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L192 205.3 54.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/></symbol>
-</svg>
+<div class="nb-rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 
-<nav class="nav-root">
-  <a href="/" class="nav-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
-  <div class="nav-pill-group">
-    <div class="nav-dropdown" id="companyDropdown">
-      <span class="nav-pill nav-dropbtn">Company <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="/about-us">About</a>
-        <a href="/mission">Mission</a>
-      </div>
+<nav class="nb-nav" id="nav">
+  <div class="nb-nav-in">
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+
+    <div class="nb-nav-links" id="navLinks">
+      <a class="nb-nav-link" href="/about-us">About</a>
+      <a class="nb-nav-link" href="/mission">Mission</a>
+      <a class="nb-nav-link" href="/innovation-room" aria-current="page">Lab</a>
+      <a class="nb-nav-link" href="/newsroom">News</a>
     </div>
-    <div class="nav-dropdown" id="productsDropdown">
-      <span class="nav-pill nav-dropbtn">Products <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="https://fortized.com">Fortized</a>
-        <a href="/lifecheck/">Lifecheck</a>
-        <a href="/supernova/">Supernova</a>
-      </div>
+
+    <span class="nb-nav-spacer"></span>
+
+    <div class="nb-nav-actions">
+      <span data-swiftaw-launcher></span>
+      <span data-swiftaw-account></span>
+      <a class="nb-btn nb-btn--primary nb-btn--sm pg-nav-cta" href="https://fortized.com" rel="noopener">Fortized</a>
+      <button class="nb-icon-btn nb-nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
     </div>
-    <div class="nav-dropdown" id="legalDropdown">
-      <span class="nav-pill nav-dropbtn">Legal <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="/legal/terms-of-service">Terms of Service</a>
-        <a href="/legal/privacy-policy">Privacy Policy</a>
-        <a href="/legal/products-policy">Products Policy</a>
-      </div>
-    </div>
-    <a href="/innovation-room" class="nav-pill active">Lab</a>
-    <a href="/newsroom" class="nav-pill">News</a>
-  </div>
-  <div class="nav-spacer"></div>
-  <div class="nav-right">
-    <a href="https://fortized.com" class="nav-btn-cta">Fortized</a>
-    <div class="nav-hamburger"><span></span><span></span><span></span></div>
   </div>
 </nav>
-<div class="mobile-menu">
-  <div class="mm-label">Company</div>
-  <a href="/about-us">About</a>
-  <a href="/mission">Mission</a>
-  <div class="mm-label">Products</div>
-  <a href="https://fortized.com">Fortized</a>
-  <a href="/lifecheck/">Lifecheck</a>
-  <a href="/supernova/">Supernova</a>
-  <div class="mm-label">Legal</div>
-  <a href="/legal/terms-of-service">Terms of Service</a>
-  <a href="/legal/privacy-policy">Privacy Policy</a>
-  <a href="/legal/products-policy">Products Policy</a>
-  <div class="mm-label">More</div>
-  <a href="/innovation-room">Lab</a>
-  <a href="/newsroom">News</a>
-</div>
+
+<main id="main">
 
 <div id="lab-list-view">
-  <section class="page-top">
-    <div class="container">
-      <div class="eyebrow">the lab</div>
-      <h1>lab.</h1>
-      <p class="lede">most don't make it out. the ones that do, you'll see here first.</p>
+
+  <section class="pg-head">
+    <div class="nb-wrap">
+      <div class="nb-dots" aria-hidden="true"></div>
+      <div class="pg-slab nb-reveal">
+        <span class="nb-eyebrow">The Lab</span>
+        <h1 class="nb-display nb-d2">Where the weird<br>ideas grow up<span class="dot">.</span></h1>
+        <p class="nb-lead nb-muted">
+          Most don't make it out. The ones that do, you'll see here first.
+        </p>
+      </div>
     </div>
   </section>
 
-  <div class="lab-wrap">
-    <div class="lab-shell">
-      <aside class="lab-cats" id="lab-cats" aria-label="Project status"></aside>
-      <main class="lab-main">
-        <div class="lab-controls">
-          <div class="lab-cat-label" id="lab-cat-label">All Projects</div>
-          <div class="lab-search">
-            <svg viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
-            <input id="lab-search-input" type="text" placeholder="Search the bench" oninput="filterLab(this.value)">
-          </div>
+  <section class="nb-section" style="padding-top:clamp(20px,3vw,34px);">
+    <div class="nb-wrap">
+
+      <div class="nb-alert nb-alert--info nb-reveal" style="margin-bottom:30px; max-width:880px;">
+        <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+        <span>An <b>Innoproject</b> is something we are building because we want to, not something we have announced. Anything on this bench can change, stall or stop. When one becomes a real product, it gets written up in the <a href="/newsroom">Newsroom</a>.</span>
+      </div>
+
+      <div class="lab-controls nb-reveal">
+        <label class="lab-search">
+          <span class="nb-sr">Search the bench</span>
+          <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+          <input class="nb-input" id="lab-search-input" type="search" placeholder="Search the bench" autocomplete="off">
+        </label>
+        <div class="lab-chips" id="lab-chips" role="group" aria-label="Filter by status"></div>
+      </div>
+
+      <div class="lab-grid" id="lab-grid"></div>
+
+    </div>
+  </section>
+
+</div>
+
+<div id="project-view" aria-live="polite">
+  <div class="nb-wrap">
+    <button class="nb-btn nb-btn--sm lab-back" type="button" id="lab-back">← Back to the Lab</button>
+    <div id="project-content"></div>
+  </div>
+</div>
+
+</main>
+
+<footer class="nb-footer">
+  <div class="nb-wrap">
+    <div class="nb-footer-grid">
+      <div>
+        <a href="/" class="nb-nav-logo" style="margin-bottom:14px;"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+        <p class="nb-muted" style="font-size:14px; max-width:32ch;">
+          A European software company. Île-de-France, France.
+        </p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div class="nb-footer-list">
+          <a href="/about-us">About</a>
+          <a href="/mission">Mission</a>
+          <a href="/innovation-room">Lab</a>
+          <a href="/newsroom">Newsroom</a>
         </div>
-        <div class="lab-grid" id="lab-grid"></div>
-      </main>
+      </div>
+      <div>
+        <h4>Make</h4>
+        <div class="nb-footer-list">
+          <a href="https://fortized.com" rel="noopener">Fortized</a>
+          <a href="/lifecheck/">Lifecheck</a>
+          <a href="/supernova/">Supernova</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="nb-footer-list">
+          <a href="/legal/terms-of-service">Terms of Service</a>
+          <a href="/legal/privacy-policy">Privacy Policy</a>
+          <a href="/legal/products-policy">Products Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="nb-footer-base">
+      <span>© 2026 Swiftaw</span>
+      <span>Make It Matter.</span>
     </div>
   </div>
-</div>
-
-<div id="project-view">
-  <div class="lab-back" onclick="closeProject()">← Back to the Lab</div>
-  <div id="project-content"></div>
-</div>
-
-<footer class="site-footer">
-  <div class="footer-inner">
-    <a href="/" class="footer-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
-    <div class="footer-copy">© 2026 Swiftaw</div>
-    <div class="footer-links">
-      <a href="/about-us">About</a>
-      <a href="/mission">Mission</a>
-      <a href="/legal/terms-of-service">Legal</a>
-      <a href="https://fortized.com">Fortized</a>
-    </div>
-  </div>
+  <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
 </footer>
 
 <script>
-const HELMET = 'https://www.fortized.com/Icons/FortizedHelmet.png';
-const LOGO = {
-  fortized: 'https://www.fortized.com/Fortized%20icon.png',
-  discord: 'https://static.wikia.nocookie.net/dcpfr/images/0/09/Discordicon.png/revision/latest/scale-to-width-down/1000?cb=20230511153016&path-prefix=fr',
-  roblox: 'https://upload.wikimedia.org/wikipedia/commons/7/70/Roblox_Corporation_2025_logo.svg'
-};
+/* Same-origin, on purpose. A placeholder that only appears when something is
+   missing must not itself depend on another site's CDN. */
+const DECO = '/SWFT-Deco/pretty-logo.png';
 
+/* Every entry here is a project that actually exists. Nothing is added to this
+   object to make the grid look busier. */
 const PROJECTS = {
   swiftign: {
     innoLabel: 'Innoproject-1', sortIndex: 1, status: 'live', statusLabel: 'shipped · v1',
@@ -415,163 +384,188 @@ const PROJECTS = {
           <li>everything else - layout, components, surprise moments - invent freely.</li>
         </ul>
       </div>
-      <p class="proj-signoff">that's the whole system. this page is built with it.</p>
+      <p class="proj-signoff">that's the whole system, as it was written in june 2026. the public sites have since been rebuilt on the neo-brutalist language, so treat this page as the record of swiftign, not a demonstration of it.</p>
     `
   }
 };
 
-function statusOrder(s){ return {live:0, cooking:1, dreaming:2, shelved:3, killed:4}[s] ?? 9; }
-function escAttr(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+const STATUSES = [
+  { key: 'All',      label: 'All' },
+  { key: 'live',     label: 'Live' },
+  { key: 'cooking',  label: 'Cooking' },
+  { key: 'dreaming', label: 'Dreaming' },
+  { key: 'shelved',  label: 'Shelved' },
+  { key: 'killed',   label: 'Killed' }
+];
+/* Live first, then the further an idea is from shipping the further down it
+   sits. Killed projects stay on the page — a lab that only shows wins is a
+   showroom. */
+const STATUS_ORDER = { live: 0, cooking: 1, dreaming: 2, shelved: 3, killed: 4 };
+const STATUS_TAG   = { live: 'nb-tag--green', cooking: 'nb-tag--yellow', dreaming: 'nb-tag--blue', shelved: 'nb-tag--pink', killed: 'nb-tag--red' };
+
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 let activeStatus = 'All';
 let labSearch = '';
 
-function getStatuses(){
-  return [
-    {key:'All', label:'All Projects'},
-    {key:'live', label:'Live'},
-    {key:'cooking', label:'Cooking'},
-    {key:'dreaming', label:'Dreaming'},
-    {key:'shelved', label:'Shelved'},
-    {key:'killed', label:'Killed'}
-  ];
+/* `tag` exists because the card is a <button>, and a <div> inside a button is
+   invalid markup that browsers silently reparent — which drops the banner out
+   of the card. Inside the card it is a span; on the detail page it is a div. */
+function bannerHTML(banner, cls, tag){
+  const t = tag || 'div';
+  return banner
+    ? `<${t} class="${cls}" style="background-image:url('${esc(banner)}');"></${t}>`
+    : `<${t} class="${cls} placeholder"><img src="${DECO}" alt="" loading="lazy"></${t}>`;
 }
 
-function renderCats(){
-  const cont = document.getElementById('lab-cats');
+function statePill(p){
+  return `<span class="nb-tag ${STATUS_TAG[p.status] || ''} st"><span class="d"></span>${esc(p.statusLabel)}</span>`;
+}
+
+function renderChips(){
   const counts = {};
-  Object.values(PROJECTS).forEach(p => { counts[p.status] = (counts[p.status]||0) + 1; });
+  Object.values(PROJECTS).forEach(p => { counts[p.status] = (counts[p.status] || 0) + 1; });
   const total = Object.values(PROJECTS).length;
-  cont.innerHTML = `<div class="lab-cats-head">status</div>` + getStatuses().map(s => {
-    const count = s.key === 'All' ? total : (counts[s.key] || 0);
-    return `<a class="lab-cat${s.key===activeStatus?' active':''}" data-status="${s.key}"><span class="dot"></span>${s.label}<span class="count">${count}</span></a>`;
+  const host = document.getElementById('lab-chips');
+  host.innerHTML = STATUSES.map(s => {
+    const n = s.key === 'All' ? total : (counts[s.key] || 0);
+    return `<button type="button" class="lab-chip" data-status="${s.key}" aria-pressed="${s.key === activeStatus}">
+      <span class="d"></span>${esc(s.label)}<span class="n">${n}</span></button>`;
   }).join('');
-  cont.querySelectorAll('.lab-cat').forEach(el => el.addEventListener('click', () => {
+  host.querySelectorAll('.lab-chip').forEach(el => el.addEventListener('click', () => {
     activeStatus = el.dataset.status;
-    document.getElementById('lab-cat-label').textContent = activeStatus === 'All' ? 'All Projects' : getStatuses().find(s=>s.key===activeStatus).label + ' Projects';
-    renderCats(); renderGrid();
+    renderChips(); renderGrid();
   }));
 }
 
-function imgOrPlaceholder(banner, cls){
-  return banner
-    ? `<div class="${cls}" style="background-image:url('${escAttr(banner)}');"></div>`
-    : `<div class="${cls} placeholder"><img src="${HELMET}" alt=""></div>`;
-}
-
-function buildCard(id, p){
-  return `
-    <article class="lab-card" onclick="openProject('${escAttr(id)}')">
-      ${imgOrPlaceholder(p.banner, 'lab-card-img')}
-      <div class="lab-card-body">
-        <div class="lab-card-top">
-          <span class="lab-card-num">${escAttr(p.innoLabel)}</span>
-          <span class="state ${p.status}"><span class="d"></span>${escAttr(p.statusLabel)}</span>
-        </div>
-        <div class="lab-card-title">${escAttr(p.title)}</div>
-        <div class="lab-card-tagline">${escAttr(p.tagline)}</div>
-        <div class="lab-card-meta"><span class="lab-card-readmore">Read more →</span></div>
-      </div>
-    </article>`;
+function cardHTML(id, p){
+  return `<button type="button" class="nb-card nb-card--live nb-card--bare lab-card nb-reveal" data-project="${esc(id)}">
+    ${bannerHTML(p.banner, 'lab-card-img', 'span')}
+    <span class="lab-card-body">
+      <span class="lab-card-top">
+        <span class="lab-card-num">${esc(p.innoLabel)}</span>
+        ${statePill(p)}
+      </span>
+      <span class="lab-card-title">${esc(p.title)}</span>
+      <span class="lab-card-tagline">${esc(p.tagline)}</span>
+      <span class="lab-card-more">Read more →</span>
+    </span>
+  </button>`;
 }
 
 function renderGrid(){
   const grid = document.getElementById('lab-grid');
   const q = labSearch.toLowerCase().trim();
   const entries = Object.entries(PROJECTS)
-    .filter(([id,p]) => activeStatus === 'All' || p.status === activeStatus)
-    .filter(([id,p]) => !q || p.title.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q))
-    .sort((a,b) => statusOrder(a[1].status) - statusOrder(b[1].status) || a[1].sortIndex - b[1].sortIndex);
+    .filter(([, p]) => activeStatus === 'All' || p.status === activeStatus)
+    .filter(([, p]) => !q || p.title.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q))
+    .sort((a, b) => (STATUS_ORDER[a[1].status] ?? 9) - (STATUS_ORDER[b[1].status] ?? 9) || a[1].sortIndex - b[1].sortIndex);
+
   if (!entries.length){
-    grid.innerHTML = `<div class="lab-empty"><img src="${HELMET}" alt="">still under construction in this category. check back soon.</div>`;
+    grid.innerHTML = `<div class="nb-card nb-card--lg nb-state" style="grid-column:1/-1;">
+      <img src="${DECO}" alt="" loading="lazy">
+      <h3>Nothing on this shelf</h3>
+      <p>${q ? 'No project matches that search.' : 'Nothing sits at this status right now.'}</p>
+    </div>`;
     return;
   }
-  grid.innerHTML = entries.map(([id,p]) => buildCard(id,p)).join('');
+  grid.innerHTML = entries.map(([id, p]) => cardHTML(id, p)).join('');
+  grid.querySelectorAll('[data-project]').forEach(el =>
+    el.addEventListener('click', () => openProject(el.dataset.project)));
+  // The cards are built after the shared observer's first sweep, so they have
+  // to be handed to it or they stay at opacity 0 forever.
+  if (window.SwiftawObserveReveals) window.SwiftawObserveReveals(grid);
 }
 
-function filterLab(v){ labSearch = v || ''; renderGrid(); }
-
 function renderProject(id){
-  const p = PROJECTS[id]; if (!p) return false;
-  const works = (p.works||[]).length ? `
+  const p = PROJECTS[id];
+  if (!p) return false;
+
+  const works = (p.works || []).length ? `
     <div class="proj-works">
-      <span class="lbl">works with</span>
-      ${p.works.map(w => `<span class="logo-chip"><img src="${w.logo}" alt="">${escAttr(w.label)}</span>`).join('')}
+      <span class="lbl">Works with</span>
+      ${p.works.map(w => `<span class="nb-tag logo-chip"><img src="${esc(w.logo)}" alt="">${esc(w.label)}</span>`).join('')}
     </div>` : '';
+
+  const note = p.status !== 'live' ? `
+    <div class="nb-alert nb-alert--info" style="margin-top:22px; max-width:760px;">
+      <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+      <span>This is an <b>Innoproject</b>. We are exploring this corner of tech because we like building in it, not because it is an announced Swiftaw product. If it becomes one, the announcement goes up in the <a href="/newsroom">Newsroom</a>.</span>
+    </div>` : '';
+
   document.getElementById('project-content').innerHTML = `
-    <div class="proj-banner-card">
-      ${imgOrPlaceholder(p.banner, 'proj-banner-img')}
-      <div class="proj-banner-meta">
-        <div class="proj-eyebrow"><span class="innoproject-tag">${escAttr(p.innoLabel)}</span> · <span class="state ${p.status}"><span class="d"></span>${escAttr(p.statusLabel)}</span></div>
-        <div class="proj-title">${escAttr(p.title)}</div>
-        <div class="proj-tagline">${escAttr(p.tagline)}</div>
-        <div class="proj-meta-row" style="color:var(--muted-light,#8a8f9c); font-size:12.5px;">${escAttr(p.date)}</div>
+    <article>
+      <div class="nb-card nb-card--lg nb-card--bare">
+        ${bannerHTML(p.banner, 'proj-banner-img')}
+        <div class="proj-banner-meta">
+          <div class="proj-eyebrow">
+            <span class="nb-tag nb-mono">${esc(p.innoLabel)}</span>
+            ${statePill(p)}
+          </div>
+          <h1 class="proj-title">${esc(p.title)}</h1>
+          <p class="proj-tagline">${esc(p.tagline)}</p>
+          <div class="proj-date">${esc(p.date)}</div>
+        </div>
       </div>
-    </div>
-    ${p.status !== 'live' ? `<div class="inno-note"><span class="ico"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M342.6 9.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L306.7 64 28.1 342.6C10.1 360.6 0 385 0 410.5L0 416c0 53 43 96 96 96l5.5 0c25.5 0 49.9-10.1 67.9-28.1l278.6-278.6 9.4 9.4c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160zM205.3 256l146.7-146.7 50.7 50.7-96 96-101.5 0z"/></svg></span><span>this is an <b>Innoproject</b> - we're exploring this corner of tech because we like building in it, not because it's an announced Swiftaw product. it isn't official yet. once it is, the full announcement goes up on the <a href="/newsroom">Newsroom - learn more →</a></span></div>` : ''}
-    ${works}
-    <div class="proj-body">${p.content}</div>
-  `;
-  document.title = `${p.title} - Swiftaw Lab`;
+      ${note}
+      ${works}
+      <div class="proj-body">${p.content}</div>
+    </article>`;
+
+  document.title = p.title + ' — Swiftaw Lab';
   document.getElementById('lab-list-view').classList.add('hidden');
   document.getElementById('project-view').classList.add('open');
   return true;
+}
+
+function showList(){
+  document.getElementById('lab-list-view').classList.remove('hidden');
+  document.getElementById('project-view').classList.remove('open');
+  document.title = 'Lab — Swiftaw';
 }
 
 function openProject(id){
   if (!PROJECTS[id]) return;
   const url = new URL(window.location.href);
   url.searchParams.set('innoproject', id);
-  history.pushState({projectId:id}, '', url.toString());
+  history.pushState({ projectId: id }, '', url.toString());
   renderProject(id);
-  window.scrollTo({top:0, behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
 function closeProject(){
   const url = new URL(window.location.href);
   url.searchParams.delete('innoproject');
-  history.pushState({projectId:null}, '', url.toString());
-  document.getElementById('lab-list-view').classList.remove('hidden');
-  document.getElementById('project-view').classList.remove('open');
-  document.title = 'Lab - Swiftaw';
-  window.scrollTo({top:0, behavior:'smooth'});
+  history.pushState({ projectId: null }, '', url.toString());
+  showList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-window.addEventListener('popstate', e => {
-  const id = e.state && e.state.projectId;
-  if (id && PROJECTS[id]) renderProject(id);
-  else {
-    document.getElementById('lab-list-view').classList.remove('hidden');
-    document.getElementById('project-view').classList.remove('open');
-    document.title = 'Lab - Swiftaw';
-  }
-  window.scrollTo({top:0, behavior:'smooth'});
+
+document.getElementById('lab-back').addEventListener('click', closeProject);
+document.getElementById('lab-search-input').addEventListener('input', e => {
+  labSearch = e.target.value || '';
+  renderGrid();
 });
 
-renderCats();
+window.addEventListener('popstate', e => {
+  const id = e.state && e.state.projectId;
+  if (id && PROJECTS[id]) renderProject(id); else showList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+renderChips();
 renderGrid();
+
 (function(){
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get('innoproject');
-  if (id && PROJECTS[id]) { renderProject(id); history.replaceState({projectId:id}, '', window.location.href); }
+  const id = new URLSearchParams(window.location.search).get('innoproject');
+  if (id && PROJECTS[id]) {
+    renderProject(id);
+    history.replaceState({ projectId: id }, '', window.location.href);
+  }
 })();
 </script>
+
 <script src="/css/swiftaw.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
-    dropdown.addEventListener('click', function(e) {
-      e.stopPropagation();
-      document.querySelectorAll('.nav-dropdown.open').forEach(function(d) {
-        if (d !== dropdown) d.classList.remove('open');
-      });
-      dropdown.classList.toggle('open');
-    });
-  });
-  document.addEventListener('click', function() {
-    document.querySelectorAll('.nav-dropdown.open').forEach(function(d) {
-      d.classList.remove('open');
-    });
-  });
-});
-</script>
+
 </body>
 </html>
