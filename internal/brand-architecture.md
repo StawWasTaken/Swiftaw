@@ -811,6 +811,86 @@ it is now `/SWFT-Deco/pretty-logo.png` (Lab) and
 
 ---
 
+# 404, and the three legal pages
+
+## 404.html — the numeral IS the illustration
+
+One centred `.nb-card--lg`, no hero, no reveals to speak of. The `404` is set
+in the display face at `clamp(96px, 20vw, 190px)`, flat `--nb-yellow`, with a
+3px ink `-webkit-text-stroke` and a `-2.5deg` tilt. **No gradient, no blur halo
+behind it** — the standing no-glow rule applies to a giant numeral as much as
+to a badge.
+
+⚠️ **`404.html` and `404/index.html` are the same page and must stay
+byte-identical.** Static hosts disagree about which one they serve for a miss:
+some read the root `404.html`, some resolve `/404/`. Editing one and not the
+other means half the traffic gets the old design. They were already identical
+before this rebuild; keep them that way.
+
+The page carries `<meta name="robots" content="noindex">`, and it should stay:
+a soft-404 that indexes is worse than one that does not exist.
+
+## The three legal pages
+
+`legal/privacy-policy`, `legal/terms-of-service`, `legal/products-policy` all
+run on **`css/swiftaw-legal.css` + `css/swiftaw-legal.js`**. They differ in
+exactly two things: the copy, and one line —
+
+```css
+:root { --legal-accent: var(--nb-green);  }  /* privacy  */
+:root { --legal-accent: var(--nb-blue);   }  /* terms    */
+:root { --legal-accent: var(--nb-yellow); }  /* products */
+```
+
+That accent drives the eyebrow, the `h1 .u` marker, the lead slab, the section
+number chips, the list bullets and the figure band. Nothing else is per-page.
+
+⚠️ **The `.legal-*` class names are the ones the OLD pages already used, on
+purpose.** The body of a legal page is legal text. The safe rebuild swaps the
+stylesheet, the nav and the footer and does not retype a word of the copy — so
+the stylesheet was written to fit the existing markup, not the other way round.
+The only edits inside the `<section class="legal-top">` blocks were
+`var(--c-blue|red|green)` → `var(--nb-…)` on the figure/note colour attributes.
+
+### The contents list is generated, never typed
+`swiftaw-legal.js` reads the page's own `.legal-sec h2`s, gives each section a
+slug id, and builds the `.legal-toc`. A hand-written contents list drifts the
+first time a clause is renumbered, and **a legal page that lists a clause it
+does not contain is worse than one with no contents list at all.** It bails
+under three sections — two sections do not need a map.
+
+### 🐞 Three specificity bugs, all the same shape
+The contents list is a real `<ol>` **inside `.legal-prose`**, so every prose
+rule tried to claim it: accent bullet squares on its rows, the 10px body-list
+gap, and blue in-sentence link colour. Each is fixed with `:not(.legal-toc …)`,
+and **the print block has to repeat the same `:not()` shape** — a plain
+`.legal-prose a { color:#000 }` is one class short of
+`.legal-prose a:not(.legal-toc a)` and loses, which is why links first printed
+blue.
+
+### ⚠️ The float needs 1420px, not 1180px
+`.legal-toc`'s `margin-right: -290px` puts the box **entirely outside** the
+860px shell, so the viewport must be at least `shell + 2 × 290` before it can
+go there. At the first-guess 1180px breakpoint it ran off the right edge. Below
+1420px it stays in flow, which is the correct fallback.
+
+### ⚠️ `scroll-padding-top` and `scroll-margin-top` ADD UP
+`html` carries `scroll-padding-top: 92px`. `.legal-sec` also carried
+`scroll-margin-top: 92px`, so a section targeted from the contents list landed
+**184px** down with a band of empty page above its heading. Only one of the two
+may exist; the `html` one stays, because it covers every anchor on the page.
+
+### ⚠️ Printing a dark page prints nothing
+This is the one worth remembering. Browsers drop backgrounds when printing but
+**keep colours**, so a dark UI comes out as white text on white paper — a blank
+policy, on the one kind of page people genuinely print. The `@media print`
+block repoints the whole token set to ink-on-white (including the surface pairs
+the slabs re-point to), turns the flat accent blocks into borders and rules so
+they still read on a mono printer, and hides the nav, footer, rainbaw, action
+buttons, contents list, consent card and dock.
+
+---
+
 # The account rule, restated because it keeps mattering
 
 Fortized accounts, Hereld accounts and Swiftaw accounts are **three separate

@@ -1,0 +1,268 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   SWIFTAW — LEGAL PAGES
+   One stylesheet, three pages: Terms of Service, Privacy Policy, Products
+   Policy. It rides on swiftaw-nb.css and only adds what a long legal document
+   needs that the component set does not already have.
+
+   The class names are the ones the pages already used. That is deliberate:
+   the body of a legal page is legal text, and the safest rebuild is one that
+   swaps the stylesheet and the shell and does not touch a word of the copy.
+
+   Each page sets its own accent:
+     --legal-accent: var(--nb-green)   privacy
+     --legal-accent: var(--nb-blue)    terms
+     --legal-accent: var(--nb-yellow)  products
+   ══════════════════════════════════════════════════════════════════════════ */
+
+:root { --legal-accent: var(--nb-yellow); }
+
+html { scroll-padding-top: 92px; }
+
+/* ── Shell ─────────────────────────────────────────────────────────────── */
+.legal-top {
+  position: relative;
+  padding: clamp(52px, 8vw, 100px) 0 clamp(50px, 8vw, 96px);
+}
+.legal-shell {
+  width: 100%; max-width: 860px;
+  margin: 0 auto; padding: 0 24px;
+}
+
+/* ── Head ──────────────────────────────────────────────────────────────── */
+.legal-eyebrow {
+  display: inline-flex; align-items: center;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 12px;
+  letter-spacing: .14em; text-transform: uppercase;
+  padding: 7px 13px; margin-bottom: 20px;
+  background: var(--legal-accent); color: var(--nb-ink);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+  box-shadow: var(--nb-sh-sm);
+}
+.legal-top h1 {
+  font-family: var(--nb-font-display); font-weight: 800;
+  font-size: clamp(34px, 5.2vw, 68px); line-height: .96;
+  letter-spacing: -.02em;
+  margin-bottom: 18px;
+}
+/* The old design underlined the emphasised word with a gradient. Here it is a
+   flat block of the page's accent — a marker stroke, not a glow. */
+.legal-top h1 .u {
+  background: var(--legal-accent); color: var(--nb-ink);
+  padding: 0 .12em;
+  box-decoration-break: clone; -webkit-box-decoration-break: clone;
+}
+.legal-lede {
+  font-size: clamp(16px, 1.6vw, 19px); line-height: 1.55;
+  color: var(--nb-fg-muted); max-width: 60ch;
+  margin-bottom: 24px;
+}
+
+/* ── Meta row: last updated, print, copy link ──────────────────────────── */
+.legal-meta {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding-bottom: 26px; margin-bottom: 30px;
+  border-bottom: var(--nb-bd);
+}
+.legal-meta .pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 12.5px;
+  padding: 7px 13px;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+}
+.legal-meta .pill svg { width: 13px; height: 13px; fill: currentColor; }
+.legal-actions { display: inline-flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+/* These are real buttons, so they press like every other button on the site. */
+.legal-action {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 12.5px;
+  padding: 8px 14px; cursor: pointer;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm);
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast), background var(--nb-fast);
+}
+.legal-action:hover  { transform: translate(-1px, -1px); box-shadow: 3px 4px 0 var(--nb-ink); background: var(--legal-accent); color: var(--nb-ink); }
+.legal-action:active { transform: translate(2px, 3px); box-shadow: 0 0 0 var(--nb-ink); }
+.legal-action svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* ── Hero art ──────────────────────────────────────────────────────────── */
+.legal-hero-art {
+  display: block; width: 100%; max-width: 380px; height: auto;
+  margin: 0 auto 34px;
+}
+
+/* ── Contents ──────────────────────────────────────────────────────────── */
+/* Built from the page's own <h2>s at runtime, so it can never list a section
+   that isn't there or miss one that is. */
+.legal-toc {
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh);
+  padding: 20px 22px; margin-bottom: 34px;
+  --nb-fg: var(--nb-surface-fg);
+  --nb-fg-muted: var(--nb-surface-fg-muted);
+}
+.legal-toc .lbl {
+  display: block; margin-bottom: 14px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 12px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--nb-fg-muted);
+}
+.legal-toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.legal-toc a {
+  display: flex; gap: 12px; align-items: baseline;
+  padding: 7px 10px; margin: 0 -10px;
+  border-radius: var(--nb-r-sm);
+  font-size: 14.5px; color: var(--nb-fg); text-decoration: none;
+  transition: background var(--nb-fast), color var(--nb-fast);
+}
+.legal-toc a:hover { background: var(--legal-accent); color: var(--nb-ink); }
+.legal-toc a .n { font-family: var(--nb-font-mono); font-size: 12px; opacity: .7; flex: none; }
+@media (min-width: 1420px) {
+  /* Parked beside the document rather than above it, which keeps the measure
+     of the prose untouched.
+     ⚠️ The negative margin puts the box ENTIRELY outside the 860px shell, so
+     it needs (shell + 2 × 290) of viewport before it can go there. Below that
+     it stays in flow — a floated contents list that runs off the right edge
+     is worse than one sitting at the top. */
+  .legal-toc {
+    position: sticky; top: 92px;
+    float: right; width: 250px;
+    margin: 0 -290px 24px 30px;
+  }
+}
+@media print { .legal-toc { display: none; } }
+
+/* ── Prose ─────────────────────────────────────────────────────────────── */
+.legal-prose { font-size: 16px; line-height: 1.72; }
+.legal-prose p { color: var(--nb-fg-muted); margin-bottom: 16px; }
+.legal-prose strong { color: var(--nb-fg); font-weight: 700; }
+/* :not() again, and for the same reason: the contents list sits inside the
+   prose, and its rows are navigation, not links in a sentence. */
+.legal-prose a:not(.legal-toc a) { color: var(--nb-blue); }
+
+.legal-lead {
+  background: var(--legal-accent); color: var(--nb-ink);
+  border: var(--nb-bd); border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh);
+  padding: clamp(20px, 3vw, 28px);
+  margin-bottom: 38px;
+  font-size: 17px;
+  --nb-fg: var(--nb-ink);
+  --nb-fg-muted: #2E2E22;
+}
+.legal-lead p:last-child { margin-bottom: 0; }
+
+/* ⚠️ No scroll-margin-top here. `html` already carries scroll-padding-top, and
+   the two ADD UP — a section targeted from the contents list landed 184px down
+   instead of 92px, with a band of empty page above the heading. */
+.legal-sec { margin-bottom: 34px; }
+.legal-sec h2 {
+  display: flex; align-items: baseline; gap: 12px;
+  font-family: var(--nb-font-head); font-weight: 800;
+  font-size: clamp(20px, 2.4vw, 27px);
+  margin-bottom: 12px;
+}
+.legal-sec h2 .n {
+  font-family: var(--nb-font-mono); font-size: 13px; font-weight: 700;
+  flex: none; padding: 4px 9px;
+  background: var(--legal-accent); color: var(--nb-ink);
+  border: var(--nb-bd-w-thin) solid var(--nb-line); border-radius: 6px;
+}
+/* ⚠️ :not(.legal-toc ...) is load-bearing. The contents list is a real <ol>
+   INSIDE .legal-prose, so without this it inherits the accent bullet squares
+   and the 10px row gap meant for body lists, and reads as prose. */
+.legal-prose ul:not(.legal-toc ol),
+.legal-prose ol:not(.legal-toc ol) {
+  list-style: none; padding: 0; margin: 0 0 18px;
+  display: grid; gap: 10px;
+}
+.legal-prose li:not(.legal-toc li) { position: relative; padding-left: 26px; color: var(--nb-fg-muted); }
+.legal-prose li:not(.legal-toc li)::before {
+  content: ""; position: absolute; left: 0; top: .56em;
+  width: 12px; height: 12px;
+  background: var(--legal-accent);
+  border: var(--nb-bd-w-thin) solid var(--nb-line);
+}
+
+/* A called-out promise. --nc is the per-note colour the pages already set. */
+.legal-note {
+  background: var(--nc, var(--legal-accent)); color: var(--nb-ink);
+  border: var(--nb-bd); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm);
+  padding: 16px 18px; margin: 20px 0;
+  --nb-fg: var(--nb-ink);
+  --nb-fg-muted: #2E2E22;
+}
+.legal-note p:last-child { margin-bottom: 0; }
+
+/* ── Figures ───────────────────────────────────────────────────────────── */
+/* Art plus a caption, side by side. --fig is the per-figure colour band the
+   pages already set. */
+.legal-figure {
+  display: grid; grid-template-columns: 190px 1fr; gap: 20px; align-items: center;
+  margin: 30px 0;
+  padding: 20px 22px;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh);
+  border-left: 10px solid var(--fig, var(--legal-accent));
+  --nb-fg: var(--nb-surface-fg);
+  --nb-fg-muted: var(--nb-surface-fg-muted);
+}
+.legal-figure img { width: 100%; height: auto; }
+.legal-figure .cap-t {
+  font-family: var(--nb-font-head); font-weight: 800; font-size: 17px;
+  margin-bottom: 7px; color: var(--nb-fg);
+}
+.legal-figure .cap-d { font-size: 14.5px; line-height: 1.6; color: var(--nb-fg-muted); }
+@media (max-width: 620px) {
+  .legal-figure { grid-template-columns: 1fr; text-align: center; }
+  .legal-figure img { max-width: 220px; margin: 0 auto; }
+}
+
+/* ── Sign-off ──────────────────────────────────────────────────────────── */
+.legal-sign {
+  margin-top: 30px; padding-top: 22px;
+  border-top: var(--nb-bd-thin);
+  font-size: 14px; color: var(--nb-fg-muted);
+}
+
+/* ── Print ─────────────────────────────────────────────────────────────── */
+/* Someone printing a policy wants the text, not the furniture.
+   ⚠️ And the page has to STOP BEING DARK. Browsers drop backgrounds when
+   printing but keep colours, so a dark UI prints as white text on white
+   paper — a blank policy. Every colour is repointed to ink-on-white here,
+   including the surface pairs the slabs re-point to. */
+@media print {
+  .nb-nav, .nb-footer, .nb-rainbaw, .legal-actions, .nb-skip,
+  .swc-root, #swiftaw-dock { display: none !important; }
+
+  :root, body, .legal-toc, .legal-lead, .legal-note, .legal-figure {
+    --nb-bg: #FFFFFF;
+    --nb-fg: #000000;
+    --nb-fg-muted: #333333;
+    --nb-surface: #FFFFFF;
+    --nb-surface-fg: #000000;
+    --nb-surface-fg-muted: #333333;
+  }
+  body { background: #FFFFFF; color: #000000; }
+  .legal-prose p, .legal-prose li, .legal-lede { color: #333333; }
+  .legal-lead p { color: #000000; }
+  /* Same :not() shape as the screen rule it has to beat — a plain
+     `.legal-prose a` is one class short and loses, and the links printed blue. */
+  .legal-prose a:not(.legal-toc a) { color: #000000; text-decoration: underline; }
+
+  .legal-shell { max-width: none; padding: 0; }
+  .legal-lead, .legal-note, .legal-figure, .legal-toc, .legal-eyebrow,
+  .legal-sec h2 .n, .legal-meta .pill { box-shadow: none; }
+  /* Flat accent blocks become a rule instead, so a section number or a
+     called-out promise still reads as one on a black-and-white printer. */
+  .legal-lead, .legal-note, .legal-figure { border: 2px solid #000; }
+  .legal-top h1 .u, .legal-sec h2 .n, .legal-eyebrow { background: none; color: #000; }
+  .legal-top h1 .u { border-bottom: 3px solid #000; padding: 0; }
+  .legal-prose li:not(.legal-toc li)::before { background: #000; }
+
+  .legal-sec { break-inside: avoid-page; }
+  .legal-sec h2 { break-after: avoid-page; }
+}

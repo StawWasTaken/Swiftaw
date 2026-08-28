@@ -1,88 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-nb="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Privacy Policy - Swiftaw</title>
+<title>Privacy Policy — Swiftaw</title>
 <meta name="description" content="What data Swiftaw collects, why, and how we keep it safe across our products, under French and EU law.">
 <link rel="canonical" href="https://swiftaw.com/legal/privacy-policy">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Privacy Policy - Swiftaw">
+<meta property="og:title" content="Privacy Policy — Swiftaw">
 <meta property="og:description" content="What data we collect, why, and how we keep it safe.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/legal/privacy-policy">
-<meta name="theme-color" content="#fef83d">
+<meta name="theme-color" content="#0C0F15">
 <link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/swiftaw.css">
-<style>:root{ --legal-accent: var(--brand-green); }</style>
+<link rel="stylesheet" href="/css/swiftaw-nb.css">
+<link rel="stylesheet" href="/css/swiftaw-legal.css">
+<style>
+/* Green is this document's accent. The other two legal pages set their own,
+   and nothing else about them differs. */
+:root { --legal-accent: var(--nb-green); }
+@media (max-width: 560px) { .pg-nav-cta { display: none; } }
+</style>
 </head>
 <body>
 
-<div class="bg-blob b1"></div>
-<div class="bg-blob b2"></div>
+<a class="nb-skip" href="#main">Skip to content</a>
 
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-  <symbol id="i-chevron" viewBox="0 0 512 512"><path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/></symbol>
+<div class="nb-rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
   <symbol id="i-clock" viewBox="0 0 512 512"><path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120l0 136c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2 280 120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></symbol>
   <symbol id="i-print" viewBox="0 0 512 512"><path d="M128 0C92.7 0 64 28.7 64 64l0 96 64 0 0-96 226.7 0L384 93.3l0 66.7 64 0 0-66.7c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0L128 0zM384 352l0 32 0 64-256 0 0-64 0-16 0-16 256 0zm64 32l32 0c17.7 0 32-14.3 32-32l0-96c0-35.3-28.7-64-64-64L64 192c-35.3 0-64 28.7-64 64l0 96c0 17.7 14.3 32 32 32l32 0 0 64c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-64zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/></symbol>
   <symbol id="i-share" viewBox="0 0 448 512"><path d="M352 224c53 0 96-43 96-96s-43-96-96-96s-96 43-96 96c0 4 .2 8 .7 11.9l-94.1 47C145.4 170.2 121.9 160 96 160c-53 0-96 43-96 96s43 96 96 96c25.9 0 49.4-10.2 66.6-26.9l94.1 47c-.5 3.9-.7 7.8-.7 11.9c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-25.9 0-49.4 10.2-66.6 26.9l-94.1-47c.5-3.9 .7-7.8 .7-11.9s-.2-8-.7-11.9l94.1-47C302.6 213.8 326.1 224 352 224z"/></symbol>
 </svg>
 
-<nav class="nav-root">
-  <a href="/" class="nav-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
-  <div class="nav-pill-group">
-    <div class="nav-dropdown" id="companyDropdown">
-      <span class="nav-pill nav-dropbtn">Company <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="/about-us">About</a>
-        <a href="/mission">Mission</a>
-      </div>
+<nav class="nb-nav" id="nav">
+  <div class="nb-nav-in">
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+
+    <div class="nb-nav-links" id="navLinks">
+      <a class="nb-nav-link" href="/about-us">About</a>
+      <a class="nb-nav-link" href="/mission">Mission</a>
+      <a class="nb-nav-link" href="/innovation-room">Lab</a>
+      <a class="nb-nav-link" href="/newsroom">News</a>
     </div>
-    <div class="nav-dropdown" id="productsDropdown">
-      <span class="nav-pill nav-dropbtn">Products <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="https://fortized.com">Fortized</a>
-        <a href="/lifecheck/">Lifecheck</a>
-        <a href="/supernova/">Supernova</a>
-      </div>
+
+    <span class="nb-nav-spacer"></span>
+
+    <div class="nb-nav-actions">
+      <span data-swiftaw-launcher></span>
+      <span data-swiftaw-account></span>
+      <a class="nb-btn nb-btn--primary nb-btn--sm pg-nav-cta" href="https://fortized.com" rel="noopener">Fortized</a>
+      <button class="nb-icon-btn nb-nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
     </div>
-    <div class="nav-dropdown" id="legalDropdown">
-      <span class="nav-pill nav-dropbtn active">Legal <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="/legal/terms-of-service">Terms of Service</a>
-        <a href="/legal/privacy-policy" class="active">Privacy Policy</a>
-        <a href="/legal/products-policy">Products Policy</a>
-      </div>
-    </div>
-    <a href="/innovation-room" class="nav-pill">Lab</a>
-    <a href="/newsroom" class="nav-pill">News</a>
-  </div>
-  <div class="nav-spacer"></div>
-  <div class="nav-right">
-    <a href="https://fortized.com" class="nav-btn-cta">Fortized</a>
-    <div class="nav-hamburger"><span></span><span></span><span></span></div>
   </div>
 </nav>
-<div class="mobile-menu">
-  <div class="mm-label">Company</div>
-  <a href="/about-us">About</a>
-  <a href="/mission">Mission</a>
-  <div class="mm-label">Products</div>
-  <a href="https://fortized.com">Fortized</a>
-  <a href="/lifecheck/">Lifecheck</a>
-  <a href="/supernova/">Supernova</a>
-  <div class="mm-label">Legal</div>
-  <a href="/legal/terms-of-service">Terms of Service</a>
-  <a href="/legal/privacy-policy">Privacy Policy</a>
-  <a href="/legal/products-policy">Products Policy</a>
-  <div class="mm-label">More</div>
-  <a href="/innovation-room">Lab</a>
-  <a href="/newsroom">News</a>
-</div>
 
+<main id="main">
 <section class="legal-top">
   <div class="legal-shell">
     <div class="legal-eyebrow">Privacy Policy</div>
@@ -119,7 +98,7 @@
         </ul>
       </section>
 
-      <figure class="legal-figure" style="--fig:var(--c-blue)">
+      <figure class="legal-figure" style="--fig:var(--nb-blue)">
         <img src="/SWFT-Deco/provide-to-us-deco.png" alt="">
         <figcaption>
           <div class="cap-t">What you hand over to us</div>
@@ -140,7 +119,7 @@
         <p>We try to take the least a product needs to do those things.</p>
       </section>
 
-      <figure class="legal-figure" style="--fig:var(--c-red)">
+      <figure class="legal-figure" style="--fig:var(--nb-red)">
         <img src="/SWFT-Deco/we-create-content-deco.png" alt="">
         <figcaption>
           <div class="cap-t">We use it to build and maintain</div>
@@ -151,7 +130,7 @@
       <section class="legal-sec">
         <h2><span class="n">04</span> The promise we care about</h2>
         <p>We'd rather be trusted than squeeze value out of your data. So:</p>
-        <div class="legal-note" style="--nc:var(--c-green)"><p><strong>We don't sell your data, and we don't hand it to advertisers.</strong> We use it to run and improve what we make and to build new things &mdash; not as something to trade.</p></div>
+        <div class="legal-note" style="--nc:var(--nb-green)"><p><strong>We don't sell your data, and we don't hand it to advertisers.</strong> We use it to run and improve what we make and to build new things &mdash; not as something to trade.</p></div>
         <p>That's a promise on top of your legal rights below, not a replacement for them.</p>
       </section>
 
@@ -175,7 +154,7 @@
         <p>We use sensible technical and organisational measures &mdash; scrambled (hashed) passwords, access controls, encrypted connections. Nothing is ever perfectly secure, but we work to lower the risk and to move fast if something goes wrong, including telling you and the authorities when the law says we must.</p>
       </section>
 
-      <figure class="legal-figure" style="--fig:var(--c-green)">
+      <figure class="legal-figure" style="--fig:var(--nb-green)">
         <img src="/SWFT-Deco/infos-safe-deco.png" alt="">
         <figcaption>
           <div class="cap-t">Passwords and info kept safe</div>
@@ -198,34 +177,53 @@
     </div>
   </div>
 </section>
+</main>
 
-<footer class="site-footer" style="margin-top:50px;">
-  <div class="footer-inner">
-    <a href="/" class="footer-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
-    <div class="footer-copy">&copy; 2026 Swiftaw</div>
-    <div class="footer-links">
-      <a href="/legal/terms-of-service">Terms</a>
-      <a href="/legal/privacy-policy">Privacy</a>
-      <a href="/legal/products-policy">Products</a>
-      <a href="https://fortized.com">Fortized</a>
+<footer class="nb-footer">
+  <div class="nb-wrap">
+    <div class="nb-footer-grid">
+      <div>
+        <a href="/" class="nb-nav-logo" style="margin-bottom:14px;"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+        <p class="nb-muted" style="font-size:14px; max-width:32ch;">
+          A European software company. Île-de-France, France.
+        </p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div class="nb-footer-list">
+          <a href="/about-us">About</a>
+          <a href="/mission">Mission</a>
+          <a href="/innovation-room">Lab</a>
+          <a href="/newsroom">Newsroom</a>
+        </div>
+      </div>
+      <div>
+        <h4>Make</h4>
+        <div class="nb-footer-list">
+          <a href="https://fortized.com" rel="noopener">Fortized</a>
+          <a href="/lifecheck/">Lifecheck</a>
+          <a href="/supernova/">Supernova</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="nb-footer-list">
+          <a href="/legal/terms-of-service">Terms of Service</a>
+          <a href="/legal/privacy-policy">Privacy Policy</a>
+          <a href="/legal/products-policy">Products Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="nb-footer-base">
+      <span>© 2026 Swiftaw</span>
+      <span>Make It Matter.</span>
     </div>
   </div>
+  <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
 </footer>
 
 <script src="/css/swiftaw.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
-    dropdown.addEventListener('click', function (e) {
-      e.stopPropagation();
-      document.querySelectorAll('.nav-dropdown.open').forEach(function (d) { if (d !== dropdown) d.classList.remove('open'); });
-      dropdown.classList.toggle('open');
-    });
-  });
-  document.addEventListener('click', function () {
-    document.querySelectorAll('.nav-dropdown.open').forEach(function (d) { d.classList.remove('open'); });
-  });
-});
-</script>
+<script src="/css/swiftaw-legal.js"></script>
+
 </body>
 </html>
