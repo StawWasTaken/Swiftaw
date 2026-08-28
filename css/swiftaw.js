@@ -312,6 +312,8 @@ tween(countEl, c[key]);
 const pct = tot ? Math.round((c[key] / tot) * 100) : 0;
 if (pctEl) pctEl.textContent = pct + '%';
 if (barEl) barEl.style.width = pct + '%';
+const segEl = rootEl.querySelector('[data-share="' + key + '"]');
+if (segEl) segEl.style.width = (tot ? (c[key] / tot) * 100 : 0) + '%';
 if (bumpKey === key) {
 countEl.classList.remove('bump');
 void countEl.offsetWidth;
@@ -332,7 +334,7 @@ s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
 s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
 s.style.background =
 ['#FF0033', '#3ECF6E', '#2CAFFC', '#FFF93E', '#FF77E4'][i % 5];
-s.style.top = '50%'; s.style.left = '30px';
+s.style.top = '43px'; s.style.left = '43px';
 host.appendChild(s);
 requestAnimationFrame(() => s.classList.add('go'));
 setTimeout(() => s.remove(), 1000);

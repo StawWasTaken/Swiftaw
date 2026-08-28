@@ -188,18 +188,34 @@ button { background: none; border: 0; cursor: pointer; }
 .nb-skip:focus { top: 16px; }
 
 /* ═══════ TYPOGRAPHY ═════════════════════════════════════════════════════
-   Tropicon carries the biggest statements. Syne Bold carries every heading
-   below that. Body text is DM Sans. ───────────────────────────────────── */
+   Four steps, and each one has exactly one face:
+
+     1. Headline   Tropicon, .nb-display        the single biggest line on a page
+     2. Big title  Syne Bold, .nb-h1 / .nb-h2
+     3. Sub title  Syne Bold, .nb-h3 / .nb-h4 / .nb-eyebrow
+     4. Body       Syne / DM Sans
+
+   Tropicon ships one weight. Asking for 700 or 800 makes the browser smear
+   the outline into a fake bold, which is why it must never carry a weight of
+   its own and why font-synthesis is off. It is also a display face: below
+   roughly 28px the counters close up and it stops being readable, so small
+   text goes to Syne Bold instead. ──────────────────────────────────────── */
 .nb-display {
   font-family: var(--nb-font-display);
   font-weight: 400;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
   line-height: .94;
   letter-spacing: -.01em;
   text-transform: none;
 }
 .nb-d1 { font-size: clamp(46px, 8.5vw, 116px); }
 .nb-d2 { font-size: clamp(36px, 5.6vw, 76px); }
-.nb-d3 { font-size: clamp(28px, 4vw, 52px); }
+.nb-d3 { font-size: clamp(30px, 4vw, 52px); }
+
+/* The safety net: whatever asks for the display face gets its real weight,
+   whether or not it remembered to say so. */
+[style*="--nb-font-display"], .nb-display, .nb-display * { font-synthesis: none; }
 
 h1, h2, h3, h4, h5, h6, .nb-h {
   font-family: var(--nb-font-head);

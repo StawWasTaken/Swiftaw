@@ -76,7 +76,7 @@ html { scroll-padding-top: 88px; }
 .hp-fact { padding: 16px 18px; }
 .hp-fact .k {
   display: block;
-  font-family: var(--nb-font-head); font-weight: 800;
+  font-family: var(--nb-font-head); font-weight: 700;
   font-size: 26px; line-height: 1; letter-spacing: -.02em;
 }
 .hp-fact .v { display: block; margin-top: 6px; font-size: 13.5px; }
@@ -120,7 +120,7 @@ html { scroll-padding-top: 88px; }
 .hp-rules { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 860px) { .hp-rules { grid-template-columns: 1fr; } }
 .hp-rule .n {
-  font-family: var(--nb-font-head); font-weight: 800; font-size: 40px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 40px;
   line-height: 1; letter-spacing: -.03em;
   color: var(--nb-yellow);
   display: block; margin-bottom: 14px;
@@ -149,37 +149,98 @@ html { scroll-padding-top: 88px; }
 .live-chip.is-off .dot { background: var(--nb-surface-fg-muted); }
 
 .react-grid { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 22px 24px; }
-@media (max-width: 720px) { .react-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .react-grid { grid-template-columns: 1fr; } }
 
 .react-btn {
   position: relative; overflow: hidden;
-  display: flex; align-items: center; gap: 13px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0;
   text-align: left;
-  padding: 15px 16px 19px;
+  padding: 16px 16px 14px;
   background: var(--nb-surface-2); color: var(--nb-surface-fg);
   border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
   box-shadow: var(--nb-sh-sm);
-  transition: transform var(--nb-fast), box-shadow var(--nb-fast), background var(--nb-fast);
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast),
+              background var(--nb-fast), color var(--nb-fast);
 }
 .react-btn:hover  { transform: translate(-1px, -1px); box-shadow: 3px 4px 0 var(--nb-ink); }
 .react-btn:active { transform: translate(2px, 3px);   box-shadow: 1px 1px 0 var(--nb-ink); }
-
 .react-btn.picked {
-  background: var(--nb-yellow); color: var(--nb-ink);
+  background: var(--rx); color: var(--nb-ink);
   transform: translate(2px, 3px); box-shadow: 1px 1px 0 var(--nb-ink);
 }
-.react-emoji { width: 34px; height: 34px; flex: none; object-fit: contain; }
-.react-meta { min-width: 0; }
-.react-name { font-family: var(--nb-font-head); font-weight: 700; font-size: 15px; }
-.react-count { font-family: var(--nb-font-head); font-weight: 800; font-size: 19px; letter-spacing: -.02em; }
-.react-count.bump { animation: hpBump .4s var(--nb-ease); }
-@keyframes hpBump { 40% { transform: scale(1.28); } }
-.react-count, .react-pct { display: inline-block; }
-.react-pct { font-size: 12.5px; margin-left: 7px; opacity: .72; }
 
-.react-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 7px; border-top: 2px solid var(--nb-ink); }
-.react-bar-fill { height: 100%; width: 0; background: var(--nb-ink); transition: width .5s var(--nb-ease); }
+.react-plate {
+  width: 54px; height: 54px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--rx);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm);
+  margin-bottom: 12px;
+  transition: transform var(--nb-med), background var(--nb-fast);
+}
+.react-btn:hover .react-plate  { transform: rotate(-6deg) scale(1.05); }
+.react-btn.picked .react-plate { background: var(--nb-surface); box-shadow: 1px 1px 0 var(--nb-ink); }
+.react-emoji { width: 34px; height: 34px; object-fit: contain; }
+
+.react-name {
+  display: block; font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+}
+.react-line { display: flex; align-items: baseline; gap: 7px; margin-top: 3px; }
+.react-count {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 30px; line-height: 1; letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+.react-count.bump { animation: hpBump .4s var(--nb-ease); display: inline-block; }
+@keyframes hpBump { 40% { transform: scale(1.22); } }
+.react-pct { font-size: 13px; font-weight: 700; font-family: var(--nb-font-head); opacity: .68; }
+
+.react-bar {
+  width: 100%; height: 10px; margin-top: 12px;
+  background: var(--nb-surface); overflow: hidden;
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+}
+.react-bar-fill {
+  display: block; height: 100%; width: 0; background: var(--rx);
+  border-radius: var(--nb-r-pill);
+  transition: width .5s var(--nb-ease);
+}
+.react-btn.picked .react-bar      { background: rgba(0, 0, 0, .18); }
 .react-btn.picked .react-bar-fill { background: var(--nb-ink); }
+
+.react-yours {
+  position: absolute; top: 12px; right: 12px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 10px;
+  letter-spacing: .12em; text-transform: uppercase;
+  padding: 4px 8px; border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  opacity: 0; transform: scale(.7); transition: opacity var(--nb-fast), transform var(--nb-med);
+}
+.react-btn.picked .react-yours { opacity: 1; transform: scale(1); }
+
+.react-share { padding: 0 24px 22px; }
+.react-share-bar {
+  display: flex; height: 20px; overflow: hidden;
+  background: var(--nb-surface-2);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+}
+.react-share-seg {
+  width: 0; background: var(--rx);
+  border-right: 2px solid var(--nb-ink);
+  transition: width .55s var(--nb-ease);
+}
+.react-share-seg:last-child { border-right: 0; }
+.react-share-key {
+  display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 11px;
+  font-size: 12.5px; color: var(--nb-surface-fg-muted);
+}
+.react-share-key span { display: inline-flex; align-items: center; gap: 7px; }
+.react-share-key i {
+  width: 11px; height: 11px; flex: none; font-style: normal;
+  background: var(--rx); border: 1.5px solid var(--nb-ink); border-radius: 3px;
+}
+
 .react-burst { position: absolute; inset: 0; pointer-events: none; }
 .react-burst .spark {
   position: absolute; width: 7px; height: 7px;
@@ -202,7 +263,7 @@ html { scroll-padding-top: 88px; }
   background: var(--nb-surface-2);
   font-size: 13px;
 }
-.react-total .num { font-family: var(--nb-font-head); font-weight: 800; font-size: 17px; }
+.react-total .num { font-family: var(--nb-font-head); font-weight: 700; font-size: 17px; }
 .react-feed { color: var(--nb-surface-fg-muted); display: flex; align-items: center; gap: 8px; }
 .react-feed .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--nb-blue); flex: none; }
 
@@ -489,33 +550,49 @@ html { scroll-padding-top: 88px; }
       </div>
 
       <div class="react-grid">
-        <button class="react-btn" type="button" data-key="stoked" aria-pressed="false">
-          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20Emojis/joyster_laugh.png" alt="">
-          <span class="react-meta">
-            <span class="react-name">Stoked</span><br>
+        <button class="react-btn" type="button" data-key="stoked" aria-pressed="false" style="--rx: var(--nb-yellow);">
+          <span class="react-plate"><img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20Emojis/joyster_laugh.png" alt=""></span>
+          <span class="react-name">Stoked</span>
+          <span class="react-line">
             <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
           </span>
           <span class="react-bar"><span class="react-bar-fill" data-bar></span></span>
+          <span class="react-yours">Yours</span>
           <span class="react-burst"></span>
         </button>
-        <button class="react-btn" type="button" data-key="stunned" aria-pressed="false">
-          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20Emojis/leafen_stunned.png" alt="">
-          <span class="react-meta">
-            <span class="react-name">Stunned</span><br>
+        <button class="react-btn" type="button" data-key="stunned" aria-pressed="false" style="--rx: var(--nb-blue);">
+          <span class="react-plate"><img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20Emojis/leafen_stunned.png" alt=""></span>
+          <span class="react-name">Stunned</span>
+          <span class="react-line">
             <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
           </span>
           <span class="react-bar"><span class="react-bar-fill" data-bar></span></span>
+          <span class="react-yours">Yours</span>
           <span class="react-burst"></span>
         </button>
-        <button class="react-btn" type="button" data-key="loved" aria-pressed="false">
-          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20Emojis/knight_heart.png" alt="">
-          <span class="react-meta">
-            <span class="react-name">Loved</span><br>
+        <button class="react-btn" type="button" data-key="loved" aria-pressed="false" style="--rx: var(--nb-pink);">
+          <span class="react-plate"><img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20Emojis/knight_heart.png" alt=""></span>
+          <span class="react-name">Loved</span>
+          <span class="react-line">
             <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
           </span>
           <span class="react-bar"><span class="react-bar-fill" data-bar></span></span>
+          <span class="react-yours">Yours</span>
           <span class="react-burst"></span>
         </button>
+      </div>
+
+      <div class="react-share">
+        <div class="react-share-bar" role="img" aria-label="Share of reactions">
+          <span class="react-share-seg" data-share="stoked"  style="--rx: var(--nb-yellow);"></span>
+          <span class="react-share-seg" data-share="stunned" style="--rx: var(--nb-blue);"></span>
+          <span class="react-share-seg" data-share="loved"   style="--rx: var(--nb-pink);"></span>
+        </div>
+        <div class="react-share-key">
+          <span style="--rx: var(--nb-yellow);"><i></i> Stoked</span>
+          <span style="--rx: var(--nb-blue);"><i></i> Stunned</span>
+          <span style="--rx: var(--nb-pink);"><i></i> Loved</span>
+        </div>
       </div>
 
       <div class="react-foot">

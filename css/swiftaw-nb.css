@@ -133,13 +133,16 @@ transition: top var(--nb-fast);
 .nb-display {
 font-family: var(--nb-font-display);
 font-weight: 400;
+font-synthesis: none;
+-webkit-font-smoothing: antialiased;
 line-height: .94;
 letter-spacing: -.01em;
 text-transform: none;
 }
 .nb-d1 { font-size: clamp(46px, 8.5vw, 116px); }
 .nb-d2 { font-size: clamp(36px, 5.6vw, 76px); }
-.nb-d3 { font-size: clamp(28px, 4vw, 52px); }
+.nb-d3 { font-size: clamp(30px, 4vw, 52px); }
+[style*="--nb-font-display"], .nb-display, .nb-display * { font-synthesis: none; }
 h1, h2, h3, h4, h5, h6, .nb-h {
 font-family: var(--nb-font-head);
 font-weight: 700;
