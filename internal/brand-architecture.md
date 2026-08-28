@@ -143,19 +143,36 @@ Five colours. There is no sixth, and we do not invent one.
 
 | Role | Face |
 |---|---|
-| Biggest display / headline titles | **Tropicon** |
+| Biggest display / headline titles | **Tropicon** — *blocked, see below* |
 | Section headings, card headings, important UI headings | **Syne Bold** |
 | Body | DM Sans |
 
-Tropicon is the ecosystem's display face — it is what makes a Swiftaw page
-recognisable at a glance. Syne Bold carries everything below the hero.
+Tropicon is the intended display face — the thing that would make a Swiftaw
+page recognisable at a glance. Syne Bold carries everything below the hero.
 
 **Syne Extra Bold is Fortized's logo weight and stays there.** It does not
 become the general heading weight for the ecosystem; new work sits at 500–700.
 
-Tropicon is not in this repo yet. `@font-face` points at
-`/fonts/Tropicon.woff2` with a Syne fallback, so nothing breaks before the
-file lands.
+### 🚫 Tropicon cannot be served on the web under the licence we hold
+
+The licence that came with the font is a **Monotype Desktop EULA**. It grants
+use on a workstation and explicitly excludes materials "containing the Font
+Software embedded", forbids installing it "on any server", forbids modifying it
+in any way (which rules out a WOFF2 conversion), and forbids further
+distribution (which is what serving it to every visitor is). Any one of those
+is enough on its own.
+
+The `.otf` was briefly committed to this repository, which publishes as a
+website, so it was live at `swiftaw.com/Tropicon/…`. **It has been removed.**
+The licence is kept for the record at `internal/fonts/`, with the exact clauses
+and what to do next: **`internal/fonts/README.md`**.
+
+So `--nb-font-display` resolves to Syne today, and there is **no `@font-face`
+for Tropicon anywhere in the CSS** — do not add one. What is permitted is
+setting a fixed headline or lockup in Tropicon on a workstation and shipping it
+as a flat SVG. What unblocks the real thing is a **Web Font licence** bought
+from the Monotype property it came from; the wiring is then two lines in
+`swiftaw-nb.css`.
 
 ## Buttons
 

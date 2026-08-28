@@ -284,7 +284,7 @@
       'justify-content:center;padding:6px 14px;background:var(--swa-yellow);color:#000;' +
       'font-family:var(--nb-font-head,\'Syne\',sans-serif);font-weight:700;font-size:12px;' +
       'text-decoration:none;border:2px solid #000;' +
-      'border-radius:999px;box-shadow:2px 3px 0 #000;' +
+      'border-radius:var(--nb-r-pill,999px);box-shadow:2px 3px 0 #000;' +
       'transition:transform .14s,box-shadow .14s;}' +
     '#swiftaw-acct .swa-manage:hover{transform:translate(-1px,-1px);box-shadow:3px 4px 0 #000;}' +
     '#swiftaw-acct .swa-manage:active{transform:translate(2px,3px);box-shadow:1px 1px 0 #000;}' +

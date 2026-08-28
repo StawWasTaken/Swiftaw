@@ -15,16 +15,21 @@
    · The Rainbaw is five colours. Never invent a sixth.
 ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Tropicon: Swiftaw's display face. Drop the files in /fonts/ and this
-      picks them up; until then every .nb-display falls back to Syne 800,
-      which is the closest weight/width we already load. ────────────────── */
-@font-face {
-  font-family: 'Tropicon';
-  src: url('/fonts/Tropicon.woff2') format('woff2'),
-       url('/fonts/Tropicon.woff')  format('woff');
-  font-weight: 400 900;
-  font-display: swap;
-}
+/* ── Tropicon — DELIBERATELY NOT LOADED ───────────────────────────────────
+      Tropicon is the intended display face, and there is no @font-face for it
+      on purpose. The licence we hold is a Monotype DESKTOP EULA: it excludes
+      materials with the font embedded, forbids installing it on any server,
+      forbids modifying it (so no WOFF2 conversion), and forbids further
+      distribution. Serving it here breaks all four.
+
+      So --nb-font-display resolves to Syne, which is the closest weight and
+      width we already load. DO NOT add an @font-face here until a Monotype
+      WEB FONT licence exists — at which point this is two lines and nothing
+      else in the system has to change.
+
+      The full reasoning, the licence itself, and what a desktop licence DOES
+      permit (flat exported SVG lockups): internal/fonts/README.md
+      ──────────────────────────────────────────────────────────────────────── */
 
 :root {
   /* ── THE RAINBAW ─────────────────────────────────────────────────────── */
@@ -88,7 +93,12 @@
   --nb-r-pill: 999px;
 
   /* ── TYPE ────────────────────────────────────────────────────────────── */
-  --nb-font-display: 'Tropicon', 'Syne', system-ui, sans-serif;
+  /* Tropicon is NOT in this stack, and not only because we cannot serve it
+     (see the note at the top). Naming it here would let it render for the
+     handful of visitors who happen to have it installed locally and for
+     nobody else — a headline that is a different typeface depending on who
+     is looking is worse than one that is consistently Syne. */
+  --nb-font-display: 'Syne', system-ui, sans-serif;
   --nb-font-head:    'Syne', system-ui, sans-serif;
   --nb-font-body:    'DM Sans', system-ui, -apple-system, sans-serif;
   --nb-font-mono:    ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
@@ -198,9 +208,12 @@ button { background: none; border: 0; cursor: pointer; }
 .nb-skip:focus { top: 16px; }
 
 /* ═══════ TYPOGRAPHY ═════════════════════════════════════════════════════
-   Tropicon carries the big statements. Syne Bold carries every heading
-   below that. Body text is DM Sans and stays out of the way — a page where
-   every sentence is a decorative title is a poster, not a product. ────── */
+   --nb-font-display carries the big statements; Syne Bold carries every
+   heading below that. Body text is DM Sans and stays out of the way — a page
+   where every sentence is a decorative title is a poster, not a product.
+
+   Display resolves to Syne today. Tropicon is the face we want there and
+   cannot license for the web yet — see the note at the top of this file. ── */
 .nb-display {
   font-family: var(--nb-font-display);
   font-weight: 800;
