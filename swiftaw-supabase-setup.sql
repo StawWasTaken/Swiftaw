@@ -435,12 +435,22 @@ create table if not exists public.swiftaw_reactions (
   count integer not null default 0
 );
 
--- Seed the 133 starting reactions (53 + 37 + 43). Won't overwrite on re-run.
+-- Start at zero. These three rows used to be seeded at 53 / 37 / 43 — 133
+-- reactions nobody made, displayed to visitors as a count. A real number that
+-- happens to be small is worth more than a made-up one that isn't.
 insert into public.swiftaw_reactions (key, count) values
-  ('stoked', 53),
-  ('stunned', 37),
-  ('loved',  43)
+  ('stoked',  0),
+  ('stunned', 0),
+  ('loved',   0)
 on conflict (key) do nothing;
+
+-- RUN THIS ONCE if your project was set up before the change above: the
+-- insert will not touch rows that already exist, so the old seed is still
+-- sitting in the table and still on the page. This clears it. It also wipes
+-- any genuine reactions collected so far, which is the price of not being
+-- able to tell the two apart after the fact.
+--
+--   update public.swiftaw_reactions set count = 0;
 
 -- RPCs the client calls. SECURITY DEFINER so anon can run them
 -- without direct write access to the table.

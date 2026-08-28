@@ -586,6 +586,101 @@ a CSP that allows `https://swiftaw.com` as a script and style source.
 
 ---
 
+# `index.html` — the homepage, rebuilt
+
+The first page rebuilt on `swiftaw-nb.css`. It carries `data-nb="dark"`, so
+the ground is `#0C0F15` and the panels are the lighter dark. **The page did
+not become paper.** The reference images were white because the reference was
+white; the instruction that followed them was "i still want the UIs to be
+dark, not light". Only the hero slab is yellow, and it is yellow because it is
+the one thing on the page that has to be looked at first.
+
+## The tagline is the hero
+
+```html
+<h1 class="nb-display nb-d1 hp-tagline">Make It Matter<span class="stop">.</span></h1>
+```
+
+Three words, that capitalisation, that full stop — and the full stop is
+Rainbaw red, because the sentence ends on a colour rather than trailing off.
+Nothing is appended to it. "BUILD BOLD." and "swiftly beyond" are gone from
+the page, the `<title>`, the meta description and the JSON-LD `slogan`.
+
+The slab re-points `--nb-fg` and `--nb-fg-muted` at ink, the way every surface
+in this system does, so the eyebrow and the sub-line under the tagline are
+coloured for the yellow they are printed on and not for the dark page behind
+it.
+
+## Everything the page claims is true
+
+Fortized is Live. Hereld says **In build**, and that is all it says — no link,
+no waiting list, no "sign up to hear first", because there is nothing to sign
+up to. Lifecheck and Supernova are Live, and Supernova's card states the
+AI-labelling promise rather than a capability list.
+
+The three fact cards say two platforms, two services, founded 2025 in
+Île-de-France. That is the whole of what is verifiable, so that is the whole
+of what is on the page. No customer counts, no uptime figure, no logos of
+companies that have never heard of us.
+
+### Hereld is not greyed out
+
+`.is-soon { filter: grayscale(1) }` was applied to its icon. A real brand
+rendered in grey reads as discontinued, not as early. The rule and the class
+are gone; the "In build" tag carries the status on its own.
+
+## 🐞 The 133 reactions that never happened
+
+`css/swiftaw.js` seeded the reaction widget with
+
+```js
+const SEED = { stoked: 53, stunned: 37, loved: 43 };
+```
+
+and `swiftaw-supabase-setup.sql` inserted the same numbers into
+`swiftaw_reactions`. The code's own comment said they "live in the Supabase
+row as if they were real". They were shown to every visitor as a count of
+what other people had felt about the page — on the site whose own rule is
+*do not invent fake statistics*. Both are zero now.
+
+⚠️ **Zeroing the seed does not clean an existing project.** `on conflict do
+nothing` means a database that was set up before this change still holds 133.
+The reset is in the SQL file, commented, and has to be run once by hand:
+
+```sql
+update public.swiftaw_reactions set count = 0;
+```
+
+## 🐞 The reveal observer only knew one design system
+
+`.nb-reveal` starts at `opacity:0` and waits for `.is-in`. The observer in
+`css/swiftaw.js` only ever added `.visible`, to `.reveal`. **Every revealed
+block on the new homepage would have rendered blank**, and it would have done
+so on every future NB page too. The observer now serves both:
+
+```js
+e.target.classList.add(
+  e.target.classList.contains('nb-reveal') ? 'is-in' : 'visible');
+```
+
+⚠️ It is exposed as `window.SwiftawObserveReveals(root)` so content injected
+after load can be observed. Anything that builds reveal blocks at runtime has
+to call it — an unobserved `.nb-reveal` is permanently invisible, not merely
+un-animated.
+
+Confetti in the same file drew `#fef83d`, `#fff000` and `#ff8ab4` — two
+near-misses of the Rainbaw yellow and a pink that is not ours. It draws the
+five now.
+
+## The page owns its own burger
+
+It has no `.nav-hamburger` / `.mobile-menu` markup, so the shared handler in
+`swiftaw.js` has nothing to bind to. The six lines that toggle `.nb-nav-links`
+live in the page. When the other pages are rebuilt, that moves into the shared
+script once — not five copies of it.
+
+---
+
 # The account rule, restated because it keeps mattering
 
 Fortized accounts, Hereld accounts and Swiftaw accounts are **three separate

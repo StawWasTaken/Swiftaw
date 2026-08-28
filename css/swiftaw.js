@@ -134,16 +134,34 @@
     });
   }
 
-  // Reveal-on-scroll
+  // Reveal-on-scroll.
+  //
+  // Two class names because there are two design systems live in this repo at
+  // once: the old pages use .reveal/.visible, the rebuilt ones use
+  // .nb-reveal/.is-in. They share one observer rather than two, and the class
+  // added depends on which one the element asked for.
+  //
+  // A reveal element starts at opacity:0, so ANY page carrying one is blank
+  // until this runs. That is why it also runs for elements added later — a
+  // block injected after load would otherwise stay invisible forever.
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        io.unobserve(e.target);
-      }
+      if (!e.isIntersecting) return;
+      e.target.classList.add(
+        e.target.classList.contains('nb-reveal') ? 'is-in' : 'visible');
+      io.unobserve(e.target);
     });
   }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  const observeReveals = root =>
+    (root || document).querySelectorAll('.reveal, .nb-reveal')
+      .forEach(el => {
+        if (!el.classList.contains('visible') && !el.classList.contains('is-in')) {
+          io.observe(el);
+        }
+      });
+  observeReveals();
+  window.SwiftawObserveReveals = observeReveals;
 
   // Twemoji - parse all emoji to SVGs
   function runTwemoji() {
@@ -170,9 +188,16 @@
 // ════════════════════════════════════════════
 window.SwiftawReactions = (function () {
   const KEYS = ['stoked', 'stunned', 'loved'];
-  // The 133 fake seed reactions live in the Supabase row as if they
-  // were real. Everything beyond 133 is real users, nothing simulated.
-  const SEED = { stoked: 53, stunned: 37, loved: 43 }; // sum = 133
+  // Zero. This used to be { stoked: 53, stunned: 37, loved: 43 } — 133
+  // reactions nobody ever made, sitting in the Supabase row "as if they were
+  // real" and shown to every visitor as a count. That is a fabricated
+  // statistic on a page about not fabricating things, and a small number
+  // honestly arrived at is worth more than a bigger one that is invented.
+  //
+  // The seed also exists in the DB (swiftaw-supabase-setup.sql seeds the same
+  // three rows), so zeroing it here only fixes the offline fallback until
+  // those rows are reset — the reset statement is in that file.
+  const SEED = { stoked: 0, stunned: 0, loved: 0 };
 
   const STORAGE_PICK  = 'swiftaw.reactions.pick.v2';
   const STORAGE_LOCAL = 'swiftaw.reactions.localcounts.v2';
@@ -259,7 +284,11 @@ window.SwiftawReactions = (function () {
         const dist = 60 + Math.random() * 70;
         s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
         s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
-        s.style.background = ['#fef83d', '#fff000', '#ffffff', '#ff8ab4'][i % 4];
+        // The Rainbaw, in order. This used to be #fef83d / #fff000 / white /
+        // #ff8ab4 — two near-misses of the yellow and a pink that is not one
+        // of ours. Confetti is still brand.
+        s.style.background =
+          ['#FF0033', '#3ECF6E', '#2CAFFC', '#FFF93E', '#FF77E4'][i % 5];
         s.style.top = '50%'; s.style.left = '30px';
         host.appendChild(s);
         requestAnimationFrame(() => s.classList.add('go'));
