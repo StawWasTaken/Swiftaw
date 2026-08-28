@@ -672,12 +672,72 @@ Confetti in the same file drew `#fef83d`, `#fff000` and `#ff8ab4` — two
 near-misses of the Rainbaw yellow and a pink that is not ours. It draws the
 five now.
 
-## The page owns its own burger
+---
 
-It has no `.nav-hamburger` / `.mobile-menu` markup, so the shared handler in
-`swiftaw.js` has nothing to bind to. The six lines that toggle `.nb-nav-links`
-live in the page. When the other pages are rebuilt, that moves into the shared
-script once — not five copies of it.
+# `about-us.html` and `mission.html`
+
+The second and third pages on the system, and the pair that turned one page's
+choices into a page *shape*. Every rebuilt interior page now opens the same
+way: `.pg-head` → `.pg-slab` → an eyebrow, a display heading whose full stop
+is a real `<span class="dot">`, a lede.
+
+⚠️ **The interior slab is `--nb-surface`, not yellow.** Only the homepage hero
+and the mission thesis are yellow. Yellow means *this is the one thing to read
+first*; a yellow slab at the top of every page is wallpaper, and then nothing
+on the site is emphasised. **The stop is `--nb-red` everywhere**, including the
+homepage — one rule, not a coincidence that held twice.
+
+## About
+
+Three facts, and they are the same three that were already true: Île-de-France,
+August 2025, independent. Four product cards, each carrying the real status
+(`Live` / `In build`) and only Hereld's is unlinked, because there is nothing
+to link to.
+
+The leadership roster is carried over unchanged — same four seats, same names,
+same dates. **The vacancy is drawn as a vacancy**: "Open seat", grey, with the
+date it opened. Filling that square with a stock face or quietly dropping the
+row would both be inventing an employee, in opposite directions.
+
+⚠️ `.ab-item` is a column flex container, so a `.nb-btn` inside it stretches to
+the full card width and reads as a banner rather than a button. It needs
+`align-self:flex-start`, and `margin-top:auto` so the four buttons line up
+across the grid however long each card's copy runs.
+
+## Mission
+
+The four pillars are band cards: the colour lands only on the 12px band, so
+four cards read as one set with four labels instead of four separate designs.
+One yellow slab in the middle carries "Make It Matter." as the thesis, and
+nothing else on the page competes with it.
+
+The section that earns the page is **"What that rules out"** — an engagement
+feed, selling what people say to each other, passing AI off as a person,
+announcing things that do not exist. A promise is only worth reading if it
+says what it costs, and each of those is a thing we could ship that would
+work.
+
+### 🐞 The mission page was advertising the fake seed
+
+Its explainer row read **"133 to start the party. everything after is you."**
+That was the fabricated reaction count from the homepage bug, printed as a
+feature. The whole reaction widget is gone from this page: it is a duplicate of
+the homepage's, bound to the same three Supabase rows, so it was one counter
+rendered twice.
+
+---
+
+# The nav burger is shared
+
+`swiftaw.js` now drives **both** menus: the old pages' `.nav-hamburger` +
+`.mobile-menu` pair, and the rebuilt pages' `.nb-nav` collapsing its own
+`.nb-nav-links` row. The homepage carried its own six-line copy for one
+release; it does not any more.
+
+⚠️ A rebuilt page needs `.nb-nav`, `.nb-nav-burger` and `.nb-nav-links` present
+for it to bind. It closes on link click as well as on the button, because
+in-page anchors do not reload and the menu would otherwise sit over the section
+it just jumped to.
 
 ---
 

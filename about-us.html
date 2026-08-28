@@ -1,262 +1,385 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-nb="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About - Swiftaw</title>
-<meta name="description" content="Swiftaw - a European company making social tools and community apps.">
+<title>About — Swiftaw</title>
+<meta name="description" content="Swiftaw is a European software company, founded in 2025 in Île-de-France. Who we are, and who runs what.">
+<meta name="author" content="Swiftaw">
+<meta name="theme-color" content="#0C0F15">
 <link rel="canonical" href="https://swiftaw.com/about-us">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Swiftaw - About">
-<meta property="og:description" content="A European company making social tools and community apps.">
+<meta property="og:site_name" content="Swiftaw">
+<meta property="og:title" content="About — Swiftaw">
+<meta property="og:description" content="A European software company, founded in 2025 in Île-de-France.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/about-us">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#fef83d">
+<meta name="twitter:title" content="About — Swiftaw">
+<meta name="twitter:description" content="A European software company, founded in 2025 in Île-de-France.">
+<meta name="twitter:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/swiftaw.css">
+<link rel="stylesheet" href="/css/swiftaw-nb.css">
 <style>
-.page-top { padding: 140px 0 10px; position: relative; }
-.page-top .eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--font-display);
-  font-size: 13px; font-weight: 700;
-  color: var(--c-blue);
-  background: rgba(var(--blue-rgb),.08);
-  border: 1.5px solid rgba(var(--blue-rgb),.25);
-  padding: 7px 14px; border-radius: 100px;
-  margin-bottom: 22px;
-  transform: rotate(-2deg);
-}
-.page-top h1 {
-  font-family: var(--font-display);
-  font-size: clamp(44px, 6.6vw, 96px);
-  font-weight: 800;
-  letter-spacing: -3px;
-  line-height: .92;
-  margin-bottom: 20px;
-  max-width: 900px;
-}
-.page-top h1 .scribbled {
-  position: relative; display: inline-block;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.page-top .lede { font-size: 19px; max-width: 580px; color: var(--text); line-height: 1.55; }
+/* ══════════════════════════════════════════════════════════════════════════
+   ABOUT — layout for THIS page only. Anything a second page would want
+   belongs in swiftaw-nb.css instead.
+   ══════════════════════════════════════════════════════════════════════════ */
 
-.sect { padding: 0 28px; margin-top: 70px; }
-.sect-inner { max-width: 1040px; margin: 0 auto; }
-.sect-head { margin-bottom: 8px; }
-.sect-head .kicker { font-family: var(--font-display); font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
-.sect-head h2 { font-family: var(--font-display); font-size: clamp(26px, 3vw, 36px); font-weight: 800; letter-spacing: -1px; }
+html { scroll-padding-top: 88px; }
 
-/* ───── messy facts cluster ───── */
-.facts-messy { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 34px; align-items: flex-start; }
-.fact-card {
-  padding: 22px 24px;
-  background: var(--panel);
-  border: 1.5px solid var(--border);
-  border-radius: 18px;
-  box-shadow: 0 5px 0 0 var(--ink);
-  transition: transform .2s;
-  flex: 0 1 auto;
-}
-.fact-card:hover { transform: rotate(0deg) translateY(-4px) !important; }
-.fact-card:nth-child(1) { transform: rotate(-3deg); margin-top: 6px; }
-.fact-card:nth-child(2) { transform: rotate(2deg); margin-top: -8px; }
-.fact-card:nth-child(3) { transform: rotate(-1.5deg); margin-top: 14px; }
-.fact-card .lbl { font-family: var(--font-display); font-size: 10.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
-.fact-card .val { font-family: var(--font-display); font-size: 20px; font-weight: 800; letter-spacing: -.4px; white-space: nowrap; }
+.nb-nav-actions .swl-btn, .nb-nav-actions .swa-btn { flex: none; }
+.pg-nav-cta { margin-left: 2px; }
+@media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-/* ───── messy roster cluster ───── */
-.roster-messy { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 34px; align-items: flex-start; }
-.seat {
-  display: flex; align-items: center; gap: 16px;
-  padding: 20px 24px;
-  background: var(--panel);
-  border: 1.5px solid var(--border);
-  border-radius: 18px;
-  box-shadow: 0 5px 0 0 var(--ink);
-  flex: 0 1 320px;
-  transition: transform .2s;
+/* ── Page head ────────────────────────────────────────────────────────────
+   Every rebuilt page opens the same way: a slab standing on the dark ground.
+   The homepage's slab is yellow because it carries the tagline; an interior
+   page uses the surface colour, so the yellow keeps meaning "the one thing
+   to read first" and does not become wallpaper. */
+.pg-head { position: relative; padding: clamp(64px, 9vw, 116px) 0 clamp(30px, 4vw, 52px); overflow: hidden; }
+
+.pg-slab {
+  position: relative; z-index: 2;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r-lg);
+  box-shadow: var(--nb-sh-lg);
+  padding: clamp(28px, 4vw, 52px);
+  max-width: 880px;
+  /* The slab is a surface, so muted text on it is coloured for the surface,
+     not for the page behind it. Same rule every nb panel follows. */
+  --nb-fg: var(--nb-surface-fg);
+  --nb-fg-muted: var(--nb-surface-fg-muted);
 }
-.seat:hover { transform: rotate(0deg) translateY(-4px) !important; }
-.seat:nth-child(1) { transform: rotate(1.5deg); }
-.seat:nth-child(2) { transform: rotate(-2deg); margin-top: 18px; }
-.seat:nth-child(3) { transform: rotate(1deg); margin-top: -10px; }
-.seat:nth-child(4) { transform: rotate(-1.2deg); margin-top: 10px; }
-.seat .av {
-  width: 52px; height: 52px; border-radius: 15px; flex-shrink: 0;
+.pg-slab h1 { margin: 12px 0 16px; }
+.pg-slab .dot { color: var(--nb-red); }
+.pg-lede { max-width: 56ch; }
+
+/* Deco. Kept inside the head's padding box — a shape sliced in half by
+   overflow:hidden reads as a rendering fault, not as decoration. */
+.pg-deco-1 { top: 12%; right: 4%; transform: rotate(12deg); }
+.pg-deco-2 { bottom: 8%; right: 15%; width: 40px; height: 40px; }
+[data-nb="dark"] .nb-dots {
+  /* .nb-dots draws in ink. On #0C0F15 that is black on nearly black. */
+  background-image: radial-gradient(rgba(255,255,255,.28) 1.6px, transparent 1.6px);
+}
+
+/* ── Facts ────────────────────────────────────────────────────────────────
+   Three things that are true and checkable. Nothing else goes in this row. */
+.ab-facts { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 34px; }
+.ab-fact { display: flex; flex-direction: column; gap: 7px; }
+.ab-fact .k {
+  font-family: var(--nb-font-display); font-weight: 800;
+  font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--nb-yellow);
+}
+.ab-fact .v { font-family: var(--nb-font-display); font-weight: 700; font-size: 20px; letter-spacing: -.4px; }
+@media (max-width: 720px) { .ab-facts { grid-template-columns: 1fr; } }
+
+/* ── Section heads ────────────────────────────────────────────────────── */
+.ab-shead { margin-bottom: 26px; max-width: 62ch; }
+.ab-shead h2 { margin: 10px 0 12px; }
+
+/* ── Leadership ───────────────────────────────────────────────────────────
+   Real seats with real dates, and the empty one says it is empty. A vacancy
+   drawn as a person would be an invented employee. */
+.ab-seats { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ab-seat { display: flex; align-items: center; gap: 16px; }
+.ab-seat .av {
+  width: 58px; height: 58px; flex: none;
+  border: var(--nb-bd); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm);
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-display); font-weight: 800; font-size: 19px; color: var(--ink);
-  box-shadow: 0 4px 0 0 var(--ink);
+  font-family: var(--nb-font-display); font-weight: 800; font-size: 22px;
+  color: var(--nb-ink);
 }
-.seat.vacant .av { background: linear-gradient(135deg, #2a3242, #1d2330); color: var(--muted-light); }
-.seat .role { font-family: var(--font-display); font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px; }
-.seat.vacant .role { color: var(--muted-light); }
-.seat .name { font-family: var(--font-display); font-size: 18px; font-weight: 800; letter-spacing: -.3px; }
-.seat .since { font-size: 12px; color: var(--muted-light); margin-top: 2px; }
+.ab-seat .role {
+  font-family: var(--nb-font-display); font-weight: 800;
+  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--nb-yellow); margin-bottom: 3px;
+}
+.ab-seat .name { font-family: var(--nb-font-display); font-weight: 700; font-size: 19px; letter-spacing: -.3px; }
+.ab-seat .since { font-size: 13px; color: var(--nb-fg-muted); margin-top: 2px; }
 
-/* ───── made with love sign-off ───── */
-.signoff { text-align: center; margin-top: 70px; padding: 0 28px; }
-.signoff p { font-family: var(--font-display); font-size: 14.5px; font-weight: 700; color: var(--muted-light); letter-spacing: -.1px; display: inline-flex; align-items: center; gap: 7px; }
-.signoff svg { width: 15px; height: 15px; fill: var(--c-pink); }
+.ab-seat.is-open .av { background: var(--nb-surface-2); color: var(--nb-fg-muted); }
+.ab-seat.is-open .role { color: var(--nb-fg-muted); }
+@media (max-width: 720px) { .ab-seats { grid-template-columns: 1fr; } }
 
-/* deco */
-.deco-a1 { top: 100px; right: 4%; width: 36px; height: 36px; color: var(--c-pink); --r: 14deg; }
-.deco-a2 { bottom: -10px; left: 2%; width: 28px; height: 28px; color: var(--c-mint); --r: -10deg; }
+/* ── What we make ─────────────────────────────────────────────────────── */
+.ab-make { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ab-item { display: flex; flex-direction: column; gap: 10px; }
+.ab-item .top { display: flex; align-items: center; gap: 12px; }
+.ab-item img { width: 40px; height: 40px; border-radius: 11px; flex: none; }
+.ab-item h3 { flex: 1; }
+/* The card is a column, so a button would otherwise stretch to the full width
+   and read as a banner. It hugs its label, and sits on the floor of the card
+   so the four buttons line up across the grid however long the copy runs. */
+.ab-item .nb-btn { align-self: flex-start; margin-top: auto; }
+@media (max-width: 720px) { .ab-make { grid-template-columns: 1fr; } }
+
+/* ── Closing line ─────────────────────────────────────────────────────── */
+.ab-out { text-align: center; padding-bottom: clamp(50px, 7vw, 90px); }
+.ab-out .nb-display { max-width: 20ch; margin: 0 auto 20px; }
 </style>
 </head>
 <body>
 
-<div class="bg-blob b1"></div>
-<div class="bg-blob b2"></div>
+<a class="nb-skip" href="#main">Skip to content</a>
 
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-  <symbol id="i-fire" viewBox="0 0 448 512"><path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2zM225.7 416c25.3 0 47.7-7 68.8-21 42.1-29.4 53.4-88.2 28.1-134.4-4.5-9-16-9.6-22.5-2l-25.2 29.3c-6.6 7.6-18.5 7.4-24.7-.5-17.3-22.1-49.1-62.4-65.3-83-5.4-6.9-15.2-8-21.5-1.9-18.3 17.8-51.5 56.8-51.5 104.3 0 68.6 50.6 109.2 113.7 109.2z"/></symbol>
-  <symbol id="i-people" viewBox="0 0 576 512"><path d="M64 128a112 112 0 1 1 224 0 112 112 0 1 1 -224 0zM0 464c0-97.2 78.8-176 176-176s176 78.8 176 176l0 6c0 23.2-18.8 42-42 42L42 512c-23.2 0-42-18.8-42-42l0-6zM432 64a96 96 0 1 1 0 192 96 96 0 1 1 0-192zm0 240c79.5 0 144 64.5 144 144l0 22.4c0 23-18.6 41.6-41.6 41.6l-144.8 0c6.6-12.5 10.4-26.8 10.4-42l0-6c0-51.5-17.4-98.9-46.5-136.7 22.6-14.7 49.6-23.3 78.5-23.3z"/></symbol>
-  <symbol id="i-heart" viewBox="0 0 512 512"><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></symbol>
-  <symbol id="i-chevron" viewBox="0 0 384 512"><path d="M169.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L192 205.3 54.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/></symbol>
-</svg>
+<div class="nb-rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 
-<nav class="nav-root">
-  <a href="/" class="nav-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
-  <div class="nav-pill-group">
-    <div class="nav-dropdown" id="companyDropdown">
-      <span class="nav-pill nav-dropbtn">Company <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="/about-us" class="active">About</a>
-        <a href="/mission">Mission</a>
-      </div>
+<nav class="nb-nav" id="nav">
+  <div class="nb-nav-in">
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+
+    <div class="nb-nav-links" id="navLinks">
+      <a class="nb-nav-link" href="/about-us" aria-current="page">About</a>
+      <a class="nb-nav-link" href="/mission">Mission</a>
+      <a class="nb-nav-link" href="/innovation-room">Lab</a>
+      <a class="nb-nav-link" href="/newsroom">News</a>
     </div>
-    <div class="nav-dropdown" id="productsDropdown">
-      <span class="nav-pill nav-dropbtn">Products <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="https://fortized.com">Fortized</a>
-        <a href="/lifecheck/">Lifecheck</a>
-        <a href="/supernova/">Supernova</a>
-      </div>
+
+    <span class="nb-nav-spacer"></span>
+
+    <div class="nb-nav-actions">
+      <span data-swiftaw-launcher></span>
+      <span data-swiftaw-account></span>
+      <a class="nb-btn nb-btn--primary nb-btn--sm pg-nav-cta" href="https://fortized.com" rel="noopener">Fortized</a>
+      <button class="nb-icon-btn nb-nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
     </div>
-    <div class="nav-dropdown" id="legalDropdown">
-      <span class="nav-pill nav-dropbtn">Legal <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="/legal/terms-of-service">Terms of Service</a>
-        <a href="/legal/privacy-policy">Privacy Policy</a>
-        <a href="/legal/products-policy">Products Policy</a>
-      </div>
-    </div>
-    <a href="/innovation-room" class="nav-pill">Lab</a>
-    <a href="/newsroom" class="nav-pill">News</a>
-  </div>
-  <div class="nav-spacer"></div>
-  <div class="nav-right">
-    <a href="https://fortized.com" class="nav-btn-cta">Fortized</a>
-    <div class="nav-hamburger"><span></span><span></span><span></span></div>
   </div>
 </nav>
-<div class="mobile-menu">
-  <div class="mm-label">Company</div>
-  <a href="/about-us">About</a>
-  <a href="/mission">Mission</a>
-  <div class="mm-label">Products</div>
-  <a href="https://fortized.com">Fortized</a>
-  <a href="/lifecheck/">Lifecheck</a>
-  <a href="/supernova/">Supernova</a>
-  <div class="mm-label">Legal</div>
-  <a href="/legal/terms-of-service">Terms of Service</a>
-  <a href="/legal/privacy-policy">Privacy Policy</a>
-  <a href="/legal/products-policy">Products Policy</a>
-  <div class="mm-label">More</div>
-  <a href="/innovation-room">Lab</a>
-  <a href="/newsroom">News</a>
-</div>
 
-<section class="page-top">
-  <div class="container">
-    <div class="deco deco-a1 float-a"><svg><use href="#i-people"/></svg></div>
-    <div class="deco deco-a2 float-b"><svg><use href="#i-fire"/></svg></div>
+<main id="main">
 
-    <div class="eyebrow">a little about us</div>
-    <h1>about.</h1>
-    <p class="lede">a European company making social tools and community apps. Fortized was the first thing we shipped.</p>
+<!-- ══ HEAD ═════════════════════════════════════════════════════════════ -->
+<section class="pg-head">
+  <span class="nb-deco nb-shape nb-shape--sq pg-deco-1" aria-hidden="true"></span>
+  <span class="nb-deco nb-shape nb-shape--circle pg-deco-2" aria-hidden="true"></span>
+
+  <div class="nb-wrap">
+    <div class="pg-slab nb-reveal">
+      <span class="nb-eyebrow">About</span>
+      <h1 class="nb-display nb-d2">A small company<br>that ships<span class="dot">.</span></h1>
+      <p class="nb-lead pg-lede nb-muted">
+        Swiftaw is a European software company. We make social platforms and
+        we run the services that hold them up. Fortized was the first thing we
+        shipped, and everything since has followed the same compass.
+      </p>
+
+      <div class="ab-facts">
+        <div class="ab-fact"><span class="k">Based in</span><span class="v">Île-de-France, France</span></div>
+        <div class="ab-fact"><span class="k">Founded</span><span class="v">August 2025</span></div>
+        <div class="ab-fact"><span class="k">Ownership</span><span class="v">Independent</span></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<div class="sect">
-  <div class="sect-inner">
-    <div class="sect-head reveal">
-      <div class="kicker">the basics</div>
-      <h2>Facts &amp; figures.</h2>
+<hr class="nb-rule">
+
+<!-- ══ WHAT WE MAKE ═════════════════════════════════════════════════════ -->
+<section class="nb-section">
+  <div class="nb-wrap">
+    <div class="ab-shead nb-reveal">
+      <span class="nb-eyebrow">What we make</span>
+      <h2 class="nb-h1">Two platforms, two services.</h2>
+      <p class="nb-muted">
+        That is the whole list. When there is a third of either, it will appear
+        here, and not before.
+      </p>
     </div>
-    <div class="facts-messy">
-      <div class="fact-card reveal"><div class="lbl">HQ</div><div class="val">Île-de-France, France</div></div>
-      <div class="fact-card reveal"><div class="lbl">Founded</div><div class="val">August 2025</div></div>
-      <div class="fact-card reveal"><div class="lbl">Status</div><div class="val">Independent</div></div>
+
+    <div class="ab-make">
+      <article class="nb-card ab-item nb-reveal">
+        <div class="top">
+          <img width="40" height="40" src="/product-logos/Fortized%20icon.png" alt="" onerror="this.remove()">
+          <h3 class="nb-h3">Fortized</h3>
+          <span class="nb-tag nb-tag--green">Live</span>
+        </div>
+        <p class="nb-muted">
+          A community platform for gamers and the friend groups around them.
+          Bastions, channels, direct messages, and the things that make a room
+          feel like a room.
+        </p>
+        <a class="nb-btn nb-btn--sm nb-btn--paper" href="https://fortized.com" rel="noopener">Open Fortized</a>
+      </article>
+
+      <article class="nb-card ab-item nb-reveal">
+        <div class="top">
+          <img width="40" height="40" src="/product-logos/Hereld%20icon.png" alt="" onerror="this.remove()">
+          <h3 class="nb-h3">Hereld</h3>
+          <span class="nb-tag">In build</span>
+        </div>
+        <p class="nb-muted">
+          Our second platform. It is being built now, so there is nothing to
+          sign up to yet and we are not going to pretend otherwise.
+        </p>
+      </article>
+
+      <article class="nb-card ab-item nb-reveal">
+        <div class="top">
+          <img width="40" height="40" src="/product-logos/Lifecheck%20icon.png" alt="" onerror="this.remove()">
+          <h3 class="nb-h3">Lifecheck</h3>
+          <span class="nb-tag nb-tag--green">Live</span>
+        </div>
+        <p class="nb-muted">
+          Our human-verification widget. It asks a visitor to do something a
+          person finds easy, and it does it without tracking them around the
+          web afterwards.
+        </p>
+        <a class="nb-btn nb-btn--sm nb-btn--paper" href="/lifecheck/">Open Lifecheck</a>
+      </article>
+
+      <article class="nb-card ab-item nb-reveal">
+        <div class="top">
+          <img width="40" height="40" src="/product-logos/Supernova%20icon.png" alt="" onerror="this.remove()">
+          <h3 class="nb-h3">Supernova</h3>
+          <span class="nb-tag nb-tag--green">Live</span>
+        </div>
+        <p class="nb-muted">
+          Our AI service. Anything it writes is labelled as written by it. We
+          would rather you know than be impressed.
+        </p>
+        <a class="nb-btn nb-btn--sm nb-btn--paper" href="/supernova/">Open Supernova</a>
+      </article>
     </div>
   </div>
-</div>
+</section>
 
-<div class="sect">
-  <div class="sect-inner">
-    <div class="sect-head reveal">
-      <div class="kicker">who's running things</div>
-      <h2>Leadership.</h2>
+<hr class="nb-rule">
+
+<!-- ══ LEADERSHIP ═══════════════════════════════════════════════════════ -->
+<section class="nb-section">
+  <div class="nb-wrap">
+    <div class="ab-shead nb-reveal">
+      <span class="nb-eyebrow">Who runs what</span>
+      <h2 class="nb-h1">Leadership.</h2>
+      <p class="nb-muted">
+        Four seats. Three of them are filled, and the fourth says so.
+      </p>
     </div>
-    <div class="roster-messy">
-      <div class="seat reveal">
-        <div class="av" style="background: linear-gradient(135deg, var(--accent), var(--accent-2));">S</div>
-        <div><div class="role">Chief Executive Officer</div><div class="name">Staw</div><div class="since">founder · since Aug 2025</div></div>
+
+    <div class="ab-seats">
+      <div class="nb-card ab-seat nb-reveal">
+        <div class="av" style="background: var(--nb-yellow);">S</div>
+        <div>
+          <div class="role">Chief Executive Officer</div>
+          <div class="name">Staw</div>
+          <div class="since">Founder · since August 2025</div>
+        </div>
       </div>
-      <div class="seat reveal">
-        <div class="av" style="background: linear-gradient(135deg, var(--c-blue), #38bdf8);">T</div>
-        <div><div class="role">Chief R&amp;D Officer</div><div class="name">Tyrianum</div><div class="since">since Dec 2025</div></div>
+
+      <div class="nb-card ab-seat nb-reveal">
+        <div class="av" style="background: var(--nb-blue);">T</div>
+        <div>
+          <div class="role">Chief R&amp;D Officer</div>
+          <div class="name">Tyrianum</div>
+          <div class="since">Since December 2025</div>
+        </div>
       </div>
-      <div class="seat reveal">
-        <div class="av" style="background: linear-gradient(135deg, var(--c-pink), #f472b6);">W</div>
-        <div><div class="role">Chief Communication Officer</div><div class="name">Weaverdant</div><div class="since">since Feb 2026</div></div>
+
+      <div class="nb-card ab-seat nb-reveal">
+        <div class="av" style="background: var(--nb-pink);">W</div>
+        <div>
+          <div class="role">Chief Communication Officer</div>
+          <div class="name">Weaverdant</div>
+          <div class="since">Since February 2026</div>
+        </div>
       </div>
-      <div class="seat vacant reveal">
+
+      <div class="nb-card ab-seat is-open nb-reveal">
         <div class="av">?</div>
-        <div><div class="role">Chief Safety Officer</div><div class="name">Vacant</div><div class="since">open since Feb 2026</div></div>
+        <div>
+          <div class="role">Chief Safety Officer</div>
+          <div class="name">Open seat</div>
+          <div class="since">Unfilled since February 2026</div>
+        </div>
       </div>
     </div>
   </div>
+</section>
+
+<div class="nb-marquee" aria-hidden="true">
+  <div class="nb-marquee-track">
+    <span>Make It Matter.</span><span>★</span>
+    <span>Independent</span><span>★</span>
+    <span>Île-de-France</span><span>★</span>
+    <span>Since 2025</span><span>★</span>
+    <span>Make It Matter.</span><span>★</span>
+    <span>Independent</span><span>★</span>
+    <span>Île-de-France</span><span>★</span>
+    <span>Since 2025</span><span>★</span>
+  </div>
 </div>
 
-<footer class="site-footer" style="margin-top:50px;">
-  <div class="footer-inner">
-    <a href="/" class="footer-logo"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
-    <div class="footer-copy">© 2026 Swiftaw</div>
-    <div class="footer-links">
-      <a href="/about-us">About</a>
-      <a href="/mission">Mission</a>
-      <a href="/legal/terms-of-service">Legal</a>
-      <a href="https://fortized.com">Fortized</a>
+<!-- ══ OUT ══════════════════════════════════════════════════════════════ -->
+<section class="nb-section ab-out">
+  <div class="nb-wrap">
+    <h2 class="nb-display nb-d3 nb-reveal">That is genuinely all of it.</h2>
+    <p class="nb-lead nb-muted nb-reveal" style="max-width:52ch; margin:0 auto 26px;">
+      No customer count, no uptime badge, no logos of companies that have never
+      heard of us. When there is something worth showing, it goes in the
+      newsroom.
+    </p>
+    <div class="nb-row nb-reveal" style="justify-content:center;">
+      <a class="nb-btn nb-btn--primary nb-btn--lg" href="/mission">Read the mission</a>
+      <a class="nb-btn nb-btn--paper nb-btn--lg" href="/newsroom">Newsroom</a>
     </div>
   </div>
+</section>
+
+</main>
+
+<footer class="nb-footer">
+  <div class="nb-wrap">
+    <div class="nb-footer-grid">
+      <div>
+        <a href="/" class="nb-nav-logo" style="margin-bottom:14px;"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+        <p class="nb-muted" style="font-size:14px; max-width:32ch;">
+          A European software company. Île-de-France, France.
+        </p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div class="nb-footer-list">
+          <a href="/about-us">About</a>
+          <a href="/mission">Mission</a>
+          <a href="/innovation-room">Lab</a>
+          <a href="/newsroom">Newsroom</a>
+        </div>
+      </div>
+      <div>
+        <h4>Make</h4>
+        <div class="nb-footer-list">
+          <a href="https://fortized.com" rel="noopener">Fortized</a>
+          <a href="/lifecheck/">Lifecheck</a>
+          <a href="/supernova/">Supernova</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="nb-footer-list">
+          <a href="/legal/terms-of-service">Terms of Service</a>
+          <a href="/legal/privacy-policy">Privacy Policy</a>
+          <a href="/legal/products-policy">Products Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="nb-footer-base">
+      <span>© 2026 Swiftaw</span>
+      <span>Make It Matter.</span>
+    </div>
+  </div>
+  <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
 </footer>
 
 <script src="/css/swiftaw.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
-    dropdown.addEventListener('click', function(e) {
-      e.stopPropagation();
-      document.querySelectorAll('.nav-dropdown.open').forEach(function(d) {
-        if (d !== dropdown) d.classList.remove('open');
-      });
-      dropdown.classList.toggle('open');
-    });
-  });
-  document.addEventListener('click', function() {
-    document.querySelectorAll('.nav-dropdown.open').forEach(function(d) {
-      d.classList.remove('open');
-    });
-  });
-});
-</script>
+
 </body>
 </html>

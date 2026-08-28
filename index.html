@@ -316,11 +316,11 @@ html { scroll-padding-top: 88px; }
     <div class="hp-facts">
       <div class="nb-card hp-fact nb-reveal">
         <span class="k">2</span>
-        <span class="v nb-muted">Platforms — Fortized, and Hereld on the way</span>
+        <span class="v nb-muted">Platforms. Fortized, and Hereld on the way</span>
       </div>
       <div class="nb-card hp-fact nb-reveal">
         <span class="k">2</span>
-        <span class="v nb-muted">Services — Lifecheck and Supernova, both live</span>
+        <span class="v nb-muted">Services. Lifecheck and Supernova, both live</span>
       </div>
       <div class="nb-card hp-fact nb-reveal">
         <span class="k">2025</span>
@@ -502,7 +502,7 @@ html { scroll-padding-top: 88px; }
         <h2 class="nb-display nb-d3">How is this landing?</h2>
       </div>
       <p class="nb-muted" style="max-width:38ch;">
-        Press one. Everyone on this page sees it move. It changes nothing — it
+        Press one. Everyone on this page sees it move. It changes nothing. It
         just tells us somebody is out there.
       </p>
     </div>
@@ -624,27 +624,6 @@ window.SWIFTAW_CFG = {
 };
 </script>
 <script src="/css/swiftaw.js"></script>
-<script>
-/* The nav burger. swiftaw.js drives the OLD .nav-hamburger / .mobile-menu
-   pair, which this page no longer has — the nb nav collapses its own link
-   row instead, so it brings its own six lines rather than dragging the old
-   markup along for one listener. */
-(function () {
-  var nav = document.getElementById('nav');
-  var btn = document.getElementById('burger');
-  if (!nav || !btn) return;
-  btn.addEventListener('click', function () {
-    var open = nav.classList.toggle('is-open');
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-  });
-  document.getElementById('navLinks').addEventListener('click', function (e) {
-    if (e.target.tagName === 'A') {
-      nav.classList.remove('is-open');
-      btn.setAttribute('aria-expanded', 'false');
-    }
-  });
-})();
-</script>
 
 </body>
 </html>

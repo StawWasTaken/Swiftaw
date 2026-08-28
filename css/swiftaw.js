@@ -124,13 +124,35 @@
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  // Mobile menu
+  // Mobile menu — OLD pages (.nav-hamburger opens a separate .mobile-menu).
   const burger = document.querySelector('.nav-hamburger');
   const menu = document.querySelector('.mobile-menu');
   if (burger && menu) {
     burger.addEventListener('click', () => menu.classList.toggle('open'));
     menu.addEventListener('click', e => {
       if (e.target.tagName === 'A') menu.classList.remove('open');
+    });
+  }
+
+  // Mobile menu — REBUILT pages. The nb nav has no second menu element: it
+  // collapses its own .nb-nav-links row, so the bar toggles a class on itself.
+  // This lives here rather than in each page because there is one nav, not one
+  // per page, and five copies of six lines is five places to fix a bug.
+  const nbNav = document.querySelector('.nb-nav');
+  const nbBurger = nbNav && nbNav.querySelector('.nb-nav-burger');
+  const nbLinks = nbNav && nbNav.querySelector('.nb-nav-links');
+  if (nbNav && nbBurger && nbLinks) {
+    nbBurger.addEventListener('click', () => {
+      const open = nbNav.classList.toggle('is-open');
+      nbBurger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // Close on navigation. In-page anchors do not reload, so without this the
+    // menu stays open covering the section it just jumped to.
+    nbLinks.addEventListener('click', e => {
+      if (e.target.closest('a')) {
+        nbNav.classList.remove('is-open');
+        nbBurger.setAttribute('aria-expanded', 'false');
+      }
     });
   }
 
