@@ -1,243 +1,312 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-nb="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Swiftaw account</title>
+<title>Your account — Swiftaw</title>
 <meta name="description" content="Create your free Swiftaw account or log in. One account across Swiftaw products.">
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://swiftaw.com/account">
-<meta name="theme-color" content="#fef83d">
+<meta name="theme-color" content="#0C0F15">
 <link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/swiftaw.css">
+<link rel="stylesheet" href="/css/swiftaw-nb.css">
 <style>
-.acc-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 110px 20px 60px; position: relative; }
-.acc-card {
-  width: 100%; max-width: 430px;
-  background: linear-gradient(160deg, var(--panel) 0%, var(--panel-2) 100%);
-  border: 1.5px solid var(--border); border-radius: 22px;
-  box-shadow: 0 8px 0 0 var(--ink), 0 24px 50px rgba(0,0,0,.45);
-  padding: 26px 26px 22px;
+/* ══ ACCOUNT ══════════════════════════════════════════════════════════════
+   Shell and skin only. Every id, class and template hook below is the one the
+   auth script already looks for — the script writes `className = 'acc-msg show
+   err'` and `className = 'hint bad'` outright, so these names cannot be swapped
+   for .nb-alert / .nb-hint. They are restyled in place instead. */
+
+.acc-wrap {
+  min-height: calc(100vh - 71px);
+  display: grid; place-items: center;
+  padding: clamp(34px, 6vw, 66px) 20px clamp(48px, 7vw, 80px);
+  position: relative; overflow: hidden;
 }
-.acc-head { text-align: center; margin-bottom: 20px; }
-.acc-logo { height: 26px; width: auto; display: block; margin: 0 auto 14px; }
-.acc-head h1 { font-family: var(--font-display); font-weight: 800; font-size: 22px; letter-spacing: -.6px; }
-.acc-head p { font-size: 13px; color: var(--muted-light); margin-top: 4px; }
+/* Two flat shapes, placed by hand, well clear of the card at every width. */
+.acc-deco { position: absolute; z-index: 0; pointer-events: none; }
+.acc-deco--sq { top: 12%; left: 7%; width: 78px; height: 78px; background: var(--nb-pink); border: var(--nb-bd); transform: rotate(-9deg); }
+.acc-deco--ci { bottom: 14%; right: 8%; width: 104px; height: 104px; background: var(--nb-blue); border: var(--nb-bd); border-radius: 50%; }
+@media (max-width: 1080px) { .acc-deco { display: none; } }
 
-.acc-tabs { display: flex; gap: 5px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 18px; }
-.acc-tab { flex: 1; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 13.5px; color: var(--muted-light); padding: 9px; border-radius: 9px; cursor: pointer; transition: color .15s, background .15s; }
-.acc-tab.on { color: #0d1117; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+.acc-col { position: relative; z-index: 1; width: 100%; max-width: 470px; }
+.acc-stamp { display: block; margin: 0 auto 16px; width: fit-content; }
 
-.fld { margin-bottom: 13px; }
-.fld label { display: block; font-family: var(--font-display); font-weight: 700; font-size: 12px; color: var(--muted-light); margin-bottom: 6px; }
-.fld label .opt { color: var(--muted); font-weight: 400; }
+.acc-card { padding: clamp(22px, 3.4vw, 30px); }
+
+.acc-head { text-align: center; margin-bottom: 22px; }
+.acc-logo { height: 26px; width: auto; margin: 0 auto 15px; }
+.acc-head h1 { font-family: var(--nb-font-display); font-weight: 800; font-size: clamp(24px, 4vw, 29px); letter-spacing: -.03em; line-height: 1.1; }
+.acc-head p { font-size: 14.5px; color: var(--nb-fg-muted); margin-top: 7px; }
+
+/* Segmented control. Active is a flat yellow slab, not a gradient. */
+.acc-tabs {
+  display: flex; gap: 6px; margin-bottom: 20px;
+  background: var(--nb-surface-2);
+  border: var(--nb-bd-thin); border-radius: 13px; padding: 5px;
+}
+.acc-tab {
+  flex: 1; text-align: center;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 14px;
+  color: var(--nb-fg-muted);
+  padding: 10px 6px; border-radius: 9px; cursor: pointer;
+  transition: color var(--nb-fast), background var(--nb-fast);
+}
+.acc-tab:hover { color: var(--nb-surface-fg); }
+.acc-tab.on {
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border: var(--nb-bd-thin); box-shadow: var(--nb-sh-sm);
+  /* The border is added only in the on state, so compensate for it or the
+     active tab grows 4px taller than its neighbour and the row jumps. */
+  padding: 8px 4px;
+}
+
+.fld { margin-bottom: 15px; }
+.fld label {
+  display: block; font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 13px; margin-bottom: 7px;
+}
+.fld label .opt { color: var(--nb-fg-muted); font-weight: 500; font-size: 12.5px; }
 .fld input[type=text], .fld input[type=email], .fld input[type=password] {
-  width: 100%; background: var(--bg-2); border: 1.5px solid var(--border-strong); border-radius: 11px;
-  color: #fff; font-family: var(--font-body); font-size: 14.5px; padding: 11px 13px; outline: none; transition: border-color .15s;
+  width: 100%;
+  /* --nb-surface-2, not --nb-surface: inside a card the surface fill IS the
+     card, so a field set on it disappears into its own container. */
+  background: var(--nb-surface-2);
+  color: var(--nb-surface-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r-sm);
+  padding: 12px 14px; font-size: 15px; outline: none;
+  transition: box-shadow var(--nb-fast);
 }
-.fld input:focus { border-color: var(--accent); }
-.fld input::placeholder { color: var(--muted); }
-.fld .hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
-.fld .hint.bad { color: #ff8ea3; }
-.fld .hint.good { color: var(--c-mint); }
+.fld input::placeholder { color: var(--nb-surface-fg-muted); }
+.fld input:focus { box-shadow: var(--nb-sh-sm); border-radius: var(--nb-r-sm); }
+.fld .hint { font-size: 12.5px; color: var(--nb-fg-muted); margin-top: 6px; }
+.fld .hint.bad  { color: var(--nb-red); font-weight: 600; }
+.fld .hint.good { color: var(--nb-green); font-weight: 600; }
 
-/* avatar picker */
-.ap-main { display: flex; align-items: center; gap: 13px; margin-bottom: 11px; }
-.ap-prev { width: 56px; height: 56px; border-radius: 50%; background: var(--bg-2); border: 1.5px solid var(--border-strong); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.ap-prev svg { width: 22px; height: 22px; fill: var(--muted); }
+/* ── avatar picker ── */
+.ap-main { display: flex; align-items: center; gap: 14px; margin-bottom: 13px; }
+.ap-prev {
+  width: 60px; height: 60px; border-radius: 50%; flex: none;
+  background: var(--nb-surface-2) center / cover;
+  border: var(--nb-bd); box-shadow: var(--nb-sh-sm);
+  display: grid; place-items: center;
+}
+.ap-prev svg { width: 24px; height: 24px; fill: var(--nb-surface-fg-muted); }
 .ap-prev.has-img svg { display: none; }
-.ap-btns { display: flex; flex-direction: column; gap: 5px; }
-.ap-upload { font-family: var(--font-display); font-weight: 700; font-size: 12.5px; color: var(--muted-light); border: 1.5px solid var(--border-strong); background: var(--bg-2); padding: 8px 13px; border-radius: 10px; cursor: pointer; transition: color .15s, border-color .15s; }
-.ap-upload:hover { color: #fff; border-color: rgba(254,248,61,.4); }
-.ap-clear { font-size: 11.5px; color: var(--muted); background: none; border: 0; cursor: pointer; text-align: left; padding-left: 2px; }
-.ap-clear:hover { color: #ff8ea3; }
-.ap-or { font-size: 11px; color: var(--muted); margin: 2px 0 8px; }
-.ap-defaults { display: flex; gap: 8px; flex-wrap: wrap; }
-.ap-def { width: 42px; height: 42px; border-radius: 50%; background-size: cover; background-position: center; cursor: pointer; border: 2.5px solid transparent; transition: border-color .15s, transform .12s; }
-.ap-def:hover { transform: translateY(-2px); }
-.ap-def.sel { border-color: var(--accent); }
+.ap-btns { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; }
+.ap-upload {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px;
+  color: var(--nb-surface-fg); background: var(--nb-surface-2);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm); padding: 9px 14px;
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast);
+}
+.ap-upload:hover  { transform: translate(-1px, -1px); box-shadow: 3px 4px 0 var(--nb-ink); }
+.ap-upload:active { transform: translate(2px, 3px);   box-shadow: 0 0 0 var(--nb-ink); }
+.ap-clear { font-size: 12.5px; color: var(--nb-fg-muted); text-decoration: underline; text-underline-offset: 3px; }
+.ap-clear:hover { color: var(--nb-red); }
+.ap-or { font-size: 12.5px; color: var(--nb-fg-muted); margin: 0 0 10px; }
+.ap-defaults { display: flex; gap: 10px; flex-wrap: wrap; }
+.ap-def {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--nb-surface-2) center / cover;
+  border: var(--nb-bd-thin); cursor: pointer;
+  transition: transform var(--nb-fast);
+}
+.ap-def:hover { transform: translateY(-3px); }
+/* Flat ring, no blur — this is a selection mark, not a glow. */
+.ap-def.sel { outline: 4px solid var(--nb-yellow); outline-offset: 2px; }
 
-.lc-slot { margin: 6px 0 14px; }
-.lc-slot .lc-label { font-family: var(--font-display); font-weight: 700; font-size: 12px; color: var(--muted-light); margin-bottom: 8px; }
+/* ── human check ── */
+.lc-slot { margin: 4px 0 17px; }
+.lc-slot .lc-label { font-family: var(--nb-font-head); font-weight: 700; font-size: 13px; margin-bottom: 9px; }
 .lc-slot .lifecheck { display: flex; }
-.lc-ok { display: none; align-items: center; gap: 8px; font-size: 12.5px; color: var(--c-mint); margin-top: 6px; }
+.lc-ok { display: none; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--nb-green); margin-top: 8px; }
 .lc-ok.show { display: flex; }
-.lc-ok svg { width: 14px; height: 14px; fill: var(--c-mint); }
+.lc-ok svg { width: 15px; height: 15px; fill: var(--nb-green); }
 
-.acc-submit { width: 100%; justify-content: center; margin-top: 4px; }
-.acc-msg { margin-top: 13px; font-size: 13px; line-height: 1.5; padding: 10px 13px; border-radius: 11px; display: none; }
+.acc-submit { margin-top: 6px; }
+
+/* Flat Rainbaw slabs. The script rewrites className wholesale, so these are
+   plain classes rather than .nb-alert modifiers. */
+.acc-msg {
+  display: none; margin-top: 15px;
+  font-size: 14px; line-height: 1.5; font-weight: 500;
+  padding: 13px 15px;
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm);
+}
 .acc-msg.show { display: block; }
-.acc-msg.err { background: rgba(255,1,50,.10); border: 1.5px solid rgba(255,91,120,.35); color: #ff8ea3; }
-.acc-msg.ok { background: rgba(var(--green-rgb),.10); border: 1.5px solid rgba(var(--green-rgb),.30); color: var(--c-green); }
-.acc-msg.info { background: rgba(var(--blue-rgb),.10); border: 1.5px solid rgba(var(--blue-rgb),.30); color: var(--c-blue); }
+.acc-msg.err  { background: var(--nb-red);   color: #FFFFFF; }
+.acc-msg.ok   { background: var(--nb-green); color: var(--nb-ink); }
+.acc-msg.info { background: var(--nb-blue);  color: var(--nb-ink); }
 
-.acc-sep-note { margin-top: 16px; padding: 11px 13px; border-radius: 11px; background: rgba(196,181,253,.07); border: 1px solid rgba(196,181,253,.22); font-size: 11.5px; color: var(--muted-light); line-height: 1.5; }
-.acc-sep-note b { color: #fff; }
-.acc-foot { text-align: center; margin-top: 14px; font-size: 12px; color: var(--muted); }
-.acc-foot a { color: var(--muted-light); }
+.acc-sep-note {
+  display: flex; align-items: center; gap: 14px;
+  margin-top: 18px; padding: 14px 16px;
+  background: var(--nb-surface-2);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  font-size: 13px; line-height: 1.55; color: var(--nb-surface-fg-muted);
+}
+.acc-sep-note img { width: 76px; height: auto; flex: none; }
+.acc-sep-note b { color: var(--nb-yellow); }
+@media (max-width: 400px) { .acc-sep-note img { display: none; } }
 
-/* settings view header */
-.set-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-.set-head .big { width: 58px; height: 58px; border-radius: 50%; background: var(--bg-2); border: 1.5px solid var(--border-strong); background-size: cover; background-position: center; flex-shrink: 0; }
-.set-head .who .n { font-family: var(--font-display); font-weight: 800; font-size: 19px; letter-spacing: -.4px; }
-.set-head .who .e { font-size: 12.5px; color: var(--muted-light); }
-.set-title { font-family: var(--font-display); font-weight: 700; font-size: 12px; color: var(--muted-light); margin: 16px 0 8px; }
+.acc-foot { text-align: center; margin-top: 16px; font-size: 13px; color: var(--nb-fg-muted); }
+.acc-foot a { text-decoration: underline; text-underline-offset: 3px; }
+.acc-foot a:hover { color: var(--nb-yellow); }
 
-.acc-loading { text-align: center; padding: 40px; color: var(--muted); font-family: var(--font-display); font-weight: 700; }
+/* ── settings view ── */
+.set-head { display: flex; align-items: center; gap: 15px; margin-bottom: 24px; }
+.set-head .big {
+  width: 64px; height: 64px; border-radius: 50%; flex: none;
+  background: var(--nb-surface-2) center / cover;
+  border: var(--nb-bd); box-shadow: var(--nb-sh-sm);
+}
+.set-head .who .n { font-family: var(--nb-font-display); font-weight: 800; font-size: 21px; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.set-head .who .e { font-size: 13.5px; color: var(--nb-fg-muted); overflow-wrap: anywhere; }
+.set-title { font-family: var(--nb-font-head); font-weight: 700; font-size: 13px; margin: 20px 0 10px; }
+
+.acc-loading {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 46px 0; color: var(--nb-fg-muted);
+  font-family: var(--nb-font-head); font-weight: 700;
+}
+
 .hidden { display: none !important; }
+@media (max-width: 560px) { .pg-nav-cta { display: none; } }
 </style>
 </head>
 <body>
 
-<div class="bg-blob b1"></div>
-<div class="bg-blob b2"></div>
+<a class="nb-skip" href="#main">Skip to content</a>
 
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-  <symbol id="i-chevron" viewBox="0 0 384 512"><path d="M169.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L192 205.3 54.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z"/></symbol>
+<div class="nb-rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
   <symbol id="i-user" viewBox="0 0 448 512"><path d="M224 256a128 128 0 1 0 0-256 128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3 0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/></symbol>
   <symbol id="i-check" viewBox="0 0 512 512"><path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></symbol>
 </svg>
 
-<!-- main Swiftaw capsule nav -->
-<nav class="nav-root">
-  <a href="/" class="nav-logo" aria-label="Swiftaw"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
-  <div class="nav-pill-group">
-    <div class="nav-dropdown" id="companyDropdown">
-      <span class="nav-pill nav-dropbtn">Company <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="/about-us">About</a>
-        <a href="/mission">Mission</a>
-      </div>
+<nav class="nb-nav" id="nav">
+  <div class="nb-nav-in">
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+
+    <div class="nb-nav-links" id="navLinks">
+      <a class="nb-nav-link" href="/about-us">About</a>
+      <a class="nb-nav-link" href="/mission">Mission</a>
+      <a class="nb-nav-link" href="/innovation-room">Lab</a>
+      <a class="nb-nav-link" href="/newsroom">News</a>
     </div>
-    <div class="nav-dropdown" id="productsDropdown">
-      <span class="nav-pill nav-dropbtn">Products <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="https://fortized.com">Fortized</a>
-        <a href="/lifecheck/">Lifecheck</a>
-        <a href="/supernova/">Supernova</a>
-      </div>
+
+    <span class="nb-nav-spacer"></span>
+
+    <div class="nb-nav-actions">
+      <span data-swiftaw-launcher></span>
+      <span data-swiftaw-account></span>
+      <a class="nb-btn nb-btn--primary nb-btn--sm pg-nav-cta" href="https://fortized.com" rel="noopener">Fortized</a>
+      <button class="nb-icon-btn nb-nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
     </div>
-    <div class="nav-dropdown" id="legalDropdown">
-      <span class="nav-pill nav-dropbtn">Legal <svg class="chevron" style="width:10px;height:10px;vertical-align:middle;fill:currentColor;"><use href="#i-chevron"/></svg></span>
-      <div class="nav-dropdown-content">
-        <a href="/legal/terms-of-service">Terms of Service</a>
-        <a href="/legal/privacy-policy">Privacy Policy</a>
-        <a href="/legal/products-policy">Products Policy</a>
-      </div>
-    </div>
-    <a href="/innovation-room" class="nav-pill">Lab</a>
-    <a href="/newsroom" class="nav-pill">News</a>
-  </div>
-  <div class="nav-spacer"></div>
-  <div class="nav-right">
-    <a href="https://fortized.com" class="nav-btn-cta">Fortized</a>
-    <div class="nav-hamburger" aria-label="Menu"><span></span><span></span><span></span></div>
   </div>
 </nav>
-<div class="mobile-menu">
-  <div class="mm-label">Company</div>
-  <a href="/about-us">About</a>
-  <a href="/mission">Mission</a>
-  <div class="mm-label">Products</div>
-  <a href="https://fortized.com">Fortized</a>
-  <a href="/lifecheck/">Lifecheck</a>
-  <a href="/supernova/">Supernova</a>
-  <div class="mm-label">Legal</div>
-  <a href="/legal/terms-of-service">Terms of Service</a>
-  <a href="/legal/privacy-policy">Privacy Policy</a>
-  <a href="/legal/products-policy">Products Policy</a>
-  <div class="mm-label">More</div>
-  <a href="/innovation-room">Lab</a>
-  <a href="/newsroom">News</a>
-</div>
 
-<div class="acc-wrap">
-  <div class="acc-card">
-    <div class="acc-loading" id="accLoading">loading…</div>
+<main id="main" class="acc-wrap">
+  <span class="acc-deco acc-deco--sq" aria-hidden="true"></span>
+  <span class="acc-deco acc-deco--ci" aria-hidden="true"></span>
 
-    <!-- ══ AUTH (login / signup) ══ -->
-    <div id="viewAuth" class="hidden">
-      <div class="acc-head">
-        <img class="acc-logo" src="/SWFTW_Logomark.png" alt="Swiftaw">
-        <h1 id="accTitle">Welcome back.</h1>
-        <p id="accKicker">Log in to your Swiftaw account.</p>
+  <div class="acc-col">
+    <span class="nb-sticker acc-stamp">One account, all of Swiftaw</span>
+
+    <div class="acc-card nb-card nb-card--lg">
+      <div class="acc-loading" id="accLoading"><span class="nb-spin" aria-hidden="true"></span> Loading</div>
+
+      <!-- ══ AUTH (login / signup) ══ -->
+      <div id="viewAuth" class="hidden">
+        <div class="acc-head">
+          <img class="acc-logo" src="/SWFTW_Logomark.png" alt="Swiftaw">
+          <h1 id="accTitle">Welcome back.</h1>
+          <p id="accKicker">Log in to your Swiftaw account.</p>
+        </div>
+
+        <div class="acc-tabs">
+          <button type="button" class="acc-tab on" data-mode="login" id="tabLogin">Log in</button>
+          <button type="button" class="acc-tab" data-mode="signup" id="tabSignup">Create account</button>
+        </div>
+
+        <form id="accForm" autocomplete="on" novalidate>
+          <div class="fld">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
+          </div>
+
+          <div class="signup-only hidden">
+            <div class="fld">
+              <label for="username">Username</label>
+              <input type="text" id="username" name="username" placeholder="yourname" maxlength="24" autocomplete="username">
+              <div class="hint" id="unameHint"></div>
+            </div>
+            <div class="fld">
+              <label>Avatar <span class="opt">(optional, a random one is picked if you skip)</span></label>
+              <div id="signupPicker"></div>
+            </div>
+          </div>
+
+          <div class="fld">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="at least 6 characters" required minlength="6" autocomplete="current-password">
+          </div>
+
+          <div class="signup-only hidden">
+            <div class="fld">
+              <label for="password2">Confirm password</label>
+              <input type="password" id="password2" placeholder="repeat your password" autocomplete="new-password">
+            </div>
+            <div class="lc-slot">
+              <div class="lc-label">Quick human check</div>
+              <div class="lifecheck" data-sitekey="lc_account_public" data-callback="onAccountLifecheck"></div>
+              <div class="lc-ok" id="lcOk"><svg><use href="#i-check"/></svg> Verified, you're human.</div>
+            </div>
+          </div>
+
+          <button type="submit" class="nb-btn nb-btn--primary nb-btn--lg nb-btn--block acc-submit" id="accSubmit">Log in</button>
+        </form>
+
+        <div class="acc-msg" id="accMsg"></div>
+        <div class="acc-sep-note">
+          <img src="/SWFT-Deco/infos-safe-deco.png" alt="">
+          <span><b>Heads up:</b> your Swiftaw account is separate from your Fortized account. Fortized is a Swiftaw product, but the two log-ins aren't shared.</span>
+        </div>
+        <div class="acc-foot">One Swiftaw account works across the Swiftaw site and Lifecheck.</div>
       </div>
 
-      <div class="acc-tabs">
-        <div class="acc-tab on" data-mode="login" id="tabLogin">Log in</div>
-        <div class="acc-tab" data-mode="signup" id="tabSignup">Create account</div>
-      </div>
+      <!-- ══ SETTINGS (logged in) ══ -->
+      <div id="viewSettings" class="hidden">
+        <div class="set-head">
+          <div class="big" id="setBig"></div>
+          <div class="who"><div class="n" id="setName">username</div><div class="e" id="setEmail">email</div></div>
+        </div>
 
-      <form id="accForm" autocomplete="on" novalidate>
         <div class="fld">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="you@example.com" required autocomplete="email">
+          <label for="setUsername">Username</label>
+          <input type="text" id="setUsername" maxlength="24" autocomplete="username">
+          <div class="hint" id="setUnameHint"></div>
         </div>
 
-        <div class="signup-only hidden">
-          <div class="fld">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="yourname" maxlength="24" autocomplete="username">
-            <div class="hint" id="unameHint"></div>
-          </div>
-          <div class="fld">
-            <label>Avatar <span class="opt">(optional, a random one is picked if you skip)</span></label>
-            <div id="signupPicker"></div>
-          </div>
-        </div>
+        <div class="set-title">Avatar</div>
+        <div id="settingsPicker"></div>
 
-        <div class="fld">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="at least 6 characters" required minlength="6" autocomplete="current-password">
-        </div>
-
-        <div class="signup-only hidden">
-          <div class="fld">
-            <label for="password2">Confirm password</label>
-            <input type="password" id="password2" placeholder="repeat your password" autocomplete="new-password">
-          </div>
-          <div class="lc-slot">
-            <div class="lc-label">Quick human check</div>
-            <div class="lifecheck" data-sitekey="lc_account_public" data-callback="onAccountLifecheck"></div>
-            <div class="lc-ok" id="lcOk"><svg><use href="#i-check"/></svg> Verified, you're human.</div>
-          </div>
-        </div>
-
-        <button type="submit" class="btn-3d acc-submit" id="accSubmit">Log in</button>
-      </form>
-
-      <div class="acc-msg" id="accMsg"></div>
-      <div class="acc-sep-note">
-        <b>Heads up:</b> your Swiftaw account is separate from your Fortized account. Fortized is a Swiftaw product, but the two log-ins aren't shared.
+        <button type="button" class="nb-btn nb-btn--primary nb-btn--lg nb-btn--block acc-submit" id="saveSettings" style="margin-top:18px;">Save changes</button>
+        <div class="acc-msg" id="setMsg"></div>
+        <div class="acc-foot"><a href="/" id="doneLink">← Back to Swiftaw</a></div>
       </div>
-      <div class="acc-foot">One Swiftaw account works across the Swiftaw site and Lifecheck.</div>
-    </div>
-
-    <!-- ══ SETTINGS (logged in) ══ -->
-    <div id="viewSettings" class="hidden">
-      <div class="set-head">
-        <div class="big" id="setBig"></div>
-        <div class="who"><div class="n" id="setName">username</div><div class="e" id="setEmail">email</div></div>
-      </div>
-
-      <div class="fld">
-        <label for="setUsername">Username</label>
-        <input type="text" id="setUsername" maxlength="24" autocomplete="username">
-        <div class="hint" id="setUnameHint"></div>
-      </div>
-
-      <div class="set-title">Avatar</div>
-      <div id="settingsPicker"></div>
-
-      <button type="button" class="btn-3d acc-submit" id="saveSettings" style="margin-top:14px;">Save changes</button>
-      <div class="acc-msg" id="setMsg"></div>
-      <div class="acc-foot"><a href="/" id="doneLink">← Back to Swiftaw</a></div>
     </div>
   </div>
-</div>
+</main>
 
 <template id="pickerTpl">
   <div class="ap">
@@ -254,6 +323,53 @@
   </div>
 </template>
 
+<footer class="nb-footer">
+  <div class="nb-wrap">
+    <div class="nb-footer-grid">
+      <div>
+        <a href="/" class="nb-nav-logo" style="margin-bottom:14px;"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+        <p class="nb-muted" style="font-size:14px; max-width:32ch;">
+          A European software company. Île-de-France, France.
+        </p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div class="nb-footer-list">
+          <a href="/about-us">About</a>
+          <a href="/mission">Mission</a>
+          <a href="/innovation-room">Lab</a>
+          <a href="/newsroom">Newsroom</a>
+        </div>
+      </div>
+      <div>
+        <h4>Make</h4>
+        <div class="nb-footer-list">
+          <a href="https://fortized.com" rel="noopener">Fortized</a>
+          <a href="/lifecheck/">Lifecheck</a>
+          <a href="/supernova/">Supernova</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="nb-footer-list">
+          <a href="/legal/terms-of-service">Terms of Service</a>
+          <a href="/legal/privacy-policy">Privacy Policy</a>
+          <a href="/legal/products-policy">Products Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="nb-footer-base">
+      <span>© 2026 Swiftaw</span>
+      <span>Make It Matter.</span>
+    </div>
+  </div>
+  <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
+</footer>
+
+<!-- ⚠️ swiftaw-account.js must stay a SYNCHRONOUS tag ahead of the inline
+     script: the IIFE below calls SwiftawAccount.ready() at parse time.
+     css/swiftaw.js lazy-loads the same file for its account chip, but its
+     guard sees window.SwiftawAccount already defined and no-ops. -->
 <script src="/css/swiftaw-account.js"></script>
 <script src="/lifecheck/lifecheck.js" async defer></script>
 <script src="/css/swiftaw.js"></script>
@@ -297,15 +413,23 @@
     var defsWrap = root.querySelector('.ap-defaults');
     var file = null, chosen = null; // chosen = default url string
 
-    DEFAULT_AVATARS.forEach(function(url){
+    DEFAULT_AVATARS.forEach(function(url, i){
       var d = document.createElement('div');
       d.className = 'ap-def'; d.style.backgroundImage = 'url(' + url + ')'; d.setAttribute('data-url', url);
+      // A swatch is a control, so it has to be reachable and operable from the
+      // keyboard. A bare <div> with a click handler is neither.
+      d.setAttribute('role', 'button');
+      d.setAttribute('tabindex', '0');
+      d.setAttribute('aria-label', 'Default avatar ' + (i + 1));
       d.addEventListener('click', function(){ selectDefault(url); });
+      d.addEventListener('keydown', function(e){
+        if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); selectDefault(url); }
+      });
       defsWrap.appendChild(d);
     });
 
     function setPreview(url){ if(url){ prev.style.backgroundImage = 'url(' + url + ')'; prev.classList.add('has-img'); } else { prev.style.backgroundImage = ''; prev.classList.remove('has-img'); } }
-    function markSel(url){ defsWrap.querySelectorAll('.ap-def').forEach(function(d){ d.classList.toggle('sel', d.getAttribute('data-url') === url); }); }
+    function markSel(url){ defsWrap.querySelectorAll('.ap-def').forEach(function(d){ var on = d.getAttribute('data-url') === url; d.classList.toggle('sel', on); d.setAttribute('aria-pressed', on ? 'true' : 'false'); }); }
 
     function selectDefault(url){ file = null; input.value = ''; chosen = url; setPreview(url); markSel(url); clearBtn.classList.remove('hidden'); }
     root.querySelector('.ap-upload').addEventListener('click', function(){ input.click(); });
@@ -474,17 +598,6 @@
     if(addMode) show(msg, 'info', 'Add another account. Logging in keeps your current account too.');
     wireUsernameCheck('username', 'unameHint', '');
     applyMode(mode);
-  });
-
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.nav-dropdown').forEach(function(dropdown) {
-      dropdown.addEventListener('click', function(e) {
-        e.stopPropagation();
-        document.querySelectorAll('.nav-dropdown.open').forEach(function(d) { if (d !== dropdown) d.classList.remove('open'); });
-        dropdown.classList.toggle('open');
-      });
-    });
-    document.addEventListener('click', function() { document.querySelectorAll('.nav-dropdown.open').forEach(function(d) { d.classList.remove('open'); }); });
   });
 })();
 </script>

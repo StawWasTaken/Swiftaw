@@ -891,6 +891,56 @@ buttons, contents list, consent card and dock.
 
 ---
 
+# `account.html` — reskinned, not rewritten
+
+The last old-design page. It is a working Supabase auth screen, so the rule for
+this one was narrower than for the others: **the shell and the skin change, the
+auth script does not.** Everything the inline IIFE reaches for is still there
+under the same name — `#accLoading`, `#viewAuth`, `#viewSettings`, `#accForm`,
+`#accSubmit`, `#saveSettings`, `#accMsg`, `#setMsg`, `.signup-only`, `.hidden`,
+and the whole `<template id="pickerTpl">` with `.ap`, `.ap-prev`, `.ap-upload`,
+`.ap-clear`, `.ap-input`, `.ap-defaults`.
+
+⚠️ **The `.acc-*` and `.hint` names could not be swapped for `.nb-*` ones.** The
+script assigns `className` outright — `el.className = 'acc-msg show ' + kind`,
+`hintEl.className = 'hint bad'` — so any extra class on those elements is wiped
+the first time a message or a username check fires. They are restyled in place
+instead: `.acc-msg.err/.ok/.info` are flat Rainbaw slabs with a black stroke and
+`--nb-sh-sm`, and `.hint.bad/.good` are red and green.
+
+⚠️ **`#accSubmit` must stay a plain button.** `applyMode()` sets its
+`textContent`, so an inner `<span>` would be destroyed the first time the tabs
+are switched. It carries `nb-btn nb-btn--primary nb-btn--lg nb-btn--block` and
+nothing inside it.
+
+⚠️ **`swiftaw-account.js` stays a synchronous tag ahead of the inline script**,
+because the IIFE calls `SwiftawAccount.ready()` at parse time. `css/swiftaw.js`
+lazy-loads the same file for the nav account chip; its guard sees
+`window.SwiftawAccount` already defined and no-ops, so the two do not race.
+
+⚠️ **Fields inside the card sit on `--nb-surface-2`, not `--nb-surface`.** Inside
+a `.nb-card` the surface fill *is* the card, so a `.nb-input` on it disappears
+into its own container. Same reason the tab strip and the separation note use
+the second surface.
+
+⚠️ **`.acc-tab.on` gains a border, so its padding is 2px smaller.** The inactive
+tab has no stroke; without the compensation the active tab is 4px taller and the
+whole row jumps every time you switch between Log in and Create account.
+
+Two things changed beyond the skin, both accessibility repairs rather than
+redesign: the two mode tabs are real `<button>`s instead of `<div>`s, and the
+avatar swatches the picker builds now carry `role="button"`, `tabindex="0"`,
+`aria-pressed` and an Enter/Space handler. A swatch is a control; a bare `<div>`
+with a click listener is unreachable from the keyboard.
+
+🔴 **Open, and for the user to answer:** the human-check slot still carries
+`data-sitekey="lc_account_public"`. Real Lifecheck keys are `lc_site_<12>` rows,
+and a key that does not resolve dead-ends the widget at "Can't verify here."
+It was left exactly as found — inventing a key is not an option — but signup
+cannot complete until the right one is supplied.
+
+---
+
 # The account rule, restated because it keeps mattering
 
 Fortized accounts, Hereld accounts and Swiftaw accounts are **three separate
