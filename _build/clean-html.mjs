@@ -90,6 +90,22 @@ for (const file of process.argv.slice(2)) {
   let s = fs.readFileSync(file, 'utf8');
   const before = s.length;
 
+  // Standalone scripts that are served as-is rather than built out of _js/.
+  // A leading /*! banner is the one comment worth keeping: it is the name and
+  // the docs link on a file other people are going to paste into their page.
+  if (/\.js$/i.test(file)) {
+    let banner = '';
+    const m = s.match(/^\s*\/\*![\s\S]*?\*\/\n?/);
+    if (m) { banner = m[0]; s = s.slice(m[0].length); }
+    // A stripped comment leaves its indentation behind on an otherwise empty
+    // line, so blank the whitespace first and only then collapse the runs.
+    s = stripJs(s).replace(/^[ \t]+$/gm, '');
+    s = banner + tidy(s).replace(/^\n+/, '');
+    fs.writeFileSync(file, s);
+    console.log(file + ': ' + before + ' -> ' + s.length);
+    continue;
+  }
+
   s = s.replace(/<style([^>]*)>([\s\S]*?)<\/style>/gi,
     (_m, attrs, body) => '<style' + attrs + '>' + tidy(stripCss(body)) + '</style>');
 

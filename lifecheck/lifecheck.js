@@ -1,44 +1,16 @@
-/* ════════════════════════════════════════════════════════════
-   Lifecheck v1.3 — client loader / integration API
-   by Swiftaw · https://swiftaw.com/lifecheck/
-
-   Drop-in usage
-   ─────────────
-     <script src="https://swiftaw.com/lifecheck/lifecheck.js" async defer></script>
-     <div class="lifecheck"
-          data-sitekey="YOUR_SITE_KEY"
-          data-callback="onLifecheckPass"></div>
-
-   Invisible mode (v1.3)
-   ─────────────────────
-     <div class="lifecheck"
-          data-sitekey="YOUR_SITE_KEY"
-          data-size="invisible"
-          data-callback="onLifecheckPass"></div>
-
-     …then call Lifecheck.execute() when you actually need a human — on
-     submit, usually. Nothing is drawn unless the check wants a challenge,
-     at which point the widget unfolds in place.
-
-   The challenge runs inside an <iframe> served from swiftaw.com. The host
-   page receives a one-time token to verify server-side.
-   ════════════════════════════════════════════════════════════ */
+/*!
+ * Lifecheck v1.3 loader
+ * Swiftaw - https://swiftaw.com/lifecheck/
+ * Docs: https://swiftaw.com/lifecheck/docs
+ */
 (function () {
   'use strict';
 
   var VERSION = '1.3';
 
-  // Per-deploy cache-buster for the widget iframe. Without this the frame loads
-  // a constant "embed.html?v=1.3" URL, so a redeployed widget keeps serving the
-  // stale cached copy. BUMP `BUILD` on every widget deploy for an instant
-  // refresh; the hourly bucket below is a safety net so a forgotten bump still
-  // self-heals within ~1h. (Loading a NEW page renders a fresh iframe URL; an
-  // already-open verification is never disrupted mid-session.)
-  var BUILD = '2026.08.22.1';
+  var BUILD = '2026.08.28.1';
   var CACHE_BUST = BUILD + '.' + Math.floor(Date.now() / 3600000);
 
-  // Resolve where THIS script is served from, so the widget iframe and the
-  // postMessage origin check work no matter which domain hosts Lifecheck.
   var self = document.currentScript ||
     (function () { var s = document.getElementsByTagName('script'); return s[s.length - 1]; })();
   var BASE = (function () {
@@ -48,13 +20,13 @@
   var EMBED_URL = BASE + '/embed.html';
   var EMBED_ORIGIN = (function () { try { return new URL(EMBED_URL).origin; } catch (e) { return '*'; } })();
 
-  var widgets = [];   // { id, el, iframe, token, sitekey, callback, expiredCallback }
+  var widgets = [];   
   var seq = 0;
 
   function resolveFn(name) {
     if (typeof name === 'function') return name;
     if (!name) return null;
-    // supports dotted paths like "app.onPass"
+
     var ref = window, parts = String(name).split('.');
     for (var i = 0; i < parts.length; i++) {
       if (ref == null) return null;
@@ -77,17 +49,13 @@
       sitekey: opts.sitekey || el.getAttribute('data-sitekey') || '',
       callback: opts.callback || el.getAttribute('data-callback') || null,
       expiredCallback: opts['expired-callback'] || el.getAttribute('data-expired-callback') || null,
-      // Fires when the widget can't verify at all (unknown site key, domain not
-      // allow-listed, Lifecheck unreachable). Without it an embedding page has
-      // no way to tell "the user hasn't finished yet" from "this can never
-      // succeed", and just waits on a callback that will never come.
+
       errorCallback: opts['error-callback'] || el.getAttribute('data-error-callback') || null,
-      // v1.3 — invisible mode draws nothing until the check wants a challenge.
+
       invisible: (opts.size || el.getAttribute('data-size') || '') === 'invisible',
       expanded: false
     };
 
-    // frame that hosts the sandboxed challenge
     var iframe = document.createElement('iframe');
     var src = EMBED_URL + '?v=' + VERSION + '&b=' + encodeURIComponent(CACHE_BUST) +
       (w.sitekey ? '&k=' + encodeURIComponent(w.sitekey) : '') +
@@ -107,7 +75,6 @@
       startHostSampling();
     }
 
-    // hidden field so a plain <form> POST carries the token automatically
     var input = document.createElement('input');
     input.type = 'hidden';
     input.name = el.getAttribute('data-response-field') || 'lifecheck-token';
@@ -138,10 +105,10 @@
     if (!w) return;
 
     if (msg.event === 'resize' && msg.height) {
-      // An invisible widget stays at zero until it asks to unfold.
+
       if (!w.invisible || w.expanded) w.iframe.style.height = Math.max(60, msg.height) + 'px';
     } else if (msg.event === 'expand') {
-      // The check wasn't convinced and wants to show a challenge.
+
       w.expanded = true;
       w.iframe.style.display = 'block';
       w.iframe.style.height = '260px';
@@ -157,7 +124,7 @@
       if (w.input) w.input.value = w.token;
       w.el.setAttribute('data-lifecheck-verified', 'true');
       var cb = resolveFn(w.callback);
-      if (cb) { try { cb(w.token, w); } catch (err) { /* host callback threw */ } }
+      if (cb) { try { cb(w.token, w); } catch (err) {  } }
       w.el.dispatchEvent(new CustomEvent('lifecheck:verified', { bubbles: true, detail: { token: w.token } }));
     } else if (msg.event === 'expired') {
       w.token = null;
@@ -196,21 +163,10 @@
       w.iframe.style.display = 'none';
       w.iframe.style.height = '0px';
     }
-    // reload the frame to get a fresh challenge
+
     w.iframe.src = w.iframe.src;
   }
 
-  /* ---------------- v1.3 · invisible-mode host signals ----------------
-     A zero-size frame never sees the pointer, so there is nothing for the
-     challenge to read. The loader keeps a short, throttled trail of the
-     host page's own cursor and hands it over when execute() is called.
-
-     Worth being clear about what this is: signals collected out here are
-     forgeable by any script on the page, unlike the ones the frame gathers
-     for itself. The frame knows they came from the host and holds them to a
-     much higher bar before it will pass anyone on them alone. Nothing is
-     sent anywhere until execute() runs, and it is coordinates and timings
-     only — never keystrokes, never form values. */
   var hostSamples = [];
   var hostStart = Date.now();
   var sampling = false;
@@ -240,12 +196,6 @@
     return w;
   }
 
-  // Drop widgets whose iframe has left the document. A page that re-renders
-  // its Lifecheck container (any SPA, or this repo's own verify-test page,
-  // which empties the host div and mounts a fresh widget) leaves the old
-  // entry in the list forever — and since a bare Lifecheck.getResponse() or
-  // .reset() defaults to widgets[0], every one of those calls would keep
-  // talking to a detached iframe that can never verify again.
   function prune() {
     for (var i = widgets.length - 1; i >= 0; i--) {
       var f = widgets[i].iframe;

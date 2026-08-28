@@ -10,22 +10,20 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   :root{
-    --bg:#0d1117;
-    --card:#12171f;
-    --card-2:#0f141c;
-    --stroke:#232c39;
-    --stroke-soft:#1a212b;
-    --track:#181f29;
-    /* THE RAINBAW, exactly. These were each a hair off the official values
-       (#fdf846 for #FFF93E, #36c05f for #3ECF6E, #2daffb for #2CAFFC,
-       #fd0235 for #FF0033) — close enough that nothing looked wrong on its
-       own, and far enough that the widget never quite matched a Swiftaw page
-       sitting behind it. Pink was already right.
 
-       The -s companions are the hand-tuned darker strokes and are LEFT ALONE
-       on purpose: they are shades, they were already darker than these, and
-       they still are. Retuning them would be redesigning a widget that does
-       not need redesigning. */
+    --bg:#0C0F15;
+    --card:#161B24;
+    --card-2:#12161F;
+    --ink-line:#000000;
+    --sh:4px 6px 0 #000;
+    --sh-sm:2px 3px 0 #000;
+    --sh-press:1px 2px 0 #000;
+    --stroke:#000000;
+    --stroke-soft:#000000;
+    --track:#0E1219;
+
+    --rail:#2A3342;
+
     --yellow:#FFF93E; --yellow-s:#e6d21f;
     --green:#3ECF6E;  --green-s:#268f45;
     --blue:#2CAFFC;   --blue-s:#1f8ad6;
@@ -62,18 +60,29 @@
     *{ animation-duration:0.001s !important; transition-duration:0.001s !important; }
   }
 
-  .stage{ width:396px; max-width:100%; }
+  .stage{ width:392px; max-width:100%; }
 
-  /* ================= COLLAPSED ================= */
   .collapsed{
+    position:relative;
     background:var(--card);
     border:3px solid var(--stroke);
     border-radius:16px;
-    padding:12px 14px;
+    box-shadow:var(--sh);
+    overflow:hidden;
+    padding:0;
     display:flex;
     flex-direction:column;
     animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;
   }
+  .collapsed .pad{ padding:12px 14px; }
+
+  .rainbaw{ display:flex; height:6px; width:100%; flex:0 0 auto; }
+  .rainbaw > i{ flex:1; display:block; }
+  .rainbaw > i:nth-child(1){ background:var(--red); }
+  .rainbaw > i:nth-child(2){ background:var(--green); }
+  .rainbaw > i:nth-child(3){ background:var(--blue); }
+  .rainbaw > i:nth-child(4){ background:var(--yellow); }
+  .rainbaw > i:nth-child(5){ background:var(--pink); }
   @keyframes popIn{
     0%{ opacity:0; transform:scale(.94) translateY(8px); }
     100%{ opacity:1; transform:scale(1) translateY(0); }
@@ -81,58 +90,57 @@
   .chk-row{ display:flex; align-items:center; gap:12px; }
 
   .chk-box{
-    width:28px; height:28px;
-    border-radius:8px;
-    border:2.5px solid var(--muted);
-    background:#0d1117;
+    width:26px; height:26px;
+    border-radius:6px;
+    border:3px solid var(--stroke);
+    background:var(--track);
+    box-shadow:var(--sh-sm);
     flex:0 0 auto;
     display:flex; align-items:center; justify-content:center;
     cursor:pointer;
-    transition:border-color .2s ease, background .2s ease, transform .15s ease;
+    transition:background .15s ease, transform .12s ease, box-shadow .12s ease;
   }
-  .chk-box:hover{ transform:scale(1.05); border-color:#aeb8c8; }
+  .chk-box:hover{ transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .chk-box:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
 
-  .chk-box i{ font-size:14px; color:var(--ink); transform:scale(0); opacity:0; }
-  /* SWIFTAW'S CHECKMARK — the same mark the cookie card draws, and drawn the
-     same way: two borders on an empty 11×6 box, rotated -45°. Not a glyph.
+  .chk-box i{ font-size:13px; color:var(--ink); transform:scale(0); opacity:0; }
 
-     It used to be FontAwesome's fa-check, which made the single most
-     important mark in the whole widget — the one that says you passed —
-     depend on a CDN stylesheet arriving. It is geometry now, so it cannot
-     fail to appear, and it is identical to the tick on the consent card
-     because it is literally the same box.
-
-     The jammed and retry states keep their FA glyphs: a gear and a refresh
-     arrow are not two borders, and pretending otherwise would be worse than
-     the dependency. Hence the class — the tick is `.chk-tick`, everything
-     else in this slot is still an <i>. */
   .chk-box i.chk-tick{
     width:11px; height:6px; margin-top:-3px; font-size:0;
     border-left:3px solid var(--ink); border-bottom:3px solid var(--ink);
     transform:rotate(-45deg) scale(0); transform-origin:center;
   }
   .chk-box.spin i{ display:none; }
+
   .spinner-ring{
     display:none;
-    width:16px; height:16px;
+    width:15px; height:15px;
     border-radius:50%;
-    border:2.5px solid rgba(255,249,62,0.22);
-    border-top-color:var(--yellow);
+    border:3px solid rgba(255,255,255,.16);
+    border-top-color:var(--red);
   }
-  .chk-box.spin .spinner-ring{ display:block; animation:spin .75s linear infinite; }
-  .chk-box.checked{ background:#0d1117; border-color:var(--yellow-s); animation:checkPop .45s cubic-bezier(.34,1.9,.64,1) both; }
-  /* The tick is borders, so it takes a border-colour rather than a colour —
-     and it has to keep its own -45° in every state, or scaling it up draws a
-     right angle instead of a check. */
-  .chk-box.checked i{ color:var(--yellow); transform:scale(1); opacity:1; transition:transform .3s cubic-bezier(.34,1.9,.64,1) .06s, opacity .2s ease .06s; }
-  .chk-box.checked i.chk-tick{ border-color:var(--yellow); transform:rotate(-45deg) scale(1); }
+  .chk-box.spin .spinner-ring{
+    display:block;
+    animation:spin .9s linear infinite, ringHue 4.5s steps(1) infinite;
+  }
+  .chk-box.checked{ background:var(--yellow); animation:checkPop .45s cubic-bezier(.34,1.9,.64,1) both; }
+
+  .chk-box.checked i{ color:var(--ink); transform:scale(1); opacity:1; transition:transform .3s cubic-bezier(.34,1.9,.64,1) .06s, opacity .2s ease .06s; }
+  .chk-box.checked i.chk-tick{ border-color:var(--ink); transform:rotate(-45deg) scale(1); }
   .collapsed.is-verified .chk-box,
   .collapsed.is-verified .chk-label{ cursor:default; pointer-events:none; }
-  .collapsed.is-verified .chk-box:hover{ transform:none; border-color:var(--yellow-s); }
-  /* a check that couldn't run: the box seizes up like a jammed mechanism */
-  .chk-box.jammed{ border-color:var(--red-s); }
-  .chk-box.jammed i{ color:var(--red); transform:scale(1); opacity:1; animation:jam .7s cubic-bezier(.36,.07,.19,.97) both; }
+  .collapsed.is-verified .chk-box:hover{ transform:none; box-shadow:var(--sh-sm); }
+
+  .chk-box.jammed{ background:var(--red); }
+  .chk-box.jammed i{ color:#fff; transform:scale(1); opacity:1; animation:jam .7s cubic-bezier(.36,.07,.19,.97) both; }
   @keyframes spin{ to{ transform:rotate(360deg); } }
+  @keyframes ringHue{
+    0%  { border-top-color:var(--red); }
+    20% { border-top-color:var(--green); }
+    40% { border-top-color:var(--blue); }
+    60% { border-top-color:var(--yellow); }
+    80% { border-top-color:var(--pink); }
+  }
   @keyframes jam{
     0%{ transform:rotate(0deg) scale(1); }
     30%{ transform:rotate(52deg) scale(1.06); }
@@ -147,9 +155,6 @@
   .chk-label .dots::after{ content:''; animation:dotting 1.2s steps(4,end) infinite; }
   @keyframes dotting{ 0%{content:'';} 25%{content:'.';} 50%{content:'..';} 75%{content:'...';} 100%{content:'';} }
 
-  /* ---- Lifecheck wordmark badge ---- */
-  /* white overlay: flatten the multicolour wordmark to a solid white mark
-     (brightness(0)->black, invert(1)->white) while keeping its transparency */
   .wm{ filter:brightness(0) invert(1); }
   .lc-badge{ flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-end; gap:3px; line-height:1; }
   .lc-badge .wm{ height:13px; width:auto; display:block; }
@@ -159,10 +164,9 @@
   .lc-badge .legal a{ color:var(--muted); text-decoration:none; }
   .lc-badge .legal a:hover{ color:var(--muted-2); text-decoration:underline; }
 
-  /* ---- consent strip (kept small + quiet, like a captcha footer) ---- */
   .consent{
     margin-top:7px; padding-top:6px;
-    border-top:1.5px solid var(--stroke-soft);
+    border-top:2px solid var(--stroke-soft);
     display:flex; gap:5px; align-items:center;
     font-weight:500; font-size:7.4px; line-height:1.3; letter-spacing:.1px;
     color:#6f7a8b;
@@ -171,12 +175,12 @@
   .consent a{ color:#8b96a8; text-decoration:underline; text-decoration-color:rgba(255,255,255,.18); text-underline-offset:1px; }
   .consent a:hover{ color:var(--text); }
 
-  /* ================= EXPANDED ================= */
   .expanded{
     position:relative;
     background:var(--card);
     border:3px solid var(--stroke);
-    border-radius:20px;
+    border-radius:18px;
+    box-shadow:var(--sh);
     overflow:hidden;
     animation:expandIn .45s cubic-bezier(.34,1.5,.64,1) both;
     background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1.5px);
@@ -199,11 +203,12 @@
 
   .test-chip{
     display:inline-flex; align-items:center; gap:6px;
-    font-weight:800; font-size:10px; letter-spacing:.5px; text-transform:uppercase;
-    padding:4px 9px; border-radius:100px;
-    border:1.5px solid var(--chip-s, var(--stroke));
-    color:var(--chip, var(--muted));
-    background:color-mix(in srgb, var(--chip, transparent) 12%, transparent);
+    font-weight:700; font-size:10px; letter-spacing:.5px; text-transform:uppercase;
+    padding:4px 10px; border-radius:100px;
+    border:2px solid var(--stroke);
+    box-shadow:var(--sh-press);
+    color:var(--ink);
+    background:var(--chip, var(--muted));
     width:fit-content;
   }
   .test-chip i{ font-size:9px; }
@@ -218,89 +223,92 @@
   .prompt b.hl{ color:var(--yellow); font-weight:800; }
   .prompt .sub{ display:block; font-weight:500; font-size:12px; color:var(--muted); margin-top:4px; }
 
-  /* ---- grid / image tiles ---- */
   .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+
   .tile{
     position:relative;
-    aspect-ratio:1/1; background:var(--track); border:2.5px solid var(--stroke); border-radius:12px;
+    aspect-ratio:1/1; background:var(--track); border:3px solid var(--stroke); border-radius:11px;
+    box-shadow:var(--sh-sm);
     display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--text); cursor:pointer;
     overflow:hidden;
-    transition:transform .15s cubic-bezier(.34,1.6,.64,1), border-color .15s ease, background .15s ease;
+    transition:transform .12s ease, box-shadow .12s ease, background .15s ease, color .15s ease;
   }
-  .tile:hover{ transform:translateY(-2px); border-color:#3a475a; }
+  .tile:hover{ transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .tile:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
   .tile canvas{ width:66%; height:66%; object-fit:contain; pointer-events:none; }
-  .tile.selected{ border-color:var(--blue-s); background:rgba(44,174,252,0.16); color:var(--blue); animation:tileBounce .35s cubic-bezier(.34,1.9,.64,1); }
+  .tile.selected{ background:var(--blue); color:var(--ink); animation:tileBounce .35s cubic-bezier(.34,1.9,.64,1); }
   @keyframes tileBounce{ 0%{transform:scale(1);} 50%{transform:scale(1.14);} 100%{transform:scale(1);} }
-  .tile.wrong{ border-color:var(--red-s) !important; background:rgba(255,1,50,0.16) !important; color:var(--red) !important; animation:shakeSmall .4s ease; }
-  /* v1.3: the challenges are keyboard-operable now, so they need a focus ring */
+  .tile.wrong{ background:var(--red) !important; color:#fff !important; animation:shakeSmall .4s ease; }
+
   .tile:focus-visible, .numbtn:focus-visible, .beacon:focus-visible,
   .probe:focus-visible, .handle:focus-visible, .dial-handle:focus-visible{
     outline:3px solid var(--blue); outline-offset:2px;
   }
-  .tile.correct-flash{ border-color:var(--green-s) !important; background:rgba(62,207,110,0.18) !important; color:var(--green) !important; }
+  .tile.correct-flash{ background:var(--green) !important; color:var(--ink) !important; }
 
-  /* ---- number pad (tally) ---- */
   .numpad{ display:grid; grid-template-columns:repeat(6,1fr); gap:7px; margin-top:2px; }
   .numbtn{
-    aspect-ratio:1/1; background:var(--track); border:2.5px solid var(--stroke); border-radius:11px;
-    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; color:var(--text); cursor:pointer;
-    transition:transform .14s cubic-bezier(.34,1.6,.64,1), border-color .14s ease, background .14s ease;
+    aspect-ratio:1/1; background:var(--track); border:3px solid var(--stroke); border-radius:10px;
+    box-shadow:var(--sh-sm);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; color:var(--text); cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, background .14s ease, color .14s ease;
   }
-  .numbtn:hover{ transform:translateY(-2px); border-color:#3a475a; }
-  .numbtn.wrong{ border-color:var(--red-s); background:rgba(255,1,50,0.18); color:var(--red); animation:shakeSmall .4s ease; }
-  .numbtn.right{ border-color:var(--green-s); background:rgba(62,207,110,0.18); color:var(--green); }
+  .numbtn:hover{ transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .numbtn:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
+  .numbtn.wrong{ background:var(--red); color:#fff; animation:shakeSmall .4s ease; }
+  .numbtn.right{ background:var(--green); color:var(--ink); }
 
-  /* ---- slider ---- */
   .slide-wrap{ padding:6px 2px 2px; }
-  .track{ position:relative; height:44px; background:var(--track); border:2.5px solid var(--stroke); border-radius:22px; margin-top:24px; }
-  .target-zone{ position:absolute; top:-4px; bottom:-4px; background:rgba(62,207,110,0.18); border-left:2.5px dashed var(--green-s); border-right:2.5px dashed var(--green-s); border-radius:8px; }
+  .track{ position:relative; height:44px; background:var(--track); border:3px solid var(--stroke); border-radius:22px; margin-top:24px; box-shadow:var(--sh-sm); }
+  .target-zone{ position:absolute; top:-4px; bottom:-4px; background:rgba(62,207,110,0.22); border-left:3px dashed var(--ink-line); border-right:3px dashed var(--ink-line); border-radius:8px; }
   .target-zone i{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:var(--green); font-size:13px; }
-  .handle{ position:absolute; top:50%; left:0; width:40px; height:40px; margin-top:-20px; border-radius:50%; background:var(--green); border:3px solid var(--green-s); display:flex; align-items:center; justify-content:center; cursor:grab; touch-action:none; }
+  .handle{ position:absolute; top:50%; left:0; width:38px; height:38px; margin-top:-19px; border-radius:50%; background:var(--green); border:3px solid var(--stroke); box-shadow:var(--sh-sm); display:flex; align-items:center; justify-content:center; cursor:grab; touch-action:none; }
   .handle:active{ cursor:grabbing; }
-  .handle i{ color:#06210f; font-size:16px; }
+  .handle i{ color:var(--ink); font-size:15px; }
   .handle.bob{ animation:handleBob 1.8s ease-in-out infinite; }
   @keyframes handleBob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-2px);} }
 
-  /* ---- rotate dial ---- */
   .dial-wrap{ display:flex; justify-content:center; padding:6px 0 2px; }
   .dial{ position:relative; width:150px; height:150px; touch-action:none; }
   .dial svg{ width:100%; height:100%; display:block; }
   .dial-handle{
     position:absolute; width:30px; height:30px; margin:-15px;
-    border-radius:50%; background:var(--pink); border:3px solid var(--pink-s);
+    border-radius:50%; background:var(--pink); border:3px solid var(--stroke);
+    box-shadow:var(--sh-sm);
     display:flex; align-items:center; justify-content:center; cursor:grab;
-    transition:box-shadow .15s ease;
   }
-  .dial-handle i{ color:#3a0f30; font-size:13px; }
+  .dial-handle i{ color:var(--ink); font-size:13px; }
   .dial-center{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:var(--muted); font-size:11px; font-weight:700; text-align:center; pointer-events:none; }
 
-  /* ---- sequence ---- */
   .seq-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
   .beacon{
-    aspect-ratio:1/1; background:var(--track); border:2.5px solid var(--stroke); border-radius:50%;
-    display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; color:var(--text); cursor:pointer;
-    transition:transform .15s cubic-bezier(.34,1.6,.64,1), border-color .15s ease, background .15s ease;
+    aspect-ratio:1/1; background:var(--track); border:3px solid var(--stroke); border-radius:50%;
+    box-shadow:var(--sh-sm);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; color:var(--text); cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, background .15s ease, color .15s ease;
   }
-  .beacon:hover{ transform:translateY(-2px); }
-  .beacon.done{ border-color:var(--yellow-s); background:rgba(255,249,62,0.18); color:var(--yellow); animation:tileBounce .35s cubic-bezier(.34,1.9,.64,1); }
-  .beacon.bad{ border-color:var(--red-s); background:rgba(255,1,50,0.18); color:var(--red); animation:shakeSmall .4s ease; }
+  .beacon:hover{ transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .beacon:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
+  .beacon.done{ background:var(--yellow); color:var(--ink); animation:tileBounce .35s cubic-bezier(.34,1.9,.64,1); }
+  .beacon.bad{ background:var(--red); color:#fff; animation:shakeSmall .4s ease; }
   @keyframes shakeSmall{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-4px);} 75%{transform:translateX(4px);} }
 
-  /* ---- code entry ---- */
   .code-box{
     position:relative;
-    background:var(--track); border:2.5px solid var(--stroke); border-radius:14px;
+    background:var(--track); border:3px solid var(--stroke); border-radius:12px;
+    box-shadow:var(--sh-sm);
     height:70px; display:flex; align-items:center; justify-content:center; overflow:hidden;
   }
   .code-box svg.noise{ position:absolute; inset:0; width:100%; height:100%; opacity:.5; }
-  .code-char{ display:inline-block; font-weight:800; font-size:28px; letter-spacing:1px; position:relative; z-index:1; }
+  .code-char{ display:inline-block; font-weight:700; font-size:28px; letter-spacing:1px; position:relative; z-index:1; }
   .code-input{
-    width:100%; background:var(--track); border:2.5px solid var(--stroke); border-radius:12px;
+    width:100%; background:var(--track); border:3px solid var(--stroke); border-radius:11px;
+    box-shadow:var(--sh-sm);
     color:var(--text); font-family:'Syne',sans-serif; font-weight:700; font-size:16px; letter-spacing:3px;
     text-align:center; text-transform:uppercase; padding:10px; outline:none;
   }
-  .code-input:focus{ border-color:var(--red-s); }
-  .code-input.wrong{ border-color:var(--red-s); animation:shakeSmall .4s ease; }
+  .code-input:focus{ outline:3px solid var(--blue); outline-offset:2px; }
+  .code-input.wrong{ background:rgba(255,0,51,.16); animation:shakeSmall .4s ease; }
 
   .exp-footer{
     padding:12px 16px 18px;
@@ -311,40 +319,38 @@
   .foot-note i{ color:var(--green); margin-right:3px; }
 
   .verify-btn{
-    appearance:none; border:none; cursor:pointer;
-    background:var(--green); border:2.5px solid var(--green-s); color:#06210f;
-    font-family:'Syne', sans-serif; font-weight:800; font-size:13px;
-    padding:10px 18px; border-radius:12px; flex:0 0 auto;
-    transition:transform .15s cubic-bezier(.34,1.9,.64,1), filter .15s ease;
+    appearance:none; cursor:pointer;
+    background:var(--green); border:3px solid var(--stroke); color:var(--ink);
+    font-family:'Syne', sans-serif; font-weight:700; font-size:13px;
+    padding:9px 18px; border-radius:11px; flex:0 0 auto;
+    box-shadow:var(--sh-sm);
+    transition:transform .12s ease, box-shadow .12s ease, filter .15s ease;
   }
-  .verify-btn:hover{ filter:brightness(1.06); transform:translateY(-1px); }
-  .verify-btn:active{ transform:translateY(1px) scale(.97); }
-  .verify-btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; }
+  .verify-btn:hover{ filter:brightness(1.04); transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .verify-btn:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
+  .verify-btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; box-shadow:var(--sh-sm); filter:none; }
 
   .status{
-    margin:0 16px 16px; border-radius:14px; padding:12px 14px;
+    margin:0 16px 16px; border-radius:12px; padding:11px 14px;
+    border:3px solid var(--stroke); box-shadow:var(--sh-sm);
     display:flex; align-items:center; gap:10px; font-weight:700; font-size:13px;
     animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1) both;
   }
   @keyframes bounceIn{ 0%{ opacity:0; transform:scale(.7) translateY(6px);} 55%{ opacity:1; transform:scale(1.05) translateY(-2px);} 100%{ opacity:1; transform:scale(1) translateY(0);} }
-  .status.pass{ background:rgba(62,207,110,0.14); border:2px solid var(--green-s); color:var(--green); }
-  .status.fail{ background:rgba(255,1,50,0.14); border:2px solid var(--red-s); color:var(--red); animation:shake .5s ease both; }
+  .status.pass{ background:var(--green); color:var(--ink); }
+  .status.fail{ background:var(--red); color:#fff; animation:shake .5s ease both; }
   .status i{ font-size:16px; flex:0 0 auto; }
   @keyframes shake{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-7px);} 40%{transform:translateX(6px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(3px);} }
   .status span.d{ font-weight:400; font-size:10.5px; opacity:.85; display:block; margin-top:2px; }
 
-  /* ---- 09 · trace the beam (v1.3) ---- */
   .trace-wrap{ position:relative; touch-action:none; cursor:crosshair; padding:2px 0; }
   .trace-svg{ width:100%; height:120px; display:block; overflow:visible; }
-  .beam-track{ fill:none; stroke:var(--stroke); stroke-width:16; stroke-linecap:round; }
-  /* This is the visitor's OWN line — the actual path their pointer took, not
-     the ideal curve unveiled. So no dash transition to animate: the geometry
-     changes on every move, and linejoin has to be round or a hand that
-     wobbles draws spikes at every sample. */
+  .beam-track{ fill:none; stroke:var(--rail); stroke-width:16; stroke-linecap:round; }
+
   .beam-live{ fill:none; stroke:var(--blue); stroke-width:8;
               stroke-linecap:round; stroke-linejoin:round; }
-  .beam-start{ fill:var(--yellow); stroke:var(--yellow-s); stroke-width:3; animation:beamPulse 1.5s ease-in-out infinite; }
-  .beam-end{ fill:var(--green); stroke:var(--green-s); stroke-width:3; }
+  .beam-start{ fill:var(--yellow); stroke:var(--ink-line); stroke-width:3; animation:beamPulse 1.5s ease-in-out infinite; }
+  .beam-end{ fill:var(--green); stroke:var(--ink-line); stroke-width:3; }
   @keyframes beamPulse{ 0%,100%{ opacity:1; r:9; } 50%{ opacity:.6; r:11; } }
   .trace-wrap.live .beam-start{ animation:none; opacity:.55; }
   .trace-wrap.stray .beam-live{ stroke:var(--red); }
@@ -352,30 +358,29 @@
   .trace-hint{ text-align:center; color:var(--muted); font-size:11px; font-weight:700; margin-top:2px; }
   .trace-wrap.ok .trace-hint{ color:var(--green); }
 
-  /* ---- 10 · tag the probe (v1.3) ---- */
   .catch-box{
-    position:relative; height:150px; border-radius:14px;
-    border:2.5px solid var(--stroke); background:var(--track);
+    position:relative; height:150px; border-radius:12px;
+    border:3px solid var(--stroke); background:var(--track);
+    box-shadow:var(--sh-sm);
     overflow:hidden; cursor:crosshair;
   }
-  .catch-box.missed{ border-color:var(--red-s); }
+  .catch-box.missed{ background:rgba(255,0,51,.12); }
   .probe{
     position:absolute; width:44px; height:44px; margin:-22px 0 0 -22px;
-    border-radius:50%; background:var(--green); border:3px solid var(--green-s);
+    border-radius:50%; background:var(--green); border:3px solid var(--stroke);
+    box-shadow:var(--sh-sm);
     display:flex; align-items:center; justify-content:center; cursor:pointer;
   }
-  .probe i{ color:#06210f; font-size:16px; pointer-events:none; }
-  .probe.tagged{ animation:tileBounce .3s cubic-bezier(.34,1.9,.64,1); background:var(--yellow); border-color:var(--yellow-s); }
-  .probe.locked{ background:var(--yellow); border-color:var(--yellow-s); }
+  .probe i{ color:var(--ink); font-size:16px; pointer-events:none; }
+  .probe.tagged{ animation:tileBounce .3s cubic-bezier(.34,1.9,.64,1); background:var(--yellow); }
+  .probe.locked{ background:var(--yellow); }
   .catch-tally{
     position:absolute; right:8px; bottom:6px; pointer-events:none;
     color:var(--muted); font-size:11px; font-weight:800; letter-spacing:.04em;
   }
 
-  /* ---- 11 · find the twins (v1.3) ---- */
   .pair-grid{ grid-template-columns:repeat(3,1fr); }
 
-  /* the keyboard escape hatch on the two pointer-only games */
   .swap-row{ display:flex; justify-content:center; margin-top:8px; }
   .swap-btn{
     appearance:none; background:none; border:none; cursor:pointer;
@@ -386,19 +391,23 @@
   .swap-btn:focus-visible{ outline:3px solid var(--blue); outline-offset:2px; }
 
   .retry-btn{
-    margin-top:8px; appearance:none; border:none; cursor:pointer;
-    background:var(--yellow); border:2.5px solid var(--yellow-s); color:#2a2600;
-    font-family:'Syne', sans-serif; font-weight:800; font-size:12.5px;
-    padding:9px 14px; border-radius:11px;
+    margin-top:8px; appearance:none; cursor:pointer;
+    background:var(--yellow); border:3px solid var(--stroke); color:var(--ink);
+    font-family:'Syne', sans-serif; font-weight:700; font-size:12.5px;
+    padding:8px 14px; border-radius:11px; box-shadow:var(--sh-sm);
+    transition:transform .12s ease, box-shadow .12s ease;
   }
+  .retry-btn:hover{ transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .retry-btn:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
 </style>
 </head>
 <body>
 
 <div class="stage">
 
-  <!-- COLLAPSED -->
   <div class="collapsed" id="collapsed">
+    <div class="rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="pad">
     <div class="chk-row">
       <div class="chk-box" id="chkBox"><i class="chk-tick"></i><span class="spinner-ring"></span></div>
       <div class="chk-label" id="chkLabel">I'm not a robot</div>
@@ -412,10 +421,11 @@
       <i class="fa-solid fa-shield-halved cshield"></i>
       <div>Checking the box lets Swiftaw record how you move and play, and use it to improve its systems &amp; AI.</div>
     </div>
+    </div>
   </div>
 
-  <!-- EXPANDED -->
   <div class="expanded hidden" id="expanded">
+    <div class="rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
     <div class="exp-header">
       <div class="brand-mark">
         <img class="wm" src="LifeCheck%20logo.png" alt="Lifecheck" draggable="false" />
@@ -443,22 +453,18 @@
 (function(){
   const VERSION = '1.3';
 
-  /* ---------------- host bridge ---------------- */
-  // Lifecheck is served from swiftaw.com and embedded via <iframe>. The
-  // challenge logic never touches the host page — the only thing that
-  // crosses the boundary is a one-way "verified" message + token.
   function post(event, extra){
     try{
       parent.postMessage(Object.assign({ source:'swiftaw-lifecheck', v:VERSION, event:event }, extra||{}), '*');
     }catch(e){}
   }
   function reportSize(){
-    const h = document.querySelector('.stage').offsetHeight + 8;
+
+    const h = document.querySelector('.stage').offsetHeight + 12;
     post('resize', { height:h });
   }
   const ro = ('ResizeObserver' in window) ? new ResizeObserver(reportSize) : null;
 
-  /* ---------------- Supabase / token issuance ---------------- */
   const SUPA_URL = 'https://mwszvynzzugbowdngzab.supabase.co';
   const SUPA_KEY = 'sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf';
   const SUPA_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
@@ -466,55 +472,15 @@
   const SITE_KEY = P.get('k') || '';
   const HOST = P.get('host') || '';
 
-  // Reserved PREVIEW keys — first-party demos, not real integrations.
-  //
-  // swiftaw.com's own showcase widgets ("Try it, it's real", the account
-  // page, the Supernova gate) are not rows in `lifecheck_keys` and never
-  // will be: they exist to demonstrate the widget, not to gate anything.
-  // v1.2 sent EVERY supplied key to the server, so those demos asked
-  // Supabase about a key that does not exist, got NULL back, and rendered
-  // "site key rejected" on the one page whose entire job is to show the
-  // thing working.
-  //
-  // The rule: a key ending in `_public` is a preview key. It never touches
-  // the server and mints a clearly-labelled, deliberately unverifiable
-  // preview token. Real `lc_site_…` keys still go to the server, and the
-  // server is still the only thing that can accept or reject them.
   const PREVIEW_KEY = /_public$/i.test(SITE_KEY);
   const SERVER_MODE = !!SITE_KEY && !PREVIEW_KEY;
 
-  // v1.3 · INVISIBLE MODE. No checkbox: the host page calls
-  // Lifecheck.execute() and the frame decides silently, only unfolding into a
-  // visible challenge when the signals don't add up. See the `host-signals`
-  // handler below for how a zero-size frame gets a cursor trail to read, and
-  // why that trail is trusted less than one of our own.
   const INVISIBLE = P.get('mode') === 'invisible';
 
-  // v1.3 · TWO LANES, ONE COIN FLIP.
-  //
-  // Half of all sessions are read from behaviour and only interrupted when
-  // the signals don't add up (SIGNAL_LANE). The other half play a mini-game
-  // no matter how clean they look (GAME_LANE).
-  //
-  // Two reasons it's split rather than picking one:
-  //   · Every game played is a labelled demonstration. Passing everyone who
-  //     looks fine means only the suspicious half ever generates gameplay
-  //     data, which is exactly the biased sample you don't want to learn
-  //     from. The forced lane keeps a steady supply of games played by
-  //     people who are unambiguously human.
-  //   · A bot that gets waved through learns that looking smooth is enough.
-  //     When half the doors open onto a game regardless, smooth isn't a
-  //     strategy any more.
-  //
-  // Decided once per widget load, so a visitor never sees the treatment
-  // change under them mid-check. Invisible mode opts out: a host chose it to
-  // avoid interrupting people, and a coin-flip challenge would defeat the
-  // entire point of it — there, behaviour decides, as documented.
   const GAME_LANE = !INVISIBLE && Math.random() < 0.5;
-  const DEBUG = P.has('lcdebug');   // ?lcdebug=1 → log telemetry successes too
+  const DEBUG = P.has('lcdebug');   
   let sbClient = null;
 
-  // A per-load session id ties every event from this widget instance together.
   const SESSION_ID = 'lcs_' + Math.random().toString(36).slice(2,12) + Date.now().toString(36);
 
   function firstPartyEmbed(){
@@ -526,7 +492,7 @@
     try{
       if(document.referrer) return ours(new URL(document.referrer).hostname);
     }catch(e){}
-    // opened directly (no embedding parent) → treat as a local preview
+
     return window.top === window.self;
   }
   const FIRST_PARTY = firstPartyEmbed();
@@ -540,34 +506,19 @@
     sbClient = window.supabase.createClient(SUPA_URL, SUPA_KEY, { auth: { persistSession: false } });
     return sbClient;
   }
-  // A preview token. Minted entirely in the browser, so it proves nothing and
-  // deliberately says so in its own prefix: `lifecheck-verify` will always
-  // answer `invalid-input-token` for one. Used by the reserved `_public`
-  // demo keys and by first-party previews on swiftaw.com.
+
   function localToken(){
     const rnd = () => Math.random().toString(36).slice(2, 12);
     return 'LC' + VERSION + '-preview_' + rnd() + rnd() + '.' + Date.now().toString(36);
   }
-  // Why a token issue failed, for the host page + our own telemetry. The RPC
-  // returns NULL for both "no such key" and "host not allowed", so we can only
-  // name the class of failure, not which one — but "rejected" vs "the network
-  // died" is the distinction an integrator actually needs.
+
   let LAST_TOKEN_ERR = '';
   async function issueToken(passed){
     LAST_TOKEN_ERR = '';
     if(SERVER_MODE){
       try {
         const sb = await getSb();
-        // v1.3 sends the human-confidence score along with the token, so
-        // `lifecheck_verify_token` can hand a real number back to the
-        // integrator instead of the constant 0.9 it used to invent.
-        //
-        // The widget is a static file on a CDN and the migration is a manual
-        // step, so the two WILL be out of order for someone: if the extra
-        // arguments aren't there yet, PostgREST answers "no such function"
-        // rather than ignoring them. Fall back to the v1.2 call shape once
-        // and carry on unscored — a deploy-order mistake should cost the
-        // score field, not every verification on the site.
+
         const base = { p_site_key: SITE_KEY, p_host: HOST, p_passed: passed || 'challenge' };
         let { data, error } = await sb.rpc('lifecheck_issue_token', Object.assign({
           p_score: LAST_SIGNALS ? LAST_SIGNALS.score : null,
@@ -582,23 +533,15 @@
         return data;
       } catch(e){ LAST_TOKEN_ERR = 'issue-request-failed'; return null; }
     }
-    // A reserved `_public` key is a preview anywhere it is embedded — it can't
-    // be mistaken for a real pass, so it needn't be pinned to swiftaw.com, and
-    // pinning it is what left local mirrors and staging copies showing an
-    // error instead of a demo.
+
     if(PREVIEW_KEY || FIRST_PARTY) return localToken();
     LAST_TOKEN_ERR = 'no-sitekey';
     return null;
   }
 
-  /* ---------------- interaction telemetry (v1.2) ----------------
-     We record how the visitor uses the check + mini-games and stream it to
-     Supabase in small, throttled batches. Fire-and-forget: it never blocks
-     or breaks verification, and silently no-ops if the network is down.
-     Consent for this is shown in the collapsed card. */
   let _evQueue = [];
   let _flushT = null;
-  // running per-session tallies → rolled into one feature row at the end
+
   let _shown = 0, _wrong = 0, _susp = 0, _spot = false, _summarySent = false;
   function logEvent(type, opts){
     try{
@@ -616,8 +559,7 @@
         suspicious: !!opts.suspicious,
         detail: opts.detail || {}
       };
-      // ?lcdebug=1 keeps every event on the page as well as sending it, so an
-      // integrator can read exactly what Lifecheck saw without a database.
+
       if(DEBUG){
         (window.__lcEvents = window.__lcEvents || []).push(ev);
         console.log('[Lifecheck]', ev.t, ev);
@@ -628,8 +570,6 @@
     }catch(e){}
   }
 
-  // One tidy, labelled feature vector per session — this is the row you'd
-  // actually train a human/bot model on (or cluster for anomaly detection).
   function sessionSummary(passed, via){
     if(_summarySent) return;
     _summarySent = true;
@@ -647,8 +587,7 @@
         touch: touchUsed,
         pen: penUsed,
         mode: INVISIBLE ? 'invisible' : 'checkbox',
-        // which lane this session was assigned, so the two halves can be
-        // compared later — that comparison is the whole point of splitting
+
         lane: INVISIBLE ? 'invisible' : (GAME_LANE ? 'game' : 'signal'),
         challengesShown: _shown,
         wrongTaps: _wrong,
@@ -668,8 +607,7 @@
     const batch = _evQueue.splice(0, _evQueue.length);
     try{
       const sb = await getSb();
-      // NOTE: a failed RPC RESOLVES with { error } — it does not throw — so we
-      // must inspect error, or failures are invisible. Surface it either way.
+
       const { error } = await sb.rpc('lifecheck_log_events', {
         p_events: batch,
         p_site_key: SITE_KEY || null,
@@ -682,23 +620,11 @@
         console.log('[Lifecheck] logged ' + batch.length + ' event(s)');
       }
     }catch(e){
-      // network / CDN / client failure — telemetry must never affect the check
+
       console.warn('[Lifecheck] telemetry failed to send:', (e && e.message) || e);
     }
   }
-  /* Getting the data out before the tab does.
-     `beforeunload` alone was not enough: flushing is an async request, and a
-     browser tearing the page down cancels it — so a visitor who solved a game
-     and closed the tab within the 1.4s flush window took the whole
-     demonstration with them. That is precisely the row we most want.
 
-     `visibilitychange → hidden` fires while the page is still alive (tab
-     switch, app switch, and on mobile it is often the LAST callback you get),
-     so a plain flush there has time to finish. It deliberately does not send
-     the session summary: someone glancing at another tab hasn't abandoned
-     anything, and sending it early would burn the one-shot guard and lose the
-     real outcome. `pagehide` is the genuine end of the page, so that is where
-     the summary goes. */
   document.addEventListener('visibilitychange', () => {
     if(document.visibilityState === 'hidden'){ try{ flushEvents(); }catch(e){} }
   });
@@ -727,7 +653,6 @@
     'Checking pulse'
   ];
 
-  /* life forms vs machines — used by the drawn image challenges */
   const LIFE = [
     {e:'🐶',n:'dog'},{e:'🐱',n:'cat'},{e:'🐸',n:'frog'},{e:'🐟',n:'fish'},
     {e:'🐢',n:'turtle'},{e:'🦋',n:'butterfly'},{e:'🐝',n:'bee'},{e:'🌸',n:'flower'},
@@ -747,25 +672,21 @@
     rotate:   { label:'Signal test · 06',icon:'fa-compass',       color:'var(--pink)',  colorS:'var(--pink-s)'  },
     sequence: { label:'Signal test · 07',icon:'fa-list-ol',       color:'var(--yellow)',colorS:'var(--yellow-s)'},
     code:     { label:'Signal test · 08',icon:'fa-keyboard',      color:'var(--red)',   colorS:'var(--red-s)'   },
-    // v1.3 · three new games, each chosen for a kind of interaction the
-    // other eight never asked for: following a path, tracking something
-    // that moves, and remembering what you already turned over.
+
     trace:    { label:'Signal test · 09',icon:'fa-route',         color:'var(--blue)',  colorS:'var(--blue-s)'  },
     catchit:  { label:'Signal test · 10',icon:'fa-crosshairs',    color:'var(--green)', colorS:'var(--green-s)' },
     pairs:    { label:'Life scan · 11',  icon:'fa-layer-group',   color:'var(--pink)',  colorS:'var(--pink-s)'  }
   };
   const TEST_TYPES = Object.keys(TEST_META);
-  // The pointer-path games are pointless on a touch screen with no hover and
-  // hard on a small one, so phones draw from the tap-only pool.
+
   const COARSE = (function(){
     try{ return window.matchMedia && window.matchMedia('(pointer: coarse)').matches; }
     catch(e){ return false; }
   })();
   const TOUCH_TYPES = ['imagepick','oddone','tally','grid','sequence','code','pairs','catchit'];
   let lastType = null;
-  let challengeStart = 0;   // for timing / suspicious-speed detection
+  let challengeStart = 0;   
 
-  /* ---------------- real cursor tracking ---------------- */
   let samples = [];
   let touchUsed = false;
   let loadedAt = Date.now();
@@ -773,7 +694,7 @@
   let maxPressure = 0;
   let scrollTicks = 0, keyTicks = 0;
   let LAST_SIGNALS = null;
-  let TRACE = null;             // assigned below; see "demonstration traces"
+  let TRACE = null;             
 
   document.addEventListener('pointermove', (e) => {
     if(e.pointerType === 'touch') touchUsed = true;
@@ -787,11 +708,6 @@
   window.addEventListener('wheel', () => { scrollTicks++; }, { passive:true });
   document.addEventListener('keydown', () => { keyTicks++; }, { passive:true });
 
-  // Two things only the browser itself can tell us about an input event, and
-  // both are cheap: whether the user agent generated it, and how far apart
-  // the click press and release were. A dispatched MouseEvent has
-  // isTrusted === false unless it came from real hardware, and a synthetic
-  // click has no press-to-release gap at all because it never had one.
   let untrusted = 0, trusted = 0;
   let clickDowns = [], clickHolds = [];
   document.addEventListener('pointerdown', (e) => {
@@ -808,15 +724,6 @@
     }
   }, { passive:true, capture:true });
 
-  /* ================== v1.3 · the signal stack ==================
-     Scored, not vetoing: every reading contributes to a 0..1 confidence
-     figure rather than deciding on its own, and the caller acts on the
-     total. All the individual readings are kept in `stats`, so what lands
-     in lifecheck_events is a labelled feature vector, not just a verdict.
-
-     Per-signal rationale and tuning notes live in HANDOFF.md, deliberately
-     not here — this file is served to every visitor. */
-
   function mean(a){ return a.length ? a.reduce((s,v)=>s+v,0)/a.length : 0; }
   function stdev(a){
     if(a.length < 2) return 0;
@@ -824,7 +731,6 @@
     return Math.sqrt(mean(a.map(v => (v-m)*(v-m))));
   }
 
-  // Static environment tells, independent of how the pointer moved.
   function envFlags(){
     const f = [];
     try{ if(navigator.webdriver) f.push('webdriver'); }catch(e){}
@@ -838,13 +744,10 @@
     return f;
   }
 
-  // returns { human, score, reason, stats }
   function analyzeCursor(){
     const elapsed = Date.now() - loadedAt;
     const env = envFlags();
 
-    // Each entry is [name, penalty]. Penalties add up and come off a
-    // starting confidence of 1; anything at or above PASS_AT reads as human.
     const PASS_AT = 0.5;
     const hits = [];
     let score = 1;
@@ -852,18 +755,13 @@
 
     if(env.length) hit('automation-env', 0.6);
 
-    /* ---- 10 · untrusted events. The browser marks any event a script
-           dispatched rather than the user producing it. Cheap and decisive. */
     if(untrusted > 0) hit('synthetic-events', 0.65);
 
-    /* ---- 11 · click hold. A press and its release are tens of
-           milliseconds apart on real hardware, and zero when dispatched. */
     if(clickHolds.length){
       const holdMax = Math.max.apply(null, clickHolds);
       if(holdMax <= 1) hit('instant-click', 0.35);
     }
 
-    /* ---- touch / pen: no cursor trail to read, so lean on timing ---- */
     if(touchUsed && samples.length < 5){
       if(elapsed <= 220) hit('touch-too-fast', 0.6);
       const human = score >= PASS_AT;
@@ -876,10 +774,8 @@
 
     const n = samples.length;
 
-    /* ---- 01 · did it move at all? ---- */
     if(n < 5) hit('no-movement', 0.55);
 
-    /* ---- 02 · faster than a person can react? ---- */
     if(elapsed < 300) hit('too-fast', 0.5);
 
     let dist = 0, netDisp = 0, straight = 0;
@@ -900,10 +796,8 @@
       netDisp = Math.hypot(samples[n-1].x - samples[0].x, samples[n-1].y - samples[0].y);
       straight = dist > 0 ? netDisp / dist : 0;
 
-      /* ---- 03 · barely moved ---- */
       if(dist < 40) hit('barely-moved', 0.45);
 
-      /* ---- 04 · direction changes ---- */
       let dirChanges = 0;
       for(let i=2;i<n;i++){
         const a = Math.atan2(samples[i-1].y-samples[i-2].y, samples[i-1].x-samples[i-2].x);
@@ -916,27 +810,22 @@
       if(jitterRatio < 0.04)      hit('robotic-path', 0.4);
       else if(jitterRatio < 0.09) hit('low-wobble', 0.12);
 
-      /* ---- 05 · straightness ---- */
       if(n >= 12){
         if(straight > 0.985)     hit('ruler-straight', 0.3);
         else if(straight > 0.94) hit('very-direct', 0.1);
       }
 
-      /* ---- 06 · speed profile ---- */
       speedCv = mean(speeds) > 0 ? stdev(speeds) / mean(speeds) : 0;
       if(n >= 12){
         if(speedCv < 0.15)     hit('constant-speed', 0.3);
         else if(speedCv < 0.32) hit('flat-speed', 0.1);
       }
 
-      /* ---- 07 · event-clock regularity ---- */
       dtCv = mean(dts) > 0 ? stdev(dts) / mean(dts) : 0;
       if(n >= 12 && dtCv < 0.08) hit('metronome-timing', 0.25);
 
-      /* ---- 08 · dwell ---- */
       if(n >= 25 && dwells === 0) hit('never-paused', 0.15);
 
-      /* ---- 09 · coordinate resolution ---- */
       let frac = 0;
       for(let i=0;i<n;i++) if(samples[i].x % 1 !== 0 || samples[i].y % 1 !== 0) frac++;
       fracCoords = frac / n;
@@ -970,34 +859,9 @@
     };
   }
 
-  /* ================== v1.3 · demonstration traces ==================
-     The mini-games stopped being only a gate this release. Every challenge
-     a person solves is also a small, complete demonstration: here is the
-     board, here is what a human looked at, here is where they moved, here
-     is what they clicked, and here is whether it worked.
-
-     Recorded that way the games become a supervised dataset Supernova can
-     learn to PLAY from — observation → action → outcome, the same shape
-     you'd use to train any behaviour-cloning policy:
-
-       state    a declarative description of the board. Every clickable
-                thing carries a semantic label and a NORMALISED box
-                ([x, y, w, h] as 0..1 fractions of the challenge area), so a
-                policy learns "the frog tile", never "the pixel at 412,300".
-       actions  what the visitor did, in order, with timing: which element,
-                where inside it they landed, and whether it was right.
-       path     the cursor trail through the challenge, normalised the same
-                way — how a human approaches, overshoots and settles on a
-                target, not just what they finally picked.
-       solved   the label. Reward, if you'd rather think of it that way.
-
-     Everything is resolution- and layout-independent, capped in size, and
-     carries no page content — it describes our own widget's board and
-     nothing about the site around it. This is the interaction data the
-     consent line in the collapsed card is talking about. */
   TRACE = (function(){
-    const MAX_PATH    = 160;   // cursor points kept per challenge
-    const MIN_GAP_MS  = 35;    // don't record faster than this
+    const MAX_PATH    = 160;   
+    const MIN_GAP_MS  = 35;    
     const MAX_ACTIONS = 60;
     let cur = null;
 
@@ -1005,14 +869,14 @@
       const el = document.getElementById('challengeArea');
       return el ? el.getBoundingClientRect() : null;
     }
-    // client coords → 0..1 within the challenge area
+
     function norm(clientX, clientY, r){
       r = r || rect();
       if(!r || !r.width || !r.height) return null;
       return [ +((clientX - r.left) / r.width).toFixed(4),
                +((clientY - r.top)  / r.height).toFixed(4) ];
     }
-    // an element's box, normalised the same way
+
     function boxOf(el){
       const r = rect();
       if(!r || !r.width || !r.height || !el) return null;
@@ -1029,11 +893,9 @@
                 actions:[], t0:Date.now(), lastT:-1e9 };
       },
       recording(){ return !!cur; },
-      // Called by each builder once the board has rendered, with everything a
-      // policy would need to choose a move.
+
       state(obj){ if(cur) cur.state = obj || {}; },
-      // Measure the boxes of the elements a builder just appended. Deferred a
-      // frame so layout has actually happened.
+
       measure(fn){
         requestAnimationFrame(() => { try{ fn(boxOf); }catch(e){} });
       },
@@ -1046,14 +908,12 @@
         cur.lastT = t;
         cur.path.x.push(p[0]); cur.path.y.push(p[1]); cur.path.t.push(t);
       },
-      // kind: tap | drag | key | submit
+
       act(kind, extra){
         if(!cur || cur.actions.length >= MAX_ACTIONS) return;
         cur.actions.push(Object.assign({ k:kind, t:Date.now() - cur.t0 }, extra || {}));
       },
-      // Where inside an element a tap landed (0..1 of that element) — the
-      // difference between "clicked the tile" and "clicked its dead centre",
-      // which is one of the clearer human tells in the data.
+
       tapOn(el, ev, extra){
         let at = null, on = null;
         try{
@@ -1097,15 +957,12 @@
   }
   function pick(arr,n){ return shuffle(arr).slice(0,n); }
 
-  // Mini-game icons are drawn with Twemoji onto a canvas so the artwork looks
-  // identical on every OS/browser. If the Twemoji CDN is unreachable we fall
-  // back to the platform's own emoji glyph.
   const TWEMOJI_BASE = 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/72x72/';
   function twemojiCode(str){
     const pts = [];
     for(const ch of str){
       const c = ch.codePointAt(0);
-      if(c !== 0xFE0F) pts.push(c.toString(16)); // Twemoji strips the VS16 selector
+      if(c !== 0xFE0F) pts.push(c.toString(16)); 
     }
     return pts.join('-');
   }
@@ -1136,13 +993,7 @@
     img.src = TWEMOJI_BASE + twemojiCode(emoji) + '.png';
     return c;
   }
-  /* v1.3 · every tile gets its own small rotation, scale and sometimes a
-     mirror. A person reads a frog as a frog through all of it; a script
-     matching artwork against a reference has to actually recognise the thing
-     instead of comparing bytes, because no two boards ever render the same
-     pixels — including, deliberately, the two "identical" tiles in Find the
-     twins, which are the same creature at different angles rather than the
-     same image twice. Kept gentle enough that nothing becomes a guess. */
+
   function tileWith(emoji){
     const el = document.createElement('div');
     el.className = 'tile';
@@ -1174,21 +1025,6 @@
   chkBox.addEventListener('click', startVerify);
   chkLabel.addEventListener('click', startVerify);
 
-  /* ================== v1.3 · invisible mode ==================
-     `Lifecheck.render(el, { size:'invisible' })` mounts a zero-size frame and
-     nothing else. The host calls `Lifecheck.execute()` at the moment it
-     actually needs a human — on submit, usually — and the frame answers with
-     a token, or unfolds into a real challenge if it isn't convinced.
-
-     The catch, stated plainly because it changes the threat model: a frame
-     with no size never sees the pointer, so the loader forwards the host
-     page's cursor trail in. Script running on the host page could fabricate
-     that trail, which our own in-frame samples can't be. So host-supplied
-     signals are held to a much higher bar (PASS_INVISIBLE below) than a
-     checkbox session, the environment probe still runs inside the frame
-     where the host can't reach it, and anything short of convincing gets a
-     visible challenge rather than a quiet pass. Invisible mode buys less
-     friction, not more certainty — pick it for that reason. */
   const PASS_INVISIBLE = 0.78;
   let hostSignals = false;
   let executed = false;
@@ -1198,7 +1034,7 @@
     if(!d || d.source !== 'swiftaw-lifecheck-host') return;
     if(e.source !== parent) return;
     if(d.event === 'signals' && Array.isArray(d.samples)){
-      // [[x, y, tOffsetMs], …] from the embedding page
+
       for(let i=0;i<d.samples.length && i<400;i++){
         const s = d.samples[i];
         if(!s || s.length < 3) continue;
@@ -1239,7 +1075,7 @@
       });
       return;
     }
-    // Not convinced — unfold and make them play for it.
+
     post('expand', {});
     openChallenge();
   }
@@ -1248,7 +1084,7 @@
     if(locked) return;
     locked = true;
     chkLabel.removeAttribute('title');
-    chkBox.className = 'chk-box spin';           // clears a previous jam
+    chkBox.className = 'chk-box spin';           
     logEvent('check_click', { detail:{ touch:touchUsed } });
     const phrase = LOADING_PHRASES[Math.floor(Math.random()*LOADING_PHRASES.length)];
     chkLabel.innerHTML = `${phrase}<span class="dots"></span>`;
@@ -1260,9 +1096,6 @@
         logEvent('cursor_flag', { outcome:'suspicious', suspicious:true, detail:{ reason:a.reason, score:a.score, stats:a.stats } });
       }
 
-      // GAME_LANE (see the coin flip up top): this session always plays,
-      // however clean it looks. The signals are still read and still
-      // recorded — we just don't let them buy a way out of the game.
       if(GAME_LANE){
         logEvent('lane_challenge', {
           outcome: a.human ? 'info' : 'suspicious',
@@ -1273,10 +1106,6 @@
         return;
       }
 
-      // SIGNAL_LANE: read the behaviour, and only interrupt if it doesn't
-      // add up. Even a clean read gets spot-checked sometimes, at a rate
-      // that scales with confidence rather than a flat coin flip, so the
-      // friction lands on the sessions that earned it.
       const spotChance = Math.min(0.5, Math.max(0.08, 0.08 + (1 - a.score) * 0.75));
       const spotCheck = a.human && Math.random() < spotChance;
       if(a.human && spotCheck) logEvent('spot_check', { detail:Object.assign({ lane:'signal', spotChance:+spotChance.toFixed(2) }, a.stats) });
@@ -1289,17 +1118,7 @@
     }, 700);
   }
 
-  /* ---------------- token expiry ----------------
-     A server token dies about two minutes after it is minted, and until now
-     nothing told the host page that. `data-expired-callback` has been in the
-     docs since v1.1 and could never fire, so a form left open for five
-     minutes submitted a token the verify endpoint was always going to
-     reject with `timeout-or-duplicate` — and the visitor got the blame for
-     it. The widget now counts down with the token and hands the check back
-     just before it goes stale.
-
-     Preview tokens are never verified by anyone, so they don't expire. */
-  const TOKEN_TTL_MS = 110000;   // just inside the server's ~2 min
+  const TOKEN_TTL_MS = 110000;   
   let _expiryT = null;
   function armExpiry(){
     if(_expiryT) clearTimeout(_expiryT);
@@ -1309,7 +1128,7 @@
       if(INVISIBLE){ executed = false; post('expired', {}); logEvent('token_expired', {}); return; }
       logEvent('token_expired', {});
       post('expired', {});
-      // Put the box back so the visitor can simply click again.
+
       locked = false;
       collapsed.classList.remove('is-verified');
       resetCollapsed();
@@ -1331,11 +1150,6 @@
     });
   }
 
-  // v1.3 — a check that can't run is a jammed machine, not the visitor's
-  // fault, so it now says so in the widget's own voice. The playful line is
-  // cosmetic: the precise cause still rides along in `detail`, and the
-  // machine-readable `code` on the `error` postMessage is unchanged, so
-  // nothing an integrator branches on moves.
   const FAIL_LINES = [
     'Clunk! Gears stuck.',
     'Sput! Belt slipped.',
@@ -1347,7 +1161,7 @@
   let _lastFailLine = -1;
   function failLine(){
     let i = Math.floor(Math.random()*FAIL_LINES.length);
-    if(i === _lastFailLine) i = (i + 1) % FAIL_LINES.length;   // never twice running
+    if(i === _lastFailLine) i = (i + 1) % FAIL_LINES.length;   
     _lastFailLine = i;
     return FAIL_LINES[i];
   }
@@ -1371,11 +1185,9 @@
     chkLabel.textContent = t.short;
     chkLabel.title = t.detail;
     logEvent('key_fail', { outcome:'suspicious', suspicious:!FIRST_PARTY, detail:{ serverMode:SERVER_MODE, firstParty:FIRST_PARTY, reason:LAST_TOKEN_ERR } });
-    // Tell the host page, so it can fall back instead of waiting forever on a
-    // callback that is never going to fire.
+
     post('error', { code: LAST_TOKEN_ERR || 'no-sitekey', message: t.detail });
-    // A jam is worth one more crank — restore the box so a click retries,
-    // rather than leaving a dead widget the visitor can't do anything with.
+
     setTimeout(function(){
       if(chkBox.classList.contains('checked')) return;
       chkBox.classList.remove('jammed');
@@ -1389,19 +1201,13 @@
     const pool = restrictTo || ((COARSE || touchUsed) ? TOUCH_TYPES : TEST_TYPES);
     let type = pool[Math.floor(Math.random()*pool.length)];
     if(type === lastType) type = pool[(pool.indexOf(type)+1) % pool.length];
-    // `?lcgame=trace` pins the challenge, so an integrator (or our own test
-    // run) can look at one game repeatedly instead of reloading until the
-    // dice cooperate. It only chooses WHICH game — there is nothing to gain
-    // by picking one, you still have to solve it.
-    // …but an explicit swap request wins over it: the visitor asked for a
-    // different game, and handing them the same one back is not an answer.
+
     const forced = P.get('lcgame');
     if(!restrictTo && forced && TEST_META[forced]) type = forced;
     lastType = type;
     challengeStart = Date.now();
     TRACE.begin(type);
-    // Each builder wires its own Verify handler; clear the previous one so a
-    // retry can't fire the last challenge's check against the new board.
+
     verifyBtn.onclick = null;
 
     collapsed.classList.add('hidden');
@@ -1435,15 +1241,6 @@
     reportSize();
   }
 
-  // NOTE: there is deliberately no "close" control on an open challenge.
-  // An open challenge has no dismiss control by design.
-
-  /* ---------------- shared tile plumbing ----------------
-     v1.3: every tappable thing in a challenge is a real button as far as the
-     keyboard and screen readers are concerned — v1.2's tiles were plain divs
-     with a click handler, which locked out anyone not using a mouse. The same
-     wrapper is where each activation enters the demonstration trace, so no
-     game has to remember to record its own taps. */
   function activatable(el, label, fn){
     el.setAttribute('role', 'button');
     el.setAttribute('tabindex', '0');
@@ -1457,15 +1254,7 @@
     });
     return el;
   }
-  /* Two of the eleven genuinely need a pointer: you cannot trace a curve or
-     chase a drifting target with a keyboard, and pretending otherwise is
-     worse than admitting it — a probe you can tab to and press Enter on
-     twice isn't a challenge at all, it's a two-keystroke bypass. So those
-     two are never handed out on touch, they don't accept keyboard
-     activation, and they carry a way out: one keypress swaps the board for a
-     game that is fully keyboard-playable. That costs an attacker nothing
-     (they still have to solve whatever comes next) and costs a keyboard user
-     nothing either. */
+
   const KEYBOARD_TYPES = ['imagepick','oddone','tally','grid','sequence','code','pairs','slider','rotate'];
   const POINTER_ONLY   = ['trace','catchit'];
   function offerSwap(){
@@ -1484,13 +1273,10 @@
     challengeArea.appendChild(wrap);
   }
 
-  // Wrap the Verify button so a submission is recorded before it is judged.
   function onVerify(fn){
     verifyBtn.onclick = (ev) => { TRACE.act('submit', {}); fn(ev); };
   }
-  // Unified pointer drag: v1.2 wired mouse and touch handlers separately and
-  // never removed the window-level ones, so every challenge left its
-  // listeners behind for the life of the frame.
+
   function dragify(el, onMove, onStart, onEnd){
     let id = null;
     el.style.touchAction = 'none';
@@ -1512,13 +1298,12 @@
     el.addEventListener('pointercancel', stop);
   }
 
-  /* ---------------- 1. IMAGE PICK (click the named life form) ---------------- */
   function buildImagePick(){
-    const items = pick(LIFE, 9);                     // 9 distinct life forms
+    const items = pick(LIFE, 9);                     
     const targetIdx = Math.floor(Math.random()*items.length);
     const target = items[targetIdx];
     promptText.innerHTML = `Click the <b class="hl">${target.n}</b><span class="sub">Tap its picture to prove you can see it.</span>`;
-    verifyBtn.classList.add('hidden');               // self-validating
+    verifyBtn.classList.add('hidden');               
 
     challengeArea.innerHTML = `<div class="grid" id="gridEl"></div>`;
     const gridEl = document.getElementById('gridEl');
@@ -1554,7 +1339,6 @@
     }));
   }
 
-  /* ---------------- 2. ODD ONE OUT (tap what isn't alive) ---------------- */
   function buildOddOne(){
     const lifeTiles = pick(LIFE, 8);
     const odd = MACHINE[Math.floor(Math.random()*MACHINE.length)];
@@ -1595,9 +1379,8 @@
     }));
   }
 
-  /* ---------------- 3. TALLY (count the life forms) ---------------- */
   function buildTally(){
-    const lifeCount = 2 + Math.floor(Math.random()*4);          // 2..5
+    const lifeCount = 2 + Math.floor(Math.random()*4);          
     const lifeTiles = pick(LIFE, lifeCount).map(x=>({...x,life:true}));
     const machineTiles = pick(MACHINE, 9-lifeCount).map(x=>({...x,life:false}));
     const all = shuffle(lifeTiles.concat(machineTiles));
@@ -1607,8 +1390,7 @@
     challengeArea.innerHTML = `<div class="grid" id="gridEl" style="pointer-events:none"></div><div class="numpad" id="numEl"></div>`;
     const gridEl = document.getElementById('gridEl');
     const tileEls = [];
-    // The board isn't tappable in this game, but it still has to be READABLE:
-    // you cannot count what a screen reader won't name.
+
     gridEl.setAttribute('role', 'list');
     gridEl.setAttribute('aria-label', 'Board to count');
     all.forEach(it=>{
@@ -1654,7 +1436,6 @@
     }));
   }
 
-  /* ---------------- 4. GRID (select every life form) ---------------- */
   function buildGrid(){
     promptText.innerHTML = `Select every life form<span class="sub">Tap all living things, then verify.</span>`;
     const lifeCount = 4 + Math.floor(Math.random()*2);
@@ -1667,8 +1448,7 @@
     challengeArea.innerHTML = `<div class="grid" id="gridEl"></div>`;
     const gridEl = document.getElementById('gridEl');
     const els = [];
-    // Nothing selected can never be the answer, so don't let it be submitted —
-    // v1.2 happily accepted an empty board and spent one of the two attempts.
+
     function syncBtn(){
       verifyBtn.disabled = selected.size === 0;
       verifyBtn.textContent = selected.size ? `Verify (${selected.size})` : 'Verify';
@@ -1708,7 +1488,6 @@
     }));
   }
 
-  /* ---------------- 5. SLIDER ---------------- */
   function buildSlider(){
     promptText.innerHTML = `Guide the visitor home<span class="sub">Drag the craft into the landing zone.</span>`;
     const zoneWidthPct = 16;
@@ -1745,9 +1524,7 @@
       const rect = trackEl.getBoundingClientRect();
       return ((clientX - rect.left) / rect.width) * 100;
     }
-    // Dragging is on the whole track, not just the 40px handle — v1.2 made you
-    // grab a small circle exactly, which is the fiddliest part of the game and
-    // none of what it is actually testing.
+
     dragify(trackEl,
       (e) => { setHandle(pctFromClientX(e.clientX)); TRACE.act('drag', { v:+value.toFixed(1) }); },
       () => { handleEl.classList.remove('bob'); },
@@ -1774,7 +1551,6 @@
     }));
   }
 
-  /* ---------------- 6. ROTATE DIAL ---------------- */
   function buildRotate(){
     promptText.innerHTML = `Aim the dish<span class="sub">Rotate the marker into the highlighted arc.</span>`;
     const r = 58, cx = 75, cy = 75;
@@ -1787,7 +1563,7 @@
       <div class="dial-wrap">
         <div class="dial" id="dialEl">
           <svg viewBox="0 0 150 150">
-            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--stroke)" stroke-width="10"/>
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--rail)" stroke-width="10"/>
             <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--green)" stroke-width="10"
               stroke-dasharray="${arcLen} ${circumference-arcLen}"
               stroke-dashoffset="${-(targetStart/360)*circumference}"
@@ -1818,7 +1594,7 @@
       const dy = clientY - (rect.top+rect.height/2);
       return (Math.atan2(dy,dx)*180/Math.PI) + 90;
     }
-    // Grab anywhere on the dial, same reasoning as the slider.
+
     dragify(dialEl,
       (e) => { place(angleFromEvent(e.clientX, e.clientY)); TRACE.act('drag', { deg:Math.round(angle) }); },
       null,
@@ -1846,13 +1622,9 @@
     }));
   }
 
-  /* ---------------- 7. SEQUENCE ---------------- */
   function buildSequence(){
     promptText.innerHTML = `Tap the beacons in order<span class="sub">Lowest signal number first.</span>`;
-    // v1.3: five DISTINCT numbers out of 1..29 rather than always 1,2,3,4,5.
-    // The old board could be solved by looking for the glyph "1" and counting
-    // up from there; this one has to actually be ordered, and it gives the
-    // trace data a real comparison task instead of a fixed answer key.
+
     const nums = shuffle(Array.from({length:29}, (_,i)=>i+1)).slice(0,5);
     const order = shuffle(nums);
     const sorted = nums.slice().sort((a,b)=>a-b);
@@ -1882,8 +1654,7 @@
           el.classList.add('bad');
           restarts++;
           logEvent('minigame_wrong', { challenge:'sequence', outcome:'fail', detail:{ expected:next, tapped:num, restarts } });
-          // Three false starts is a game that isn't going anywhere; end it
-          // rather than looping forever with no way out.
+
           if(restarts >= 3){ setTimeout(()=> decide(false, 'The beacons never lined up.'), 450); return; }
           setTimeout(()=>{
             [...seqEl.children].forEach(c=>c.classList.remove('done','bad'));
@@ -1893,7 +1664,7 @@
       });
       seqEl.appendChild(el);
     });
-    verifyBtn.classList.add('hidden'); // self-validating
+    verifyBtn.classList.add('hidden'); 
 
     TRACE.measure(box => TRACE.state({
       kind: 'ordered-taps',
@@ -1903,7 +1674,6 @@
     }));
   }
 
-  /* ---------------- 8. CODE ---------------- */
   function buildCode(){
     promptText.innerHTML = `Type the signal code<span class="sub">Case doesn't matter.</span>`;
     const charset = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
@@ -1924,7 +1694,7 @@
         <svg class="noise" viewBox="0 0 300 70" preserveAspectRatio="none">
           ${Array.from({length:6}).map(()=>{
             const y1=Math.random()*70, y2=Math.random()*70;
-            return `<line x1="0" y1="${y1.toFixed(1)}" x2="300" y2="${y2.toFixed(1)}" stroke="var(--stroke)" stroke-width="2"/>`;
+            return `<line x1="0" y1="${y1.toFixed(1)}" x2="300" y2="${y2.toFixed(1)}" stroke="var(--rail)" stroke-width="2"/>`;
           }).join('')}
         </svg>
         ${spans}
@@ -1934,8 +1704,7 @@
     `;
 
     const input = document.getElementById('codeInput');
-    // Focus it and let Enter submit — v1.2 made you click into the box and
-    // then reach for the button, which is two extra moves for a typing game.
+
     setTimeout(()=>{ try{ input.focus({ preventScroll:true }); }catch(e){} }, 60);
     input.addEventListener('keydown', (e) => {
       if(e.key === 'Enter'){ e.preventDefault(); verifyBtn.click(); }
@@ -1958,21 +1727,14 @@
     }));
   }
 
-  /* ---------------- 9. TRACE THE BEAM (v1.3) ----------------
-     Follow a curve from the emitter to the receiver without straying off it.
-     Nothing else in the set asks for a sustained, shaped movement, and the
-     path a hand takes through a curve is about the least fakeable thing the
-     widget can watch — which also makes it the richest demonstration in the
-     set for a policy learning to steer. */
   function buildTrace(){
     promptText.innerHTML = `Trace the beam<span class="sub">Drag from the dot to the dish, staying on the line.</span>`;
-    verifyBtn.classList.add('hidden');               // self-validating
+    verifyBtn.classList.add('hidden');               
 
-    const W = 300, H = 120, TOL = 26;                // tolerance in svg units
+    const W = 300, H = 120, TOL = 26;                
     const p0 = { x:22,  y:20 + Math.random()*80 };
     const p2 = { x:278, y:20 + Math.random()*80 };
-    // Half the time it's a simple arc, half the time an S-bend that doubles
-    // back on itself. A single curve shape would be learnable in one look.
+
     const sBend = Math.random() < 0.5;
     const p1 = { x: sBend ? 105 : 150, y:Math.random() < 0.5 ? 8 + Math.random()*22 : H - 8 - Math.random()*22 };
     const p1b = { x:200, y: sBend ? (H - p1.y) : p1.y };
@@ -1992,8 +1754,6 @@
       ? `M${p0.x} ${p0.y} C${p1.x} ${p1.y} ${p1b.x} ${p1b.y} ${p2.x} ${p2.y}`
       : `M${p0.x} ${p0.y} Q${p1.x} ${p1.y} ${p2.x} ${p2.y}`;
 
-    /* The live path starts EMPTY. It is the visitor's own trail — it gets its
-       geometry from where their pointer actually goes, never from pathD. */
     challengeArea.innerHTML = `
       <div class="trace-wrap" id="traceWrap">
         <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="trace-svg">
@@ -2016,39 +1776,24 @@
       const r = wrap.getBoundingClientRect();
       return { x: ((e.clientX - r.left)/r.width)*W, y: ((e.clientY - r.top)/r.height)*H };
     }
-    /* The svg is preserveAspectRatio="none", so one unit of x and one unit of
-       y are not the same number of screen pixels. Measuring the gap in raw svg
-       units therefore makes the tolerance an ellipse — noticeably slacker on
-       one axis than the other — which is exactly the kind of thing a hand
-       feels and cannot name. Measured in real pixels it is a circle. */
+
     function dist(a,b){
       const r = wrap.getBoundingClientRect();
       return Math.hypot((a.x-b.x) * (r.width/W), (a.y-b.y) * (r.height/H));
     }
 
-    /* ── the trail ───────────────────────────────────────────────────────
-       This is the whole point of the challenge. The earlier build revealed
-       the IDEAL curve behind a stroke-dashoffset as you advanced, so the line
-       that appeared was perfect no matter how badly you actually moved — it
-       looked like a drawing playing back, not like something you drew. Now
-       the stroke IS the pointer's path: it wobbles where the hand wobbled and
-       it goes off into the margin when you leave the track, which is also the
-       honest picture of why a stray was counted. */
     function pushTrail(p){
       const last = trail[trail.length - 1];
       if(last && Math.hypot(p.x - last.x, p.y - last.y) < 1.2) return;
       trail.push(p);
-      // A drag long enough to matter is a few hundred samples; the cap only
-      // exists so a visitor who scribbles for a minute cannot grow the path
-      // data without bound.
+
       if(trail.length > 600) trail.shift();
       redraw();
     }
     function redraw(){
       if(!trail.length){ live.setAttribute('d', ''); return; }
       const seg = trail.map(q => q.x.toFixed(1) + ' ' + q.y.toFixed(1));
-      // One sample is a dot, and 'M x y' alone paints nothing even with a
-      // round cap — it needs somewhere to go, so it goes to itself.
+
       live.setAttribute('d', 'M' + seg[0] + (seg.length > 1 ? 'L' + seg.slice(1).join('L') : 'L' + seg[0]));
     }
     function clearTrail(){ trail = []; redraw(); }
@@ -2057,13 +1802,13 @@
       if(done) return;
       const p = toSvg(e);
       if(!started){
-        if(dist(p, p0) > TOL) return;                // must begin at the emitter
+        if(dist(p, p0) > TOL) return;                
         started = true;
         hint.textContent = 'Keep going…';
         wrap.classList.add('live');
       }
       pushTrail(p);
-      // Walk the cursor forward along the curve while it stays near it.
+
       let advanced = 0;
       while(idx < pts.length-1 && dist(p, pts[idx+1]) < TOL){ idx++; advanced++; }
       if(advanced){
@@ -2083,7 +1828,7 @@
     }
     function release(){
       if(done || !started) return;
-      // Let go early: reset rather than fail, the curve is the whole game.
+
       started = false; idx = 0;
       clearTrail();
       wrap.classList.remove('live');
@@ -2110,11 +1855,6 @@
     }));
   }
 
-  /* ---------------- 10. TAG THE PROBE (v1.3) ----------------
-     A drifting target you have to click twice. Every other game is static, so
-     nothing until now measured whether a pointer can chase something — and
-     leading a moving target is exactly the prediction problem a policy has to
-     solve, which makes the traces here worth more than their length. */
   function buildCatch(){
     promptText.innerHTML = `Tag the probe<span class="sub">Click the drifting probe twice.</span>`;
     verifyBtn.classList.add('hidden');
@@ -2130,14 +1870,14 @@
     const tally = document.getElementById('catchTally');
 
     let hits = 0, misses = 0, done = false;
-    let px = 0.5, py = 0.5;                                  // 0..1 of the box
+    let px = 0.5, py = 0.5;                                  
     let vx = (Math.random() < 0.5 ? -1 : 1) * 0.0035;
     let vy = (Math.random() < 0.5 ? -1 : 1) * 0.0030;
     let raf = 0;
 
     function step(){
       if(done) return;
-      // gentle random walk so the drift never becomes a predictable bounce
+
       vx += (Math.random()-0.5) * 0.00035;
       vy += (Math.random()-0.5) * 0.00035;
       const cap = 0.007 + hits*0.004;
@@ -2155,9 +1895,6 @@
     raf = requestAnimationFrame(step);
     function stop(){ done = true; if(raf) cancelAnimationFrame(raf); }
 
-    // Deliberately NOT `activatable`: a keyboard Enter on a moving target
-    // proves nothing, and accepting one would make this the easiest challenge
-    // in the set to automate. Keyboard users take the swap offered below.
     probe.addEventListener('click', (ev) => {
       if(done) return;
       ev.stopPropagation();
@@ -2167,8 +1904,7 @@
       probe.classList.add('tagged');
       setTimeout(()=> probe.classList.remove('tagged'), 220);
       tally.textContent = hits + ' / 2';
-      // It gets away from you a little after the first tag, so the second one
-      // isn't just the first one repeated.
+
       vx *= 1.45; vy *= 1.45;
       if(hits >= 2){
         stop();
@@ -2191,7 +1927,6 @@
       }
     });
 
-    // Don't let it run forever if the tab is left open.
     setTimeout(()=>{
       if(done) return;
       stop();
@@ -2208,10 +1943,6 @@
     }));
   }
 
-  /* ---------------- 11. FIND THE PAIR (v1.3) ----------------
-     Six tiles, two identical. Cheap for a person, awkward for a classifier
-     that scores each tile alone: the answer is a RELATION between tiles, not
-     a property of any one of them. */
   function buildPairs(){
     promptText.innerHTML = `Find the twins<span class="sub">Two of these are the same. Tap them both.</span>`;
     verifyBtn.classList.add('hidden');
@@ -2263,19 +1994,16 @@
     }));
   }
 
-  /* ---------------- DECIDE ---------------- */
   function decide(pass, reason){
     verifyBtn.disabled = true;
     expFooter.classList.add('hidden');
     statusBox.classList.remove('hidden');
 
     const solveMs = challengeStart ? (Date.now() - challengeStart) : null;
-    // A "correct" answer returned impossibly fast is a bot tell — pass the
-    // check (don't punish edge cases) but flag it for the model.
+
     const tooFast = pass && solveMs != null && solveMs < 450;
     if(tooFast) logEvent('speed_flag', { challenge:lastType, outcome:'suspicious', suspicious:true, detail:{ solveMs } });
 
-    // Close out the demonstration: board, moves, cursor path and the label.
     TRACE.end(pass, solveMs);
 
     logEvent(pass ? 'challenge_pass' : 'challenge_fail', {
@@ -2304,7 +2032,7 @@
           post('verified', { token: token });
           armExpiry();
           if(INVISIBLE){
-            // Nothing to fold back to — the frame goes away again.
+
             expanded.classList.add('hidden');
             post('collapse', {});
             return;
@@ -2328,10 +2056,8 @@
     }
   }
 
-  // announce ready + start size reporting
   if(INVISIBLE){
-    // No checkbox in invisible mode — the frame sits at zero height until
-    // execute() decides a challenge is warranted.
+
     collapsed.classList.add('hidden');
     expanded.classList.add('hidden');
   }
