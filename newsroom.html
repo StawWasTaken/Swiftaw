@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Newsroom — Swiftaw</title>
+<title>Newsroom - Swiftaw</title>
 <meta name="description" content="Swiftaw's newsroom. We post when there is something worth posting, and not before.">
 <meta name="author" content="Swiftaw">
 <meta name="theme-color" content="#0C0F15">
 <link rel="canonical" href="https://swiftaw.com/newsroom">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Swiftaw">
-<meta property="og:title" content="Newsroom — Swiftaw">
+<meta property="og:title" content="Newsroom - Swiftaw">
 <meta property="og:description" content="We post when there is something worth posting. No noise, no filler.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/newsroom">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Newsroom — Swiftaw">
+<meta name="twitter:title" content="Newsroom - Swiftaw">
 <meta name="twitter:description" content="We post when there is something worth posting. No noise, no filler.">
 <meta name="twitter:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
@@ -24,9 +24,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw-nb.css">
 <style>
-/* ══════════════════════════════════════════════════════════════════════════
-   NEWSROOM — layout for THIS page only.
-   ══════════════════════════════════════════════════════════════════════════ */
 
 html { scroll-padding-top: 88px; }
 
@@ -34,7 +31,6 @@ html { scroll-padding-top: 88px; }
 .pg-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-/* ── Page head ─────────────────────────────────────────────────────────── */
 .pg-head { position: relative; padding: clamp(64px, 9vw, 116px) 0 clamp(26px, 3.6vw, 44px); overflow: hidden; }
 .pg-slab {
   position: relative; z-index: 2;
@@ -58,7 +54,6 @@ html { scroll-padding-top: 88px; }
   width: 320px; height: 220px; z-index: 1; opacity: .55;
 }
 
-/* ── Controls ──────────────────────────────────────────────────────────── */
 .news-controls {
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
   margin-bottom: 26px;
@@ -91,7 +86,6 @@ html { scroll-padding-top: 88px; }
 }
 [data-nb="dark"] .news-chip:not([aria-pressed="true"]) .n { background: rgba(255,255,255,.12); }
 
-/* ── Cards ─────────────────────────────────────────────────────────────── */
 .news-grid { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
 .news-card { display: flex; flex-direction: column; text-align: left; width: 100%; font-family: var(--nb-font-body); }
 .news-card-img {
@@ -108,7 +102,6 @@ html { scroll-padding-top: 88px; }
 .news-card-excerpt { display: block; font-size: 14px; color: var(--nb-fg-muted); line-height: 1.55; }
 .news-card-more { display: block; margin-top: auto; padding-top: 12px; font-family: var(--nb-font-head); font-weight: 700; font-size: 13px; color: var(--nb-blue); }
 
-/* ── Article view ──────────────────────────────────────────────────────── */
 #news-list-view.hidden { display: none; }
 #article-view { display: none; padding: clamp(28px, 5vw, 56px) 0 clamp(50px, 8vw, 100px); }
 #article-view.open { display: block; }
@@ -163,13 +156,39 @@ html { scroll-padding-top: 88px; }
 
 <nav class="nb-nav" id="nav">
   <div class="nb-nav-in">
-    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
+      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
+    </a>
 
     <div class="nb-nav-links" id="navLinks">
-      <a class="nb-nav-link" href="/about-us">About</a>
-      <a class="nb-nav-link" href="/mission">Mission</a>
-      <a class="nb-nav-link" href="/innovation-room">Lab</a>
-      <a class="nb-nav-link" href="/newsroom" aria-current="page">News</a>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link is-current" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-company">
+          <a class="nb-drop-item" href="/about-us"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
+          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
+          <a class="nb-drop-item" href="/innovation-room"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
+          <a class="nb-drop-item" href="/newsroom" aria-current="page"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-products">Products <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-products">
+          <a class="nb-drop-item" href="https://fortized.com" rel="noopener"><img class="nb-drop-ico" src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Fortized</span><span class="nb-drop-d">Bastions, channels and DMs</span></span></a>
+          <span class="nb-drop-item is-soon" aria-disabled="true"><img class="nb-drop-ico" src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Hereld</span><span class="nb-drop-d">A professional network. Soon.</span></span></span>
+          <span class="nb-drop-sep" aria-hidden="true"></span>
+          <a class="nb-drop-item" href="/lifecheck/"><img class="nb-drop-ico" src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Lifecheck</span><span class="nb-drop-d">Human verification</span></span></a>
+          <a class="nb-drop-item" href="/supernova/"><img class="nb-drop-ico" src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Supernova</span><span class="nb-drop-d">The AI service</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-legal">Legal <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-legal">
+          <a class="nb-drop-item" href="/legal/terms-of-service/"><span class="nb-drop-txt"><span class="nb-drop-t">Terms of Service</span><span class="nb-drop-d">The rules of using Swiftaw</span></span></a>
+          <a class="nb-drop-item" href="/legal/privacy-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Privacy Policy</span><span class="nb-drop-d">What we hold, and why</span></span></a>
+          <a class="nb-drop-item" href="/legal/products-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Products Policy</span><span class="nb-drop-d">Rules that apply per product</span></span></a>
+        </div>
+      </div>
     </div>
 
     <span class="nb-nav-spacer"></span>
@@ -196,7 +215,7 @@ html { scroll-padding-top: 88px; }
         <span class="nb-eyebrow">The News</span>
         <h1 class="nb-display nb-d2">The Newsroom<span class="dot">.</span></h1>
         <p class="nb-lead nb-muted">
-          We post when there's something worth posting. No noise, no filler.
+          We post when there's something worth posting.
         </p>
       </div>
     </div>
@@ -274,16 +293,9 @@ html { scroll-padding-top: 88px; }
 </footer>
 
 <script>
-/* Same-origin, on purpose. A placeholder that only appears when something is
-   missing must not itself depend on another site's CDN. */
+
 const DECO = '/SWFT-Deco/we-create-content-deco.png';
 
-/* The newsroom is empty because nothing has been published yet, and an empty
-   newsroom is the honest state — not a reason to write filler.
-   Add a real post here when there is one:
-     id: { title, category, date, bylineName, bylineAvatar?, banner?, content }
-   `content` is HTML; give the opening paragraph class="lead" and it becomes
-   both the article's lede and the card's excerpt. */
 const SW_ARTICLES = {};
 
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -318,7 +330,7 @@ function renderChips(){
   const counts = {};
   Object.values(SW_ARTICLES).forEach(a => { counts[a.category] = (counts[a.category] || 0) + 1; });
   const total = Object.values(SW_ARTICLES).length;
-  // One "All" chip over one category is furniture, not a filter.
+
   if (cats.length < 3) { host.innerHTML = ''; return; }
   host.innerHTML = cats.map(c => {
     const n = c === 'All' ? total : (counts[c] || 0);
@@ -349,7 +361,7 @@ function renderGrid(){
   const grid = document.getElementById('news-grid');
   const controls = document.getElementById('news-controls');
   const all = Object.entries(SW_ARTICLES);
-  // No posts means no search box and no filters — there is nothing to search.
+
   controls.hidden = all.length === 0;
 
   const q = newsSearch.toLowerCase().trim();
@@ -398,7 +410,7 @@ function renderArticle(id){
       </div>
       <div class="article-body">${a.content || ''}</div>
     </article>`;
-  document.title = a.title + ' — Swiftaw Newsroom';
+  document.title = a.title + ' - Swiftaw Newsroom';
   document.getElementById('news-list-view').classList.add('hidden');
   document.getElementById('article-view').classList.add('open');
   return true;
@@ -407,7 +419,7 @@ function renderArticle(id){
 function showList(){
   document.getElementById('news-list-view').classList.remove('hidden');
   document.getElementById('article-view').classList.remove('open');
-  document.title = 'Newsroom — Swiftaw';
+  document.title = 'Newsroom - Swiftaw';
 }
 
 function openArticle(id){

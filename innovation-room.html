@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lab — Swiftaw</title>
+<title>Lab - Swiftaw</title>
 <meta name="description" content="The Lab is where Swiftaw works on things that are not products yet. Innoprojects, in the open, before anyone announces anything.">
 <meta name="author" content="Swiftaw">
 <meta name="theme-color" content="#0C0F15">
 <link rel="canonical" href="https://swiftaw.com/innovation-room">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Swiftaw">
-<meta property="og:title" content="Lab — Swiftaw">
+<meta property="og:title" content="Lab - Swiftaw">
 <meta property="og:description" content="Where the weird ideas grow up. Most don't make it out.">
 <meta property="og:image" content="https://swiftaw.com/SwiftawLab-Swiftign.png">
 <meta property="og:url" content="https://swiftaw.com/innovation-room">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Lab — Swiftaw">
+<meta name="twitter:title" content="Lab - Swiftaw">
 <meta name="twitter:description" content="Where the weird ideas grow up. Most don't make it out.">
 <meta name="twitter:image" content="https://swiftaw.com/SwiftawLab-Swiftign.png">
 <link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
@@ -24,9 +24,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw-nb.css">
 <style>
-/* ══════════════════════════════════════════════════════════════════════════
-   LAB — layout for THIS page only.
-   ══════════════════════════════════════════════════════════════════════════ */
 
 html { scroll-padding-top: 88px; }
 
@@ -34,7 +31,6 @@ html { scroll-padding-top: 88px; }
 .pg-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-/* ── Page head ─────────────────────────────────────────────────────────── */
 .pg-head { position: relative; padding: clamp(64px, 9vw, 116px) 0 clamp(26px, 3.6vw, 44px); overflow: hidden; }
 .pg-slab {
   position: relative; z-index: 2;
@@ -43,8 +39,7 @@ html { scroll-padding-top: 88px; }
   box-shadow: var(--nb-sh-lg);
   padding: clamp(28px, 4vw, 52px);
   max-width: 880px;
-  /* The slab is a surface, so muted text inside it is coloured for the paper
-     it is printed on, not for the page ground behind it. */
+
   --nb-fg: var(--nb-surface-fg);
   --nb-fg-muted: var(--nb-surface-fg-muted);
 }
@@ -52,8 +47,6 @@ html { scroll-padding-top: 88px; }
 .pg-slab .nb-lead { margin-top: 18px; max-width: 54ch; }
 .pg-slab .nb-eyebrow { display: block; margin-bottom: 14px; color: var(--nb-fg-muted); }
 
-/* .nb-dots draws in ink. On #0C0F15 that is black on nearly black, so the
-   dark context redraws it in light. */
 [data-nb="dark"] .nb-dots {
   background-image: radial-gradient(rgba(255,255,255,.28) 1.6px, transparent 1.6px);
 }
@@ -62,7 +55,6 @@ html { scroll-padding-top: 88px; }
   width: 320px; height: 220px; z-index: 1; opacity: .55;
 }
 
-/* ── Controls: search + status chips ───────────────────────────────────── */
 .lab-controls {
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
   margin-bottom: 26px;
@@ -75,7 +67,7 @@ html { scroll-padding-top: 88px; }
 .lab-search .nb-input { padding-left: 40px; }
 
 .lab-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-/* A status chip is a button, so it presses; it is not a link that pretends. */
+
 .lab-chip {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--nb-font-head); font-weight: 700; font-size: 12.5px;
@@ -94,7 +86,7 @@ html { scroll-padding-top: 88px; }
   background: rgba(0,0,0,.14); color: inherit;
 }
 [data-nb="dark"] .lab-chip:not([aria-pressed="true"]) .n { background: rgba(255,255,255,.12); }
-/* The dot carries the status colour so the chip reads before the label does. */
+
 .lab-chip .d { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--nb-ink); background: var(--nb-surface-2); }
 .lab-chip[data-status="live"]     .d { background: var(--nb-green); }
 .lab-chip[data-status="cooking"]  .d { background: var(--nb-yellow); }
@@ -103,10 +95,8 @@ html { scroll-padding-top: 88px; }
 .lab-chip[data-status="killed"]   .d { background: var(--nb-red); }
 .lab-chip[data-status="All"]      .d { display: none; }
 
-/* ── Cards ─────────────────────────────────────────────────────────────── */
 .lab-grid { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
-/* The card is a real <button>, so its parts are spans and each one has to be
-   told to behave like a block. */
+
 .lab-card { display: flex; flex-direction: column; text-align: left; width: 100%; font-family: var(--nb-font-body); }
 .lab-card-img {
   display: block;
@@ -126,11 +116,9 @@ html { scroll-padding-top: 88px; }
   font-family: var(--nb-font-head); font-weight: 700; font-size: 13px; color: var(--nb-blue);
 }
 
-/* State pills reuse the tag recipe, one colour per status. */
 .st { display: inline-flex; align-items: center; gap: 6px; }
 .st .d { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
 
-/* ── Detail view ───────────────────────────────────────────────────────── */
 #lab-list-view.hidden { display: none; }
 #project-view { display: none; padding: clamp(28px, 5vw, 56px) 0 clamp(50px, 8vw, 100px); }
 #project-view.open { display: block; }
@@ -222,13 +210,39 @@ html { scroll-padding-top: 88px; }
 
 <nav class="nb-nav" id="nav">
   <div class="nb-nav-in">
-    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
+      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
+    </a>
 
     <div class="nb-nav-links" id="navLinks">
-      <a class="nb-nav-link" href="/about-us">About</a>
-      <a class="nb-nav-link" href="/mission">Mission</a>
-      <a class="nb-nav-link" href="/innovation-room" aria-current="page">Lab</a>
-      <a class="nb-nav-link" href="/newsroom">News</a>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link is-current" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-company">
+          <a class="nb-drop-item" href="/about-us"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
+          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
+          <a class="nb-drop-item" href="/innovation-room" aria-current="page"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
+          <a class="nb-drop-item" href="/newsroom"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-products">Products <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-products">
+          <a class="nb-drop-item" href="https://fortized.com" rel="noopener"><img class="nb-drop-ico" src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Fortized</span><span class="nb-drop-d">Bastions, channels and DMs</span></span></a>
+          <span class="nb-drop-item is-soon" aria-disabled="true"><img class="nb-drop-ico" src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Hereld</span><span class="nb-drop-d">A professional network. Soon.</span></span></span>
+          <span class="nb-drop-sep" aria-hidden="true"></span>
+          <a class="nb-drop-item" href="/lifecheck/"><img class="nb-drop-ico" src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Lifecheck</span><span class="nb-drop-d">Human verification</span></span></a>
+          <a class="nb-drop-item" href="/supernova/"><img class="nb-drop-ico" src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Supernova</span><span class="nb-drop-d">The AI service</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-legal">Legal <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-legal">
+          <a class="nb-drop-item" href="/legal/terms-of-service/"><span class="nb-drop-txt"><span class="nb-drop-t">Terms of Service</span><span class="nb-drop-d">The rules of using Swiftaw</span></span></a>
+          <a class="nb-drop-item" href="/legal/privacy-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Privacy Policy</span><span class="nb-drop-d">What we hold, and why</span></span></a>
+          <a class="nb-drop-item" href="/legal/products-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Products Policy</span><span class="nb-drop-d">Rules that apply per product</span></span></a>
+        </div>
+      </div>
     </div>
 
     <span class="nb-nav-spacer"></span>
@@ -266,7 +280,7 @@ html { scroll-padding-top: 88px; }
 
       <div class="nb-alert nb-alert--info nb-reveal" style="margin-bottom:30px; max-width:880px;">
         <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
-        <span>An <b>Innoproject</b> is something we are building because we want to, not something we have announced. Anything on this bench can change, stall or stop. When one becomes a real product, it gets written up in the <a href="/newsroom">Newsroom</a>.</span>
+        <span>An <b>Innoproject</b> is something we are building because we want to, not something we have announced. Anything on this bench can stop at any point. When one becomes a real product, it gets written up in the <a href="/newsroom">Newsroom</a>.</span>
       </div>
 
       <div class="lab-controls nb-reveal">
@@ -338,12 +352,9 @@ html { scroll-padding-top: 88px; }
 </footer>
 
 <script>
-/* Same-origin, on purpose. A placeholder that only appears when something is
-   missing must not itself depend on another site's CDN. */
+
 const DECO = '/SWFT-Deco/pretty-logo.png';
 
-/* Every entry here is a project that actually exists. Nothing is added to this
-   object to make the grid look busier. */
 const PROJECTS = {
   swiftign: {
     innoLabel: 'Innoproject-1', sortIndex: 1, status: 'live', statusLabel: 'shipped · v1',
@@ -397,9 +408,7 @@ const STATUSES = [
   { key: 'shelved',  label: 'Shelved' },
   { key: 'killed',   label: 'Killed' }
 ];
-/* Live first, then the further an idea is from shipping the further down it
-   sits. Killed projects stay on the page — a lab that only shows wins is a
-   showroom. */
+
 const STATUS_ORDER = { live: 0, cooking: 1, dreaming: 2, shelved: 3, killed: 4 };
 const STATUS_TAG   = { live: 'nb-tag--green', cooking: 'nb-tag--yellow', dreaming: 'nb-tag--blue', shelved: 'nb-tag--pink', killed: 'nb-tag--red' };
 
@@ -408,9 +417,6 @@ function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&
 let activeStatus = 'All';
 let labSearch = '';
 
-/* `tag` exists because the card is a <button>, and a <div> inside a button is
-   invalid markup that browsers silently reparent — which drops the banner out
-   of the card. Inside the card it is a span; on the detail page it is a div. */
 function bannerHTML(banner, cls, tag){
   const t = tag || 'div';
   return banner
@@ -472,8 +478,7 @@ function renderGrid(){
   grid.innerHTML = entries.map(([id, p]) => cardHTML(id, p)).join('');
   grid.querySelectorAll('[data-project]').forEach(el =>
     el.addEventListener('click', () => openProject(el.dataset.project)));
-  // The cards are built after the shared observer's first sweep, so they have
-  // to be handed to it or they stay at opacity 0 forever.
+
   if (window.SwiftawObserveReveals) window.SwiftawObserveReveals(grid);
 }
 
@@ -512,7 +517,7 @@ function renderProject(id){
       <div class="proj-body">${p.content}</div>
     </article>`;
 
-  document.title = p.title + ' — Swiftaw Lab';
+  document.title = p.title + ' - Swiftaw Lab';
   document.getElementById('lab-list-view').classList.add('hidden');
   document.getElementById('project-view').classList.add('open');
   return true;
@@ -521,7 +526,7 @@ function renderProject(id){
 function showList(){
   document.getElementById('lab-list-view').classList.remove('hidden');
   document.getElementById('project-view').classList.remove('open');
-  document.title = 'Lab — Swiftaw';
+  document.title = 'Lab - Swiftaw';
 }
 
 function openProject(id){

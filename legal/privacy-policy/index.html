@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Privacy Policy — Swiftaw</title>
+<title>Privacy Policy - Swiftaw</title>
 <meta name="description" content="What data Swiftaw collects, why, and how we keep it safe across our products, under French and EU law.">
 <link rel="canonical" href="https://swiftaw.com/legal/privacy-policy">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Privacy Policy — Swiftaw">
+<meta property="og:title" content="Privacy Policy - Swiftaw">
 <meta property="og:description" content="What data we collect, why, and how we keep it safe.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/legal/privacy-policy">
@@ -19,9 +19,8 @@
 <link rel="stylesheet" href="/css/swiftaw-nb.css">
 <link rel="stylesheet" href="/css/swiftaw-legal.css">
 <style>
-/* Green is this document's accent. The other two legal pages set their own,
-   and nothing else about them differs. */
-:root { --legal-accent: var(--nb-green); }
+
+:root { --legal-accent: var(--nb-blue); }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 </style>
 </head>
@@ -39,13 +38,39 @@
 
 <nav class="nb-nav" id="nav">
   <div class="nb-nav-in">
-    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
+      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
+    </a>
 
     <div class="nb-nav-links" id="navLinks">
-      <a class="nb-nav-link" href="/about-us">About</a>
-      <a class="nb-nav-link" href="/mission">Mission</a>
-      <a class="nb-nav-link" href="/innovation-room">Lab</a>
-      <a class="nb-nav-link" href="/newsroom">News</a>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-company">
+          <a class="nb-drop-item" href="/about-us"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
+          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
+          <a class="nb-drop-item" href="/innovation-room"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
+          <a class="nb-drop-item" href="/newsroom"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-products">Products <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-products">
+          <a class="nb-drop-item" href="https://fortized.com" rel="noopener"><img class="nb-drop-ico" src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Fortized</span><span class="nb-drop-d">Bastions, channels and DMs</span></span></a>
+          <span class="nb-drop-item is-soon" aria-disabled="true"><img class="nb-drop-ico" src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Hereld</span><span class="nb-drop-d">A professional network. Soon.</span></span></span>
+          <span class="nb-drop-sep" aria-hidden="true"></span>
+          <a class="nb-drop-item" href="/lifecheck/"><img class="nb-drop-ico" src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Lifecheck</span><span class="nb-drop-d">Human verification</span></span></a>
+          <a class="nb-drop-item" href="/supernova/"><img class="nb-drop-ico" src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Supernova</span><span class="nb-drop-d">The AI service</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link is-current" aria-expanded="false" aria-haspopup="true" aria-controls="drop-legal">Legal <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-legal">
+          <a class="nb-drop-item" href="/legal/terms-of-service/"><span class="nb-drop-txt"><span class="nb-drop-t">Terms of Service</span><span class="nb-drop-d">The rules of using Swiftaw</span></span></a>
+          <a class="nb-drop-item" href="/legal/privacy-policy/" aria-current="page"><span class="nb-drop-txt"><span class="nb-drop-t">Privacy Policy</span><span class="nb-drop-d">What we hold, and why</span></span></a>
+          <a class="nb-drop-item" href="/legal/products-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Products Policy</span><span class="nb-drop-d">Rules that apply per product</span></span></a>
+        </div>
+      </div>
     </div>
 
     <span class="nb-nav-spacer"></span>
@@ -66,7 +91,7 @@
   <div class="legal-shell">
     <div class="legal-eyebrow">Privacy Policy</div>
     <h1>Your <span class="u">data</span>, and how we treat it.</h1>
-    <p class="legal-lede">What we collect, why we collect it, and how we keep it safe &mdash; across every Swiftaw product, under the GDPR.</p>
+    <p class="legal-lede">What we collect, why we collect it, and how we keep it safe - across every Swiftaw product, under the GDPR.</p>
     <div class="legal-meta">
       <span class="pill"><svg><use href="#i-clock"/></svg> Last updated: August 2026</span>
       <span class="legal-actions">
@@ -79,22 +104,22 @@
 
     <div class="legal-prose">
       <div class="legal-lead">
-        <p><strong>The short version:</strong> we collect what a product needs to work &mdash; your account details, what you share, and how you use things like Lifecheck. We use it to run and improve what we make, and to build new things. We keep it safe, we don't hold onto it longer than we need to, and <strong>we never sell it or hand it to advertisers</strong>. And you've got full control over it under the GDPR.</p>
+        <p><strong>The short version:</strong> we collect what a product needs to work - your account details, what you share, and how you use things like Lifecheck. We use it to run and improve what we make, and to build new things. We keep it safe, we don't hold onto it longer than we need to, and <strong>we never sell it or hand it to advertisers</strong>. And you've got full control over it under the GDPR.</p>
       </div>
 
       <section class="legal-sec">
         <h2><span class="n">01</span> Who's looking after your data</h2>
-        <p>Swiftaw &mdash; a company based in the &Icirc;le-de-France region of France &mdash; is the one responsible for the personal data that goes through its products, including Fortized and Lifecheck. We follow French law and the EU's GDPR. This policy is general and covers all of our products; a product can add its own privacy detail on top.</p>
+        <p>Swiftaw - a company based in the &Icirc;le-de-France region of France - is the one responsible for the personal data that goes through its products, including Fortized and Lifecheck. We follow French law and the EU's GDPR. This policy is general and covers all of our products; a product can add its own privacy detail on top.</p>
       </section>
 
       <section class="legal-sec">
         <h2><span class="n">02</span> What we collect</h2>
         <p>Depending on the product, this can be:</p>
         <ul>
-          <li><strong>Account details</strong> &mdash; what you give us to have an account: your username, email, avatar, and a password we store scrambled (hashed). Same for Swiftaw accounts and product accounts like Fortized.</li>
-          <li><strong>What you share</strong> &mdash; the messages, media and things you post inside a product like Fortized, so it can store and show them to you and the people you share with.</li>
-          <li><strong>How you use it</strong> &mdash; including how people interact with the Lifecheck widget and its checks and mini-games, which is how it tells a real person from a bot.</li>
-          <li><strong>Basic technical bits</strong> &mdash; the small stuff your device sends automatically, like rough region, browser type and logs, used to keep things secure and running.</li>
+          <li><strong>Account details</strong> - what you give us to have an account: your username, email, avatar, and a password we store scrambled (hashed). Same for Swiftaw accounts and product accounts like Fortized.</li>
+          <li><strong>What you share</strong> - the messages, media and things you post inside a product like Fortized, so it can store and show them to you and the people you share with.</li>
+          <li><strong>How you use it</strong> - including how people interact with the Lifecheck widget and its checks and mini-games, which is how it tells a real person from a bot.</li>
+          <li><strong>Basic technical bits</strong> - the small stuff your device sends automatically, like rough region, browser type and logs, used to keep things secure and running.</li>
         </ul>
       </section>
 
@@ -102,7 +127,7 @@
         <img src="/SWFT-Deco/provide-to-us-deco.png" alt="">
         <figcaption>
           <div class="cap-t">What you hand over to us</div>
-          <div class="cap-d">Most of what we hold is what you actively give us &mdash; your account details and the content you choose to share. By using a product you're agreeing that we can collect it, and you stay in control of it.</div>
+          <div class="cap-d">Most of what we hold is what you actively give us - your account details and the content you choose to share. By using a product you're agreeing that we can collect it, and you stay in control of it.</div>
         </figcaption>
       </figure>
 
@@ -113,7 +138,7 @@
           <li>run the product (storing your avatar and messages so they show up);</li>
           <li>keep accounts and content secure and stop abuse (Lifecheck spotting bots, for one);</li>
           <li>fix and improve our systems and features;</li>
-          <li>train and improve our systems and AI &mdash; from Lifecheck and the moderation that keeps Fortized safe, to Swiftaw's own AI models;</li>
+          <li>train and improve our systems and AI - from Lifecheck and the moderation that keeps Fortized safe, to Swiftaw's own AI models;</li>
           <li>research and build new Swiftaw products.</li>
         </ul>
         <p>We try to take the least a product needs to do those things.</p>
@@ -123,14 +148,14 @@
         <img src="/SWFT-Deco/we-create-content-deco.png" alt="">
         <figcaption>
           <div class="cap-t">We use it to build and maintain</div>
-          <div class="cap-d">Some of what we collect helps us keep our systems running, upgrade them, and create the next products &mdash; always inside the same promise: we don't sell it, and it's not for commercial resale.</div>
+          <div class="cap-d">Some of what we collect helps us keep our systems running, upgrade them, and create the next products - always inside the same promise: we don't sell it, and it's not for commercial resale.</div>
         </figcaption>
       </figure>
 
       <section class="legal-sec">
         <h2><span class="n">04</span> The promise we care about</h2>
         <p>We'd rather be trusted than squeeze value out of your data. So:</p>
-        <div class="legal-note" style="--nc:var(--nb-green)"><p><strong>We don't sell your data, and we don't hand it to advertisers.</strong> We use it to run and improve what we make and to build new things &mdash; not as something to trade.</p></div>
+        <div class="legal-note" style="--nc:var(--nb-green)"><p><strong>We don't sell your data, and we don't hand it to advertisers.</strong> We use it to run and improve what we make and to build new things - not as something to trade.</p></div>
         <p>That's a promise on top of your legal rights below, not a replacement for them.</p>
       </section>
 
@@ -141,17 +166,17 @@
 
       <section class="legal-sec">
         <h2><span class="n">06</span> Who else sees it</h2>
-        <p>We don't sell your data. We only share it with the service providers who help us run our products &mdash; hosting and databases, for example &mdash; and only under contracts that tie them to protecting it and using it purely on our instructions. We'll also hand over data where the law requires it, or to keep our users and products safe.</p>
+        <p>We don't sell your data. We only share it with the service providers who help us run our products - hosting and databases, for example - and only under contracts that tie them to protecting it and using it purely on our instructions. We'll also hand over data where the law requires it, or to keep our users and products safe.</p>
       </section>
 
       <section class="legal-sec">
         <h2><span class="n">07</span> How long we keep it</h2>
-        <p>We hold onto personal data only as long as we need it for the reason we collected it, or as long as the law says. Delete your content or your account and we remove the personal data tied to it &mdash; apart from copies we have to keep for legal or security reasons. Technical logs stick around for a limited time.</p>
+        <p>We hold onto personal data only as long as we need it for the reason we collected it, or as long as the law says. Delete your content or your account and we remove the personal data tied to it - apart from copies we have to keep for legal or security reasons. Technical logs stick around for a limited time.</p>
       </section>
 
       <section class="legal-sec">
         <h2><span class="n">08</span> Keeping it safe</h2>
-        <p>We use sensible technical and organisational measures &mdash; scrambled (hashed) passwords, access controls, encrypted connections. Nothing is ever perfectly secure, but we work to lower the risk and to move fast if something goes wrong, including telling you and the authorities when the law says we must.</p>
+        <p>We use sensible technical and organisational measures - scrambled (hashed) passwords, access controls, encrypted connections. Nothing is ever perfectly secure, but we work to lower the risk and to move fast if something goes wrong, including telling you and the authorities when the law says we must.</p>
       </section>
 
       <figure class="legal-figure" style="--fig:var(--nb-green)">
@@ -164,7 +189,7 @@
 
       <section class="legal-sec">
         <h2><span class="n">09</span> Your rights</h2>
-        <p>The GDPR gives you the right to see your data, fix it, delete it, limit or object to how it's used, and get a copy you can take elsewhere. You can do most of this right inside a product's settings, or by asking us. You can also complain to your local authority &mdash; in France, the <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.</p>
+        <p>The GDPR gives you the right to see your data, fix it, delete it, limit or object to how it's used, and get a copy you can take elsewhere. You can do most of this right inside a product's settings, or by asking us. You can also complain to your local authority - in France, the <a href="https://www.cnil.fr" target="_blank" rel="noopener">CNIL</a>.</p>
       </section>
 
       <section class="legal-sec">

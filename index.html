@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Swiftaw — Make It Matter.</title>
+<title>Swiftaw - Make It Matter.</title>
 <meta name="description" content="Swiftaw is a European software company. We make Fortized and Hereld, and we run Lifecheck and Supernova.">
 <meta name="author" content="Swiftaw">
 <meta name="theme-color" content="#0C0F15">
 <link rel="canonical" href="https://swiftaw.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Swiftaw">
-<meta property="og:title" content="Swiftaw — Make It Matter.">
+<meta property="og:title" content="Swiftaw - Make It Matter.">
 <meta property="og:description" content="A European software company. Maker of Fortized and Hereld; home of Lifecheck and Supernova.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Swiftaw — Make It Matter.">
+<meta name="twitter:title" content="Swiftaw - Make It Matter.">
 <meta name="twitter:description" content="A European software company. Maker of Fortized and Hereld.">
 <meta name="twitter:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <script type="application/ld+json">
@@ -38,27 +38,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw-nb.css">
 <style>
-/* ══════════════════════════════════════════════════════════════════════════
-   HOMEPAGE — everything here is layout for THIS page. Anything that another
-   page would want too belongs in swiftaw-nb.css, not in here.
-   ══════════════════════════════════════════════════════════════════════════ */
 
-/* The nav is sticky and 68px tall, so an in-page jump lands with its target
-   tucked underneath it. Reserving the bar's height plus a little air fixes
-   every anchor on the page at once, including the skip link. */
 html { scroll-padding-top: 88px; }
 
-/* ── The nav ──────────────────────────────────────────────────────────────
-   The launcher and the account button mount into the two slots in the nav
-   bar rather than the floating dock, because a sticky bar and a fixed dock
-   both anchored to the top-right corner would sit on top of each other. */
 .nb-nav-actions .swl-btn, .nb-nav-actions .swa-btn { flex: none; }
 .hp-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .hp-nav-cta { display: none; } }
 
-/* ── Hero ─────────────────────────────────────────────────────────────────
-   A yellow slab standing on the dark page. The page stays dark — the slab is
-   the one loud thing, which is what makes it loud. */
 .hp-hero { position: relative; overflow: hidden; padding: clamp(46px, 6vw, 78px) 0 clamp(56px, 7vw, 92px); }
 
 .hp-slab {
@@ -68,27 +54,18 @@ html { scroll-padding-top: 88px; }
   border-radius: var(--nb-r-lg);
   box-shadow: var(--nb-sh-lg);
   padding: clamp(30px, 4.4vw, 58px);
-  /* The slab is a raised surface, so text tokens inside it point at ink —
-     without this a .nb-muted line inside would still be the page's grey. */
+
   --nb-fg: var(--nb-ink);
   --nb-fg-muted: #3A3A2A;
 }
-/* Text only. The logomark was in here at 15px and the wordmark is far too
-   detailed to survive that — it came out as grey mush beside a legible line,
-   which makes the brand look worse than not showing it. The nav carries the
-   mark at a size it can actually be read at. */
+
 .hp-slab .hp-eyebrow { display: block; margin-bottom: 20px; }
 
-/* The tagline. Three words, that capitalisation, that full stop — it does not
-   get a second line of marketing bolted onto it. The stop is a real element
-   so it can be the one bit of colour in the line. */
 .hp-tagline { margin: 0; }
 .hp-tagline .stop { color: var(--nb-red); }
 .hp-lede { max-width: 46ch; margin: 24px 0 0; }
 .hp-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
 
-/* Facts under the slab. Four numbers we can actually stand behind: they are
-   counts of things on this page, not metrics about strangers. */
 .hp-facts {
   position: relative; z-index: 2;
   margin-top: 22px;
@@ -104,29 +81,20 @@ html { scroll-padding-top: 88px; }
 }
 .hp-fact .v { display: block; margin-top: 6px; font-size: 13.5px; }
 
-/* 1960s geometry. Placed by hand, four of them, and no more — scattering
-   twenty at random is the thing this style gets wrong most often. */
-.hp-deco-1 { top: 8%;  right: 4%;  transform: rotate(12deg); }
-.hp-deco-2 { bottom: 14%; left: 2%; transform: rotate(-8deg); }
+.hp-deco-1 { top: 8%;  right: 4%;  --nb-rot: 12deg; }
+.hp-deco-2 { bottom: 14%; left: 2%; --nb-rot: -8deg; }
 .hp-deco-3 { top: 56%; right: 2.5%; }
-/* .nb-dots draws its dots in ink, which on a #0C0F15 page is black on nearly
-   black — invisible. On a dark ground the dot has to be the light. */
+
 .hp-deco-4 {
   top: 2%; left: 32%; width: 120px; height: 120px; border-radius: 50%;
   background-image: radial-gradient(rgba(255,255,255,.30) 1.6px, transparent 1.6px);
 }
 @media (max-width: 980px) { .hp-deco-1, .hp-deco-2, .hp-deco-3, .hp-deco-4 { display: none; } }
 
-/* ── Section headers ──────────────────────────────────────────────────── */
 .hp-head { max-width: 640px; margin-bottom: clamp(28px, 3.4vw, 44px); }
 .hp-head .nb-eyebrow { color: var(--nb-yellow); display: block; margin-bottom: 14px; }
 .hp-head p { margin-top: 14px; }
 
-/* ── Product / service cards ──────────────────────────────────────────────
-   The band across the top of each card is that thing's OWN primary colour.
-   Fortized and Lifecheck are both yellow and that is correct — they are in
-   different sections, and bending one of them off-brand for variety would be
-   decorating with a fact. */
 .hp-cards { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 780px) { .hp-cards { grid-template-columns: 1fr; } }
 
@@ -138,21 +106,17 @@ html { scroll-padding-top: 88px; }
 .hp-card .body { padding: 22px 24px 24px; display: flex; flex-direction: column; flex: 1; }
 .hp-card .top { display: flex; align-items: center; gap: 14px; }
 .hp-card .ico {
-  width: 52px; height: 52px; flex: none;
-  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
-  object-fit: cover; background: #000;
+  width: 54px; height: 54px; flex: none;
+  border: 0; border-radius: var(--nb-r-sm);
+  object-fit: contain;
+  transition: transform var(--nb-fast);
 }
+.hp-card:hover .ico { transform: rotate(-5deg) scale(1.06); }
 .hp-card h3 { font-size: 21px; margin: 0; }
 .hp-card .sub { font-size: 13px; margin-top: 3px; }
 .hp-card .desc { margin: 16px 0 0; font-size: 14.5px; line-height: 1.55; flex: 1; }
 .hp-card .foot { display: flex; align-items: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
 
-/* A card for something that does not exist yet does not get a link that
-   pretends it does. It gets a dead-honest tag and no destination — and that
-   is the whole treatment. The icon was greyscaled here at first, which made
-   a real brand look retired rather than early; "In build" already says it. */
-
-/* ── The three rules ──────────────────────────────────────────────────── */
 .hp-rules { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 860px) { .hp-rules { grid-template-columns: 1fr; } }
 .hp-rule .n {
@@ -166,10 +130,6 @@ html { scroll-padding-top: 88px; }
 .hp-rule h3 { font-size: 19px; margin: 0 0 10px; }
 .hp-rule p { font-size: 14.5px; line-height: 1.6; margin: 0; }
 
-/* ── Reactions ────────────────────────────────────────────────────────────
-   A real widget backed by a real table, so it is allowed on the page. The
-   counts are whatever people have actually pressed; nothing here is seeded
-   and nothing is invented. */
 .hp-react-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 22px; }
 .react-widget { padding: 0; overflow: hidden; }
 .react-head {
@@ -203,8 +163,7 @@ html { scroll-padding-top: 88px; }
 }
 .react-btn:hover  { transform: translate(-1px, -1px); box-shadow: 3px 4px 0 var(--nb-ink); }
 .react-btn:active { transform: translate(2px, 3px);   box-shadow: 1px 1px 0 var(--nb-ink); }
-/* Picked reads as pressed AND as filled — one signal can be missed, two
-   cannot, and colour alone is not a signal everybody receives. */
+
 .react-btn.picked {
   background: var(--nb-yellow); color: var(--nb-ink);
   transform: translate(2px, 3px); box-shadow: 1px 1px 0 var(--nb-ink);
@@ -217,8 +176,7 @@ html { scroll-padding-top: 88px; }
 @keyframes hpBump { 40% { transform: scale(1.28); } }
 .react-count, .react-pct { display: inline-block; }
 .react-pct { font-size: 12.5px; margin-left: 7px; opacity: .72; }
-/* The bar is the bottom edge of the button, filling in. A separate track
-   underneath it would be a second rectangle saying the same thing. */
+
 .react-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 7px; border-top: 2px solid var(--nb-ink); }
 .react-bar-fill { height: 100%; width: 0; background: var(--nb-ink); transition: width .5s var(--nb-ease); }
 .react-btn.picked .react-bar-fill { background: var(--nb-ink); }
@@ -248,7 +206,6 @@ html { scroll-padding-top: 88px; }
 .react-feed { color: var(--nb-surface-fg-muted); display: flex; align-items: center; gap: 8px; }
 .react-feed .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--nb-blue); flex: none; }
 
-/* ── Outro ────────────────────────────────────────────────────────────── */
 .hp-outro { text-align: center; }
 .hp-outro .nb-card { max-width: 760px; margin: 0 auto; padding: clamp(32px, 4vw, 52px); }
 .hp-outro-mark { height: 40px; width: auto; margin: 0 auto 20px; display: block; }
@@ -264,22 +221,45 @@ html { scroll-padding-top: 88px; }
 
 <nav class="nb-nav" id="nav">
   <div class="nb-nav-in">
-    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
+      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
+    </a>
 
     <div class="nb-nav-links" id="navLinks">
-      <a class="nb-nav-link" href="/about-us">About</a>
-      <a class="nb-nav-link" href="/mission">Mission</a>
-      <a class="nb-nav-link" href="/innovation-room">Lab</a>
-      <a class="nb-nav-link" href="/newsroom">News</a>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-company">
+          <a class="nb-drop-item" href="/about-us"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
+          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
+          <a class="nb-drop-item" href="/innovation-room"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
+          <a class="nb-drop-item" href="/newsroom"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-products">Products <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-products">
+          <a class="nb-drop-item" href="https://fortized.com" rel="noopener"><img class="nb-drop-ico" src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Fortized</span><span class="nb-drop-d">Bastions, channels and DMs</span></span></a>
+          <span class="nb-drop-item is-soon" aria-disabled="true"><img class="nb-drop-ico" src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Hereld</span><span class="nb-drop-d">A professional network. Soon.</span></span></span>
+          <span class="nb-drop-sep" aria-hidden="true"></span>
+          <a class="nb-drop-item" href="/lifecheck/"><img class="nb-drop-ico" src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Lifecheck</span><span class="nb-drop-d">Human verification</span></span></a>
+          <a class="nb-drop-item" href="/supernova/"><img class="nb-drop-ico" src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Supernova</span><span class="nb-drop-d">The AI service</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-legal">Legal <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-legal">
+          <a class="nb-drop-item" href="/legal/terms-of-service/"><span class="nb-drop-txt"><span class="nb-drop-t">Terms of Service</span><span class="nb-drop-d">The rules of using Swiftaw</span></span></a>
+          <a class="nb-drop-item" href="/legal/privacy-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Privacy Policy</span><span class="nb-drop-d">What we hold, and why</span></span></a>
+          <a class="nb-drop-item" href="/legal/products-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Products Policy</span><span class="nb-drop-d">Rules that apply per product</span></span></a>
+        </div>
+      </div>
     </div>
 
     <span class="nb-nav-spacer"></span>
 
     <div class="nb-nav-actions">
-      <!-- The two shared controls mount here. swiftaw.js loads both scripts;
-           each looks for its own slot before falling back to the floating
-           dock, and in a page with a sticky top bar the bar is the right
-           place for them. -->
+
       <span data-swiftaw-launcher></span>
       <span data-swiftaw-account></span>
       <a class="nb-btn nb-btn--primary nb-btn--sm hp-nav-cta" href="https://fortized.com" rel="noopener">Fortized</a>
@@ -292,20 +272,19 @@ html { scroll-padding-top: 88px; }
 
 <main id="main">
 
-<!-- ══ HERO ══════════════════════════════════════════════════════════════ -->
 <section class="hp-hero">
-  <span class="nb-deco nb-shape nb-shape--sq hp-deco-1" aria-hidden="true"></span>
-  <span class="nb-deco nb-shape nb-shape--circle hp-deco-2" aria-hidden="true"></span>
-  <span class="nb-deco nb-shape nb-shape--tri hp-deco-3" aria-hidden="true"></span>
-  <span class="nb-deco nb-dots hp-deco-4" aria-hidden="true"></span>
+  <span class="nb-deco nb-shape nb-shape--sq nb-poke nb-float hp-deco-1" data-depth="18" aria-hidden="true"></span>
+  <span class="nb-deco nb-shape nb-shape--circle nb-poke nb-float hp-deco-2" data-depth="26" aria-hidden="true"></span>
+  <span class="nb-deco nb-shape nb-shape--tri nb-poke nb-float hp-deco-3" data-depth="11" aria-hidden="true"></span>
+  <span class="nb-deco nb-dots nb-float hp-deco-4" data-depth="7" aria-hidden="true"></span>
 
   <div class="nb-wrap">
     <div class="hp-slab nb-reveal">
-      <span class="nb-eyebrow hp-eyebrow">European software company</span>
+      <span class="nb-eyebrow hp-eyebrow">Île-de-France, France</span>
       <h1 class="nb-display nb-d1 hp-tagline">Make It Matter<span class="stop">.</span></h1>
       <p class="nb-lead hp-lede">
-        We build things people spend real time inside, and we run the services
-        that hold them up. Two platforms, two services, one company.
+        We build platforms people actually live in, and the services that keep
+        them standing.
       </p>
       <div class="hp-actions">
         <a class="nb-btn nb-btn--ink nb-btn--lg" href="#make">See what we make</a>
@@ -316,7 +295,7 @@ html { scroll-padding-top: 88px; }
     <div class="hp-facts">
       <div class="nb-card hp-fact nb-reveal">
         <span class="k">2</span>
-        <span class="v nb-muted">Platforms. Fortized, and Hereld on the way</span>
+        <span class="v nb-muted">Platforms. Fortized, plus Hereld on the way</span>
       </div>
       <div class="nb-card hp-fact nb-reveal">
         <span class="k">2</span>
@@ -343,15 +322,13 @@ html { scroll-padding-top: 88px; }
   </div>
 </div>
 
-<!-- ══ WHAT WE MAKE ══════════════════════════════════════════════════════ -->
 <section class="nb-section" id="make">
   <div class="nb-wrap">
     <div class="hp-head">
       <span class="nb-eyebrow">Products</span>
       <h2 class="nb-display nb-d3">Things that stand on their own.</h2>
       <p class="nb-muted">
-        A product has its own name, its own front door and its own users. It
-        should make sense to someone who has never heard of us.
+        Each one has its own name, its own front door and its own users.
       </p>
     </div>
 
@@ -367,8 +344,8 @@ html { scroll-padding-top: 88px; }
             </div>
           </div>
           <p class="desc">
-            Bastions, channels, direct messages and group chats. It is the
-            platform we started with and the one that is out in the world.
+            Bastions, channels, direct messages and group chats. The platform
+            we started with, and the one that is out in the world.
           </p>
           <div class="foot">
             <span class="nb-tag nb-tag--green">Live</span>
@@ -388,8 +365,8 @@ html { scroll-padding-top: 88px; }
             </div>
           </div>
           <p class="desc">
-            Being built now. There is nothing to sign up to yet, and we would
-            rather say that than put a waiting list in front of it.
+            Being built now. Nothing to sign up to yet, and we would rather say
+            that than put a waiting list in front of it.
           </p>
           <div class="foot">
             <span class="nb-tag">In build</span>
@@ -400,11 +377,9 @@ html { scroll-padding-top: 88px; }
 
     <div class="hp-head" style="margin-top: clamp(46px, 6vw, 78px);">
       <span class="nb-eyebrow">Services</span>
-      <h2 class="nb-display nb-d3">Small things, done properly.</h2>
+      <h2 class="nb-display nb-d3">One job, done properly.</h2>
       <p class="nb-muted">
-        A service does one job and leans on everything Swiftaw already has
-        instead of standing up its own. Both of these are live, and Fortized
-        uses one of them in production.
+        Both are live. Fortized runs on one of them in production.
       </p>
     </div>
 
@@ -420,8 +395,8 @@ html { scroll-padding-top: 88px; }
             </div>
           </div>
           <p class="desc">
-            A check you drop into a form to tell a person from a script. Keys
-            are validated live, so revoking one stops verification instantly.
+            A check you drop into a form to tell a person from a script.
+            Revoking a key stops verification instantly.
           </p>
           <div class="foot">
             <span class="nb-tag nb-tag--green">Live</span>
@@ -442,9 +417,8 @@ html { scroll-padding-top: 88px; }
             </div>
           </div>
           <p class="desc">
-            Our assistant, and the thing our other products ask when they need
-            an answer. Anything it writes is labelled as AI-generated wherever
-            it turns up.
+            Our assistant, and what the other products ask when they need an
+            answer. Anything it writes is labelled as AI-generated.
           </p>
           <div class="foot">
             <span class="nb-tag nb-tag--green">Live</span>
@@ -456,7 +430,6 @@ html { scroll-padding-top: 88px; }
   </div>
 </section>
 
-<!-- ══ HOW WE BUILD ══════════════════════════════════════════════════════ -->
 <section class="nb-section">
   <div class="nb-wrap">
     <div class="hp-head">
@@ -470,7 +443,7 @@ html { scroll-padding-top: 88px; }
         <h3>For the people in the room.</h3>
         <p>
           The internet is at its best when it feels like a group chat. We design
-          for the people in it, not for the chart drawn around them.
+          for the people in it, not the chart drawn around them.
         </p>
       </div>
       <div class="nb-card hp-rule r2 nb-reveal">
@@ -485,15 +458,14 @@ html { scroll-padding-top: 88px; }
         <span class="n">03</span>
         <h3>Slow where it counts.</h3>
         <p>
-          There is no quarterly graph to please here. We would rather ship one
-          thing that holds up than five that need apologising for.
+          No quarterly graph to please. We would rather ship one thing that
+          holds up than five that need apologising for.
         </p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ══ REACTIONS ═════════════════════════════════════════════════════════ -->
 <section class="nb-section">
   <div class="nb-wrap">
     <div class="hp-react-head">
@@ -502,8 +474,8 @@ html { scroll-padding-top: 88px; }
         <h2 class="nb-display nb-d3">How is this landing?</h2>
       </div>
       <p class="nb-muted" style="max-width:38ch;">
-        Press one. Everyone on this page sees it move. It changes nothing. It
-        just tells us somebody is out there.
+        Press one. Everyone on this page sees it move. It tells us somebody is
+        out there.
       </p>
     </div>
 
@@ -518,7 +490,7 @@ html { scroll-padding-top: 88px; }
 
       <div class="react-grid">
         <button class="react-btn" type="button" data-key="stoked" aria-pressed="false">
-          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/joyster_laugh.png" alt="">
+          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20Emojis/joyster_laugh.png" alt="">
           <span class="react-meta">
             <span class="react-name">Stoked</span><br>
             <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
@@ -527,7 +499,7 @@ html { scroll-padding-top: 88px; }
           <span class="react-burst"></span>
         </button>
         <button class="react-btn" type="button" data-key="stunned" aria-pressed="false">
-          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/leafen_stunned.png" alt="">
+          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20Emojis/leafen_stunned.png" alt="">
           <span class="react-meta">
             <span class="react-name">Stunned</span><br>
             <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
@@ -536,7 +508,7 @@ html { scroll-padding-top: 88px; }
           <span class="react-burst"></span>
         </button>
         <button class="react-btn" type="button" data-key="loved" aria-pressed="false">
-          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/fortized%20emojis/knight_heart.png" alt="">
+          <img class="react-emoji" src="https://raw.githubusercontent.com/StawWasTaken/Fortized/refs/heads/main/Fortized%20Emojis/knight_heart.png" alt="">
           <span class="react-meta">
             <span class="react-name">Loved</span><br>
             <span class="react-count" data-count>0</span><span class="react-pct" data-pct>0%</span>
@@ -554,7 +526,6 @@ html { scroll-padding-top: 88px; }
   </div>
 </section>
 
-<!-- ══ OUTRO ═════════════════════════════════════════════════════════════ -->
 <section class="nb-section hp-outro">
   <div class="nb-wrap">
     <div class="nb-card nb-card--lg nb-reveal">
@@ -614,16 +585,14 @@ html { scroll-padding-top: 88px; }
   <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
 </footer>
 
-<!-- Supabase realtime client. The reaction widget falls back to a local-only
-     mode if this or the config is missing, so the page never shows a dead box. -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 window.SWIFTAW_CFG = {
   SUPABASE_URL: 'https://mwszvynzzugbowdngzab.supabase.co',
   SUPABASE_ANON_KEY: 'sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf'
 };
 </script>
-<script src="/css/swiftaw.js"></script>
+<script defer src="/css/swiftaw.js"></script>
 
 </body>
 </html>

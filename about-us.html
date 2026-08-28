@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About — Swiftaw</title>
+<title>About - Swiftaw</title>
 <meta name="description" content="Swiftaw is a European software company, founded in 2025 in Île-de-France. Who we are, and who runs what.">
 <meta name="author" content="Swiftaw">
 <meta name="theme-color" content="#0C0F15">
 <link rel="canonical" href="https://swiftaw.com/about-us">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Swiftaw">
-<meta property="og:title" content="About — Swiftaw">
+<meta property="og:title" content="About - Swiftaw">
 <meta property="og:description" content="A European software company, founded in 2025 in Île-de-France.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/about-us">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="About — Swiftaw">
+<meta name="twitter:title" content="About - Swiftaw">
 <meta name="twitter:description" content="A European software company, founded in 2025 in Île-de-France.">
 <meta name="twitter:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
@@ -24,10 +24,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw-nb.css">
 <style>
-/* ══════════════════════════════════════════════════════════════════════════
-   ABOUT — layout for THIS page only. Anything a second page would want
-   belongs in swiftaw-nb.css instead.
-   ══════════════════════════════════════════════════════════════════════════ */
 
 html { scroll-padding-top: 88px; }
 
@@ -35,11 +31,6 @@ html { scroll-padding-top: 88px; }
 .pg-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-/* ── Page head ────────────────────────────────────────────────────────────
-   Every rebuilt page opens the same way: a slab standing on the dark ground.
-   The homepage's slab is yellow because it carries the tagline; an interior
-   page uses the surface colour, so the yellow keeps meaning "the one thing
-   to read first" and does not become wallpaper. */
 .pg-head { position: relative; padding: clamp(64px, 9vw, 116px) 0 clamp(30px, 4vw, 52px); overflow: hidden; }
 
 .pg-slab {
@@ -49,8 +40,7 @@ html { scroll-padding-top: 88px; }
   box-shadow: var(--nb-sh-lg);
   padding: clamp(28px, 4vw, 52px);
   max-width: 880px;
-  /* The slab is a surface, so muted text on it is coloured for the surface,
-     not for the page behind it. Same rule every nb panel follows. */
+
   --nb-fg: var(--nb-surface-fg);
   --nb-fg-muted: var(--nb-surface-fg-muted);
 }
@@ -58,17 +48,13 @@ html { scroll-padding-top: 88px; }
 .pg-slab .dot { color: var(--nb-red); }
 .pg-lede { max-width: 56ch; }
 
-/* Deco. Kept inside the head's padding box — a shape sliced in half by
-   overflow:hidden reads as a rendering fault, not as decoration. */
-.pg-deco-1 { top: 12%; right: 4%; transform: rotate(12deg); }
+.pg-deco-1 { top: 12%; right: 4%; --nb-rot: 12deg; }
 .pg-deco-2 { bottom: 8%; right: 15%; width: 40px; height: 40px; }
 [data-nb="dark"] .nb-dots {
-  /* .nb-dots draws in ink. On #0C0F15 that is black on nearly black. */
+
   background-image: radial-gradient(rgba(255,255,255,.28) 1.6px, transparent 1.6px);
 }
 
-/* ── Facts ────────────────────────────────────────────────────────────────
-   Three things that are true and checkable. Nothing else goes in this row. */
 .ab-facts { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 34px; }
 .ab-fact { display: flex; flex-direction: column; gap: 7px; }
 .ab-fact .k {
@@ -79,13 +65,9 @@ html { scroll-padding-top: 88px; }
 .ab-fact .v { font-family: var(--nb-font-display); font-weight: 700; font-size: 20px; letter-spacing: -.4px; }
 @media (max-width: 720px) { .ab-facts { grid-template-columns: 1fr; } }
 
-/* ── Section heads ────────────────────────────────────────────────────── */
 .ab-shead { margin-bottom: 26px; max-width: 62ch; }
 .ab-shead h2 { margin: 10px 0 12px; }
 
-/* ── Leadership ───────────────────────────────────────────────────────────
-   Real seats with real dates, and the empty one says it is empty. A vacancy
-   drawn as a person would be an invented employee. */
 .ab-seats { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .ab-seat { display: flex; align-items: center; gap: 16px; }
 .ab-seat .av {
@@ -108,19 +90,20 @@ html { scroll-padding-top: 88px; }
 .ab-seat.is-open .role { color: var(--nb-fg-muted); }
 @media (max-width: 720px) { .ab-seats { grid-template-columns: 1fr; } }
 
-/* ── What we make ─────────────────────────────────────────────────────── */
 .ab-make { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .ab-item { display: flex; flex-direction: column; gap: 10px; }
 .ab-item .top { display: flex; align-items: center; gap: 12px; }
-.ab-item img { width: 40px; height: 40px; border-radius: 11px; flex: none; }
+
+.ab-item img {
+  width: 48px; height: 48px; flex: none; border: 0; object-fit: contain;
+  transition: transform var(--nb-fast);
+}
+.ab-item:hover img { transform: rotate(-5deg) scale(1.06); }
 .ab-item h3 { flex: 1; }
-/* The card is a column, so a button would otherwise stretch to the full width
-   and read as a banner. It hugs its label, and sits on the floor of the card
-   so the four buttons line up across the grid however long the copy runs. */
+
 .ab-item .nb-btn { align-self: flex-start; margin-top: auto; }
 @media (max-width: 720px) { .ab-make { grid-template-columns: 1fr; } }
 
-/* ── Closing line ─────────────────────────────────────────────────────── */
 .ab-out { text-align: center; padding-bottom: clamp(50px, 7vw, 90px); }
 .ab-out .nb-display { max-width: 20ch; margin: 0 auto 20px; }
 </style>
@@ -133,13 +116,39 @@ html { scroll-padding-top: 88px; }
 
 <nav class="nb-nav" id="nav">
   <div class="nb-nav-in">
-    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
+      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
+    </a>
 
     <div class="nb-nav-links" id="navLinks">
-      <a class="nb-nav-link" href="/about-us" aria-current="page">About</a>
-      <a class="nb-nav-link" href="/mission">Mission</a>
-      <a class="nb-nav-link" href="/innovation-room">Lab</a>
-      <a class="nb-nav-link" href="/newsroom">News</a>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link is-current" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-company">
+          <a class="nb-drop-item" href="/about-us" aria-current="page"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
+          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
+          <a class="nb-drop-item" href="/innovation-room"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
+          <a class="nb-drop-item" href="/newsroom"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-products">Products <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-products">
+          <a class="nb-drop-item" href="https://fortized.com" rel="noopener"><img class="nb-drop-ico" src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Fortized</span><span class="nb-drop-d">Bastions, channels and DMs</span></span></a>
+          <span class="nb-drop-item is-soon" aria-disabled="true"><img class="nb-drop-ico" src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Hereld</span><span class="nb-drop-d">A professional network. Soon.</span></span></span>
+          <span class="nb-drop-sep" aria-hidden="true"></span>
+          <a class="nb-drop-item" href="/lifecheck/"><img class="nb-drop-ico" src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Lifecheck</span><span class="nb-drop-d">Human verification</span></span></a>
+          <a class="nb-drop-item" href="/supernova/"><img class="nb-drop-ico" src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Supernova</span><span class="nb-drop-d">The AI service</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-legal">Legal <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-legal">
+          <a class="nb-drop-item" href="/legal/terms-of-service/"><span class="nb-drop-txt"><span class="nb-drop-t">Terms of Service</span><span class="nb-drop-d">The rules of using Swiftaw</span></span></a>
+          <a class="nb-drop-item" href="/legal/privacy-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Privacy Policy</span><span class="nb-drop-d">What we hold, and why</span></span></a>
+          <a class="nb-drop-item" href="/legal/products-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Products Policy</span><span class="nb-drop-d">Rules that apply per product</span></span></a>
+        </div>
+      </div>
     </div>
 
     <span class="nb-nav-spacer"></span>
@@ -157,19 +166,17 @@ html { scroll-padding-top: 88px; }
 
 <main id="main">
 
-<!-- ══ HEAD ═════════════════════════════════════════════════════════════ -->
 <section class="pg-head">
-  <span class="nb-deco nb-shape nb-shape--sq pg-deco-1" aria-hidden="true"></span>
-  <span class="nb-deco nb-shape nb-shape--circle pg-deco-2" aria-hidden="true"></span>
+  <span class="nb-deco nb-shape nb-shape--sq nb-poke nb-float pg-deco-1" data-depth="16" aria-hidden="true"></span>
+  <span class="nb-deco nb-shape nb-shape--circle nb-poke nb-float pg-deco-2" data-depth="24" aria-hidden="true"></span>
 
   <div class="nb-wrap">
     <div class="pg-slab nb-reveal">
       <span class="nb-eyebrow">About</span>
-      <h1 class="nb-display nb-d2">A small company<br>that ships<span class="dot">.</span></h1>
+      <h1 class="nb-display nb-d2">Who we are<span class="dot">.</span></h1>
       <p class="nb-lead pg-lede nb-muted">
-        Swiftaw is a European software company. We make social platforms and
-        we run the services that hold them up. Fortized was the first thing we
-        shipped, and everything since has followed the same compass.
+        A European software company. We make social platforms, and we run the
+        services behind them. Fortized shipped first.
       </p>
 
       <div class="ab-facts">
@@ -183,68 +190,63 @@ html { scroll-padding-top: 88px; }
 
 <hr class="nb-rule">
 
-<!-- ══ WHAT WE MAKE ═════════════════════════════════════════════════════ -->
 <section class="nb-section">
   <div class="nb-wrap">
     <div class="ab-shead nb-reveal">
       <span class="nb-eyebrow">What we make</span>
-      <h2 class="nb-h1">Two platforms, two services.</h2>
+      <h2 class="nb-h1">What we make.</h2>
       <p class="nb-muted">
-        That is the whole list. When there is a third of either, it will appear
-        here, and not before.
+        Two platforms and two services. Anything new turns up here first.
       </p>
     </div>
 
     <div class="ab-make">
       <article class="nb-card ab-item nb-reveal">
         <div class="top">
-          <img width="40" height="40" src="/product-logos/Fortized%20icon.png" alt="" onerror="this.remove()">
+          <img width="48" height="48" src="/product-logos/Fortized%20icon.png" alt="" onerror="this.remove()">
           <h3 class="nb-h3">Fortized</h3>
           <span class="nb-tag nb-tag--green">Live</span>
         </div>
         <p class="nb-muted">
           A community platform for gamers and the friend groups around them.
-          Bastions, channels, direct messages, and the things that make a room
-          feel like a room.
+          Bastions, channels and direct messages.
         </p>
         <a class="nb-btn nb-btn--sm nb-btn--paper" href="https://fortized.com" rel="noopener">Open Fortized</a>
       </article>
 
       <article class="nb-card ab-item nb-reveal">
         <div class="top">
-          <img width="40" height="40" src="/product-logos/Hereld%20icon.png" alt="" onerror="this.remove()">
+          <img width="48" height="48" src="/product-logos/Hereld%20icon.png" alt="" onerror="this.remove()">
           <h3 class="nb-h3">Hereld</h3>
           <span class="nb-tag">In build</span>
         </div>
         <p class="nb-muted">
-          Our second platform. It is being built now, so there is nothing to
-          sign up to yet and we are not going to pretend otherwise.
+          Our second platform, a professional network. Still in build, so
+          there is nothing to sign up to yet.
         </p>
       </article>
 
       <article class="nb-card ab-item nb-reveal">
         <div class="top">
-          <img width="40" height="40" src="/product-logos/Lifecheck%20icon.png" alt="" onerror="this.remove()">
+          <img width="48" height="48" src="/product-logos/Lifecheck%20icon.png" alt="" onerror="this.remove()">
           <h3 class="nb-h3">Lifecheck</h3>
           <span class="nb-tag nb-tag--green">Live</span>
         </div>
         <p class="nb-muted">
           Our human-verification widget. It asks a visitor to do something a
-          person finds easy, and it does it without tracking them around the
-          web afterwards.
+          person finds easy, without tracking them afterwards.
         </p>
         <a class="nb-btn nb-btn--sm nb-btn--paper" href="/lifecheck/">Open Lifecheck</a>
       </article>
 
       <article class="nb-card ab-item nb-reveal">
         <div class="top">
-          <img width="40" height="40" src="/product-logos/Supernova%20icon.png" alt="" onerror="this.remove()">
+          <img width="48" height="48" src="/product-logos/Supernova%20icon.png" alt="" onerror="this.remove()">
           <h3 class="nb-h3">Supernova</h3>
           <span class="nb-tag nb-tag--green">Live</span>
         </div>
         <p class="nb-muted">
-          Our AI service. Anything it writes is labelled as written by it. We
-          would rather you know than be impressed.
+          Our AI service. Anything it writes is labelled as written by it.
         </p>
         <a class="nb-btn nb-btn--sm nb-btn--paper" href="/supernova/">Open Supernova</a>
       </article>
@@ -254,14 +256,13 @@ html { scroll-padding-top: 88px; }
 
 <hr class="nb-rule">
 
-<!-- ══ LEADERSHIP ═══════════════════════════════════════════════════════ -->
 <section class="nb-section">
   <div class="nb-wrap">
     <div class="ab-shead nb-reveal">
       <span class="nb-eyebrow">Who runs what</span>
       <h2 class="nb-h1">Leadership.</h2>
       <p class="nb-muted">
-        Four seats. Three of them are filled, and the fourth says so.
+        Four seats. One is open, and it says so.
       </p>
     </div>
 
@@ -318,14 +319,12 @@ html { scroll-padding-top: 88px; }
   </div>
 </div>
 
-<!-- ══ OUT ══════════════════════════════════════════════════════════════ -->
 <section class="nb-section ab-out">
   <div class="nb-wrap">
-    <h2 class="nb-display nb-d3 nb-reveal">That is genuinely all of it.</h2>
+    <h2 class="nb-display nb-d3 nb-reveal">That is all of it.</h2>
     <p class="nb-lead nb-muted nb-reveal" style="max-width:52ch; margin:0 auto 26px;">
-      No customer count, no uptime badge, no logos of companies that have never
-      heard of us. When there is something worth showing, it goes in the
-      newsroom.
+      No customer count, no uptime badge, no borrowed logos. When there is
+      something worth showing, it goes in the newsroom.
     </p>
     <div class="nb-row nb-reveal" style="justify-content:center;">
       <a class="nb-btn nb-btn--primary nb-btn--lg" href="/mission">Read the mission</a>

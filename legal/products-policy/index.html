@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Products Policy — Swiftaw</title>
+<title>Products Policy - Swiftaw</title>
 <meta name="description" content="An overview of Swiftaw's products, how their terms fit together, and the rules that apply across all of them.">
 <link rel="canonical" href="https://swiftaw.com/legal/products-policy">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Products Policy — Swiftaw">
+<meta property="og:title" content="Products Policy - Swiftaw">
 <meta property="og:description" content="Swiftaw's products and how their terms fit together.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/legal/products-policy">
@@ -19,8 +19,7 @@
 <link rel="stylesheet" href="/css/swiftaw-nb.css">
 <link rel="stylesheet" href="/css/swiftaw-legal.css">
 <style>
-/* Yellow is this document's accent. The other two legal pages set their own,
-   and nothing else about them differs. */
+
 :root { --legal-accent: var(--nb-yellow); }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 </style>
@@ -39,13 +38,39 @@
 
 <nav class="nb-nav" id="nav">
   <div class="nb-nav-in">
-    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
+      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
+    </a>
 
     <div class="nb-nav-links" id="navLinks">
-      <a class="nb-nav-link" href="/about-us">About</a>
-      <a class="nb-nav-link" href="/mission">Mission</a>
-      <a class="nb-nav-link" href="/innovation-room">Lab</a>
-      <a class="nb-nav-link" href="/newsroom">News</a>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-company">
+          <a class="nb-drop-item" href="/about-us"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
+          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
+          <a class="nb-drop-item" href="/innovation-room"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
+          <a class="nb-drop-item" href="/newsroom"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-products">Products <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-products">
+          <a class="nb-drop-item" href="https://fortized.com" rel="noopener"><img class="nb-drop-ico" src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Fortized</span><span class="nb-drop-d">Bastions, channels and DMs</span></span></a>
+          <span class="nb-drop-item is-soon" aria-disabled="true"><img class="nb-drop-ico" src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Hereld</span><span class="nb-drop-d">A professional network. Soon.</span></span></span>
+          <span class="nb-drop-sep" aria-hidden="true"></span>
+          <a class="nb-drop-item" href="/lifecheck/"><img class="nb-drop-ico" src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Lifecheck</span><span class="nb-drop-d">Human verification</span></span></a>
+          <a class="nb-drop-item" href="/supernova/"><img class="nb-drop-ico" src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Supernova</span><span class="nb-drop-d">The AI service</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link is-current" aria-expanded="false" aria-haspopup="true" aria-controls="drop-legal">Legal <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-legal">
+          <a class="nb-drop-item" href="/legal/terms-of-service/"><span class="nb-drop-txt"><span class="nb-drop-t">Terms of Service</span><span class="nb-drop-d">The rules of using Swiftaw</span></span></a>
+          <a class="nb-drop-item" href="/legal/privacy-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Privacy Policy</span><span class="nb-drop-d">What we hold, and why</span></span></a>
+          <a class="nb-drop-item" href="/legal/products-policy/" aria-current="page"><span class="nb-drop-txt"><span class="nb-drop-t">Products Policy</span><span class="nb-drop-d">Rules that apply per product</span></span></a>
+        </div>
+      </div>
     </div>
 
     <span class="nb-nav-spacer"></span>
@@ -79,7 +104,7 @@
 
     <div class="legal-prose">
       <div class="legal-lead">
-        <p><strong>The short version:</strong> our job is to make and deliver digital products &mdash; right now, Fortized and Lifecheck. Each one has its own rules for the details, and they all sit under Swiftaw's general <a href="/legal/terms-of-service">Terms of Service</a> and <a href="/legal/privacy-policy">Privacy Policy</a>. This page is the map.</p>
+        <p><strong>The short version:</strong> our job is to make and deliver digital products - right now, Fortized and Lifecheck. Each one has its own rules for the details, and they all sit under Swiftaw's general <a href="/legal/terms-of-service">Terms of Service</a> and <a href="/legal/privacy-policy">Privacy Policy</a>. This page is the map.</p>
       </div>
 
       <section class="legal-sec">
@@ -89,13 +114,13 @@
 
       <section class="legal-sec">
         <h2><span class="n">02</span> Fortized</h2>
-        <p><strong>Fortized</strong> is our gaming-flavoured chat app &mdash; somewhere to talk, build communities and mess around. It's got accounts, shared content (messages, media, creations), a shop, and its own community rules.</p>
-        <p>Fortized keeps <strong>its own terms and policies</strong> over on <a href="https://fortized.com/legal/terms-of-service" target="_blank" rel="noopener">fortized.com</a>. They point back to these Swiftaw ones and cover the Fortized-specific stuff &mdash; how to behave, the shop, creator tools, and so on.</p>
+        <p><strong>Fortized</strong> is our gaming-flavoured chat app - somewhere to talk, build communities and mess around. It's got accounts, shared content (messages, media, creations), a shop, and its own community rules.</p>
+        <p>Fortized keeps <strong>its own terms and policies</strong> over on <a href="https://fortized.com/legal/terms-of-service" target="_blank" rel="noopener">fortized.com</a>. They point back to these Swiftaw ones and cover the Fortized-specific stuff - how to behave, the shop, creator tools, and so on.</p>
       </section>
 
       <section class="legal-sec">
         <h2><span class="n">03</span> Lifecheck</h2>
-        <p><strong>Lifecheck</strong> is our friendly &ldquo;are you human?&rdquo; check &mdash; a captcha that keeps bots out without being miserable to use. Site owners drop it in; visitors do a quick, playful check.</p>
+        <p><strong>Lifecheck</strong> is our friendly &ldquo;are you human?&rdquo; check - a captcha that keeps bots out without being miserable to use. Site owners drop it in; visitors do a quick, playful check.</p>
         <p>Lifecheck has its own <a href="/lifecheck/docs">docs and integration terms</a> for the people who add it to their sites. What happens to the interactions with the widget is covered in our <a href="/legal/privacy-policy">Privacy Policy</a>.</p>
       </section>
 
@@ -103,8 +128,8 @@
         <h2><span class="n">04</span> How the rules stack up</h2>
         <p>Think of it as two layers built to fit together:</p>
         <ul>
-          <li><strong>Swiftaw's general documents</strong> &mdash; the <a href="/legal/terms-of-service">Terms of Service</a>, <a href="/legal/privacy-policy">Privacy Policy</a> and this Products Policy. These stay general and cover everything.</li>
-          <li><strong>Each product's own rules</strong> &mdash; the specific detail (like Fortized's) that points back to Swiftaw's and adds what's unique to that product.</li>
+          <li><strong>Swiftaw's general documents</strong> - the <a href="/legal/terms-of-service">Terms of Service</a>, <a href="/legal/privacy-policy">Privacy Policy</a> and this Products Policy. These stay general and cover everything.</li>
+          <li><strong>Each product's own rules</strong> - the specific detail (like Fortized's) that points back to Swiftaw's and adds what's unique to that product.</li>
         </ul>
         <p>They're written to work together, not to argue. If a product rule and a general Swiftaw rule ever seem to clash on the same point, the product rule wins for that product, and the general terms keep covering everything else. You're agreeing to both when you use a product.</p>
       </section>
@@ -115,7 +140,7 @@
         <ul>
           <li>use it legally and treat other people decently;</li>
           <li>keep your account secure and not use it to dodge bans or limits;</li>
-          <li>not attack, overload or try to get around a product's security &mdash; including abusing or getting around Lifecheck;</li>
+          <li>not attack, overload or try to get around a product's security - including abusing or getting around Lifecheck;</li>
           <li>not use a product to hurt people, spread illegal content, or trample someone's rights.</li>
         </ul>
         <p>Break these, or a product's own rules, and you can lose access.</p>
@@ -123,17 +148,17 @@
 
       <section class="legal-sec">
         <h2><span class="n">06</span> Content and creations</h2>
-        <p>You keep what you make. When you share something in a product, you give us the permission we need to host and show it there so the thing works. Some products also let you build stuff &mdash; emojis, templates, bots in Fortized &mdash; and you're responsible for what you make, with each product's own rules setting the boundaries.</p>
+        <p>You keep what you make. When you share something in a product, you give us the permission we need to host and show it there so the thing works. Some products also let you build stuff - emojis, templates, bots in Fortized - and you're responsible for what you make, with each product's own rules setting the boundaries.</p>
       </section>
 
       <section class="legal-sec">
         <h2><span class="n">07</span> Paying for things</h2>
-        <p>Some products sell extras or virtual items &mdash; Fortized's shop and Radiance, for example. Those run under that product's own shop rules, alongside your consumer rights under French and EU law. A virtual item is permission to use it inside the product, not a real-world thing you own.</p>
+        <p>Some products sell extras or virtual items - Fortized's shop and Radiance, for example. Those run under that product's own shop rules, alongside your consumer rights under French and EU law. A virtual item is permission to use it inside the product, not a real-world thing you own.</p>
       </section>
 
       <section class="legal-sec">
         <h2><span class="n">08</span> New products</h2>
-        <p>We build new things. When Swiftaw launches one, it's automatically covered by our general terms and privacy policy, and we'll add it here. Some of the data we collect today (see the <a href="/legal/privacy-policy">Privacy Policy</a>) is what helps us research and build those next products &mdash; always inside the same promise: we don't sell your data or use it for commercial resale.</p>
+        <p>We build new things. When Swiftaw launches one, it's automatically covered by our general terms and privacy policy, and we'll add it here. Some of the data we collect today (see the <a href="/legal/privacy-policy">Privacy Policy</a>) is what helps us research and build those next products - always inside the same promise: we don't sell your data or use it for commercial resale.</p>
         <div class="legal-sign">
           &copy; 2026 Swiftaw. This Products Policy goes together with our <a href="/legal/terms-of-service">Terms of Service</a> and <a href="/legal/privacy-policy">Privacy Policy</a>, plus each product's own rules.
         </div>

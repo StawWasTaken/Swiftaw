@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terms of Service — Swiftaw</title>
+<title>Terms of Service - Swiftaw</title>
 <meta name="description" content="The agreement between you and Swiftaw for using our products, including Fortized and Lifecheck.">
 <link rel="canonical" href="https://swiftaw.com/legal/terms-of-service">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Terms of Service — Swiftaw">
+<meta property="og:title" content="Terms of Service - Swiftaw">
 <meta property="og:description" content="The agreement between you and Swiftaw for using our products.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/legal/terms-of-service">
@@ -19,9 +19,8 @@
 <link rel="stylesheet" href="/css/swiftaw-nb.css">
 <link rel="stylesheet" href="/css/swiftaw-legal.css">
 <style>
-/* Blue is this document's accent. The other two legal pages set their own,
-   and nothing else about them differs. */
-:root { --legal-accent: var(--nb-blue); }
+
+:root { --legal-accent: var(--nb-green); }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 </style>
 </head>
@@ -39,13 +38,39 @@
 
 <nav class="nb-nav" id="nav">
   <div class="nb-nav-in">
-    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
+      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
+    </a>
 
     <div class="nb-nav-links" id="navLinks">
-      <a class="nb-nav-link" href="/about-us">About</a>
-      <a class="nb-nav-link" href="/mission">Mission</a>
-      <a class="nb-nav-link" href="/innovation-room">Lab</a>
-      <a class="nb-nav-link" href="/newsroom">News</a>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-company">
+          <a class="nb-drop-item" href="/about-us"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
+          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
+          <a class="nb-drop-item" href="/innovation-room"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
+          <a class="nb-drop-item" href="/newsroom"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-products">Products <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-products">
+          <a class="nb-drop-item" href="https://fortized.com" rel="noopener"><img class="nb-drop-ico" src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Fortized</span><span class="nb-drop-d">Bastions, channels and DMs</span></span></a>
+          <span class="nb-drop-item is-soon" aria-disabled="true"><img class="nb-drop-ico" src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Hereld</span><span class="nb-drop-d">A professional network. Soon.</span></span></span>
+          <span class="nb-drop-sep" aria-hidden="true"></span>
+          <a class="nb-drop-item" href="/lifecheck/"><img class="nb-drop-ico" src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Lifecheck</span><span class="nb-drop-d">Human verification</span></span></a>
+          <a class="nb-drop-item" href="/supernova/"><img class="nb-drop-ico" src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Supernova</span><span class="nb-drop-d">The AI service</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link is-current" aria-expanded="false" aria-haspopup="true" aria-controls="drop-legal">Legal <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-legal">
+          <a class="nb-drop-item" href="/legal/terms-of-service/" aria-current="page"><span class="nb-drop-txt"><span class="nb-drop-t">Terms of Service</span><span class="nb-drop-d">The rules of using Swiftaw</span></span></a>
+          <a class="nb-drop-item" href="/legal/privacy-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Privacy Policy</span><span class="nb-drop-d">What we hold, and why</span></span></a>
+          <a class="nb-drop-item" href="/legal/products-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Products Policy</span><span class="nb-drop-d">Rules that apply per product</span></span></a>
+        </div>
+      </div>
     </div>
 
     <span class="nb-nav-spacer"></span>
@@ -66,7 +91,7 @@
   <div class="legal-shell">
     <div class="legal-eyebrow">Terms of Service</div>
     <h1>The <span class="u">deal</span> between you and us.</h1>
-    <p class="legal-lede">These are the general terms for using anything Swiftaw makes &mdash; Fortized, Lifecheck, and whatever we build next. We've kept them as plain as we can.</p>
+    <p class="legal-lede">These are the general terms for using anything Swiftaw makes - Fortized, Lifecheck, and whatever we build next. We've kept them as plain as we can.</p>
     <div class="legal-meta">
       <span class="pill"><svg><use href="#i-clock"/></svg> Last updated: August 2026</span>
       <span class="legal-actions">
@@ -79,24 +104,24 @@
 
     <div class="legal-prose">
       <div class="legal-lead">
-        <p><strong>The short version:</strong> Swiftaw is a French company that builds digital products. Use one, and you're agreeing to these terms plus that product's own rules. We may collect data when a product needs it to work or to get better &mdash; but we don't sell it and we don't hand it to advertisers. Everything else is below.</p>
+        <p><strong>The short version:</strong> Swiftaw is a French company that builds digital products. Use one, and you're agreeing to these terms plus that product's own rules. We may collect data when a product needs it to work or to get better - but we don't sell it and we don't hand it to advertisers. Everything else is below.</p>
       </div>
 
       <section class="legal-sec">
         <h2><span class="n">01</span> Who we are</h2>
-        <p>We're Swiftaw, a company based in the &Icirc;le-de-France region of France. We build and run our own products &mdash; right now that's <strong>Fortized</strong>, a gaming-flavoured chat app, and <strong>Lifecheck</strong>, a human-check widget. Swiftaw is the company behind them and the one responsible for your data.</p>
+        <p>We're Swiftaw, a company based in the &Icirc;le-de-France region of France. We build and run our own products - right now that's <strong>Fortized</strong>, a gaming-flavoured chat app, and <strong>Lifecheck</strong>, a human-check widget. Swiftaw is the company behind them and the one responsible for your data.</p>
         <p>We're a French company, so we follow French and European law, including the GDPR and the Digital Services Act. When we say &ldquo;we&rdquo; we mean Swiftaw; &ldquo;you&rdquo; is the person using our stuff; a &ldquo;product&rdquo; is any app, site, API or widget we put out.</p>
       </section>
 
       <section class="legal-sec">
         <h2><span class="n">02</span> What these terms cover</h2>
-        <p>These terms are the general ones. They apply to everything we make and set the baseline between you and us. Individual products can add their own rules on top &mdash; Fortized, for example, has its own terms over on fortized.com. Those product rules live <em>alongside</em> these; they're written to fit together, not to argue with each other.</p>
+        <p>These terms are the general ones. They apply to everything we make and set the baseline between you and us. Individual products can add their own rules on top - Fortized, for example, has its own terms over on fortized.com. Those product rules live <em>alongside</em> these; they're written to fit together, not to argue with each other.</p>
         <p>If a product's own rule and these general terms ever seem to clash on the same point, the product rule wins for that product and these general terms keep covering everything else. Using any of our products means you're okay with both.</p>
       </section>
 
       <section class="legal-sec">
         <h2><span class="n">03</span> Your account</h2>
-        <p>Some products need an account. A Swiftaw account and a product account (like a Fortized one) aren't the same thing &mdash; they're separate. Keep your password to yourself, and you're responsible for what happens on your account. If you think someone's got into it, tell us.</p>
+        <p>Some products need an account. A Swiftaw account and a product account (like a Fortized one) aren't the same thing - they're separate. Keep your password to yourself, and you're responsible for what happens on your account. If you think someone's got into it, tell us.</p>
         <p>When you sign up, give us real details, be old enough to use the product where you live, and don't pretend to be someone else or sneak back in after a ban.</p>
       </section>
 
@@ -104,8 +129,8 @@
         <h2><span class="n">04</span> Our products, and their own rules</h2>
         <p>What we do, at heart, is make and deliver digital products. Today that's:</p>
         <ul>
-          <li><strong>Fortized</strong> &mdash; our gaming-flavoured chat app. It has its own terms and policies on fortized.com that point back to these Swiftaw ones.</li>
-          <li><strong>Lifecheck</strong> &mdash; our friendly &ldquo;are you human?&rdquo; check. It has its own docs and terms for the people who add it to their sites.</li>
+          <li><strong>Fortized</strong> - our gaming-flavoured chat app. It has its own terms and policies on fortized.com that point back to these Swiftaw ones.</li>
+          <li><strong>Lifecheck</strong> - our friendly &ldquo;are you human?&rdquo; check. It has its own docs and terms for the people who add it to their sites.</li>
         </ul>
         <p>We'll add, change and retire products over time. When we do, these terms cover the new one too, and it may bring its own extra rules. There's a plain rundown of how everything fits together in our <a href="/legal/products-policy">Products Policy</a>.</p>
       </section>
@@ -117,7 +142,7 @@
           <li>break the law, or help someone else do it;</li>
           <li>harass, threaten, scam or put other people in danger;</li>
           <li>post things you don't have the right to share;</li>
-          <li>attack our products, pick them apart, or try to get around their security &mdash; that includes gaming Lifecheck to push bots through;</li>
+          <li>attack our products, pick them apart, or try to get around their security - that includes gaming Lifecheck to push bots through;</li>
           <li>resell or commercially exploit a product unless we've said you can.</li>
         </ul>
         <p>If you break these or a product's own rules, we may pause or end your access.</p>
@@ -125,9 +150,9 @@
 
       <section class="legal-sec">
         <h2><span class="n">06</span> Data we might collect</h2>
-        <p>To run our products and make them better, we may collect data where it's genuinely needed. Depending on the product, that can be your <strong>account details</strong> (avatars, usernames, passwords &mdash; for Swiftaw accounts and product accounts like Fortized), the <strong>content you share</strong> inside a product like Fortized, and <strong>how you use things</strong> &mdash; including how people interact with Lifecheck, which is how it tells a human from a bot.</p>
+        <p>To run our products and make them better, we may collect data where it's genuinely needed. Depending on the product, that can be your <strong>account details</strong> (avatars, usernames, passwords - for Swiftaw accounts and product accounts like Fortized), the <strong>content you share</strong> inside a product like Fortized, and <strong>how you use things</strong> - including how people interact with Lifecheck, which is how it tells a human from a bot.</p>
         <p>We use that to keep the products running and secure, to improve our systems, and to build new things. And here's the promise we care about most:</p>
-        <div class="legal-note"><p><strong>We don't sell your data, and we don't use it for commercial resale.</strong> It's there to run and improve what we make &mdash; not to be traded.</p></div>
+        <div class="legal-note"><p><strong>We don't sell your data, and we don't use it for commercial resale.</strong> It's there to run and improve what we make - not to be traded.</p></div>
       </section>
 
       <figure class="legal-figure" style="--fig:var(--nb-blue)">
@@ -140,7 +165,7 @@
 
       <section class="legal-sec">
         <h2><span class="n">07</span> Who owns what</h2>
-        <p>Swiftaw owns its products &mdash; the code, the design, the logos, the names. Using a product doesn't hand any of that to you; you just get permission to use it the way it's meant to be used.</p>
+        <p>Swiftaw owns its products - the code, the design, the logos, the names. Using a product doesn't hand any of that to you; you just get permission to use it the way it's meant to be used.</p>
         <p>You keep what you make. When you share something in a product, you give us the permission we need to store and show it there so the product works. That ends when you delete the content or your account, apart from copies the law makes us keep.</p>
       </section>
 
@@ -152,12 +177,12 @@
 
       <section class="legal-sec">
         <h2><span class="n">09</span> Where we stand on liability</h2>
-        <p>As far as the law allows, we're not on the hook for indirect or knock-on damage, lost data or lost profit from using a product. None of this touches the rights you can't sign away &mdash; your consumer rights under French and EU law, or anything to do with injury caused by our negligence, fraud, or deliberate wrongdoing.</p>
+        <p>As far as the law allows, we're not on the hook for indirect or knock-on damage, lost data or lost profit from using a product. None of this touches the rights you can't sign away - your consumer rights under French and EU law, or anything to do with injury caused by our negligence, fraud, or deliberate wrongdoing.</p>
       </section>
 
       <section class="legal-sec">
         <h2><span class="n">10</span> Law, and getting in touch</h2>
-        <p>These terms follow French law, and the French courts handle any dispute &mdash; without taking away the consumer protections you have where you live. If you're an EU consumer, you can also use the EU's <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">Online Dispute Resolution platform</a>.</p>
+        <p>These terms follow French law, and the French courts handle any dispute - without taking away the consumer protections you have where you live. If you're an EU consumer, you can also use the EU's <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">Online Dispute Resolution platform</a>.</p>
         <p>Got a question, a legal notice, or a data request? Reach us through your <a href="/account">Swiftaw account</a> or the contact details on our product sites. We answer in French or English.</p>
         <div class="legal-sign">
           &copy; 2026 Swiftaw. These terms go together with our <a href="/legal/privacy-policy">Privacy Policy</a> and <a href="/legal/products-policy">Products Policy</a>, plus each product's own rules.

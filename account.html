@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your account — Swiftaw</title>
+<title>Your account - Swiftaw</title>
 <meta name="description" content="Create your free Swiftaw account or log in. One account across Swiftaw products.">
 <meta name="robots" content="noindex">
 <link rel="canonical" href="https://swiftaw.com/account">
@@ -14,11 +14,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw-nb.css">
 <style>
-/* ══ ACCOUNT ══════════════════════════════════════════════════════════════
-   Shell and skin only. Every id, class and template hook below is the one the
-   auth script already looks for — the script writes `className = 'acc-msg show
-   err'` and `className = 'hint bad'` outright, so these names cannot be swapped
-   for .nb-alert / .nb-hint. They are restyled in place instead. */
 
 .acc-wrap {
   min-height: calc(100vh - 71px);
@@ -26,9 +21,10 @@
   padding: clamp(34px, 6vw, 66px) 20px clamp(48px, 7vw, 80px);
   position: relative; overflow: hidden;
 }
-/* Two flat shapes, placed by hand, well clear of the card at every width. */
+
 .acc-deco { position: absolute; z-index: 0; pointer-events: none; }
-.acc-deco--sq { top: 12%; left: 7%; width: 78px; height: 78px; background: var(--nb-pink); border: var(--nb-bd); transform: rotate(-9deg); }
+.acc-deco.nb-poke { pointer-events: auto; }
+.acc-deco--sq { top: 12%; left: 7%; width: 78px; height: 78px; background: var(--nb-pink); border: var(--nb-bd); --nb-rot: -9deg; }
 .acc-deco--ci { bottom: 14%; right: 8%; width: 104px; height: 104px; background: var(--nb-blue); border: var(--nb-bd); border-radius: 50%; }
 @media (max-width: 1080px) { .acc-deco { display: none; } }
 
@@ -42,7 +38,6 @@
 .acc-head h1 { font-family: var(--nb-font-display); font-weight: 800; font-size: clamp(24px, 4vw, 29px); letter-spacing: -.03em; line-height: 1.1; }
 .acc-head p { font-size: 14.5px; color: var(--nb-fg-muted); margin-top: 7px; }
 
-/* Segmented control. Active is a flat yellow slab, not a gradient. */
 .acc-tabs {
   display: flex; gap: 6px; margin-bottom: 20px;
   background: var(--nb-surface-2);
@@ -59,8 +54,7 @@
 .acc-tab.on {
   background: var(--nb-yellow); color: var(--nb-ink);
   border: var(--nb-bd-thin); box-shadow: var(--nb-sh-sm);
-  /* The border is added only in the on state, so compensate for it or the
-     active tab grows 4px taller than its neighbour and the row jumps. */
+
   padding: 8px 4px;
 }
 
@@ -72,8 +66,7 @@
 .fld label .opt { color: var(--nb-fg-muted); font-weight: 500; font-size: 12.5px; }
 .fld input[type=text], .fld input[type=email], .fld input[type=password] {
   width: 100%;
-  /* --nb-surface-2, not --nb-surface: inside a card the surface fill IS the
-     card, so a field set on it disappears into its own container. */
+
   background: var(--nb-surface-2);
   color: var(--nb-surface-fg);
   border: var(--nb-bd); border-radius: var(--nb-r-sm);
@@ -86,7 +79,6 @@
 .fld .hint.bad  { color: var(--nb-red); font-weight: 600; }
 .fld .hint.good { color: var(--nb-green); font-weight: 600; }
 
-/* ── avatar picker ── */
 .ap-main { display: flex; align-items: center; gap: 14px; margin-bottom: 13px; }
 .ap-prev {
   width: 60px; height: 60px; border-radius: 50%; flex: none;
@@ -117,10 +109,9 @@
   transition: transform var(--nb-fast);
 }
 .ap-def:hover { transform: translateY(-3px); }
-/* Flat ring, no blur — this is a selection mark, not a glow. */
+
 .ap-def.sel { outline: 4px solid var(--nb-yellow); outline-offset: 2px; }
 
-/* ── human check ── */
 .lc-slot { margin: 4px 0 17px; }
 .lc-slot .lc-label { font-family: var(--nb-font-head); font-weight: 700; font-size: 13px; margin-bottom: 9px; }
 .lc-slot .lifecheck { display: flex; }
@@ -130,8 +121,6 @@
 
 .acc-submit { margin-top: 6px; }
 
-/* Flat Rainbaw slabs. The script rewrites className wholesale, so these are
-   plain classes rather than .nb-alert modifiers. */
 .acc-msg {
   display: none; margin-top: 15px;
   font-size: 14px; line-height: 1.5; font-weight: 500;
@@ -159,7 +148,6 @@
 .acc-foot a { text-decoration: underline; text-underline-offset: 3px; }
 .acc-foot a:hover { color: var(--nb-yellow); }
 
-/* ── settings view ── */
 .set-head { display: flex; align-items: center; gap: 15px; margin-bottom: 24px; }
 .set-head .big {
   width: 64px; height: 64px; border-radius: 50%; flex: none;
@@ -170,11 +158,7 @@
 .set-head .who .e { font-size: 13.5px; color: var(--nb-fg-muted); overflow-wrap: anywhere; }
 .set-title { font-family: var(--nb-font-head); font-weight: 700; font-size: 13px; margin: 20px 0 10px; }
 
-.acc-loading {
-  display: flex; align-items: center; justify-content: center; gap: 12px;
-  padding: 46px 0; color: var(--nb-fg-muted);
-  font-family: var(--nb-font-head); font-weight: 700;
-}
+.acc-loading p { font-family: var(--nb-font-head); font-weight: 700; }
 
 .hidden { display: none !important; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
@@ -193,13 +177,39 @@
 
 <nav class="nb-nav" id="nav">
   <div class="nb-nav-in">
-    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
+      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
+    </a>
 
     <div class="nb-nav-links" id="navLinks">
-      <a class="nb-nav-link" href="/about-us">About</a>
-      <a class="nb-nav-link" href="/mission">Mission</a>
-      <a class="nb-nav-link" href="/innovation-room">Lab</a>
-      <a class="nb-nav-link" href="/newsroom">News</a>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-company">
+          <a class="nb-drop-item" href="/about-us"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
+          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
+          <a class="nb-drop-item" href="/innovation-room"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
+          <a class="nb-drop-item" href="/newsroom"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-products">Products <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-products">
+          <a class="nb-drop-item" href="https://fortized.com" rel="noopener"><img class="nb-drop-ico" src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Fortized</span><span class="nb-drop-d">Bastions, channels and DMs</span></span></a>
+          <span class="nb-drop-item is-soon" aria-disabled="true"><img class="nb-drop-ico" src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Hereld</span><span class="nb-drop-d">A professional network. Soon.</span></span></span>
+          <span class="nb-drop-sep" aria-hidden="true"></span>
+          <a class="nb-drop-item" href="/lifecheck/"><img class="nb-drop-ico" src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Lifecheck</span><span class="nb-drop-d">Human verification</span></span></a>
+          <a class="nb-drop-item" href="/supernova/"><img class="nb-drop-ico" src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Supernova</span><span class="nb-drop-d">The AI service</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-legal">Legal <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-legal">
+          <a class="nb-drop-item" href="/legal/terms-of-service/"><span class="nb-drop-txt"><span class="nb-drop-t">Terms of Service</span><span class="nb-drop-d">The rules of using Swiftaw</span></span></a>
+          <a class="nb-drop-item" href="/legal/privacy-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Privacy Policy</span><span class="nb-drop-d">What we hold, and why</span></span></a>
+          <a class="nb-drop-item" href="/legal/products-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Products Policy</span><span class="nb-drop-d">Rules that apply per product</span></span></a>
+        </div>
+      </div>
     </div>
 
     <span class="nb-nav-spacer"></span>
@@ -216,16 +226,18 @@
 </nav>
 
 <main id="main" class="acc-wrap">
-  <span class="acc-deco acc-deco--sq" aria-hidden="true"></span>
-  <span class="acc-deco acc-deco--ci" aria-hidden="true"></span>
+  <span class="acc-deco acc-deco--sq nb-poke nb-float" data-depth="15" aria-hidden="true"></span>
+  <span class="acc-deco acc-deco--ci nb-poke nb-float" data-depth="23" aria-hidden="true"></span>
 
   <div class="acc-col">
     <span class="nb-sticker acc-stamp">One account, all of Swiftaw</span>
 
     <div class="acc-card nb-card nb-card--lg">
-      <div class="acc-loading" id="accLoading"><span class="nb-spin" aria-hidden="true"></span> Loading</div>
+      <div class="nb-loading acc-loading" id="accLoading">
+        <span class="nb-loader nb-loader--framed" role="status" aria-label="Loading"></span>
+        <p>Loading your account</p>
+      </div>
 
-      <!-- ══ AUTH (login / signup) ══ -->
       <div id="viewAuth" class="hidden">
         <div class="acc-head">
           <img class="acc-logo" src="/SWFTW_Logomark.png" alt="Swiftaw">
@@ -284,7 +296,6 @@
         <div class="acc-foot">One Swiftaw account works across the Swiftaw site and Lifecheck.</div>
       </div>
 
-      <!-- ══ SETTINGS (logged in) ══ -->
       <div id="viewSettings" class="hidden">
         <div class="set-head">
           <div class="big" id="setBig"></div>
@@ -366,10 +377,6 @@
   <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
 </footer>
 
-<!-- ⚠️ swiftaw-account.js must stay a SYNCHRONOUS tag ahead of the inline
-     script: the IIFE below calls SwiftawAccount.ready() at parse time.
-     css/swiftaw.js lazy-loads the same file for its account chip, but its
-     guard sees window.SwiftawAccount already defined and no-ops. -->
 <script src="/css/swiftaw-account.js"></script>
 <script src="/lifecheck/lifecheck.js" async defer></script>
 <script src="/css/swiftaw.js"></script>
@@ -402,7 +409,6 @@
   function show(el, kind, text){ el.className = 'acc-msg show ' + kind; el.innerHTML = text; }
   function hide(el){ el.className = 'acc-msg'; }
 
-  // ── reusable avatar picker ──
   function AvatarPicker(mountId){
     var mount = document.getElementById(mountId);
     mount.appendChild(document.getElementById('pickerTpl').content.cloneNode(true));
@@ -411,13 +417,12 @@
     var input = root.querySelector('.ap-input');
     var clearBtn = root.querySelector('.ap-clear');
     var defsWrap = root.querySelector('.ap-defaults');
-    var file = null, chosen = null; // chosen = default url string
+    var file = null, chosen = null; 
 
     DEFAULT_AVATARS.forEach(function(url, i){
       var d = document.createElement('div');
       d.className = 'ap-def'; d.style.backgroundImage = 'url(' + url + ')'; d.setAttribute('data-url', url);
-      // A swatch is a control, so it has to be reachable and operable from the
-      // keyboard. A bare <div> with a click handler is neither.
+
       d.setAttribute('role', 'button');
       d.setAttribute('tabindex', '0');
       d.setAttribute('aria-label', 'Default avatar ' + (i + 1));
@@ -458,12 +463,11 @@
     var sel = pick.selection();
     if(sel.type === 'file') { try { return await uploadAvatar(client, sel.file, uid); } catch(e){ return fallbackRandom ? randomDefault() : null; } }
     if(sel.type === 'default') return sel.url;
-    return fallbackRandom ? randomDefault() : undefined; // undefined = leave unchanged
+    return fallbackRandom ? randomDefault() : undefined; 
   }
 
   var signupPicker, settingsPicker;
 
-  // ── AUTH view ──
   var mode = qs.get('mode') === 'signup' ? 'signup' : 'login';
   function applyMode(m){
     mode = m;
@@ -479,7 +483,6 @@
   document.getElementById('tabLogin').addEventListener('click', function(){ applyMode('login'); });
   document.getElementById('tabSignup').addEventListener('click', function(){ applyMode('signup'); });
 
-  // username availability (shared helper)
   function wireUsernameCheck(inputId, hintId, currentVal){
     var el = document.getElementById(inputId), hintEl = document.getElementById(hintId);
     var timer = null, ok = false;
@@ -527,7 +530,7 @@
 
       if(su.data.session){
         var uid = su.data.user.id;
-        var avatarUrl = await resolveAvatar(client, signupPicker, uid, true); // random default if none
+        var avatarUrl = await resolveAvatar(client, signupPicker, uid, true); 
         await client.auth.updateUser({ data: { username: username, avatar_url: avatarUrl } });
         try { await client.from('profiles').update({ username: username, avatar_url: avatarUrl }).eq('id', uid); } catch(pe){}
         location.href = safeNext();
@@ -539,7 +542,6 @@
     finally { btn.disabled = false; }
   });
 
-  // ── SETTINGS view ──
   var setUnameChecker = null;
   function showSettings(user){
     viewAuth.classList.add('hidden'); viewSettings.classList.remove('hidden');
@@ -570,7 +572,7 @@
         if(a && a.data === false) throw new Error('That username is taken.');
         data.username = newName;
       }
-      var av = await resolveAvatar(client, settingsPicker, user.id, false); // undefined = unchanged
+      var av = await resolveAvatar(client, settingsPicker, user.id, false); 
       if(av !== undefined) data.avatar_url = av;
       if(Object.keys(data).length === 0){ setMsg.className = 'acc-msg show info'; setMsg.textContent = 'Nothing to save yet.'; btn.disabled = false; return; }
       await client.auth.updateUser({ data: data });
@@ -582,7 +584,6 @@
     finally { btn.disabled = false; }
   });
 
-  // ── boot ──
   window.SwiftawAccount.ready(function(){
     loading.classList.add('hidden');
     signupPicker = AvatarPicker('signupPicker');
@@ -592,7 +593,7 @@
       return;
     }
     if(user && !addMode && qs.has('next')){ location.href = safeNext(); return; }
-    // auth view
+
     viewAuth.classList.remove('hidden');
     if(hint) document.getElementById('email').value = hint;
     if(addMode) show(msg, 'info', 'Add another account. Logging in keeps your current account too.');

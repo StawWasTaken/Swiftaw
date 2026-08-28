@@ -1,87 +1,61 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   SWIFTAW LAUNCHER — one door between everything we make
-   Pairs with /css/swiftaw-launcher.js. Reads /css/swiftaw-nb.css tokens where
-   they exist and falls back to literals where they don't, so it drops onto a
-   site that has not been rebuilt yet without dragging the whole system in.
-
-   What it is: ecosystem NAVIGATION. It moves you between products. It does
-   not join their accounts together, and nothing in here should suggest it
-   does — which is why there is no account row, no session, and no sign-in
-   anywhere in this panel. The account is its own button next door, and the
-   line about the three account systems being separate lives there, where
-   somebody reading about accounts is actually looking.
-═══════════════════════════════════════════════════════════════════════════ */
-
 .swl-root {
-  position: relative;
-  display: inline-block;
-  font-family: var(--nb-font-body, system-ui, -apple-system, sans-serif);
-  --swl-line:    var(--nb-line, #000);
-  --swl-surface: var(--nb-surface, #fff);
-  --swl-surf-2:  var(--nb-surface-2, #F4F4EF);
-  --swl-fg:      var(--nb-surface-fg, #000);
-  --swl-muted:   var(--nb-surface-fg-muted, #4A4A4A);
+position: relative;
+display: inline-block;
+font-family: var(--nb-font-body, system-ui, -apple-system, sans-serif);
+--swl-line:    var(--nb-line, #000);
+--swl-surface: var(--nb-surface, #fff);
+--swl-surf-2:  var(--nb-surface-2, #F4F4EF);
+--swl-fg:      var(--nb-surface-fg, #000);
+--swl-muted:   var(--nb-surface-fg-muted, #4A4A4A);
 }
-/* data-theme="dark" describes the PAGE the button sits on. The panel stays
-   dark with it — a lighter dark than the page, so the black stroke reads in
-   the seam between the two. The stroke and the shadow are black on every
-   surface in this system; only the fill changes. */
 .swl-root[data-theme="dark"] {
-  --swl-line:    #000000;
-  --swl-surface: #161B24;
-  --swl-surf-2:  #1F2634;
-  --swl-fg:      #FFFFFF;
-  --swl-muted:   #97A1B4;
+--swl-line:    #000000;
+--swl-surface: #161B24;
+--swl-surf-2:  #1F2634;
+--swl-fg:      #FFFFFF;
+--swl-muted:   #97A1B4;
 }
-
-/* ── the trigger ────────────────────────────────────────────────────────────
-   A 2×2 of Rainbaw squares. Four of the five colours, because a 2×2 is the
-   shape that reads as "apps" at 20px and a 3×3 turns to mush. */
 .swl-btn {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 3px;
-  width: 42px; height: 42px;
-  padding: 9px;
-  background: var(--swl-surface);
-  border: var(--nb-bd-w, 3px) solid var(--swl-line);
-  border-radius: var(--nb-r-sm, 10px);
-  box-shadow: var(--nb-sh-sm, 2px 3px 0 #000);
-  cursor: pointer;
-  transition: transform var(--nb-fast, .14s) var(--nb-ease, ease),
-              box-shadow var(--nb-fast, .14s) var(--nb-ease, ease);
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 3px;
+width: 42px; height: 42px;
+padding: 9px;
+background: var(--swl-surface);
+border: var(--nb-bd-w, 3px) solid var(--swl-line);
+border-radius: var(--nb-r-sm, 10px);
+box-shadow: var(--nb-sh-sm, 2px 3px 0 #000);
+cursor: pointer;
+transition: transform var(--nb-fast, .14s) var(--nb-ease, ease),
+box-shadow var(--nb-fast, .14s) var(--nb-ease, ease);
 }
 .swl-btn > i { border-radius: 2px; }
 .swl-btn > i:nth-child(1) { background: var(--nb-red,    #FF0033); }
 .swl-btn > i:nth-child(2) { background: var(--nb-blue,   #2CAFFC); }
 .swl-btn > i:nth-child(3) { background: var(--nb-yellow, #FFF93E); }
 .swl-btn > i:nth-child(4) { background: var(--nb-pink,   #FF77E4); }
-
 .swl-btn:hover  { transform: translate(-1px, -1px); box-shadow: 3px 4px 0 #000; }
 .swl-btn:active,
 .swl-btn[aria-expanded="true"] {
-  transform: translate(2px, 3px);
-  box-shadow: var(--nb-sh-press, 1px 2px 0 #000);
+transform: translate(2px, 3px);
+box-shadow: var(--nb-sh-press, 1px 2px 0 #000);
 }
-
-/* ── the panel ─────────────────────────────────────────────────────────── */
 .swl-panel {
-  position: absolute;
-  top: calc(100% + 12px); right: 0;
-  z-index: 9400;
-  width: 372px;
-  background: var(--swl-surface);
-  color: var(--swl-fg);
-  border: var(--nb-bd-w, 3px) solid var(--swl-line);
-  border-radius: var(--nb-r, 18px);
-  box-shadow: var(--nb-sh-lg, 8px 10px 0 #000);
-  overflow: hidden;
-  animation: swlIn .2s var(--nb-ease, ease) backwards;
+position: absolute;
+top: calc(100% + 12px); right: 0;
+z-index: 9400;
+width: 372px;
+background: var(--swl-surface);
+color: var(--swl-fg);
+border: var(--nb-bd-w, 3px) solid var(--swl-line);
+border-radius: var(--nb-r, 18px);
+box-shadow: var(--nb-sh-lg, 8px 10px 0 #000);
+overflow: hidden;
+animation: swlIn .2s var(--nb-ease, ease) backwards;
 }
 .swl-panel[hidden] { display: none; }
 .swl-root.align-left .swl-panel { right: auto; left: 0; }
 @keyframes swlIn { from { opacity: 0; transform: translateY(-8px); } }
-
 .swl-stripe { display: flex; height: 7px; }
 .swl-stripe > i { flex: 1; }
 .swl-stripe > i:nth-child(1) { background: var(--nb-red,    #FF0033); }
@@ -89,116 +63,81 @@
 .swl-stripe > i:nth-child(3) { background: var(--nb-blue,   #2CAFFC); }
 .swl-stripe > i:nth-child(4) { background: var(--nb-yellow, #FFF93E); }
 .swl-stripe > i:nth-child(5) { background: var(--nb-pink,   #FF77E4); }
-
 .swl-scroll { max-height: min(72vh, 560px); overflow-y: auto; padding: 16px; }
-
 .swl-sec + .swl-sec { margin-top: 18px; }
 .swl-sec-label {
-  font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; font-size: 11px;
-  letter-spacing: .13em; text-transform: uppercase;
-  color: var(--swl-muted);
-  margin-bottom: 9px;
+font-family: var(--nb-font-head, 'Syne', sans-serif);
+font-weight: 700; font-size: 11px;
+letter-spacing: .13em; text-transform: uppercase;
+color: var(--swl-muted);
+margin-bottom: 9px;
 }
-
-/* ── a tile ───────────────────────────────────────────────────────────────
-   A square cell: icon on top, name underneath, nothing beside either. The
-   earlier row layout put a description next to every icon, which made the
-   panel a list to read rather than a board to aim at — you already know what
-   Fortized is, you are here to click it. So the icon is the target and grows,
-   the name is a label and shrinks, and the one-line description survives only
-   as the tile's title attribute for anyone who does want it. */
 .swl-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 4px;
 }
-
 .swl-tile {
-  position: relative;
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-  gap: 9px;
-  padding: 14px 6px 12px;
-  text-align: center;
-  background: var(--swl-surface);
-  color: inherit;
-  border: var(--nb-bd-w-thin, 2px) solid transparent;
-  border-radius: var(--nb-r-sm, 10px);
-  text-decoration: none;
-  cursor: pointer;
-  transition: background var(--nb-fast, .14s), border-color var(--nb-fast, .14s),
-              transform var(--nb-fast, .14s);
+position: relative;
+display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+gap: 9px;
+padding: 14px 6px 12px;
+text-align: center;
+background: var(--swl-surface);
+color: inherit;
+border: var(--nb-bd-w-thin, 2px) solid transparent;
+border-radius: var(--nb-r-sm, 10px);
+text-decoration: none;
+cursor: pointer;
+transition: background var(--nb-fast, .14s), border-color var(--nb-fast, .14s),
+transform var(--nb-fast, .14s);
 }
-/* Up rather than sideways. In a grid a tile that slides right walks into its
-   neighbour; lifting is the move that works in both axes. */
 .swl-tile:hover, .swl-tile:focus-visible {
-  background: var(--swl-surf-2);
-  border-color: var(--swl-line);
-  transform: translateY(-2px);
+background: var(--swl-surf-2);
+border-color: var(--swl-line);
+transform: translateY(-2px);
 }
-
-/* No stroke and no shadow on these. They are each product's own icon, already
-   drawn with its own rounded edge — an outline around them just draws a second
-   box around a box. */
 .swl-ico {
-  flex: none;
-  width: 52px; height: 52px;
-  border: 0;
-  border-radius: var(--nb-r-sm, 10px);
-  object-fit: cover;
-  background: transparent;
+flex: none;
+width: 52px; height: 52px;
+border: 0;
+border-radius: var(--nb-r-sm, 10px);
+object-fit: cover;
+background: transparent;
 }
-
 .swl-meta { min-width: 0; width: 100%; display: block; }
 .swl-name {
-  display: block;
-  font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; font-size: 12.5px; line-height: 1.25;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+display: block;
+font-family: var(--nb-font-head, 'Syne', sans-serif);
+font-weight: 700; font-size: 12.5px; line-height: 1.25;
+overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-
-/* "You're here" and "Coming soon" are the same shape so neither reads as a
-   promotion of the other. Under the name, not beside it — at this width there
-   is no beside. */
 .swl-flag {
-  display: inline-block;
-  margin-top: 4px;
-  font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; font-size: 8.5px;
-  letter-spacing: .07em; text-transform: uppercase;
-  border: 2px solid var(--swl-line);
-  border-radius: 999px;
-  padding: 0 6px;
-  white-space: nowrap;
+display: inline-block;
+margin-top: 4px;
+font-family: var(--nb-font-head, 'Syne', sans-serif);
+font-weight: 700; font-size: 8.5px;
+letter-spacing: .07em; text-transform: uppercase;
+border: 2px solid var(--swl-line);
+border-radius: 999px;
+padding: 0 6px;
+white-space: nowrap;
 }
 .swl-flag--here { background: var(--nb-yellow, #FFF93E); color: #000; border-color: #000; }
-/* currentColor, not the line colour: this pill sits ON the panel rather than
-   being an edge of it, so on a dark panel a black outline would disappear. */
 .swl-flag--soon { color: var(--swl-muted); border-color: currentColor; }
-
-/* Hereld has no domain yet. A tile that cannot go anywhere must not pretend
-   it can — no pointer, no hover travel, and it is not a link element. */
 .swl-tile.is-soon { cursor: default; opacity: .72; }
 .swl-tile.is-soon:hover { background: none; border-color: transparent; transform: none; }
-
-/* ── the favourite star ───────────────────────────────────────────────────
-   Pinned to the tile's own top-right corner now that the tile is a square.
-   It overlaps the icon's corner by a couple of pixels on purpose: a star
-   given its own row would cost the tile another 30px of height for a control
-   most people touch once. */
 .swl-star {
-  position: absolute;
-  top: 2px; right: 2px;
-  width: 24px; height: 24px;
-  display: grid; place-items: center;
-  background: none; border: 0; border-radius: 7px;
-  cursor: pointer;
-  color: var(--swl-muted);
-  /* Faint at rest rather than invisible. A control nobody can see is a
-     control nobody finds, and the empty state above promises it exists. */
-  opacity: .32;
-  transition: opacity var(--nb-fast, .14s), color var(--nb-fast, .14s),
-              transform var(--nb-fast, .14s);
+position: absolute;
+top: 2px; right: 2px;
+width: 24px; height: 24px;
+display: grid; place-items: center;
+background: none; border: 0; border-radius: 7px;
+cursor: pointer;
+color: var(--swl-muted);
+opacity: .32;
+transition: opacity var(--nb-fast, .14s), color var(--nb-fast, .14s),
+transform var(--nb-fast, .14s);
 }
 .swl-star svg { width: 13px; height: 13px; fill: currentColor; }
 .swl-tile:hover .swl-star,
@@ -207,44 +146,35 @@
 .swl-star.on { opacity: 1; }
 .swl-star.on { color: var(--nb-yellow, #FFF93E); }
 .swl-star:hover { transform: scale(1.14); color: var(--nb-yellow, #FFF93E); }
-
 .swl-empty {
-  font-size: 12.5px; line-height: 1.5;
-  color: var(--swl-muted);
-  border: var(--nb-bd-w-thin, 2px) dashed currentColor;
-  border-radius: var(--nb-r-sm, 10px);
-  padding: 12px 14px;
-  opacity: .8;
+font-size: 12.5px; line-height: 1.5;
+color: var(--swl-muted);
+border: var(--nb-bd-w-thin, 2px) dashed currentColor;
+border-radius: var(--nb-r-sm, 10px);
+padding: 12px 14px;
+opacity: .8;
 }
-
-/* ── the dock ───────────────────────────────────────────────────────────────
-   Launcher first, account second, whichever script happened to load first.
-   The dock element itself is positioned inline by whichever script creates
-   it, so it is right before this file has even arrived. */
 #swiftaw-dock > [data-swl-dock-item] { order: 1; }
 #swiftaw-dock > [data-swa-dock-item] { order: 2; }
-
-/* ── mobile: a sheet from the bottom, not a 372px popover on a 360px screen */
 @media (max-width: 560px) {
-  .swl-backdrop {
-    position: fixed; inset: 0; z-index: 9390;
-    background: rgba(0, 0, 0, .45);
-    animation: swlFade .2s var(--nb-ease, ease) backwards;
-  }
-  @keyframes swlFade { from { opacity: 0; } }
-  .swl-panel {
-    position: fixed;
-    top: auto; bottom: 0; left: 0; right: 0;
-    width: auto;
-    border-radius: var(--nb-r, 18px) var(--nb-r, 18px) 0 0;
-    border-bottom: 0;
-    animation-name: swlInSheet;
-  }
-  @keyframes swlInSheet { from { opacity: 0; transform: translateY(26px); } }
-  .swl-scroll { max-height: 74dvh; }
+.swl-backdrop {
+position: fixed; inset: 0; z-index: 9390;
+background: rgba(0, 0, 0, .45);
+animation: swlFade .2s var(--nb-ease, ease) backwards;
 }
-
+@keyframes swlFade { from { opacity: 0; } }
+.swl-panel {
+position: fixed;
+top: auto; bottom: 0; left: 0; right: 0;
+width: auto;
+border-radius: var(--nb-r, 18px) var(--nb-r, 18px) 0 0;
+border-bottom: 0;
+animation-name: swlInSheet;
+}
+@keyframes swlInSheet { from { opacity: 0; transform: translateY(26px); } }
+.swl-scroll { max-height: 74dvh; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .swl-panel, .swl-backdrop { animation: none; }
-  .swl-btn, .swl-tile, .swl-star { transition: none; }
+.swl-panel, .swl-backdrop { animation: none; }
+.swl-btn, .swl-tile, .swl-star { transition: none; }
 }

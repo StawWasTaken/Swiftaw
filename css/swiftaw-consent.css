@@ -1,179 +1,127 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   SWIFTAW CONSENT — the ecosystem's one cookie card
-   Pairs with /css/swiftaw-consent.js. Requires /css/swiftaw-nb.css for the
-   button recipe and the tokens.
-
-   Two states, one component:
-     .is-corner  left-hand card (bottom sheet under 720px) — noticeable,
-                 never covering the site
-     .is-center  centred modal over a dimmed, blurred page, entered only
-                 after the corner card has been ignored
-
-   The escalation is a two-beat handoff, not a morph: the corner card leaves,
-   the centred card arrives. Tweening one box between two very different
-   shapes distorts its own text, which is exactly what makes those
-   transitions read as cheap.
-═══════════════════════════════════════════════════════════════════════════ */
-
 .swc-root {
-  position: fixed; inset: 0; z-index: 9500;
-  pointer-events: none;
-  font-family: var(--nb-font-body, system-ui, sans-serif);
+position: fixed; inset: 0; z-index: 9500;
+pointer-events: none;
+font-family: var(--nb-font-body, system-ui, sans-serif);
 }
 .swc-root[hidden] { display: none; }
-
-/* ── standing on its own ────────────────────────────────────────────────────
-   This card ships to sites that have not been rebuilt on swiftaw-nb.css yet,
-   so it cannot assume those tokens exist. The values below are the same ones
-   nb.css defines; when nb.css IS present they agree, and these simply win on
-   specificity. Without them a dark site got a white card with unstyled text
-   buttons — which is how a consent notice becomes unreadable. */
 .swc-root[data-nb] {
-  --nb-red: #FF0033; --nb-green: #3ECF6E; --nb-blue: #2CAFFC;
-  --nb-yellow: #FFF93E; --nb-pink: #FF77E4; --nb-ink: #000000;
-  --nb-bd-w: 3px; --nb-bd-w-thin: 2px;
-  --nb-r-sm: 10px; --nb-r: 18px;
-  --nb-fast: .14s; --nb-ease: cubic-bezier(.2, .9, .25, 1);
-  --nb-sh: 4px 6px 0 #000; --nb-sh-lg: 8px 10px 0 #000; --nb-sh-press: 1px 2px 0 #000;
+--nb-red: #FF0033; --nb-green: #3ECF6E; --nb-blue: #2CAFFC;
+--nb-yellow: #FFF93E; --nb-pink: #FF77E4; --nb-ink: #000000;
+--nb-bd-w: 3px; --nb-bd-w-thin: 2px;
+--nb-r-sm: 10px; --nb-r: 18px;
+--nb-fast: .14s; --nb-ease: cubic-bezier(.2, .9, .25, 1);
+--nb-sh: 4px 6px 0 #000; --nb-sh-lg: 8px 10px 0 #000; --nb-sh-press: 1px 2px 0 #000;
 }
 .swc-root[data-nb="light"], .swc-root[data-nb="yellow"] {
-  --nb-surface: #FFFFFF; --nb-surface-2: #F4F4EF;
-  --nb-fg: #000000; --nb-fg-muted: #4A4A4A; --nb-line: #000000;
+--nb-surface: #FFFFFF; --nb-surface-2: #F4F4EF;
+--nb-fg: #000000; --nb-fg-muted: #4A4A4A; --nb-line: #000000;
 }
 .swc-root[data-nb="yellow"] { --nb-surface-2: #FFF93E; --nb-fg-muted: #3A3A2A; }
-/* On a dark page the card stays dark — a lighter dark than the page, so the
-   black stroke reads in the seam and the black shadow reads as the page
-   dropping away behind it. The stroke never changes colour; the fill does.
-   Matching nb.css's [data-nb="dark"]. */
 .swc-root[data-nb="dark"] {
-  --nb-surface: #161B24; --nb-surface-2: #1F2634;
-  --nb-fg: #FFFFFF; --nb-fg-muted: #97A1B4; --nb-line: #000000;
+--nb-surface: #161B24; --nb-surface-2: #1F2634;
+--nb-fg: #FFFFFF; --nb-fg-muted: #97A1B4; --nb-line: #000000;
 }
 .swc-root[data-nb] { --nb-bd: var(--nb-bd-w) solid var(--nb-line); }
-
-/* The one button recipe, scoped so it can never leak onto a host page:
-   rest sits on its shadow, hover lifts a pixel, press travels INTO it.
-   The radius is pinned in every state — a press must not square it off. */
 .swc-card .nb-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-  font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; font-size: 18px; line-height: 1;
-  text-align: center; white-space: nowrap;
-  padding: 17px 30px;
-  background: var(--btn-bg, var(--nb-surface)); color: var(--btn-fg, var(--nb-fg));
-  border: var(--nb-bd); border-radius: var(--nb-r);
-  box-shadow: var(--nb-sh);
-  cursor: pointer; user-select: none;
-  transition: transform var(--nb-fast), box-shadow var(--nb-fast),
-              background var(--nb-fast);
+display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+font-family: var(--nb-font-head, 'Syne', sans-serif);
+font-weight: 700; font-size: 18px; line-height: 1;
+text-align: center; white-space: nowrap;
+padding: 17px 30px;
+background: var(--btn-bg, var(--nb-surface)); color: var(--btn-fg, var(--nb-fg));
+border: var(--nb-bd); border-radius: var(--nb-r);
+box-shadow: var(--nb-sh);
+cursor: pointer; user-select: none;
+transition: transform var(--nb-fast), box-shadow var(--nb-fast),
+background var(--nb-fast);
 }
 .swc-card .nb-btn:hover  { transform: translate(-1px, -1px); box-shadow: 5px 7px 0 #000; }
 .swc-card .nb-btn:active { transform: translate(3px, 4px);   box-shadow: var(--nb-sh-press); }
 .swc-card .nb-btn--primary { --btn-bg: var(--nb-yellow); --btn-fg: var(--nb-ink); }
-
-/* Same reasoning for the preference checkboxes. A tick box that renders as a
-   naked <input> on half the estate is not a choice anyone trusts. */
 .swc-card .nb-sr {
-  position: absolute; width: 1px; height: 1px;
-  padding: 0; margin: -1px; overflow: hidden;
-  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+position: absolute; width: 1px; height: 1px;
+padding: 0; margin: -1px; overflow: hidden;
+clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 .swc-card .nb-check { display: inline-flex; align-items: flex-start; gap: 11px; cursor: pointer; }
 .swc-card .nb-check input { position: absolute; opacity: 0; width: 0; height: 0; }
 .swc-card .nb-box {
-  width: 24px; height: 24px; flex: none;
-  background: var(--nb-surface);
-  border: var(--nb-bd); border-radius: 6px;
-  display: grid; place-items: center;
-  transition: background var(--nb-fast);
+width: 24px; height: 24px; flex: none;
+background: var(--nb-surface);
+border: var(--nb-bd); border-radius: 6px;
+display: grid; place-items: center;
+transition: background var(--nb-fast);
 }
 .swc-card .nb-box::after {
-  content: ""; width: 11px; height: 6px; margin-top: -3px;
-  border-left: 3px solid var(--nb-ink); border-bottom: 3px solid var(--nb-ink);
-  transform: rotate(-45deg) scale(0); transform-origin: center;
-  transition: transform var(--nb-fast);
+content: ""; width: 11px; height: 6px; margin-top: -3px;
+border-left: 3px solid var(--nb-ink); border-bottom: 3px solid var(--nb-ink);
+transform: rotate(-45deg) scale(0); transform-origin: center;
+transition: transform var(--nb-fast);
 }
 .swc-card .nb-check input:checked + .nb-box { background: var(--nb-yellow); }
 .swc-card .nb-check input:checked + .nb-box::after { transform: rotate(-45deg) scale(1); }
 .swc-card .nb-check input:focus-visible + .nb-box {
-  outline: 3px solid var(--nb-blue); outline-offset: 2px;
+outline: 3px solid var(--nb-blue); outline-offset: 2px;
 }
-/* Necessary storage: ticked, and not yours to untick. It reads as decided
-   rather than as an option you failed to notice. */
 .swc-card .swc-pref-fixed {
-  background: var(--nb-yellow); cursor: not-allowed; opacity: .85;
+background: var(--nb-yellow); cursor: not-allowed; opacity: .85;
 }
 .swc-card .swc-pref-fixed::after { transform: rotate(-45deg) scale(1); }
-
-/* ── the dim + blur, only ever painted in the centred state ─────────────── */
 .swc-backdrop {
-  position: absolute; inset: 0;
-  background: rgba(0, 0, 0, .5);
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
-  opacity: 0; pointer-events: none;
-  transition: opacity .32s var(--nb-ease, ease);
+position: absolute; inset: 0;
+background: rgba(0, 0, 0, .5);
+backdrop-filter: blur(7px);
+-webkit-backdrop-filter: blur(7px);
+opacity: 0; pointer-events: none;
+transition: opacity .32s var(--nb-ease, ease);
 }
 .swc-root.is-center .swc-backdrop { opacity: 1; pointer-events: auto; }
-
-/* ── the card ──────────────────────────────────────────────────────────── */
 .swc-card {
-  position: absolute;
-  pointer-events: auto;
-  background: var(--nb-surface, #fff);
-  color: var(--nb-fg, #000);
-  border: var(--nb-bd, 3px solid #000);
-  border-radius: var(--nb-r, 18px);
-  box-shadow: var(--nb-sh-lg, 8px 10px 0 #000);
-  display: flex; flex-direction: column;
-  overflow: hidden;
+position: absolute;
+pointer-events: auto;
+background: var(--nb-surface, #fff);
+color: var(--nb-fg, #000);
+border: var(--nb-bd, 3px solid #000);
+border-radius: var(--nb-r, 18px);
+box-shadow: var(--nb-sh-lg, 8px 10px 0 #000);
+display: flex; flex-direction: column;
+overflow: hidden;
 }
-
-/* corner state — left side, above the fold's bottom edge */
 .swc-root.is-corner .swc-card {
-  left: 24px; bottom: 24px;
-  width: 372px; max-width: calc(100vw - 48px);
-  --swc-rest: translate(0, 0);
-  animation: swcInCorner .42s var(--nb-ease, ease) backwards;
+left: 24px; bottom: 24px;
+width: 372px; max-width: calc(100vw - 48px);
+--swc-rest: translate(0, 0);
+animation: swcInCorner .42s var(--nb-ease, ease) backwards;
 }
 @keyframes swcInCorner {
-  from { opacity: 0; transform: translate(-26px, 14px) rotate(-2deg); }
+from { opacity: 0; transform: translate(-26px, 14px) rotate(-2deg); }
 }
-
-/* leaving the corner, on the way to the middle */
 .swc-root.is-leaving .swc-card {
-  animation: swcOutCorner .19s var(--nb-ease, ease) forwards;
+animation: swcOutCorner .19s var(--nb-ease, ease) forwards;
 }
 @keyframes swcOutCorner {
-  to { opacity: 0; transform: translateY(10px) scale(.95); }
+to { opacity: 0; transform: translateY(10px) scale(.95); }
 }
-
-/* centred state */
 .swc-root.is-center .swc-card {
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  --swc-rest: translate(-50%, -50%);
-  width: min(560px, calc(100vw - 40px));
-  max-height: calc(100dvh - 40px);
-  animation: swcInCenter .3s var(--nb-ease, ease) backwards;
+left: 50%; top: 50%;
+transform: translate(-50%, -50%);
+--swc-rest: translate(-50%, -50%);
+width: min(560px, calc(100vw - 40px));
+max-height: calc(100dvh - 40px);
+animation: swcInCenter .3s var(--nb-ease, ease) backwards;
 }
 @keyframes swcInCenter {
-  from { opacity: 0; transform: translate(-50%, -46%) scale(.94); }
+from { opacity: 0; transform: translate(-50%, -46%) scale(.94); }
 }
-
-/* accepted — the card leaves for good. --swc-rest is whichever resting
-   transform the current state uses, so the exit never snaps position. */
 .swc-root .swc-card { --swc-rest: translate(0, 0); }
 .swc-root.is-done .swc-card {
-  animation: swcDone .3s var(--nb-ease, ease) forwards;
+animation: swcDone .3s var(--nb-ease, ease) forwards;
 }
 .swc-root.is-done .swc-backdrop { opacity: 0; }
 @keyframes swcDone {
-  60%  { transform: var(--swc-rest) scale(1.02); }
-  100% { opacity: 0; transform: var(--swc-rest) scale(.9); }
+60%  { transform: var(--swc-rest) scale(1.02); }
+100% { opacity: 0; transform: var(--swc-rest) scale(.9); }
 }
-
-/* ── the rainbaw edge: the card is unmistakably ours ────────────────────── */
 .swc-stripe { display: flex; height: 8px; flex: none; }
 .swc-stripe > i { flex: 1; }
 .swc-stripe > i:nth-child(1) { background: var(--nb-red,    #FF0033); }
@@ -181,127 +129,101 @@
 .swc-stripe > i:nth-child(3) { background: var(--nb-blue,   #2CAFFC); }
 .swc-stripe > i:nth-child(4) { background: var(--nb-yellow, #FFF93E); }
 .swc-stripe > i:nth-child(5) { background: var(--nb-pink,   #FF77E4); }
-
 .swc-body { padding: 20px 22px 22px; overflow-y: auto; min-height: 0; }
-
-/* ── the deco ───────────────────────────────────────────────────────────
-   privacy-deco.png from SWFT-Deco, because this card is a privacy notice.
-   In the corner it sits beside the heading at a readable size; centred it
-   gets the top of the card to itself. */
 .swc-figure { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
-.swc-figure img { width: 74px; height: auto; flex: none; }
+.swc-figure img { width: 116px; height: auto; flex: none; }
 .swc-root.is-center .swc-figure {
-  flex-direction: column; text-align: center; gap: 10px; margin-bottom: 14px;
+flex-direction: column; text-align: center; gap: 10px; margin-bottom: 14px;
 }
-.swc-root.is-center .swc-figure img { width: 132px; }
-
+.swc-root.is-center .swc-figure img { width: 190px; }
 .swc-title {
-  font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; line-height: 1.12;
-  font-size: 21px; letter-spacing: -.01em;
+font-family: var(--nb-font-head, 'Syne', sans-serif);
+font-weight: 700; line-height: 1.12;
+font-size: 21px; letter-spacing: -.01em;
 }
 .swc-root.is-center .swc-title { font-size: 27px; }
-
 .swc-text {
-  font-size: 14.5px; line-height: 1.55;
-  color: var(--nb-fg-muted, #4A4A4A);
+font-size: 14.5px; line-height: 1.55;
+color: var(--nb-fg-muted, #4A4A4A);
 }
 .swc-root.is-center .swc-text { font-size: 15.5px; text-align: center; }
-
 .swc-links {
-  display: flex; flex-wrap: wrap; gap: 6px 16px;
-  margin-top: 14px;
+display: flex; flex-wrap: wrap; gap: 6px 16px;
+margin-top: 14px;
 }
 .swc-root.is-center .swc-links { justify-content: center; }
 .swc-links a {
-  font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; font-size: 13.5px;
-  color: var(--nb-fg, #000);
-  border-bottom: 2px solid var(--nb-yellow, #FFF93E);
-  padding-bottom: 1px;
-  transition: border-color .14s;
+font-family: var(--nb-font-head, 'Syne', sans-serif);
+font-weight: 700; font-size: 13.5px;
+color: var(--nb-fg, #000);
+border-bottom: 2px solid var(--nb-yellow, #FFF93E);
+padding-bottom: 1px;
+transition: border-color .14s;
 }
 .swc-links a:hover { border-bottom-color: currentColor; }
-
-/* ── actions ───────────────────────────────────────────────────────────── */
 .swc-actions {
-  display: flex; flex-direction: column; gap: 9px;
-  margin-top: 18px;
+display: flex; flex-direction: column; gap: 9px;
+margin-top: 18px;
 }
 .swc-actions-row { display: flex; gap: 9px; }
 .swc-actions-row > * { flex: 1; min-width: 0; }
 .swc-root.is-center .swc-actions { margin-top: 20px; }
-
-/* The corner card is deliberately narrow, and two buttons side by side inside
-   it clip the second label. Stack them there — full width, same size, one
-   directly under the other, so "Necessary only" stays exactly as easy to
-   reach as "Accept". The centred card is wide enough to keep the row. */
 .swc-root.is-corner .swc-actions-row { flex-direction: column; }
-
-/* "Manage" stays a plain, legible control — a legally required choice is
-   never a whisper next to the Accept button. */
 .swc-manage {
-  align-self: center;
-  font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; font-size: 13px;
-  color: var(--nb-fg-muted, #4A4A4A);
-  text-decoration: underline; text-underline-offset: 3px;
-  padding: 6px 4px;
+align-self: center;
+font-family: var(--nb-font-head, 'Syne', sans-serif);
+font-weight: 700; font-size: 13px;
+color: var(--nb-fg-muted, #4A4A4A);
+text-decoration: underline; text-underline-offset: 3px;
+padding: 6px 4px;
 }
 .swc-manage:hover { color: var(--nb-fg, #000); }
-
-/* ── preferences panel ─────────────────────────────────────────────────── */
 .swc-prefs { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
 .swc-prefs[hidden] { display: none; }
 .swc-pref {
-  display: flex; align-items: flex-start; gap: 12px;
-  border: var(--nb-bd-thin, 2px solid #000);
-  border-radius: var(--nb-r-sm, 10px);
-  padding: 12px 14px;
-  background: var(--nb-surface-2, #F4F4EF);
-  text-align: left;
+display: flex; align-items: flex-start; gap: 12px;
+border: var(--nb-bd-thin, 2px solid #000);
+border-radius: var(--nb-r-sm, 10px);
+padding: 12px 14px;
+background: var(--nb-surface-2, #F4F4EF);
+text-align: left;
 }
 .swc-pref-main { flex: 1; min-width: 0; }
 .swc-pref-name {
-  font-family: var(--nb-font-head, 'Syne', sans-serif);
-  font-weight: 700; font-size: 14px;
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+font-family: var(--nb-font-head, 'Syne', sans-serif);
+font-weight: 700; font-size: 14px;
+display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
 }
 .swc-pref-desc { font-size: 13px; color: var(--nb-fg-muted, #4A4A4A); margin-top: 3px; }
 .swc-pref-lock {
-  font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
-  background: var(--nb-ink, #000); color: #fff;
-  border-radius: 5px; padding: 2px 7px;
+font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+background: var(--nb-ink, #000); color: #fff;
+border-radius: 5px; padding: 2px 7px;
 }
-/* Black on a dark panel is a hole, not a chip. It inverts so the label stays
-   as readable as the row it is labelling. */
 .swc-root[data-nb="dark"] .swc-pref-lock { background: #FFFFFF; color: #000; }
-
-/* ── mobile: a bottom sheet, not a shrunken desktop card ────────────────── */
 @media (max-width: 720px) {
-  .swc-root.is-corner .swc-card {
-    left: 12px; right: 12px; bottom: 12px;
-    width: auto; max-width: none;
-    animation-name: swcInSheet;
-  }
-  @keyframes swcInSheet { from { opacity: 0; transform: translateY(24px); } }
-  .swc-figure img { width: 58px; }
-  .swc-root.is-center .swc-card {
-    top: auto; bottom: 0; left: 0;
-    transform: none;
-    --swc-rest: translate(0, 0);
-    width: 100%; max-width: none;
-    max-height: 88dvh;
-    border-radius: var(--nb-r, 18px) var(--nb-r, 18px) 0 0;
-    border-bottom: 0;
-    animation-name: swcInSheet;
-  }
-  .swc-root.is-center .swc-figure img { width: 104px; }
-  .swc-actions-row { flex-direction: column; }
+.swc-root.is-corner .swc-card {
+left: 12px; right: 12px; bottom: 12px;
+width: auto; max-width: none;
+animation-name: swcInSheet;
 }
-
+@keyframes swcInSheet { from { opacity: 0; transform: translateY(24px); } }
+.swc-figure img { width: 96px; }
+.swc-root.is-center .swc-card {
+top: auto; bottom: 0; left: 0;
+transform: none;
+--swc-rest: translate(0, 0);
+width: 100%; max-width: none;
+max-height: 88dvh;
+border-radius: var(--nb-r, 18px) var(--nb-r, 18px) 0 0;
+border-bottom: 0;
+animation-name: swcInSheet;
+}
+.swc-root.is-center .swc-figure img { width: 150px; }
+.swc-actions-row { flex-direction: column; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .swc-card, .swc-root.is-leaving .swc-card, .swc-root.is-done .swc-card { animation: none !important; }
-  .swc-backdrop { transition: none; }
-  .swc-root.is-done { display: none; }
+.swc-card, .swc-root.is-leaving .swc-card, .swc-root.is-done .swc-card { animation: none !important; }
+.swc-backdrop { transition: none; }
+.swc-root.is-done { display: none; }
 }
