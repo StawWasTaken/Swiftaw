@@ -162,6 +162,163 @@
 
 .hidden { display: none !important; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
+
+body.is-app .acc-wrap { display: block; place-items: initial; padding-top: clamp(24px, 4vw, 44px); }
+body.is-app .acc-col { max-width: var(--nb-max); margin: 0 auto; }
+body.is-app .acc-stamp { display: none; }
+body.is-app .acc-deco { display: none; }
+body.is-app .acc-col > .acc-card { display: none; }
+
+.app-head { display: flex; align-items: center; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
+.app-head .big {
+  width: 62px; height: 62px; border-radius: 50%; flex: none;
+  background: var(--nb-surface-2) center / cover;
+  border: var(--nb-bd); box-shadow: var(--nb-sh-sm);
+}
+.app-head .who { min-width: 0; }
+.app-head .who .n { font-family: var(--nb-font-head); font-weight: 700; font-size: clamp(22px, 2.6vw, 30px); letter-spacing: -.02em; overflow-wrap: anywhere; }
+.app-head .who .e { font-size: 14px; color: var(--nb-fg-muted); overflow-wrap: anywhere; }
+.app-head .sp { flex: 1; }
+.app-staff {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 5px 11px; border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+  background: var(--nb-yellow); color: var(--nb-ink);
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 11.5px;
+  letter-spacing: .08em; text-transform: uppercase;
+}
+
+.app-shell { display: grid; gap: 20px; grid-template-columns: 236px minmax(0, 1fr); align-items: start; }
+@media (max-width: 900px) { .app-shell { grid-template-columns: 1fr; } }
+
+.app-rail { position: sticky; top: 88px; display: grid; gap: 6px; }
+@media (max-width: 900px) {
+  .app-rail { position: static; grid-auto-flow: column; grid-auto-columns: max-content; overflow-x: auto; padding-bottom: 6px; }
+}
+.app-tab {
+  display: flex; align-items: center; gap: 11px; width: 100%;
+  padding: 11px 14px; text-align: left; cursor: pointer;
+  background: transparent; color: var(--nb-fg);
+  border: var(--nb-bd-thin); border-color: transparent;
+  border-radius: var(--nb-r-pill);
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 14.5px;
+  transition: background var(--nb-fast), border-color var(--nb-fast), transform var(--nb-fast);
+}
+.app-tab:hover { background: var(--nb-surface-2); border-color: var(--nb-line); transform: translateX(2px); }
+.app-tab.on { background: var(--nb-yellow); color: var(--nb-ink); border-color: var(--nb-ink); box-shadow: var(--nb-sh-sm); }
+.app-tab svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
+.app-tab .pip {
+  margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px;
+  display: grid; place-items: center; border-radius: var(--nb-r-pill);
+  background: var(--nb-red); color: #FFFFFF; font-size: 11.5px; line-height: 1;
+}
+.app-tab.on .pip { background: var(--nb-ink); }
+.app-tab .pip[hidden] { display: none; }
+
+.app-pane { min-width: 0; }
+.app-pane[hidden] { display: none; }
+.app-panel { padding: clamp(20px, 2.6vw, 30px); }
+.app-panel + .app-panel { margin-top: 16px; }
+.app-panel h2 { margin: 0 0 6px; font-size: 20px; }
+.app-panel .sub { margin: 0 0 20px; font-size: 14px; line-height: 1.6; color: var(--nb-fg-muted); }
+
+.app-tiles { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 700px) { .app-tiles { grid-template-columns: 1fr; } }
+.app-tile { padding: 16px 18px; background: var(--nb-bg); border: var(--nb-bd-thin); border-radius: var(--nb-r-sm); }
+.app-tile dt { margin: 0 0 6px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-family: var(--nb-font-head); font-weight: 700; color: var(--nb-fg-muted); }
+.app-tile dd { margin: 0; font-family: var(--nb-font-head); font-weight: 700; font-size: 16px; overflow-wrap: anywhere; }
+
+.app-links { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 620px) { .app-links { grid-template-columns: 1fr; } }
+.app-link {
+  display: flex; align-items: center; gap: 12px; padding: 13px 15px;
+  background: var(--nb-bg); border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  transition: border-color var(--nb-fast), transform var(--nb-fast);
+}
+.app-link:hover { border-color: var(--nb-yellow); transform: translateY(-1px); }
+.app-link img { width: 30px; height: 30px; flex: none; object-fit: contain; border-radius: 8px; }
+.app-link b { display: block; font-family: var(--nb-font-head); font-weight: 700; font-size: 14.5px; }
+.app-link span { display: block; font-size: 12.5px; color: var(--nb-fg-muted); }
+
+.ib-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.ib-filter {
+  padding: 7px 13px; cursor: pointer;
+  background: transparent; color: var(--nb-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px;
+  transition: background var(--nb-fast), border-color var(--nb-fast);
+}
+.ib-filter:hover { background: var(--nb-surface-2); }
+.ib-filter.on { background: var(--nb-yellow); color: var(--nb-ink); border-color: var(--nb-ink); }
+.ib-bar .sp { flex: 1; }
+
+.ib-list { display: grid; gap: 10px; }
+.ib-row {
+  display: grid; gap: 4px; width: 100%; text-align: left; cursor: pointer;
+  padding: 14px 16px;
+  background: var(--nb-bg); color: var(--nb-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  transition: border-color var(--nb-fast), transform var(--nb-fast);
+}
+.ib-row:hover { border-color: var(--nb-yellow); transform: translateX(2px); }
+.ib-row.is-unread { border-color: var(--nb-yellow); }
+.ib-row-t { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.ib-row-t b { font-family: var(--nb-font-head); font-weight: 700; font-size: 15px; overflow-wrap: anywhere; }
+.ib-row-m { font-size: 12.5px; color: var(--nb-fg-muted); display: flex; gap: 9px; flex-wrap: wrap; }
+.ib-row-m code { font-family: var(--nb-font-mono); }
+.ib-row-m span + span::before { content: "·"; margin-right: 9px; opacity: .6; }
+.ib-th-meta span + span::before { content: "·"; margin-right: 10px; opacity: .6; }
+.ib-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--nb-yellow); flex: none; }
+
+.ib-chip {
+  display: inline-flex; align-items: center; padding: 3px 9px;
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 10.5px;
+  letter-spacing: .08em; text-transform: uppercase;
+}
+.ib-chip.is-open     { background: var(--nb-blue);  color: var(--nb-ink); }
+.ib-chip.is-answered { background: var(--nb-green); color: var(--nb-ink); }
+.ib-chip.is-closed   { background: var(--nb-surface-2); color: var(--nb-fg-muted); }
+
+.ib-back { margin-bottom: 16px; }
+.ib-th-head { display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; margin-bottom: 6px; }
+.ib-th-head h3 { margin: 0; font-size: 20px; overflow-wrap: anywhere; flex: 1; min-width: 200px; }
+.ib-th-meta { font-size: 12.5px; color: var(--nb-fg-muted); margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+.ib-th-meta code { font-family: var(--nb-font-mono); }
+
+.ib-msgs { display: grid; gap: 12px; margin-bottom: 20px; }
+.ib-msg { padding: 15px 17px; border: var(--nb-bd-thin); border-radius: var(--nb-r-sm); background: var(--nb-bg); }
+.ib-msg.is-staff { background: var(--nb-surface-2); border-color: var(--nb-yellow); }
+.ib-msg-h { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.ib-msg-h b { font-family: var(--nb-font-head); font-weight: 700; font-size: 14px; }
+.ib-msg-h span { font-size: 12px; color: var(--nb-fg-muted); }
+.ib-msg p { margin: 0; font-size: 14.5px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.ib-reply textarea {
+  width: 100%; display: block; min-height: 120px; resize: vertical;
+  background: var(--nb-bg); color: var(--nb-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  padding: 13px 15px; font-family: var(--nb-font-body); font-size: 15px; line-height: 1.55;
+}
+.ib-reply textarea:focus { outline: 0; border-color: var(--nb-yellow); box-shadow: var(--nb-sh-sm); }
+.ib-reply-acts { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+
+.ib-empty { text-align: center; padding: 34px 20px; }
+.ib-empty p { margin: 0 0 18px; font-size: 15px; color: var(--nb-fg-muted); }
+.ib-busy { display: flex; align-items: center; gap: 11px; padding: 24px 0; color: var(--nb-fg-muted); font-size: 14px; }
+.ib-busy .nb-loader { --nb-loader-size: 22px; --nb-loader-w: 3px; }
+
+.app-msg { margin-top: 14px; font-size: 14px; }
+.app-msg.ok  { color: var(--nb-green); }
+.app-msg.err { color: var(--nb-red); }
+.app-msg[hidden] { display: none; }
+
+.app-danger { border-color: var(--nb-red); }
+
+.ib-busy[hidden] { display: none; }
+.ib-reply[hidden] { display: none; }
+button.app-link { width: 100%; text-align: left; font: inherit; color: var(--nb-fg); cursor: pointer; }
+button.app-link.is-cur { border-color: var(--nb-yellow); }
+.app-link .ph { width: 30px; height: 30px; flex: none; border-radius: 8px; background: var(--nb-surface-2); border: var(--nb-bd-thin); }
 </style>
 </head>
 <body>
@@ -302,25 +459,166 @@
         <div class="acc-foot">One Swiftaw account works across the Swiftaw site and Lifecheck.</div>
       </div>
 
-      <div id="viewSettings" class="hidden">
-        <div class="set-head">
-          <div class="big" id="setBig"></div>
-          <div class="who"><div class="n" id="setName">username</div><div class="e" id="setEmail">email</div></div>
+    </div>
+
+    <div id="viewApp" class="hidden">
+      <div class="app-head">
+        <div class="big" id="setBig"></div>
+        <div class="who">
+          <div class="n" id="setName">username</div>
+          <div class="e" id="setEmail">email</div>
         </div>
-
-        <div class="fld">
-          <label for="setUsername">Username</label>
-          <input type="text" id="setUsername" maxlength="24" autocomplete="username">
-          <div class="hint" id="setUnameHint"></div>
-        </div>
-
-        <div class="set-title">Avatar</div>
-        <div id="settingsPicker"></div>
-
-        <button type="button" class="nb-btn nb-btn--primary nb-btn--lg nb-btn--block acc-submit" id="saveSettings" style="margin-top:18px;">Save changes</button>
-        <div class="acc-msg" id="setMsg"></div>
-        <div class="acc-foot"><a href="/" id="doneLink">← Back to Swiftaw</a></div>
+        <span class="sp"></span>
+        <span class="app-staff" id="appStaff" hidden>Swiftaw staff</span>
       </div>
+
+      <div class="app-shell">
+        <div class="app-rail" role="tablist" aria-label="Account sections">
+          <button type="button" class="app-tab on" data-pane="home" role="tab" aria-selected="true">
+            <svg viewBox="0 0 576 512" aria-hidden="true"><path d="M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 .7 160.2c0 2.7-.2 5.4-.5 8.1l0 16.2c0 22.1-17.9 40-40 40l-16 0c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1L416 512l-24 0c-22.1 0-40-17.9-40-40l0-24 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64 0 24c0 22.1-17.9 40-40 40l-24 0-31.9 0c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2l-16 0c-22.1 0-40-17.9-40-40l0-112c0-.9 0-1.9 .1-2.8l0-69.7-32 0c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg>
+            Overview
+          </button>
+          <button type="button" class="app-tab" data-pane="inbox" role="tab" aria-selected="false">
+            <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M215 68.2L126.5 160 288 160l0-64c0-17.7 14.3-32 32-32l64.5 0L296 160l88.5 0c17.7 0 32 14.3 32 32l0 0zM0 336c0 44.2 35.8 80 80 80l352 0c44.2 0 80-35.8 80-80l0-112-107.3 0-25 62.4c-4.9 12.2-16.7 20.2-29.7 20.2l-88 0c-13.1 0-24.8-7.9-29.7-20.2l-25-62.4L0 224 0 336zM64 128c-11.7 0-22.4 6.4-28 16.6L1.7 208 128 208c13.1 0 24.8 7.9 29.7 20.2l25 62.4 74.5 0 25-62.4c4.9-12.2 16.7-20.2 29.7-20.2l126.3 0-34.3-63.4C424.4 134.4 413.7 128 402 128L64 128z"/></svg>
+            Inbox
+            <span class="pip" id="ibPip" hidden>0</span>
+          </button>
+          <button type="button" class="app-tab" data-pane="profile" role="tab" aria-selected="false">
+            <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M224 256a128 128 0 1 0 0-256 128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3 0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/></svg>
+            Profile
+          </button>
+          <button type="button" class="app-tab" data-pane="security" role="tab" aria-selected="false">
+            <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M144 144l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192l0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0z"/></svg>
+            Security
+          </button>
+          <button type="button" class="app-tab" data-pane="data" role="tab" aria-selected="false">
+            <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M448 80l0 48c0 44.2-100.3 80-224 80S0 172.2 0 128L0 80C0 35.8 100.3 0 224 0S448 35.8 448 80zM393.2 214.7c20.8-7.4 39.9-16.9 54.8-28.6L448 288c0 44.2-100.3 80-224 80S0 332.2 0 288L0 186.1c14.9 11.8 34 21.2 54.8 28.6C99.7 230.7 159.5 240 224 240s124.3-9.3 169.2-25.3zM448 346.1L448 432c0 44.2-100.3 80-224 80S0 476.2 0 432l0-85.9c14.9 11.8 34 21.2 54.8 28.6C99.7 390.7 159.5 400 224 400s124.3-9.3 169.2-25.3c20.8-7.4 39.9-16.9 54.8-28.6z"/></svg>
+            Your data
+          </button>
+        </div>
+
+        <div class="app-pane" id="pane-home">
+          <div class="acc-card nb-card app-panel">
+            <h2 class="nb-h4">Your Swiftaw account</h2>
+            <p class="sub">One account for this site, Lifecheck and the tickets you open with us.</p>
+            <dl class="app-tiles">
+              <div class="app-tile"><dt>Swiftaw ID</dt><dd id="tileId">-</dd></div>
+              <div class="app-tile"><dt>Email</dt><dd id="tileEmail">-</dd></div>
+              <div class="app-tile"><dt>With us since</dt><dd id="tileSince">-</dd></div>
+            </dl>
+          </div>
+
+          <div class="acc-card nb-card app-panel">
+            <h2 class="nb-h4">Where this account works</h2>
+            <p class="sub">Fortized keeps its own log-in. That is on purpose, and it is not changing here.</p>
+            <div class="app-links">
+              <a class="app-link" href="/lifecheck/"><img src="/product-logos/Lifecheck%20icon.png" alt=""><span><b>Lifecheck</b><span>Your keys and your domains</span></span></a>
+              <a class="app-link" href="/contact"><img src="/SwiftawLogo.png" alt=""><span><b>Open a ticket</b><span>The answer lands in your inbox</span></span></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-pane" id="pane-inbox" hidden>
+          <div class="acc-card nb-card app-panel">
+            <div id="ibListView">
+              <h2 class="nb-h4" id="ibTitle">Inbox</h2>
+              <p class="sub" id="ibSub">Tickets you have opened, and what we said back.</p>
+              <div class="ib-bar" id="ibBar">
+                <button type="button" class="ib-filter on" data-f="all">All</button>
+                <button type="button" class="ib-filter" data-f="open">Waiting</button>
+                <button type="button" class="ib-filter" data-f="answered">Answered</button>
+                <button type="button" class="ib-filter" data-f="closed">Closed</button>
+                <span class="sp"></span>
+                <button type="button" class="nb-btn nb-btn--sm" id="ibRefresh">Refresh</button>
+              </div>
+              <div class="ib-busy" id="ibBusy"><span class="nb-loader" aria-hidden="true"></span> Loading your tickets</div>
+              <div class="ib-list" id="ibList"></div>
+              <div class="ib-empty" id="ibEmpty" hidden>
+                <p id="ibEmptyTxt">Nothing here yet.</p>
+                <a class="nb-btn nb-btn--primary" href="/contact" id="ibEmptyCta">Open a ticket</a>
+              </div>
+            </div>
+
+            <div id="ibThreadView" hidden>
+              <button type="button" class="nb-btn nb-btn--sm ib-back" id="ibBack">Back to the list</button>
+              <div class="ib-th-head">
+                <h3 class="nb-h4" id="ibThTitle">-</h3>
+                <span class="ib-chip is-open" id="ibThChip">Open</span>
+              </div>
+              <div class="ib-th-meta" id="ibThMeta"></div>
+              <div class="ib-msgs" id="ibThMsgs"></div>
+              <div class="ib-reply" id="ibReply">
+                <textarea id="ibReplyBody" maxlength="8000" placeholder="Write your reply"></textarea>
+                <div class="ib-reply-acts">
+                  <button type="button" class="nb-btn nb-btn--primary" id="ibSend">Send reply</button>
+                  <span class="ib-busy" id="ibSendBusy" hidden><span class="nb-loader" aria-hidden="true"></span> Sending</span>
+                </div>
+              </div>
+              <div class="ib-reply-acts">
+                <button type="button" class="nb-btn nb-btn--sm" id="ibClose">Close this ticket</button>
+              </div>
+              <p class="app-msg err" id="ibThMsg" hidden></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-pane" id="pane-profile" hidden>
+          <div class="acc-card nb-card app-panel">
+            <h2 class="nb-h4">Profile</h2>
+            <p class="sub">Your Swiftaw ID is how people and tickets find you. It has to be unique.</p>
+            <div class="fld">
+              <label for="setUsername">Swiftaw ID</label>
+              <input type="text" id="setUsername" maxlength="24" autocomplete="username">
+              <div class="hint" id="setUnameHint"></div>
+            </div>
+            <div class="set-title">Avatar</div>
+            <div id="settingsPicker"></div>
+            <button type="button" class="nb-btn nb-btn--primary nb-btn--lg acc-submit" id="saveSettings" style="margin-top:18px;">Save changes</button>
+            <div class="acc-msg" id="setMsg"></div>
+          </div>
+        </div>
+
+        <div class="app-pane" id="pane-security" hidden>
+          <div class="acc-card nb-card app-panel">
+            <h2 class="nb-h4">Password</h2>
+            <p class="sub">We send a link to your email address. Nobody here can read your password, so this is the only way to change it.</p>
+            <button type="button" class="nb-btn nb-btn--primary" id="secReset">Email me a reset link</button>
+            <p class="app-msg" id="secMsg" hidden></p>
+          </div>
+          <div class="acc-card nb-card app-panel">
+            <h2 class="nb-h4">This device</h2>
+            <p class="sub">Accounts you have added in this browser. Signing out removes the one you are using now.</p>
+            <div class="app-links" id="secAccounts"></div>
+            <div class="ib-reply-acts">
+              <button type="button" class="nb-btn" id="secAdd">Add another account</button>
+              <button type="button" class="nb-btn nb-btn--red" id="secOut">Sign out</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="app-pane" id="pane-data" hidden>
+          <div class="acc-card nb-card app-panel">
+            <h2 class="nb-h4">What we hold</h2>
+            <p class="sub">Short list, because it is a short list.</p>
+            <dl class="app-tiles">
+              <div class="app-tile"><dt>Account</dt><dd>Email, Swiftaw ID, avatar</dd></div>
+              <div class="app-tile"><dt>Tickets</dt><dd>What you wrote, what we replied</dd></div>
+              <div class="app-tile"><dt>On this device</dt><dd>Your session and your cookie choice</dd></div>
+            </dl>
+            <div class="ib-reply-acts">
+              <a class="nb-btn nb-btn--sm" href="/legal/privacy-policy/">Privacy Policy</a>
+              <button type="button" class="nb-btn nb-btn--sm" id="dataCookies">Change cookie choices</button>
+            </div>
+          </div>
+          <div class="acc-card nb-card app-panel app-danger">
+            <h2 class="nb-h4">Delete your account</h2>
+            <p class="sub">This removes the account and the tickets on it. It cannot be undone, so we ask through a ticket rather than a button that fires on one click.</p>
+            <a class="nb-btn nb-btn--red" href="/contact">Ask us to delete it</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="acc-foot" style="margin-top:22px;"><a href="/" id="doneLink">Back to Swiftaw</a></div>
     </div>
   </div>
 </main>
@@ -407,7 +705,6 @@
 
   var loading = document.getElementById('accLoading');
   var viewAuth = document.getElementById('viewAuth');
-  var viewSettings = document.getElementById('viewSettings');
   var msg = document.getElementById('accMsg');
   var setMsg = document.getElementById('setMsg');
   var lcToken = null;
@@ -551,20 +848,281 @@
   });
 
   var setUnameChecker = null;
-  function showSettings(user){
-    viewAuth.classList.add('hidden'); viewSettings.classList.remove('hidden');
+  var viewApp = document.getElementById('viewApp');
+  var ME = null, IS_STAFF = false;
+  var PANES = ['home', 'inbox', 'profile', 'security', 'data'];
+
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+  function fmtDay(s){ var d = new Date(s); return isNaN(d) ? '-' : d.toLocaleDateString(undefined, { day:'numeric', month:'long', year:'numeric' }); }
+  function fmtWhen(s){
+    var d = new Date(s); if(isNaN(d)) return '-';
+    var diff = Date.now() - d.getTime();
+    if(diff < 60000) return 'just now';
+    if(diff < 3600000) return Math.floor(diff / 60000) + ' min ago';
+    if(diff < 86400000) return Math.floor(diff / 3600000) + ' h ago';
+    return d.toLocaleDateString(undefined, { day:'numeric', month:'short', year:'numeric' });
+  }
+
+  function paneTo(name){
+    if(PANES.indexOf(name) < 0) name = 'home';
+    var tabs = viewApp.querySelectorAll('.app-tab');
+    for(var i = 0; i < tabs.length; i++){
+      var on = tabs[i].getAttribute('data-pane') === name;
+      tabs[i].classList.toggle('on', on);
+      tabs[i].setAttribute('aria-selected', on ? 'true' : 'false');
+    }
+    var panes = viewApp.querySelectorAll('.app-pane');
+    for(var j = 0; j < panes.length; j++) panes[j].hidden = panes[j].id !== ('pane-' + name);
+    try { history.replaceState(null, '', '#' + name); } catch(e){}
+    if(name === 'inbox'){ ibBackToList(); ibLoad(); }
+  }
+
+  viewApp.addEventListener('click', function(e){
+    var tab = e.target.closest ? e.target.closest('.app-tab') : null;
+    if(tab && viewApp.contains(tab)) paneTo(tab.getAttribute('data-pane'));
+  });
+
+  async function showApp(user){
+    ME = user;
+    document.body.classList.add('is-app');
+    viewAuth.classList.add('hidden');
+    viewApp.classList.remove('hidden');
+
     var meta = user.user_metadata || {};
-    var uname = meta.username || (user.email || '').split('@')[0];
     var av = meta.avatar_url || '';
-    document.getElementById('setName').textContent = uname;
-    document.getElementById('setEmail').textContent = user.email || '';
-    if(av) document.getElementById('setBig').style.backgroundImage = 'url(' + av + ')';
-    var un = document.getElementById('setUsername'); un.value = meta.username || '';
+    el('setName').textContent = meta.username || (user.email || '').split('@')[0];
+    el('setEmail').textContent = user.email || '';
+    if(av) el('setBig').style.backgroundImage = 'url(' + av + ')';
+    el('tileId').textContent = meta.username || 'not set yet';
+    el('tileEmail').textContent = user.email || '-';
+    el('tileSince').textContent = user.created_at ? fmtDay(user.created_at) : '-';
+
+    el('setUsername').value = meta.username || '';
     setUnameChecker = wireUsernameCheck('setUsername', 'setUnameHint', meta.username || '');
     if(!settingsPicker){ settingsPicker = AvatarPicker('settingsPicker'); }
     settingsPicker.setInitial(av);
-    document.getElementById('doneLink').setAttribute('href', safeNext());
+    el('doneLink').setAttribute('href', safeNext());
+
+    renderAccounts();
+    await readStaff();
+    var start = (location.hash || '').replace('#', '') || 'home';
+    paneTo(start);
+    if(start !== 'inbox') ibLoad();
   }
+
+  async function readStaff(){
+    try {
+      var client = window.SwiftawAccount.client();
+      var r = await client.from('profiles').select('username').eq('id', ME.id).maybeSingle();
+      IS_STAFF = !!(r && r.data && String(r.data.username || '').toLowerCase() === 'swiftaw');
+    } catch(e){ IS_STAFF = false; }
+    el('appStaff').hidden = !IS_STAFF;
+    if(IS_STAFF){
+      el('ibTitle').textContent = 'Support inbox';
+      el('ibSub').textContent = 'Every ticket opened through the contact page. What you write here lands in the other person’s inbox.';
+      el('ibEmptyTxt').textContent = 'Nothing matches this filter.';
+      el('ibEmptyCta').hidden = true;
+    }
+  }
+
+  function renderAccounts(){
+    var host = el('secAccounts');
+    var list = window.SwiftawAccount.accounts() || [];
+    host.innerHTML = list.map(function(a){
+      var cur = ME && a.id === ME.id;
+      var art = a.avatar_url ? '<img src="' + esc(a.avatar_url) + '" alt="">' : '<span class="ph"></span>';
+      return '<button type="button" class="app-link' + (cur ? ' is-cur' : '') + '" data-switch="' + esc(a.id) + '"' + (cur ? ' disabled' : '') + '>' +
+        art + '<span><b>' + esc(a.username || (a.email || '').split('@')[0]) + '</b>' +
+        '<span>' + (cur ? 'Signed in now' : 'Switch to this one') + '</span></span></button>';
+    }).join('');
+  }
+
+  el('secAccounts').addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('[data-switch]') : null;
+    if(b) window.SwiftawAccount.switchTo(b.getAttribute('data-switch'));
+  });
+  el('secAdd').addEventListener('click', function(){ window.SwiftawAccount.addAccount(); });
+  el('secOut').addEventListener('click', function(){ window.SwiftawAccount.signOut(); });
+
+  el('secReset').addEventListener('click', async function(){
+    var m = el('secMsg'); var btn = this;
+    if(!ME || !ME.email){ return; }
+    btn.disabled = true; m.hidden = true;
+    try {
+      var client = window.SwiftawAccount.client();
+      var r = await client.auth.resetPasswordForEmail(ME.email, { redirectTo: location.origin + '/account' });
+      if(r && r.error) throw r.error;
+      m.className = 'app-msg ok'; m.textContent = 'Sent. Check ' + ME.email + ' for the link.';
+    } catch(err){
+      m.className = 'app-msg err'; m.textContent = (err && err.message) || 'Could not send that right now.';
+    }
+    m.hidden = false; btn.disabled = false;
+  });
+
+  el('dataCookies').addEventListener('click', function(){
+    if(window.SwiftawConsent && window.SwiftawConsent.open) window.SwiftawConsent.open();
+  });
+
+  var REASONS = { product:'Product', service:'Service', collaboration:'Collaboration', information:'Information', press:'Press', other:'Something else' };
+  var SUBJECTS = { fortized:'Fortized', hereld:'Hereld', lifecheck:'Lifecheck', supernova:'Supernova' };
+  var STATUS = { open:'Waiting', answered:'Answered', closed:'Closed' };
+  var IB = { rows: [], filter: 'all', cur: null };
+
+  function ibUnread(t){ return IS_STAFF ? !!t.unread_staff : !!t.unread_user; }
+  function ibChip(s){ return '<span class="ib-chip is-' + esc(s) + '">' + esc(STATUS[s] || s) + '</span>'; }
+  function ibErr(text){ var m = el('ibThMsg'); m.textContent = text || ''; m.hidden = !text; }
+
+  function ibBackToList(){
+    el('ibThreadView').hidden = true;
+    el('ibListView').hidden = false;
+    IB.cur = null;
+    ibErr('');
+  }
+
+  async function ibLoad(){
+    if(!ME) return;
+    var busy = el('ibBusy');
+    busy.hidden = false;
+    el('ibEmpty').hidden = true;
+    try {
+      var client = window.SwiftawAccount.client();
+      var q = client.from('support_tickets')
+        .select('id,ref,username,reason,subject_kind,subject,title,status,created_at,last_message_at,unread_user,unread_staff')
+        .order('last_message_at', { ascending: false })
+        .limit(200);
+      if(!IS_STAFF) q = q.eq('user_id', ME.id);
+      var r = await q;
+      if(r.error) throw r.error;
+      IB.rows = r.data || [];
+    } catch(e){ IB.rows = []; }
+    busy.hidden = true;
+    ibPaint();
+    ibPip();
+  }
+
+  function ibPaint(){
+    var rows = IB.rows.filter(function(t){ return IB.filter === 'all' || t.status === IB.filter; });
+    el('ibList').innerHTML = rows.map(function(t){
+      var bits = ['<code>' + esc(t.ref) + '</code>', esc(REASONS[t.reason] || t.reason)];
+      if(t.subject) bits.push(esc(SUBJECTS[t.subject] || t.subject));
+      if(IS_STAFF) bits.push('@' + esc(t.username));
+      bits.push(esc(fmtWhen(t.last_message_at)));
+      return '<button type="button" class="ib-row' + (ibUnread(t) ? ' is-unread' : '') + '" data-id="' + esc(t.id) + '">' +
+        '<span class="ib-row-t">' + (ibUnread(t) ? '<span class="ib-dot"></span>' : '') +
+        '<b>' + esc(t.title) + '</b>' + ibChip(t.status) + '</span>' +
+        '<span class="ib-row-m">' + bits.map(function(b){ return '<span>' + b + '</span>'; }).join('') + '</span>' +
+        '</button>';
+    }).join('');
+    el('ibEmpty').hidden = rows.length > 0;
+  }
+
+  function ibPip(){
+    var n = 0;
+    for(var i = 0; i < IB.rows.length; i++) if(ibUnread(IB.rows[i])) n++;
+    var pip = el('ibPip');
+    pip.textContent = n > 9 ? '9+' : String(n);
+    pip.hidden = n === 0;
+  }
+
+  el('ibBar').addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('.ib-filter') : null;
+    if(!b) return;
+    IB.filter = b.getAttribute('data-f');
+    var all = this.querySelectorAll('.ib-filter');
+    for(var i = 0; i < all.length; i++) all[i].classList.toggle('on', all[i] === b);
+    ibPaint();
+  });
+  el('ibRefresh').addEventListener('click', function(){ ibLoad(); });
+  el('ibBack').addEventListener('click', ibBackToList);
+  el('ibList').addEventListener('click', function(e){
+    var b = e.target.closest ? e.target.closest('.ib-row') : null;
+    if(b) ibOpen(b.getAttribute('data-id'));
+  });
+
+  async function ibOpen(id){
+    var t = null;
+    for(var i = 0; i < IB.rows.length; i++) if(IB.rows[i].id === id) t = IB.rows[i];
+    if(!t) return;
+    IB.cur = t;
+    ibErr('');
+    el('ibListView').hidden = true;
+    el('ibThreadView').hidden = false;
+    el('ibThTitle').textContent = t.title;
+    var chip = el('ibThChip');
+    chip.className = 'ib-chip is-' + t.status;
+    chip.textContent = STATUS[t.status] || t.status;
+
+    var meta = ['<code>' + esc(t.ref) + '</code>', esc(REASONS[t.reason] || t.reason)];
+    if(t.subject) meta.push(esc(SUBJECTS[t.subject] || t.subject));
+    meta.push('Opened ' + esc(fmtDay(t.created_at)));
+    if(IS_STAFF) meta.push('by @' + esc(t.username));
+    el('ibThMeta').innerHTML = meta.map(function(m){ return '<span>' + m + '</span>'; }).join('');
+
+    var closed = t.status === 'closed';
+    el('ibReply').hidden = closed;
+    el('ibClose').textContent = closed ? 'Reopen this ticket' : 'Close this ticket';
+
+    var host = el('ibThMsgs');
+    host.innerHTML = '<div class="ib-busy"><span class="nb-loader" aria-hidden="true"></span> Loading the thread</div>';
+    try {
+      var client = window.SwiftawAccount.client();
+      var r = await client.from('support_messages')
+        .select('id,from_staff,body,created_at')
+        .eq('ticket_id', id)
+        .order('created_at', { ascending: true });
+      if(r.error) throw r.error;
+      host.innerHTML = (r.data || []).map(function(m){
+        var who = m.from_staff ? 'Swiftaw' : '@' + esc(t.username);
+        return '<div class="ib-msg' + (m.from_staff ? ' is-staff' : '') + '">' +
+          '<div class="ib-msg-h"><b>' + who + '</b><span>' + esc(fmtWhen(m.created_at)) + '</span></div>' +
+          '<p>' + esc(m.body) + '</p></div>';
+      }).join('');
+      if(ibUnread(t)){
+        try { await client.rpc('support_mark_read', { p_ticket: id }); } catch(e){}
+        if(IS_STAFF) t.unread_staff = false; else t.unread_user = false;
+        ibPaint(); ibPip();
+      }
+    } catch(err){
+      host.innerHTML = '';
+      ibErr((err && err.message) || 'Could not load that ticket.');
+    }
+  }
+
+  el('ibSend').addEventListener('click', async function(){
+    if(!IB.cur) return;
+    var ta = el('ibReplyBody');
+    var body = ta.value.trim();
+    if(!body){ ibErr('Write something first.'); return; }
+    var btn = this, busy = el('ibSendBusy');
+    btn.disabled = true; busy.hidden = false; ibErr('');
+    var id = IB.cur.id;
+    try {
+      var client = window.SwiftawAccount.client();
+      var r = await client.rpc('support_reply', { p_ticket: id, p_body: body });
+      if(r.error) throw r.error;
+      ta.value = '';
+      await ibLoad();
+      await ibOpen(id);
+    } catch(err){ ibErr((err && err.message) || 'Could not send that.'); }
+    btn.disabled = false; busy.hidden = true;
+  });
+
+  el('ibClose').addEventListener('click', async function(){
+    if(!IB.cur) return;
+    var id = IB.cur.id;
+    var next = IB.cur.status === 'closed' ? 'open' : 'closed';
+    var btn = this;
+    btn.disabled = true; ibErr('');
+    try {
+      var client = window.SwiftawAccount.client();
+      var r = await client.rpc('support_set_status', { p_ticket: id, p_status: next });
+      if(r.error) throw r.error;
+      await ibLoad();
+      await ibOpen(id);
+    } catch(err){ ibErr((err && err.message) || 'Could not change that.'); }
+    btn.disabled = false;
+  });
 
   document.getElementById('saveSettings').addEventListener('click', async function(){
     var client = window.SwiftawAccount.client();
@@ -587,7 +1145,7 @@
       try { await client.from('profiles').update(data).eq('id', user.id); } catch(pe){}
       setMsg.className = 'acc-msg show ok'; setMsg.textContent = 'Saved.';
       var u2 = window.SwiftawAccount.user();
-      showSettings(u2 || user);
+      showApp(u2 || user);
     } catch(err){ setMsg.className = 'acc-msg show err'; setMsg.textContent = (err && err.message) || 'Could not save.'; }
     finally { btn.disabled = false; }
   });
@@ -597,7 +1155,7 @@
     signupPicker = AvatarPicker('signupPicker');
     var user = window.SwiftawAccount.user();
     if(user && !addMode && (view === 'settings' || !qs.has('next'))){
-      showSettings(user);
+      showApp(user);
       return;
     }
     if(user && !addMode && qs.has('next')){ location.href = safeNext(); return; }
