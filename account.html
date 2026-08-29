@@ -293,6 +293,30 @@ body.is-app .acc-col > .acc-card { display: none; }
 .ib-msg-h span { font-size: 12px; color: var(--nb-fg-muted); }
 .ib-msg p { margin: 0; font-size: 14.5px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
 
+.ib-av {
+  flex: none; width: 30px; height: 30px; border-radius: 9px;
+  background: var(--nb-surface-2) center / cover no-repeat;
+  border: var(--nb-bd-thin); box-shadow: var(--nb-sh-sm);
+  display: grid; place-items: center; overflow: hidden;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px;
+  color: var(--nb-ink);
+}
+.ib-av.is-init { background: var(--nb-yellow); }
+.ib-av.is-mark { background: var(--nb-ink) center / auto 62% no-repeat; }
+.ib-row-t .ib-av { width: 26px; height: 26px; border-radius: 8px; font-size: 12px; }
+.ib-msg-h { align-items: center; }
+.ib-msg-h .ib-av {
+  width: 26px; height: 26px; border-radius: 8px;
+  font-size: 12px; color: var(--nb-ink);
+}
+.ib-msg-h .ib-auto {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: var(--nb-r-pill);
+  border: var(--nb-bd-thin); background: var(--nb-surface-2); color: var(--nb-fg-muted);
+}
+.ib-msg.is-auto { background: var(--nb-bg); border-color: var(--nb-line); }
+
 .ib-reply textarea {
   width: 100%; display: block; min-height: 120px; resize: vertical;
   background: var(--nb-bg); color: var(--nb-fg);
@@ -336,15 +360,60 @@ button.app-link.is-cur { border-color: var(--nb-yellow); }
 .tf-busy[hidden] { display: none; }
 .tf-busy .nb-loader { --nb-loader-size: 18px; --nb-loader-w: 3px; }
 
+.tf-picks { display: grid; gap: 14px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 18px; }
+@media (max-width: 640px) { .tf-picks { grid-template-columns: 1fr; } }
+.tf-pick {
+  display: block; width: 100%; text-align: left; padding: 17px 18px;
+  background: var(--nb-bg); color: var(--nb-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r-sm); box-shadow: var(--nb-sh);
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast), background var(--nb-fast);
+}
+.tf-pick:hover { transform: translate(-2px, -3px); box-shadow: var(--nb-sh-lg); background: var(--nb-surface-2); }
+.tf-pick:active { transform: translate(3px, 4px); box-shadow: var(--nb-sh-press); }
+.tf-pick[disabled] { opacity: .55; box-shadow: var(--nb-sh-sm); transform: none; cursor: not-allowed; }
+.tf-pick b { display: block; font-family: var(--nb-font-head); font-weight: 700; font-size: 15.5px; margin-bottom: 5px; }
+.tf-pick span { display: block; font-size: 13.5px; line-height: 1.55; color: var(--nb-fg-muted); }
+.tf-pick i {
+  display: inline-block; font-style: normal; margin-bottom: 11px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: var(--nb-r-pill);
+  border: var(--nb-bd-thin); background: var(--nb-yellow); color: var(--nb-ink);
+}
+.tf-pick.tf-pick--dev i { background: var(--nb-blue); }
+
 .tf-enrol { display: grid; gap: 22px; grid-template-columns: 196px minmax(0, 1fr); align-items: start; margin-top: 18px; }
 @media (max-width: 640px) { .tf-enrol { grid-template-columns: 1fr; } }
 
 .tf-qr {
-  display: grid; place-items: center; padding: 12px;
+  position: relative; display: grid; place-items: center; padding: 12px;
   background: #FFFFFF; border: var(--nb-bd); border-radius: var(--nb-r-sm);
   box-shadow: var(--nb-sh); min-height: 172px;
 }
 .tf-qr img, .tf-qr svg { width: 100%; height: auto; display: block; }
+
+.tf-qr-badge {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 21%; aspect-ratio: 1; display: grid; place-items: center;
+  background: #000000; border: 3px solid #FFFFFF; border-radius: 6px;
+}
+.tf-qr-badge img { height: 62%; width: auto; display: block; }
+.tf-qr:empty { display: none; }
+
+.tf-dev { margin-top: 18px; display: grid; gap: 14px; justify-items: start; }
+.tf-dev-box {
+  display: flex; align-items: center; gap: 14px; padding: 16px 18px;
+  background: var(--nb-bg); border: var(--nb-bd); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh);
+}
+.tf-dev-box b { font-family: var(--nb-font-head); font-weight: 700; font-size: 15px; display: block; margin-bottom: 4px; }
+.tf-dev-box p { margin: 0; font-size: 13.5px; color: var(--nb-fg-muted); line-height: 1.55; }
+.tf-dev-key {
+  flex: none; width: 42px; height: 42px; display: grid; place-items: center;
+  background: var(--nb-blue); border: var(--nb-bd-thin); border-radius: 10px;
+  box-shadow: var(--nb-sh-sm);
+}
+.tf-dev-key svg { width: 22px; height: 22px; display: block; fill: var(--nb-ink); }
 
 .tf-hand { margin: 0 0 8px; font-size: 13px; color: var(--nb-fg-muted); }
 .tf-secret {
@@ -391,6 +460,8 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
 }
 .tf-gate-n.is-done i { background: var(--nb-green); }
 .tf-gate-b { padding: 8px 0 16px 37px; }
+
+#tfKillDev[hidden], #tfKillCode[hidden] { display: none; }
 </style>
 </head>
 <body>
@@ -477,9 +548,9 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
         <div class="acc-head">
           <img class="acc-logo" src="/SWFTW_Logomark.png" alt="Swiftaw">
           <h1>One more step.</h1>
-          <p>Open your authenticator app and type the six digits it shows for Swiftaw.</p>
+          <p id="mfaKicker">Open your authenticator app and type the six digits it shows for Swiftaw.</p>
         </div>
-        <div class="fld">
+        <div class="fld" id="mfaCodeFld">
           <label for="mfaCode">The six digits</label>
           <input class="tf-code" id="mfaCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
         </div>
@@ -683,10 +754,22 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
             </div>
 
             <div class="tf-step" id="tfOff" hidden>
-              <p class="sub">A code from an app on your phone, on top of your password. If someone learns your password they still cannot get in.</p>
+              <p class="sub">Something on top of your password. If someone learns the password they still cannot get in. Pick whichever you will actually have on you.</p>
+              <div class="tf-picks">
+                <button type="button" class="tf-pick" id="tfStart">
+                  <i>Phone</i>
+                  <b>An app on your phone</b>
+                  <span>Scan a code once. The app then gives you six digits that change every thirty seconds. Works with any authenticator.</span>
+                </button>
+                <button type="button" class="tf-pick tf-pick--dev" id="tfDevStart">
+                  <i>This device</i>
+                  <b>Windows Hello or Touch ID</b>
+                  <span>Your face, fingerprint or device PIN. Nothing to type and nothing to carry, but it only works on the devices you set up.</span>
+                </button>
+              </div>
               <div class="tf-acts">
-                <button type="button" class="nb-btn nb-btn--primary" id="tfStart">Turn it on</button>
                 <span class="tf-busy" id="tfStartBusy" hidden><span class="nb-loader" aria-hidden="true"></span> Setting up</span>
+                <span class="tf-busy" id="tfDevBusy" hidden><span class="nb-loader" aria-hidden="true"></span> Ask your device</span>
               </div>
             </div>
 
@@ -725,9 +808,10 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
                 <div class="tf-gate-b">
                   <div class="tf-lc"><div id="tfLc"></div></div>
                 </div>
-                <div class="tf-gate-n" id="tfGate2"><i>2</i> Enter a current code</div>
+                <div class="tf-gate-n" id="tfGate2"><i>2</i> <span id="tfGate2T">Enter a current code</span></div>
                 <div class="tf-gate-b">
                   <input class="tf-code" id="tfKillCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
+                  <button type="button" class="nb-btn" id="tfKillDev" hidden>Confirm on this device</button>
                 </div>
               </div>
               <div class="tf-acts">
@@ -974,7 +1058,7 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
       if(mode === 'login'){
         var r = await client.auth.signInWithPassword({ email: email, password: password });
         if(r.error) throw r.error;
-        if(await mfaWanted(client)){ askForCode(); return; }
+        if(await mfaWanted(client)){ await askForCode(client); return; }
         location.href = safeNext(); return;
       }
       var username = document.getElementById('username').value.trim();
@@ -1014,27 +1098,73 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
     } catch(e){ return false; }
   }
 
-  function verifiedTotp(list){
-    var all = (list && list.totp) || [];
+  function allFactors(d){
+    if(!d) return [];
+    if(d.all && d.all.length) return d.all;
+    return (d.totp || []).concat(d.phone || [], d.webauthn || []);
+  }
+  function liveFactor(d){
+    var all = allFactors(d);
     for(var i = 0; i < all.length; i++) if(all[i].status === 'verified') return all[i];
     return null;
+  }
+  function isDeviceFactor(f){
+    return !!f && String(f.factor_type || f.factorType || '') === 'webauthn';
+  }
+
+  async function deviceAvailable(){
+    try {
+      if(!window.PublicKeyCredential) return false;
+      if(!window.isSecureContext) return false;
+      var f = PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable;
+      if(typeof f !== 'function') return false;
+      return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    } catch(e){ return false; }
+  }
+
+  function deviceTrouble(err, fallback){
+    var name = (err && err.name) || '';
+    var msg  = (err && err.message) || '';
+    if(/NotAllowed|Abort/i.test(name) || /cancel|timed out|timeout/i.test(msg)){
+      return 'The device check was cancelled, so nothing changed.';
+    }
+    if(/factor.?type|webauthn|not enabled|unsupported|disabled/i.test(msg)){
+      return 'This account cannot use the device method yet. Set up the app on your phone instead.';
+    }
+    return msg || fallback;
   }
 
   async function raiseToAal2(client, code){
     var f = await client.auth.mfa.listFactors();
     if(f.error) throw f.error;
-    var totp = verifiedTotp(f.data);
-    if(!totp) throw new Error('There is no authenticator on this account.');
-    var r = await client.auth.mfa.challengeAndVerify({ factorId: totp.id, code: code });
+    var live = liveFactor(f.data);
+    if(!live) throw new Error('There is no second step on this account.');
+    var r = isDeviceFactor(live)
+      ? await client.auth.mfa.challengeAndVerify({ factorId: live.id })
+      : await client.auth.mfa.challengeAndVerify({ factorId: live.id, code: code });
     if(r.error) throw r.error;
-    return totp;
+    return live;
   }
 
-  function askForCode(){
+  var MFA_DEV = false;
+
+  async function askForCode(client){
     viewAuth.classList.add('hidden');
     viewMfa.classList.remove('hidden');
-    var f = document.getElementById('mfaCode');
-    f.value = ''; f.focus();
+    MFA_DEV = false;
+    try {
+      var f = await client.auth.mfa.listFactors();
+      MFA_DEV = isDeviceFactor(liveFactor(f.data));
+    } catch(e){}
+    document.getElementById('mfaCodeFld').hidden = MFA_DEV;
+    document.getElementById('mfaKicker').textContent = MFA_DEV
+      ? 'Confirm it is you the way this device asks, with Windows Hello, Touch ID or a PIN.'
+      : 'Open your authenticator app and type the six digits it shows for Swiftaw.';
+    document.getElementById('mfaGo').textContent = MFA_DEV ? 'Confirm on this device' : 'Continue';
+    if(!MFA_DEV){
+      var i = document.getElementById('mfaCode');
+      i.value = ''; i.focus();
+    }
   }
 
   function digitsOnly(input){
@@ -1048,13 +1178,15 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
   document.getElementById('mfaGo').addEventListener('click', async function(){
     var m = document.getElementById('mfaMsg');
     var code = document.getElementById('mfaCode').value.trim();
-    if(code.length !== 6){ show(m, 'err', 'Six digits, please.'); return; }
+    if(!MFA_DEV && code.length !== 6){ show(m, 'err', 'Six digits, please.'); return; }
     this.disabled = true; hide(m);
     try {
       await raiseToAal2(window.SwiftawAccount.client(), code);
       location.href = safeNext();
     } catch(err){
-      show(m, 'err', (err && err.message) || 'That code did not work. Try the next one.');
+      show(m, 'err', MFA_DEV
+        ? deviceTrouble(err, 'The device did not confirm it. Try again.')
+        : ((err && err.message) || 'That code did not work. Try the next one.'));
       this.disabled = false;
     }
   });
@@ -1183,7 +1315,7 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
 
   var LC_SITEKEY = 'lc_account_public';
 
-  var tf = { pending: null, lc: null, ready: false };
+  var tf = { pending: null, lc: null, ready: false, dev: false, aal2: null };
   function tfShow(step){
     ['tfLoad','tfOff','tfEnrol','tfOn','tfKill'].forEach(function(id){ el(id).hidden = (id !== step); });
   }
@@ -1206,29 +1338,45 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
     try {
       var f = await client.auth.mfa.listFactors();
       if(f.error) throw f.error;
-      var live = verifiedTotp(f.data);
+      var live = liveFactor(f.data);
       tf.ready = true;
       if(live){
         tf.pending = null;
+        tf.dev = isDeviceFactor(live);
         tfChip(true);
+        var how = tf.dev
+          ? 'This device confirms it is you every time you sign in.'
+          : 'You will be asked for a code from your app every time you sign in.';
         el('tfOnSub').textContent = live.created_at
-          ? 'On since ' + fmtDay(live.created_at) + '. You will be asked for a code every time you sign in.'
-          : 'You will be asked for a code every time you sign in.';
+          ? 'On since ' + fmtDay(live.created_at) + '. ' + how
+          : how;
         tfShow('tfOn');
       } else {
+        tf.dev = false;
         tfChip(false);
         tfShow('tfOff');
+        tfPickable();
       }
     } catch(err){
-      tfChip(false); tfShow('tfOff');
+      tfChip(false); tfShow('tfOff'); tfPickable();
       tfSay('err', (err && err.message) || 'Could not read your security settings.');
+    }
+  }
+
+  async function tfPickable(){
+    var b = el('tfDevStart');
+    var ok = await deviceAvailable();
+    b.disabled = !ok;
+    if(!ok){
+      b.querySelector('span').textContent =
+        'This browser or this machine has no face, fingerprint or PIN to offer. Open the account here from a device that does, or use the app.';
     }
   }
 
   async function tfSweep(client){
     try {
       var f = await client.auth.mfa.listFactors();
-      var all = (f.data && f.data.totp) || [];
+      var all = allFactors(f.data);
       for(var i = 0; i < all.length; i++){
         if(all[i].status !== 'verified') await client.auth.mfa.unenroll({ factorId: all[i].id });
       }
@@ -1245,7 +1393,8 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
       tf.pending = r.data.id;
       var t = r.data.totp || {};
       el('tfQr').innerHTML = t.qr_code
-        ? '<img src="' + esc(t.qr_code) + '" alt="Setup code for your authenticator app">'
+        ? '<img src="' + esc(t.qr_code) + '" alt="Setup code for your authenticator app">' +
+          '<span class="tf-qr-badge" aria-hidden="true"><img src="/SwiftawLogo.png" alt=""></span>'
         : '';
       el('tfSecret').textContent = t.secret || '-';
       el('tfCode').value = '';
@@ -1255,6 +1404,28 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
       tfSay('err', (err && err.message) || 'Could not start the set-up.');
     }
     this.disabled = false; el('tfStartBusy').hidden = true;
+  });
+
+  el('tfDevStart').addEventListener('click', async function(){
+    var client = window.SwiftawAccount.client();
+    this.disabled = true; el('tfDevBusy').hidden = false; tfSay('', '');
+    var made = null;
+    try {
+      await tfSweep(client);
+      var r = await client.auth.mfa.enroll({ factorType: 'webauthn', friendlyName: 'Swiftaw ' + Date.now() });
+      if(r.error) throw r.error;
+      made = r.data.id;
+      var v = await client.auth.mfa.challengeAndVerify({ factorId: made });
+      if(v.error) throw v.error;
+      made = null;
+      await tfLoad();
+      tfSay('ok', 'Two-step is on. This device now vouches for you when you sign in.');
+    } catch(err){
+      if(made){ try { await client.auth.mfa.unenroll({ factorId: made }); } catch(e){} }
+      tfSay('err', deviceTrouble(err, 'Could not set that up on this device.'));
+      this.disabled = false;
+    }
+    el('tfDevBusy').hidden = true;
   });
 
   el('tfCopy').addEventListener('click', function(){
@@ -1292,10 +1463,24 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
   });
 
   function tfKillReady(){
-    var done = !!(tf.lc && el('tfKillCode').value.trim().length === 6);
-    el('tfKillGo').disabled = !done;
+    var second = tf.dev ? !!tf.aal2 : el('tfKillCode').value.trim().length === 6;
+    el('tfGate2').classList.toggle('is-done', !!(tf.dev && tf.aal2));
+    el('tfKillGo').disabled = !(tf.lc && second);
   }
   el('tfKillCode').addEventListener('input', tfKillReady);
+
+  el('tfKillDev').addEventListener('click', async function(){
+    var client = window.SwiftawAccount.client();
+    this.disabled = true; tfSay('', '');
+    try {
+      tf.aal2 = await raiseToAal2(client, '');
+      this.textContent = 'Confirmed';
+    } catch(err){
+      tfSay('err', deviceTrouble(err, 'The device did not confirm it.'));
+      this.disabled = false;
+    }
+    tfKillReady();
+  });
 
   window.onTwoStepLifecheck = function(token){
     tf.lc = token || null;
@@ -1305,9 +1490,19 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
 
   el('tfRemove').addEventListener('click', function(){
     tf.lc = null;
+    tf.aal2 = null;
     el('tfGate1').classList.remove('is-done');
+    el('tfGate2').classList.remove('is-done');
     el('tfKillCode').value = '';
     el('tfKillGo').disabled = true;
+
+    el('tfGate2T').textContent = tf.dev ? 'Confirm it is you on this device' : 'Enter a current code';
+    el('tfKillCode').hidden = tf.dev;
+    var dev = el('tfKillDev');
+    dev.hidden = !tf.dev;
+    dev.disabled = false;
+    dev.textContent = 'Confirm on this device';
+
     tfSay('', '');
     tfShow('tfKill');
     if(window.Lifecheck){
@@ -1326,13 +1521,14 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
     var client = window.SwiftawAccount.client();
     var code = el('tfKillCode').value.trim();
     if(!tf.lc){ tfSay('err', 'Finish the human check first.'); return; }
-    if(code.length !== 6){ tfSay('err', 'Six digits, please.'); return; }
+    if(tf.dev && !tf.aal2){ tfSay('err', 'Confirm on this device first.'); return; }
+    if(!tf.dev && code.length !== 6){ tfSay('err', 'Six digits, please.'); return; }
     this.disabled = true; el('tfKillBusy').hidden = false; tfSay('', '');
     try {
-      var totp = await raiseToAal2(client, code);
-      var r = await client.auth.mfa.unenroll({ factorId: totp.id });
+      var live = tf.aal2 || await raiseToAal2(client, code);
+      var r = await client.auth.mfa.unenroll({ factorId: live.id });
       if(r.error) throw r.error;
-      tf.lc = null;
+      tf.lc = null; tf.aal2 = null;
       await tfLoad();
       tfSay('ok', 'Two-step is off. Your password is the only thing standing in front of this account now.');
     } catch(err){
@@ -1352,6 +1548,13 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
   var IB = { rows: [], filter: 'all', cur: null };
 
   function ibUnread(t){ return IS_STAFF ? !!t.unread_staff : !!t.unread_user; }
+
+  function ibAv(name, url, staff){
+    if(url) return '<span class="ib-av" style="background-image:url(' + esc(url) + ')"></span>';
+    if(staff) return '<span class="ib-av is-mark" style="background-image:url(/SwiftawLogo.png)"></span>';
+    var n = String(name || 'S').trim().charAt(0).toUpperCase();
+    return '<span class="ib-av is-init">' + esc(n) + '</span>';
+  }
   function ibChip(s){ return '<span class="ib-chip is-' + esc(s) + '">' + esc(STATUS[s] || s) + '</span>'; }
   function ibErr(text){ var m = el('ibThMsg'); m.textContent = text || ''; m.hidden = !text; }
 
@@ -1369,12 +1572,7 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
     el('ibEmpty').hidden = true;
     try {
       var client = window.SwiftawAccount.client();
-      var q = client.from('support_tickets')
-        .select('id,ref,username,reason,subject_kind,subject,title,status,created_at,last_message_at,unread_user,unread_staff')
-        .order('last_message_at', { ascending: false })
-        .limit(200);
-      if(!IS_STAFF) q = q.eq('user_id', ME.id);
-      var r = await q;
+      var r = await client.rpc('support_list');
       if(r.error) throw r.error;
       IB.rows = r.data || [];
     } catch(e){ IB.rows = []; }
@@ -1392,6 +1590,7 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
       bits.push(esc(fmtWhen(t.last_message_at)));
       return '<button type="button" class="ib-row' + (ibUnread(t) ? ' is-unread' : '') + '" data-id="' + esc(t.id) + '">' +
         '<span class="ib-row-t">' + (ibUnread(t) ? '<span class="ib-dot"></span>' : '') +
+        (IS_STAFF ? ibAv(t.username, t.avatar_url, false) : '') +
         '<b>' + esc(t.title) + '</b>' + ibChip(t.status) + '</span>' +
         '<span class="ib-row-m">' + bits.map(function(b){ return '<span>' + b + '</span>'; }).join('') + '</span>' +
         '</button>';
@@ -1449,15 +1648,17 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
     host.innerHTML = '<div class="ib-busy"><span class="nb-loader" aria-hidden="true"></span> Loading the thread</div>';
     try {
       var client = window.SwiftawAccount.client();
-      var r = await client.from('support_messages')
-        .select('id,from_staff,body,created_at')
-        .eq('ticket_id', id)
-        .order('created_at', { ascending: true });
+      var r = await client.rpc('support_thread', { p_ticket: id });
       if(r.error) throw r.error;
       host.innerHTML = (r.data || []).map(function(m){
-        var who = m.from_staff ? 'Swiftaw' : '@' + esc(t.username);
-        return '<div class="ib-msg' + (m.from_staff ? ' is-staff' : '') + '">' +
-          '<div class="ib-msg-h"><b>' + who + '</b><span>' + esc(fmtWhen(m.created_at)) + '</span></div>' +
+        var name = m.username || (m.from_staff ? 'Swiftaw' : t.username);
+        var who = m.from_staff ? 'Swiftaw' : '@' + esc(name);
+        var cls = 'ib-msg' + (m.from_staff ? ' is-staff' : '') + (m.automated ? ' is-auto' : '');
+        return '<div class="' + cls + '">' +
+          '<div class="ib-msg-h">' + ibAv(name, m.avatar_url, m.from_staff) +
+          '<b>' + who + '</b>' +
+          (m.automated ? '<span class="ib-auto">Automatic</span>' : '') +
+          '<span>' + esc(fmtWhen(m.created_at)) + '</span></div>' +
           '<p>' + esc(m.body) + '</p></div>';
       }).join('');
       if(ibUnread(t)){
@@ -1537,7 +1738,7 @@ input.tf-code:focus { box-shadow: var(--nb-sh-sm); }
     signupPicker = AvatarPicker('signupPicker');
     var user = window.SwiftawAccount.user();
 
-    if(user && !addMode && await mfaWanted(window.SwiftawAccount.client())){ askForCode(); return; }
+    if(user && !addMode && await mfaWanted(window.SwiftawAccount.client())){ await askForCode(window.SwiftawAccount.client()); return; }
     if(user && !addMode && (view === 'settings' || !qs.has('next'))){
       showApp(user);
       return;
