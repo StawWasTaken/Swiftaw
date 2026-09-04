@@ -37,24 +37,24 @@ Status marks used in every list:
 
 ## Read this before you file anything here
 
-This repository is the GitHub Pages source for `swiftaw.com`, and it carries a
-`.nojekyll` marker, which means **every file in it is served over the web**,
-including this folder. `robots.txt` allowed all of it until now.
+This repository is the GitHub Pages source for `swiftaw.com`. It used to publish
+from the repository root, and it carries a `.nojekyll` marker, so **every file
+in it was served over the web**, this folder included. A memo marked *"Do not
+leak to the public"* was sitting at a guessable URL, and so were `_js/` and
+`_css/`, which hold the unminified commented sources of every script.
 
-So a memo classified *"Do not leak to the public"* would have been sitting at a
-guessable URL. `internal/` is now disallowed in `robots.txt`, but be clear about
-what that buys: **it stops search engines indexing it, it does not stop anyone
-who types the path.** It is a courtesy, not a lock.
+**That is fixed. D6 is taken and done:** the site publishes from `docs/`, and
+everything outside `docs/` is no longer reachable over the web. This folder is
+one of those things.
 
-The real fix is decision **D6** below, and it is now urgent for a second reason:
-the same `.nojekyll` behaviour serves `_js/` and `_css/`, which hold the
-**unminified, fully commented sources** of every script on Swiftaw and Hereld.
-The pages load the stripped build from `css/`, so the original is one URL away
-and the build's comment stripping is cosmetic. One commit fixes both leaks.
-See `00-standards.md` section 2.
+Two caveats worth keeping in mind:
 
-Until then, treat this folder as publicly readable and keep credentials and keys
-out of it. Nothing in these lists contains a secret.
+- **Hereld has not had the same treatment yet.** Its sources are still public.
+- Anything you put **inside `docs/`** is published the moment it is pushed.
+  Internal material goes here, never there.
+
+Keep credentials and keys out of this folder anyway. Nothing in these lists
+contains a secret, and that should stay true.
 
 ---
 
@@ -63,9 +63,9 @@ out of it. Nothing in these lists contains a secret.
 Not a schedule, a dependency chain. Doing it out of order means building things
 twice.
 
-0. **D6 first, on its own, before anything.** It is one commit and it closes a
-   source leak and a document leak together. Everything else is less urgent than
-   this.
+0. **D6, done on Swiftaw, still owed to Hereld.** It closed a source leak and a
+   document leak together and it is the same two commits over there. Do it
+   before anything else touches that repository.
 1. **Ecosystem (1).** Visible, low risk, and every other workstream ships its
    screens inside it. Finishing Supernova's site also settles design questions
    the rest inherit.
@@ -120,6 +120,12 @@ marked it very important, particularly for the INTSAF programme. This unlocks
 age-adaptive moderation and the adult gate. The legal half is not settled and
 moves to D9.
 
+**D6 - Internal documents live outside the published folder.** Swiftaw now
+publishes from `docs/`; `internal/`, `_js/`, `_css/`, `_build/`, `supabase/` and
+`supernova/pulsar/` stay out of it. This fixes the class of problem rather than
+the one instance: anything not deliberately put in `docs/` is not on the web.
+**Hereld still needs the same move.**
+
 ### Still open
 
 **D3 - What proves someone is over 18?**
@@ -145,11 +151,6 @@ Swiftaw, Fortized and Hereld each have their own Supabase and their own users
 table. One of them becomes the home, or a new project does. Whichever it is,
 every existing account needs a linked identity created without anyone losing
 access on the day. See list 3.
-
-**D6 - Where do internal documents live?**
-See the warning above. *Recommendation:* move the site into a `docs/` folder and
-point Pages at it, leaving `internal/` outside the served tree. It is a
-one-commit change and it fixes the class of problem, not this one instance.
 
 **D7 - Which pages exactly are being retired?**
 The memo keeps overview pages on Fortized and Lifecheck and drops them on Hereld

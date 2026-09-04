@@ -49,23 +49,23 @@ combination that reads as designed rather than generated.
 
 ## 2. Keeping the source ours
 
-**Read this before doing any minification work, because there is a live problem
-that makes all of it pointless.**
+Both repositories carry a `.nojekyll` marker, which means GitHub Pages serves
+**every file in the published folder**. For a long time that folder was the
+repository root, so `_js/` and `_css/` went out with the site. Those hold the
+unminified, fully commented sources. The pages load the stripped build from
+`css/`, so the intended protection existed, but the original was one URL away
+at `/_js/<file>.js` and the comment stripping was cosmetic. Hereld's is 200 KB
+and holds the whole application.
 
-Swiftaw and Hereld both carry a `.nojekyll` marker, which means GitHub Pages
-serves **every file in the repository**, including `_js/` and `_css/`. Those
-folders hold the unminified, fully commented sources. The pages themselves load
-the stripped build from `css/`, so the intended protection is there, but the
-original is sitting one URL away at `/_js/<file>.js`.
-
-The comment-stripping build is therefore cosmetic today. Anyone who guesses the
-path gets the real source with every comment intact. Hereld's is 200 KB and
-holds the whole application.
-
-- [!] **S1. Take decision D6.** Move the site into `docs/` and point Pages at
-      it, leaving `_js/`, `_css/`, `_build/` and `internal/` outside the served
-      tree. One commit, and it closes the source leak and the internal-document
-      leak together. **Nothing else in this section is worth doing first.**
+- [x] **S1. D6 taken, and done on Swiftaw.** The site is published from `docs/`.
+      `_js/`, `_css/`, `_build/`, `internal/`, `supabase/` and
+      `supernova/pulsar/` sit outside it and are no longer reachable over the
+      web. The build writes to `docs/css/`. **Hereld still has the leak and
+      wants the same treatment**; the sequence that worked is: commit the copy
+      into `docs/` first, flip the Pages folder second, verify third, delete the
+      root copies last. Flipping before the folder exists 404s the whole site.
+      When it is Hereld's turn, check for server-side material sitting inside a
+      served folder, which is how `supernova/pulsar/` was found here.
 - [ ] **S2. Then mangle, not just strip.** Renaming identifiers is what
       actually raises the cost of reading lifted code. The current build
       deliberately does not, to avoid ASI risk; that is the right call for a
