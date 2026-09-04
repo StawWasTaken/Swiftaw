@@ -141,17 +141,38 @@ not a specification:
 - **Home has entry points.** For you and Following as real switches with
   different results behind them.
 
-- [ ] **A4a.** Inventory what Hereld renders today across the three views, and
-      what post shapes the data already supports. Some of this may only need
-      rendering, not a schema.
-- [ ] **A4b.** Design the additional shapes against the Neo-Brutalist rules, not
-      against X's visual language. The density and the variety is what is being
-      borrowed. The look stays ours.
-- [ ] **A4c.** Build, in the order that adds the most variety per unit of work.
-- [ ] **A4d.** No fabricated numbers anywhere in it. Trend counts, view counts
-      and follower suggestions come from the database or they do not appear.
-      This is a standing rule and this is exactly the screen that tempts people
-      to break it.
+- [x] **A4a. Inventoried, and it found something worse than monotony.** Explore
+      printed Vibes and Worth following down the middle of the column while the
+      right hand column printed the same two modules beside it, on the same
+      screen, with two different empty states for the same thing. That is not a
+      variety problem, that is the page saying everything twice.
+- [x] **A4b. Explore now owns its width and lays out inside it.** The right hand
+      column stands down on Explore (`body.hd-ex`), which is what X effectively
+      does, and the width that buys is spent on a layout Explore has and the
+      feed does not: four tabs (For you, Vibes, People, Latest), a two column
+      body on For you, numbered topic rows, and a hero top topic on Vibes. Each
+      tab fetches only what it will show, so nothing is read that is not drawn.
+- [x] **A4c. Home carries modules, but only where the rail is gone.**
+      Interleaving on desktop would just duplicate the rail. Under 940px the
+      rail is not there at all, so from Home there was no route to a topic or a
+      person. `feedWithModules` puts Worth following after the third post and
+      Vibes after the ninth, CSS hides both above 941px, and neither RPC is
+      called when they will not be shown.
+- [x] **A4d. Nothing is invented.** Every count on both screens comes from
+      `the_cry` and `who_to_follow`. No placeholder numbers were added anywhere.
+- [ ] **A4e. The post card itself is still one shape.** This is the half of A4
+      that is not done, and it is the half the complaint is really about: every
+      row in the column is the same card, and every one of them carries an
+      identical "N people replied" avatar strip. That strip is **C6**, so the
+      two want doing together rather than twice. Quote posts, media led posts
+      and polls already render differently in the data but not enough in the
+      layout to break the rhythm.
+
+**Fixed along the way:** the new Explore pushed the page 196px wider than the
+viewport at 1360. A grid item will not shrink below its content unless it is
+told to, and a sideways scroller inside one expands the item instead of
+scrolling. `min-width: 0` on the children. Worth remembering, it is the same
+family of mistake as A3c: a rule that looks local and is not.
 
 ---
 
@@ -197,7 +218,10 @@ The features named in those commit subjects, which is the audit list:
 - [ ] **C3.** The explain / analyse card.
 - [ ] **C4.** Profile summaries, in the hover card and on the profile page.
 - [ ] **C5.** The floating new-posts capsule.
-- [ ] **C6.** Replier avatars, via the `post_repliers` RPC.
+- [ ] **C6.** Replier avatars, via the `post_repliers` RPC. **Ties to A4e:**
+      every card carries this strip, identically, which is a large part of why
+      the column reads as one shape repeated. Audit it and reconsider the shape
+      in the same pass.
 - [ ] **C7.** Always-on markdown live preview in the composer.
 - [ ] **C8.** Community notes.
 - [ ] **C9.** Disclosures.
