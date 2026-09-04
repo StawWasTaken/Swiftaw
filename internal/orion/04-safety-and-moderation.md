@@ -1,0 +1,97 @@
+# Orion 4 - Safety, security, moderation
+
+> Uniformize security across Swiftaw, Lifecheck, Supernova, Fortized and Hereld
+> using passkeys and authenticator 2FA. The 2FA QR must carry a true square
+> centre holding the Swiftaw logo in the QR's own colour. Deploy one
+> Supernova-equipped moderation system across Fortized and Hereld, enforcing
+> core safety while permitting general insults and slurs, with a uniform
+> ignore, block and report system and staff console. Plan age-adaptive
+> moderation at 13, 15 and 18.
+
+## Where we actually are
+
+Swiftaw's `account.html` already enrols TOTP and WebAuthn through Supabase MFA,
+and 2FA can only be removed after passing a Lifecheck. That is the reference
+implementation; the other four properties have nothing.
+
+Fortized has a full staff console with reports, bans, suspensions, warnings, an
+audit log and an automod pass on send. Hereld has a staff console with its own
+hierarchy and a Swiftaw platform account. They share no code and no vocabulary.
+
+Nothing anywhere calls Supernova to judge content.
+
+---
+
+## A - Passkeys and 2FA everywhere
+
+- [ ] **A1. Extract Swiftaw's 2FA into a shared component,** rather than writing
+      it a fourth and fifth time. Enrol, verify, list factors, remove behind a
+      Lifecheck.
+- [ ] **A2. The QR code, done properly.** A true square hole in the centre, the
+      Swiftaw logo inside it, drawn in the QR's own colour. Raise the error
+      correction to H so the code still scans with the middle removed, and test
+      it against a real authenticator app rather than a decoder library.
+- [ ] **A3. Passkeys as the first suggestion,** authenticator app second,
+      because the passkey is the one people actually keep.
+- [ ] **A4. Recovery codes.** A person who loses their phone and their passkey
+      currently loses the account. Generated once, shown once, stored hashed.
+- [ ] **A5. Roll out per property.** Lifecheck, Supernova, Hereld, Fortized. If
+      list 3 has landed, this is one implementation on the shared account and
+      most of this list collapses. **Do this after list 3 if the timing allows;
+      doing it before means building it five times and migrating it once.**
+- [ ] **A6. Removal always goes through Lifecheck,** on every property, matching
+      what Swiftaw does today.
+
+## B - One moderation system
+
+- [ ] **B1. Write the policy before the code.** What is enforced: children, real
+      harm, threats, sexual content involving minors, our own security. What is
+      explicitly allowed: general insults and slurs. This is a deliberate
+      product decision and it needs to exist as a document so that nobody
+      quietly tightens it later and nobody is surprised by it.
+- [ ] **B2. One `moderate` job on Supernova.** Text in, a verdict and a reason
+      out, with the calling environment as a parameter so Fortized and Hereld
+      can differ without forking the model.
+- [ ] **B3. Environment adaptations.** A bastion's own rules on Fortized, a
+      public timeline on Hereld. Same engine, different thresholds, both
+      readable in one place.
+- [ ] **B4. The guard runs at the mutation.** Fortized learned this the hard
+      way: checking permission where the button is drawn is not checking it.
+      Every moderation decision is enforced where the write happens.
+- [ ] **B5. Uniform ignore, block and report.** Same words, same shapes, same
+      outcomes on both platforms. Blocking updates the feed immediately.
+      Reporting reaches a real queue. Not interested actually changes what gets
+      shown.
+- [ ] **B6. One staff console vocabulary.** The two consoles do not have to
+      share code, but a warning, a suspension and a ban must mean the same thing
+      on both, and both must feed Headquarters in list 5.
+- [ ] **B7. Server-side permissions, tested by trying to break them.** A
+      moderator typing a superadmin URL is refused by the database. Write the
+      test that attempts it.
+- [ ] **B8. Every action audited,** including the ones that only read.
+
+## C - Age-adaptive moderation
+
+Planned, not built, and correctly flagged in the memo as needing brainstorming.
+Two things block it rather than merely slow it:
+
+- [!] **C1. We do not know anyone's age.** Answering **D4** comes first:
+      do we start asking for date of birth, on what lawful basis, and what
+      changes in the privacy policy. This is a French SAS handling minors'
+      data, so it is a real question and not a form field.
+- [!] **C2. The 18+ tier and the adult chat in list 2 are the same gate.**
+      Whatever satisfies one satisfies the other, so design it once. A
+      self-declared checkbox is not it.
+- [ ] **C3. Then design the three tiers** at 13, 15 and 18, and decide what an
+      account with no known age gets. It should get the strictest tier, not the
+      loosest.
+
+---
+
+## Done means
+
+One person's security works the same way on all five properties, and losing a
+phone is recoverable. One policy, written down, enforced by one engine at the
+point of writing, adapted per environment rather than reimplemented. Blocking,
+reporting and ignoring do what they say on both platforms. Age tiers are
+designed against an age we are actually allowed to hold.
