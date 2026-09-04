@@ -81,18 +81,19 @@ a weakness in one becomes a weakness in all three.
 
 ---
 
-## Swiftaw-Mail
+## Swiftaw Mail
 
-Deferred by the memo to its own session, and it should stay deferred until lists
-1 to 5 are somewhere near done. Two things worth writing down now so they are
-not a surprise later:
+Now its own list: [`11-mail.md`](11-mail.md).
 
-- Running mail is not mostly a product problem. It is deliverability, spam
-  reputation, DKIM, SPF, DMARC, abuse handling and a support burden that never
-  stops. Budget for the operations, not the inbox UI.
-- The migration offer in the memo - letting users move their existing accounts
-  onto a Swiftaw address - depends entirely on this workstream having landed
-  first. It is a consequence of the Swiftaw Account, not a parallel project.
+The one thing to carry here, because it decides this list's priority rather than
+that one's: **the mailbox hangs off the account, not the other way round.** A
+Google account works perfectly well with no Gmail attached, and that is the
+shape to copy. Built that way, this list ships and is useful long before any
+mail server exists. Built the other way, everyone waiting for an account is
+waiting on DKIM.
+
+So list 11 does not start until this one has landed, including its rollback
+having been run rather than designed.
 
 ---
 

@@ -9,7 +9,7 @@ is the bar every workstream is held to: who Swiftaw is, what makes a page ours,
 how the code has to be written, how the source is protected, and the three
 places generated work shows. Everything below assumes it.
 
-Then eight lists, each workable without holding the others in your head:
+Then eleven lists, each workable without holding the others in your head:
 
 | | Workstream | File | Rough state |
 | --- | --- | --- | --- |
@@ -22,9 +22,13 @@ Then eight lists, each workable without holding the others in your head:
 | 6 | Hereld bots | [`06-hereld-bots.md`](06-hereld-bots.md) | Nearly there |
 | 7 | **Fortized, redesigned and reworked** | [`07-fortized.md`](07-fortized.md) | Big. Partly running already |
 | 8 | **Signing up and signing in** | [`08-sign-in.md`](08-sign-in.md) | Not started |
+| 9 | **Hereld, fixed and finished** | [`09-hereld.md`](09-hereld.md) | The punch list of 2026-09-04 |
+| 10 | Swiftaw Workspace, and the icon service | [`10-workspace.md`](10-workspace.md) | Idea, written down |
+| 11 | Swiftaw Mail | [`11-mail.md`](11-mail.md) | Idea, filed behind list 3 |
 
-Swiftaw-Mail is deliberately not a list. The memo defers it to its own session
-and it should stay deferred until 1 to 5 are somewhere near done.
+Lists 10 and 11 came from the CEO on 2026-09-04 and both say on their face that
+they may be modified. They are written down so they stop taking up room in one
+person's head, not because either starts tomorrow.
 
 Status marks used in every list:
 
@@ -47,11 +51,11 @@ leak to the public"* was sitting at a guessable URL, and so were `_js/` and
 everything outside `docs/` is no longer reachable over the web. This folder is
 one of those things.
 
-Two caveats worth keeping in mind:
+**Hereld has had the same treatment,** on 2026-09-04, in the same two commits.
+It publishes from `docs/` too and its `_js/` and `_css/` are no longer served.
 
-- **Hereld has not had the same treatment yet.** Its sources are still public.
-- Anything you put **inside `docs/`** is published the moment it is pushed.
-  Internal material goes here, never there.
+One caveat that does not go away: anything you put **inside `docs/`** is
+published the moment it is pushed. Internal material goes here, never there.
 
 Keep credentials and keys out of this folder anyway. Nothing in these lists
 contains a secret, and that should stay true.
@@ -63,9 +67,8 @@ contains a secret, and that should stay true.
 Not a schedule, a dependency chain. Doing it out of order means building things
 twice.
 
-0. **D6, done on Swiftaw, still owed to Hereld.** It closed a source leak and a
-   document leak together and it is the same two commits over there. Do it
-   before anything else touches that repository.
+0. **D6, done on both.** It closed a source leak and a document leak together.
+   Nothing is owed here any more.
 1. **Ecosystem (1).** Visible, low risk, and every other workstream ships its
    screens inside it. Finishing Supernova's site also settles design questions
    the rest inherit.
@@ -88,6 +91,13 @@ twice.
    three separate databases and is useful immediately. The cross-platform half
    only makes sense after (3).
 8. **Hereld bots (6) whenever.** Independent of everything and mostly done.
+
+**Where lists 9, 10 and 11 sit.** List 9 is not in that chain: it is live
+product with faults in it, so its four own items get fixed as they come and its
+three cross-referenced items are handled by the lists that own them. Lists 10
+and 11 sit behind everything above. List 10's first tenant could be built any
+time, but the Workspace shell it belongs in wants the ecosystem work settled
+first, and list 11 explicitly does not start before list 3 has landed.
 
 ---
 
@@ -122,9 +132,10 @@ moves to D9.
 
 **D6 - Internal documents live outside the published folder.** Swiftaw now
 publishes from `docs/`; `internal/`, `_js/`, `_css/`, `_build/`, `supabase/` and
-`supernova/pulsar/` stay out of it. This fixes the class of problem rather than
-the one instance: anything not deliberately put in `docs/` is not on the web.
-**Hereld still needs the same move.**
+`supernova/pulsar/` stay out of it. Hereld publishes from `docs/` too, with
+`_js/`, `_css/`, `_build/` and `supabase/` outside. This fixes the class of
+problem rather than the one instance: anything not deliberately put in `docs/`
+is not on the web.
 
 ### Still open
 
@@ -161,6 +172,37 @@ the signed-out app becomes the front door. Say if either reading is wrong.
 **D11 - The old Roblox sign-up screenshot.**
 Named as the reference for how friendly the new sign-up should feel. List 8
 cannot start its design work without seeing it. One image unblocks it.
+
+**D12 - Do we redistribute Font Awesome icons through our own icon service?**
+Using them inside our products is settled and unremarkable. Handing them out
+from an icon service of ours is a different act. Font Awesome Free licenses its
+icons CC BY 4.0, so it is permitted with attribution, and the attribution and
+the labelling of which icons are whose then have to be right forever. The
+alternative is a smaller library that is unambiguously ours. Neither is wrong;
+the wrong thing is picking one by building it. See list 10 section B6.
+
+**D13 - "Swiftaw Workspace" or "Swiftaw Devs"?**
+Both were said. They point at different audiences and the tenant list as
+described is not a developer toolbelt, so Workspace fits the contents better.
+List 10 section A1.
+
+**D14 - Which Workspace tenants are free, and which are paid?**
+The cooperative side means helping others "either in a free way either where
+they have to pay". Which is which, and whether there is one price or a price per
+tenant, is not inferable. List 10 section A5.
+
+**D15 - Do we run mail ourselves, or a mailbox on somebody else's
+infrastructure?** The interface is the small half. Deliverability, abuse, spam
+filtering, unbounded storage and never losing a message is the large half, and
+running it ourselves means all of it is our job. List 11 section C.
+
+**D16 - Web only, or IMAP and SMTP too?**
+Client access is what makes a mail service usable by anyone who already has a
+phone set up, and it is a large amount of extra surface. It changes the storage
+model, so it is decided before building rather than after. List 11 section B5.
+
+Also needed, and smaller: the mail domain, and whether "Swiftaw Mail" is the
+name (list 11 section D).
 
 ---
 
