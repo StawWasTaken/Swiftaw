@@ -73,18 +73,27 @@ Nothing anywhere calls Supernova to judge content.
 ## C - Age-adaptive moderation
 
 Planned, not built, and correctly flagged in the memo as needing brainstorming.
-Two things block it rather than merely slow it:
+**D4 is now answered: we do collect date of birth,** at sign-up, on every
+property. That removes the thing that blocked this outright. What is left is a
+dependency and a decision.
 
-- [!] **C1. We do not know anyone's age.** Answering **D4** comes first:
-      do we start asking for date of birth, on what lawful basis, and what
-      changes in the privacy policy. This is a French SAS handling minors'
-      data, so it is a real question and not a form field.
-- [!] **C2. The 18+ tier and the adult chat in list 2 are the same gate.**
+- [~] **C1. The age itself now arrives with [list 8](08-sign-in.md).** The field
+      is designed there; this list consumes it. Nothing here can be built before
+      that ships, and every account predating it has no age at all, which is
+      what C4 exists for.
+- [!] **C2. The legal half is still open, as D9.** A French SAS holding minors'
+      dates of birth has real obligations: the privacy policy changes, a
+      retention period has to be set, and it has to be settled whether an age
+      below a threshold blocks sign-up or opens a different experience. **D10,
+      what INTSAF actually is,** may change the answer, since it was named as
+      the main reason the field matters.
+- [!] **C3. The 18+ tier and the adult chat in list 2 are the same gate.**
       Whatever satisfies one satisfies the other, so design it once. A
-      self-declared checkbox is not it.
-- [ ] **C3. Then design the three tiers** at 13, 15 and 18, and decide what an
-      account with no known age gets. It should get the strictest tier, not the
-      loosest.
+      self-declared checkbox is not it. This is **D3** and it is unchanged by
+      D4: knowing a claimed age is not proof of one.
+- [ ] **C4. Design the three tiers** at 13, 15 and 18, and decide what an
+      account with no known age gets. It gets the strictest tier, never the
+      loosest, and that is most accounts on the day this ships.
 
 ---
 

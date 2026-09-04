@@ -29,26 +29,47 @@ loop, and no moderation job anywhere.
 
 ---
 
-## A - Settle the architecture first
+## A - The architecture, decided
 
-- [!] **A1. Answer D2: teacher or live path.** Nothing below is safe to build
-      until this is decided, because it changes what Supernova *is*.
+**D2 is settled: Groq teaches, it does not answer.** Staw left the call to
+engineering. Here is what was chosen and why, so nobody reopens it without
+knowing what it cost.
 
-      The three readings, honestly:
+The three readings that were on the table:
 
-      | | What happens | Cost | What we can claim |
-      | --- | --- | --- | --- |
-      | Teacher | Groq generates and grades offline, corrections go into the corpus, Pulsar improves and answers alone | One model call per reply | The model is ours |
-      | Guard | Pulsar answers, a cheap check catches known failures, Groq is called only when the check trips | About 1.1 calls per reply | The model is ours |
-      | Live path | Groq rewrites every sentence Pulsar produces, output presented as Pulsar's | Two calls per reply, roughly double the latency | It is a Groq wrapper |
+| | What happens | Cost per reply | What we can honestly claim |
+| --- | --- | --- | --- |
+| **Teacher** | Groq generates and grades offline, corrections go into the corpus, Pulsar answers alone | One call | The model is ours |
+| **Guard** | Pulsar answers, a cheap local check catches known failures, Groq is called only when it trips | About 1.1 calls | The model is ours |
+| Live path | Groq rewrites every sentence, presented as Pulsar's | Two calls, roughly double the latency | It is a Groq wrapper |
 
-      *Recommendation: teacher, plus the guard.* It is the only one of the three
-      where Pulsar's README stays true and where the model gets better over time
-      rather than staying dumb behind a smarter one. The live path also means
-      that if Groq is down, Supernova is down.
+**We take teacher plus guard.** Five reasons:
 
-- [ ] **A2. Write the loop down** in `supernova/pulsar/README.md` once A1 is
-      answered, so the next person does not have to reconstruct it.
+1. **Pulsar stays a product.** A model that only sounds good because something
+   else rewrites it is not an asset, it is a subscription. The whole point of
+   `pulsar_corpus`, `pulsar_vocab` and `pulsar_ngrams` is that the value
+   accumulates in our database.
+2. **It actually learns.** Under the live path Pulsar is corrected forever and
+   improves never, because nothing ever writes back. Under teacher, every
+   correction is training data and the model is measurably better each month.
+3. **Half the latency and half the cost,** on the path a user is waiting on.
+4. **Groq going down does not take Supernova down.** With Groq in the live path,
+   our AI has someone else's uptime.
+5. **The memo's intent is fully served.** Everything it asks Groq to do -
+   demand corrections, enforce the path, generate training data, fix errors and
+   half-generated output - still happens. It happens on a schedule instead of
+   in front of the user, which is where that work belongs.
+
+The guard is the part that protects quality live: a cheap local check for the
+failure modes we know about (empty output, repetition loops, leaked prompt,
+off-policy content). It escalates to Groq only when it trips, so the floor is
+protected without paying double every time.
+
+- [ ] **A2. Write the loop into `supernova/pulsar/README.md`,** including this
+      decision, so nobody reconstructs it from the code.
+- [ ] **A3. Shadow grading.** Groq scores a sample of real replies daily without
+      touching them. That is how we know whether the model is improving, rather
+      than assuming it.
 
 ## B - The training loop
 
@@ -107,19 +128,44 @@ loop, and no moderation job anywhere.
 
 ## E - The public API
 
+**D8 is settled, and A1 is what makes it answerable.** Because Pulsar answers
+from our own Postgres rather than by reselling someone else's tokens, our
+capacity is our database, not an upstream account. Database capacity is
+predictable, cheap and ours to grow. The memo's numbers stop being a promise
+against a third party and become an engineering target.
+
+So: **the memo's figures are real, as a granted tier rather than the default.**
+
+| Tier | Per minute | Per day | Tokens per minute | Who gets it |
+| --- | --- | --- | --- | --- |
+| Free | 10 | 500 | 100,000 | Anyone, on sign-up |
+| **Standard** | **35** | **2,000** | **1,000,000** | Granted by us, on request |
+| Internal | unmetered | unmetered | unmetered | Our own five products |
+
+Three rules behind it:
+
+- **A global ceiling sits above every per-key ceiling,** so the sum of all keys
+  can never exceed what we can actually serve. When the global budget tightens,
+  the free tier sheds first and paying attention gets you nothing worse than
+  slower. Everyone failing at once because we oversold is the outcome this
+  exists to prevent.
+- **Never silently truncate.** A limit returns a clear error and a retry-after,
+  never a half answer that looks like a bad model.
+- **Publish only what we can honour today.** If the ceiling has to come down,
+  it comes down before anyone is holding a key, not after.
+
 - [ ] **E1. Key store.** Generate, list, name, revoke, last used. Lifecheck's
-      `keys.html` is the working reference for what this looks like and how the
-      key format should read.
-- [ ] **E2. Metering.** Requests per minute, per day, and tokens per minute, all
-      counted server-side, all returned in response headers so a developer can
-      see where they are.
-- [ ] **E3. Enforcement** at the documented limits, with a clear error rather
-      than a silent truncation.
-- [!] **E4. Answer D8 before publishing a number.** 1,000,000 tokens a minute
-      per key has to sit under whatever our upstream account actually allows,
-      shared across everyone holding a key. Publish what we can honour.
-- [ ] **E5. Developer docs** for the API, on the Supernova site, matching
-      Lifecheck's docs in shape so a developer only learns our conventions once.
+      `keys.html` is the working reference for shape and key format.
+- [ ] **E2. Metering,** all three counters, server-side, returned in response
+      headers so a developer can see where they stand without guessing.
+- [ ] **E3. Enforcement and the global ceiling,** per the rules above.
+- [ ] **E4. Tier grants** in the admin surface, so Standard is something we give
+      rather than something anyone can take.
+- [ ] **E5. Developer docs** on the Supernova site, matching Lifecheck's docs in
+      shape so a developer learns our conventions once.
+- [ ] **E6. Measure the real ceiling before publishing.** Load the RPCs and find
+      where Postgres actually stops, then set the global ceiling under it. The
+      table above is the target, and it is not published until it is proven.
 
 ## F - The five integrations
 

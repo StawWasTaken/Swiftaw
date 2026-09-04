@@ -15,9 +15,9 @@ account chrome. Most of swiftaw.com is already on it - homepage, about us,
 mission, newsroom, innovation room, 404, the three legal pages, account,
 contact, press kit. The Lifecheck site and widget are rebuilt.
 
-Not done: the Supernova site, the Fortized web pages, the Newsroom
-consolidation, and any video anywhere. There is no `<video>` element in the
-estate today.
+Not done: the Supernova site, the Fortized web pages, Hereld's repolish, the
+Newsroom consolidation, and any video anywhere. There is no `<video>` element in
+the estate today.
 
 ---
 
@@ -27,12 +27,21 @@ estate today.
       overview page goes and the chat becomes the front door, so the site is
       chat plus docs plus keys, not a marketing page with a chat behind it.
       Keep `supernova/chat.html` working throughout; it is the product.
-- [ ] **A2. Rebuild the Fortized web pages** on the shared system. Public pages
-      only. Whether the app follows is **D1** and must be answered first.
+- [ ] **A2. Rebuild the Fortized web pages** on the shared system. **D1 is
+      answered and the app goes too,** but that is large enough to be its own
+      workstream: the public pages belong here, the app belongs to
+      [list 7](07-fortized.md). Build the pages first so the app has finished
+      components to land on.
 - [ ] **A3. Retire Hereld's overview page** and make the signed-out app the
       front door. Confirm against **D7**. A signed-out visitor still needs a
       real first screen with something to read, not an empty shell behind a
       login wall.
+- [ ] **A7. Repolish Hereld's UI.** Staw's read is that it functions well and
+      looks decent, and that it now wants a **fuller, more Twitter-like layout**
+      rather than the airy one it has. Two jobs in one: give the columns real
+      density, and go back over the surfaces OpenCode changed, which left
+      inconsistencies behind. Walk it surface by surface rather than restyling
+      globally, because what is there mostly works.
 - [ ] **A4. Audit every page against the type hierarchy.** Tropicon on the one
       most important headline per page, at its own weight and no heavier. Syne
       Bold for big and secondary titles and for anything small. Syne for body.

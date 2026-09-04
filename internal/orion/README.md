@@ -4,17 +4,24 @@
 work that can actually be picked up and finished. The memo is the authority; if
 anything here contradicts it, the memo wins and this file is wrong.
 
-Six lists. Each one is a workstream that can be worked without holding the
-others in your head:
+**Read [`00-standards.md`](00-standards.md) first.** It is not a workstream, it
+is the bar every workstream is held to: who Swiftaw is, what makes a page ours,
+how the code has to be written, how the source is protected, and the three
+places generated work shows. Everything below assumes it.
+
+Then eight lists, each workable without holding the others in your head:
 
 | | Workstream | File | Rough state |
 | --- | --- | --- | --- |
+| 0 | **How Swiftaw builds** | [`00-standards.md`](00-standards.md) | The bar, not a task list |
 | 1 | Ecosystem and websites | [`01-ecosystem.md`](01-ecosystem.md) | Well under way |
 | 2 | Supernova and Pulsar | [`02-supernova-pulsar.md`](02-supernova-pulsar.md) | Foundations only |
 | 3 | The Swiftaw Account | [`03-swiftaw-account.md`](03-swiftaw-account.md) | Not started |
 | 4 | Safety, security, moderation | [`04-safety-and-moderation.md`](04-safety-and-moderation.md) | Part built |
 | 5 | Headquarters | [`05-headquarters.md`](05-headquarters.md) | Not started |
 | 6 | Hereld bots | [`06-hereld-bots.md`](06-hereld-bots.md) | Nearly there |
+| 7 | **Fortized, redesigned and reworked** | [`07-fortized.md`](07-fortized.md) | Big. Partly running already |
+| 8 | **Signing up and signing in** | [`08-sign-in.md`](08-sign-in.md) | Not started |
 
 Swiftaw-Mail is deliberately not a list. The memo defers it to its own session
 and it should stay deferred until 1 to 5 are somewhere near done.
@@ -39,9 +46,15 @@ guessable URL. `internal/` is now disallowed in `robots.txt`, but be clear about
 what that buys: **it stops search engines indexing it, it does not stop anyone
 who types the path.** It is a courtesy, not a lock.
 
-The real fix is decision **D6** below. Until it is taken, treat this folder as
-publicly readable and keep credentials, keys and anything genuinely sensitive
-out of it. Nothing in these six lists contains a secret.
+The real fix is decision **D6** below, and it is now urgent for a second reason:
+the same `.nojekyll` behaviour serves `_js/` and `_css/`, which hold the
+**unminified, fully commented sources** of every script on Swiftaw and Hereld.
+The pages load the stripped build from `css/`, so the original is one URL away
+and the build's comment stripping is cosmetic. One commit fixes both leaks.
+See `00-standards.md` section 2.
+
+Until then, treat this folder as publicly readable and keep credentials and keys
+out of it. Nothing in these lists contains a secret.
 
 ---
 
@@ -50,60 +63,82 @@ out of it. Nothing in these six lists contains a secret.
 Not a schedule, a dependency chain. Doing it out of order means building things
 twice.
 
-1. **Ecosystem (1) first.** It is visible, it is low risk, and every other
-   workstream ships its screens inside it. Finishing Supernova's site and
-   Fortized's web pages also settles the design questions the rest inherit.
-2. **Supernova (2) second, and it is the load-bearing one.** Moderation (4),
-   Headquarters (5) and the bots (6) all consume Supernova. Every week Supernova
-   stays a stub is a week those three cannot be finished properly.
-3. **Moderation (4) once Supernova can be asked to judge something.** The parts
-   that do not need Supernova - the block and report and ignore surfaces, the
-   staff console, passkeys and 2FA - can go earlier and should.
-4. **The Swiftaw Account (3) on its own.** This is the one that can lock every
-   user out of every product at once. It gets its own run, with nothing else in
-   flight, and a rollback that has been tested rather than assumed.
-5. **Headquarters (5) in two halves.** The read-only half works today against
-   three separate databases and is useful immediately. The cross-platform half,
-   where one person is one row across all products, only makes sense after (3).
-6. **Hereld bots (6) whenever.** Independent of everything else and mostly done.
+0. **D6 first, on its own, before anything.** It is one commit and it closes a
+   source leak and a document leak together. Everything else is less urgent than
+   this.
+1. **Ecosystem (1).** Visible, low risk, and every other workstream ships its
+   screens inside it. Finishing Supernova's site also settles design questions
+   the rest inherit.
+2. **Supernova (2), and it is the load-bearing one.** Moderation (4),
+   Headquarters (5) and the bots (6) all consume Supernova. Every week it stays
+   a stub is a week those three cannot be finished properly.
+3. **Fortized (7) starts in parallel, from its section A.** Section A is
+   invisible plumbing that shrinks what has to be redesigned later, so it can run
+   alongside anything. Its visible sections wait for the ecosystem work to settle
+   the shared components.
+4. **Sign-in (8) after the ecosystem work,** built on Hereld first as the
+   lowest-risk place to get the component right. Blocked on D9 and D10.
+5. **Moderation (4) once Supernova can be asked to judge something.** The parts
+   that do not need it - block, report, ignore, the staff console, passkeys and
+   2FA - can go earlier and should.
+6. **The Swiftaw Account (3) on its own.** This is the one that can lock every
+   user out of every product at once. Its own run, nothing else in flight, and a
+   rollback that has been executed rather than designed.
+7. **Headquarters (5) in two halves.** The read-only half works today against
+   three separate databases and is useful immediately. The cross-platform half
+   only makes sense after (3).
+8. **Hereld bots (6) whenever.** Independent of everything and mostly done.
 
 ---
 
-## Decisions only Staw can make
+## Decisions
 
-Each of these changes what gets built, not just how. Where there is a
-recommendation it is what I would do absent an answer.
+### Taken
 
-**D1 - Does the Fortized *app* become Neo-Brutalist, or only its web pages?**
-The memo says to include the Fortized app in the redesign and align it with the
-company, and it also says Fortized's inspiration is Discord with a little
-Roblox. Those pull in different directions, and the app is mid-rework on its own
-tactile language. *Recommendation:* the public fortized.com pages go fully
-Neo-Brutalist, the app keeps its own feel but adopts the shared pieces - the
-Rainbaw five, the account launcher, the consent card, the footer, the shared
-Supernova moderation. One company, two rooms in it. Confirm before anyone
-touches the app's CSS.
+**D1 - The Fortized app is fully redesigned, not just its web pages.** Staw's
+call, with three reasons: it shows Fortized belongs to a shared ecosystem, it
+puts real distance between us and Discord and Guilded so we stop reading as
+copyists, and the borrowed layout was always meant as a starting base to be
+replaced. This is large enough to be its own workstream: **list 7**.
 
-**D2 - Is Groq a teacher, or is it in the live path?**
-The memo describes Groq intercepting and correcting Supernova's sentences in
-real time, then presenting the result as Supernova's own. Read literally, every
-reply costs two model calls and Supernova is a Groq wrapper with a delay, which
-also contradicts Pulsar's own README promising a model that is ours.
-*Recommendation:* Groq teaches offline. It generates training data, grades
-Pulsar's answers, and writes corrections into the corpus, so Pulsar genuinely
-improves. In the live path keep only a cheap guard for the failure modes we know
-about. Full detail and the middle option are in list 2.
+**D2 - Groq teaches, it does not answer.** Left to engineering. Groq generates
+training data, grades Pulsar's output and writes corrections into the corpus on
+a schedule; a cheap local guard protects quality live and escalates only when it
+trips. Pulsar stays ours, costs one call instead of two, keeps working when Groq
+does not, and actually improves. Full reasoning in list 2 section A.
+
+**D8 - The memo's API limits are real, as a granted tier.** Also left to
+engineering, and D2 is what makes it answerable: because Pulsar answers from our
+own Postgres rather than reselling someone else's tokens, our ceiling is our
+database. Free tier 10 RPM / 500 RPD / 100k TPM by default, the memo's 35 /
+2,000 / 1,000,000 granted on request, a global ceiling above both so we can
+never oversell, and the number proven by load before it is published. Table in
+list 2 section E.
+
+**D4 - Yes, we collect date of birth,** at sign-up, on every property. Staw
+marked it very important, particularly for the INTSAF programme. This unlocks
+age-adaptive moderation and the adult gate. The legal half is not settled and
+moves to D9.
+
+### Still open
 
 **D3 - What proves someone is over 18?**
 Adult fictional chat cannot ship on a "yes I am" checkbox. It needs a real gate,
-it must be off by default, and it must be unreachable for any account whose age
-we do not know. Until that gate exists the feature is not buildable, and the
-honest thing is to say so rather than ship a checkbox and call it done.
+it is off by default, and it is unreachable for any account whose age we do not
+know. D4 gets us an age; it does not by itself get us proof. Until the gate
+exists the feature is not buildable, and the honest thing is to say so rather
+than ship a checkbox and call it done.
 
-**D4 - Do we start collecting date of birth?**
-Age-adaptive moderation at 13, 15 and 18 needs an age, and we do not ask for
-one. Collecting it is a privacy-policy change and a lawful-basis question for a
-French SAS. This wants a real answer before any of it is designed.
+**D9 - The lawful basis for holding dates of birth.**
+D4 answered the product question. A French SAS collecting minors' dates of birth
+still has real obligations: the privacy policy changes, a retention period has
+to be set, and it has to be decided whether an age below a threshold blocks
+sign-up outright or opens a different experience. Needed before list 8 ships.
+
+**D10 - What is INTSAF?**
+Named as launching soon and as the main reason date of birth matters, but not
+yet described. What it needs from an age changes how the field is stored and
+what we are allowed to do with it. A paragraph would unblock list 8 section C.
 
 **D5 - Which project owns identity?**
 Swiftaw, Fortized and Hereld each have their own Supabase and their own users
@@ -122,18 +157,29 @@ and Supernova. On Supernova that means today's `supernova/index.html` goes and
 the chat becomes the front door. On Hereld it means the landing page goes and
 the signed-out app becomes the front door. Say if either reading is wrong.
 
-**D8 - What is behind the API limits?**
-35 requests a minute, 2,000 a day and a million tokens a minute is a real
-promise to whoever holds the key. If Groq is upstream, our ceiling is Groq's
-account ceiling divided by everyone using us. We can either meter against what
-we actually have, or oversell and fail in public. Needs a number.
+**D11 - The old Roblox sign-up screenshot.**
+Named as the reference for how friendly the new sign-up should feel. List 8
+cannot start its design work without seeing it. One image unblocks it.
 
 ---
 
 ## The rules that do not change
 
 These already govern everything and they keep governing it. A future session
-picking up any of these lists should read this section first.
+picking up any of these lists should read this section first, then
+[`00-standards.md`](00-standards.md) in full.
+
+**Who we are**
+
+- Swiftaw is a **Devigner**: the building and the designing are the same act.
+  Animation, illustration, things that answer when you touch them, small pieces
+  of craft nobody asked for. Something to play with.
+- **Innovation is a department**, the Innovation Dep., broadly the R&D side, and
+  one of the core values. It has to be visible in the work, not just claimed.
+- Branding is deliberate and total. The same marks and the same voice on every
+  property. Joyful propaganda, everywhere we own.
+- **Never plain, static or boring.** Neo-Brutalism is not sterile: hard strokes,
+  flat colour and real motion is what reads as designed rather than generated.
 
 **Voice and copy**
 
