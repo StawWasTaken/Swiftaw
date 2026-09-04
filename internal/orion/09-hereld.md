@@ -30,14 +30,26 @@ alpha channel. The fix is the technique this codebase already uses for the
 Supernova mark: mask the artwork over a `background: var(--nb-blue)` fill. Exact
 colour, one token, and it follows the theme if the theme ever moves.
 
-- [ ] **A1a.** Replace the filter chain with a mask on `--nb-blue`.
-- [ ] **A1b.** "Doesn't always appear" is a separate half. Find out whether the
-      mark is missing or merely invisible against the ground before changing
-      anything. A mask whose image fails to load hides the element completely,
-      which is exactly the bug found in `.hd-nova-av-wrap::after` on 2026-09-04,
-      so the mask fix must not introduce the same failure mode. Check the splash
-      timing too: if it is dismissed on a timer rather than on load, a fast
-      connection can take it away before it has drawn.
+**Then the second half, and it is the bigger one.** Every opaque pixel in
+`HereldAt.png` is `(12, 15, 21)`, which is `#0C0F15`, which is `--nb-bg`, which
+is the exact colour of the surface the splash paints. The artwork is drawn in
+the colour of its own background. So the colour treatment is not decoration: it
+is the only reason anything is visible at all, and for as long as
+`docs/css/hereld.css` takes to arrive there is nothing on the screen. That is
+"doesn't always appear", and it gets worse the slower the connection.
+
+- [x] **A1a.** Replaced the filter chain with a mask on `--nb-blue`, on a
+      `.hd-splash-mark` span rather than an `<img>`.
+- [x] **A1b.** The same two rules are inlined in `docs/app.html`'s head, with a
+      `preload` on the artwork, so the splash is painted before the external
+      stylesheet lands. `--nb-blue` carries a literal fallback there for the
+      same reason.
+- [ ] **A1c.** Still open. A mask whose image fails to load hides the element
+      completely, which is the bug found in `.hd-nova-av-wrap::after` on
+      2026-09-04, and the splash now depends on one. `SPLASH_HOLD` is 2300ms and
+      the dismissal is on a timer rather than on load, so a slow fetch of
+      `HereldAt.png` can still show an empty screen for the whole hold. Either
+      hold until the artwork has decoded, or accept the timer and say so.
 
 ### A2. Sign-in is asking for the handle where it should ask for the email
 
@@ -66,7 +78,12 @@ of work:
   whether a handle exists. It is buildable, it wants rate limiting and a
   constant-time answer, and it is not a CSS fix.
 
-- [!] **A2a. Which one?** Ask before building. Assume the small one until told.
+- [x] **The small one is done.** `autocomplete="username"` now sits on the email
+      field and the handle field is `autocomplete="off"`. A password manager
+      will offer the saved credential where the account is identified.
+- [!] **A2a. Which one did Staw mean?** Still open, still needs a word before the
+      large one gets built. The small one is shipped in the meantime and does no
+      harm either way.
 
 ### A3. Buttons are half cut
 
@@ -84,12 +101,28 @@ loses its shadow, and on hover or press moves partly outside the clip.
 **Fix the containers and the spacing, not the shadows.** The shadow is the
 design. Removing it to stop the clipping would be fixing the symptom.
 
-- [ ] **A3a.** Sweep the app for buttons inside clipping parents, tight grid
-      cells and flex rows with no trailing gap. Screenshot the ones that cut.
-- [ ] **A3b.** Give each its room: padding on the parent, or the parent stops
-      clipping if nothing needed it to.
-- [ ] **A3c.** Check the press state too, not only rest. A button can look right
-      until it is pushed.
+**Swept.** Every route was rendered at 1360 and 430 against a stubbed data layer
+and each control measured against its nearest clipping ancestor. Three real
+cases, and the third turned out not to be a shadow problem at all.
+
+- [x] **A3a. `.hd-tabs`.** `overflow-x: auto` forces `overflow-y` to compute to
+      `auto` as well, so the row clips vertically even though nothing asked it
+      to, and `.hd-tab.is-on` lost 4px of its shadow at both widths. Padding
+      buys the room back, a negative margin returns the row to where it sat.
+- [x] **A3b. `.hd-stf-nav` under 900px.** Same mechanism. It already had
+      `padding-bottom: 6px`, which covered the shadow but not the 1px the hover
+      lift needs above and to the left.
+- [x] **A3c. The staff console was 148px wide on a phone**, and that is the one
+      a person would actually describe as buttons being cut in half.
+      `body.hd-wide .hd-shell` restates `grid-template-columns` after all three
+      breakpoints have been declared, so it wins at every width and holds the
+      rail column at its full 258px right down to 430px, leaving the console
+      148px to live in. The breakpoints are now restated for `.hd-wide`.
+      **The lesson is general:** an unconditional override placed below a set of
+      media queries defeats all of them. Worth grepping for elsewhere.
+- [ ] **A3d.** The press state is still unswept: the sweep measured rest and
+      derived the hover growth, but `:active` translates the button `3px, 4px`
+      and that was not measured. A button can look right until it is pushed.
 
 ### A4. Feed, Explore and Home do not read like X
 
