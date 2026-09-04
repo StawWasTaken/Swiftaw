@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-nb="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 - Swiftaw</title>
+<meta name="description" content="That page wandered off.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0C0F15">
+<link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw-nb.css">
+<style>
+
+.nb-nav-actions .swl-btn, .nb-nav-actions .swa-btn { flex: none; }
+.pg-nav-cta { margin-left: 2px; }
+@media (max-width: 560px) { .pg-nav-cta { display: none; } }
+
+.nf-wrap {
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(48px, 9vw, 110px) 0;
+  position: relative; overflow: hidden;
+}
+[data-nb="dark"] .nb-dots {
+  background-image: radial-gradient(rgba(255,255,255,.28) 1.6px, transparent 1.6px);
+}
+.nf-wrap .nb-dots {
+  position: absolute; inset: auto -30px -20px auto;
+  width: 300px; height: 200px; opacity: .5;
+}
+
+.nf-card {
+  position: relative; z-index: 2;
+  max-width: 660px; width: 100%;
+  text-align: center;
+  padding: clamp(30px, 4.4vw, 54px);
+}
+
+.nf-num {
+  font-family: var(--nb-font-display); font-weight: 400; font-synthesis: none;
+  font-size: clamp(96px, 20vw, 190px); line-height: .86;
+  letter-spacing: -.04em;
+  color: var(--nb-yellow);
+  -webkit-text-stroke: 3px var(--nb-ink);
+  transform: rotate(-2.5deg);
+  margin-bottom: clamp(14px, 2vw, 24px);
+}
+.nf-card h1 { font-size: clamp(24px, 3vw, 34px); margin-bottom: 12px; }
+.nf-card h1 .dot { color: var(--nb-red); }
+.nf-card p { color: var(--nb-fg-muted); max-width: 44ch; margin: 0 auto 26px; }
+.nf-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+.nf-links { margin-top: 30px; padding-top: 22px; border-top: var(--nb-bd-thin); }
+.nf-links .lbl {
+  display: block; margin-bottom: 12px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 12px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--nb-fg-muted);
+}
+.nf-links .row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.nf-links a.nb-tag { text-decoration: none; }
+.nf-links a.nb-tag:hover { background: var(--nb-yellow); color: var(--nb-ink); }
+</style>
+</head>
+<body>
+
+<a class="nb-skip" href="#main">Skip to content</a>
+
+<div class="nb-rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<nav class="nb-nav" id="nav">
+  <div class="nb-nav-in">
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
+      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
+    </a>
+
+    <div class="nb-nav-links" id="navLinks">
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-products">Products <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-products">
+          <span class="nb-drop-label">Platforms</span>
+          <a class="nb-drop-item" href="https://fortized.com" rel="noopener"><img class="nb-drop-ico" src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Fortized</span><span class="nb-drop-d">Bastions, channels and DMs</span></span></a>
+          <span class="nb-drop-item is-soon" aria-disabled="true"><img class="nb-drop-ico" src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Hereld</span><span class="nb-drop-d">A professional network. Soon.</span></span></span>
+          <span class="nb-drop-label">Services</span>
+          <a class="nb-drop-item" href="/lifecheck/"><img class="nb-drop-ico" src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Lifecheck</span><span class="nb-drop-d">Human verification</span></span></a>
+          <a class="nb-drop-item" href="/supernova/"><img class="nb-drop-ico" src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Supernova</span><span class="nb-drop-d">The AI service</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-company">
+          <a class="nb-drop-item" href="/about-us"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
+          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
+          <a class="nb-drop-item" href="/newsroom"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
+          <a class="nb-drop-item" href="/innovation-room"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-resources">Resources <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-resources">
+          <span class="nb-drop-label">Press</span>
+          <a class="nb-drop-item" href="/presskit"><span class="nb-drop-txt"><span class="nb-drop-t">Press kit</span><span class="nb-drop-d">Logos, colours and the facts</span></span></a>
+          <span class="nb-drop-label">Legal</span>
+          <a class="nb-drop-item" href="/legal/terms-of-service/"><span class="nb-drop-txt"><span class="nb-drop-t">Terms of Service</span><span class="nb-drop-d">The rules of using Swiftaw</span></span></a>
+          <a class="nb-drop-item" href="/legal/privacy-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Privacy Policy</span><span class="nb-drop-d">What we hold, and why</span></span></a>
+          <a class="nb-drop-item" href="/legal/products-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Products Policy</span><span class="nb-drop-d">Rules that apply per product</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <a class="nb-nav-link" href="/contact">Contact</a>
+      </div>
+    </div>
+    <span class="nb-nav-spacer"></span>
+
+    <div class="nb-nav-actions">
+      <span data-swiftaw-launcher></span>
+      <span data-swiftaw-account></span>
+      <a class="nb-btn nb-btn--primary nb-btn--sm pg-nav-cta" href="https://fortized.com" rel="noopener">Fortized</a>
+      <button class="nb-icon-btn nb-nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+  <div class="nf-wrap">
+    <div class="nb-wrap" style="display:flex; justify-content:center;">
+      <div class="nb-dots" aria-hidden="true"></div>
+      <div class="nb-card nb-card--lg nf-card nb-reveal">
+        <div class="nf-num" aria-hidden="true">404</div>
+        <h1>That page wandered off<span class="dot">.</span></h1>
+        <p>Broken link, or a page that moved. Here is the way back.</p>
+        <div class="nf-actions">
+          <a class="nb-btn nb-btn--primary nb-btn--lg" href="/">Back home</a>
+          <a class="nb-btn nb-btn--lg" href="/innovation-room">See the Lab</a>
+        </div>
+        <div class="nf-links">
+          <span class="lbl">Or go straight to</span>
+          <div class="row">
+            <a class="nb-tag" href="/about-us">About</a>
+            <a class="nb-tag" href="/mission">Mission</a>
+            <a class="nb-tag" href="/newsroom">Newsroom</a>
+            <a class="nb-tag" href="https://fortized.com" rel="noopener">Fortized</a>
+            <a class="nb-tag" href="/lifecheck/">Lifecheck</a>
+            <a class="nb-tag" href="/supernova/">Supernova</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="nb-footer">
+  <div class="nb-wrap">
+    <div class="nb-footer-grid">
+      <div>
+        <a href="/" class="nb-foot-brand"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+        <p class="nb-muted" style="font-size:14px; max-width:32ch;">
+          A European software company. Île-de-France, France.
+        </p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div class="nb-footer-list">
+          <a href="/about-us">About</a>
+          <a href="/mission">Mission</a>
+          <a href="/innovation-room">Lab</a>
+          <a href="/newsroom">Newsroom</a>
+          <a href="/presskit">Press kit</a>
+          <a href="/contact">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4>Make</h4>
+        <div class="nb-footer-list">
+          <a href="https://fortized.com" rel="noopener">Fortized</a>
+          <a href="/lifecheck/">Lifecheck</a>
+          <a href="/supernova/">Supernova</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="nb-footer-list">
+          <a href="/legal/terms-of-service">Terms of Service</a>
+          <a href="/legal/privacy-policy">Privacy Policy</a>
+          <a href="/legal/products-policy">Products Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="nb-footer-base">
+      <span>© 2026 Swiftaw</span>
+      <span>Make It Matter.</span>
+    </div>
+  </div>
+  <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
+</footer>
+
+<script src="/css/swiftaw.js"></script>
+
+</body>
+</html>

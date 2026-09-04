@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en" data-nb="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docs - Lifecheck</title>
+<meta name="description" content="How to integrate Swiftaw Lifecheck v1.3: add the widget, read the token client-side, and verify it on your server. Full data-attribute, JavaScript API and verify-endpoint reference.">
+<link rel="canonical" href="https://swiftaw.com/lifecheck/docs">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lifecheck Docs &amp; API (v1.3)">
+<meta property="og:description" content="Integrate Lifecheck in two lines, then verify the token on your server. Full API reference.">
+<meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
+<meta property="og:url" content="https://swiftaw.com/lifecheck/docs">
+<meta name="theme-color" content="#0C0F15">
+<link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw-nb.css">
+<link rel="stylesheet" href="/css/lifecheck.css">
+<style>
+html { scroll-padding-top: 96px; }
+.nb-nav-actions .swl-btn, .nb-nav-actions .swa-btn { flex: none; }
+@media (max-width: 560px) { .lc-nav-cta { display: none; } }
+
+.docs-shell {
+  max-width: var(--nb-max); margin: 0 auto;
+  padding: clamp(96px, 11vw, 128px) 24px 0;
+  display: grid; grid-template-columns: 232px 1fr;
+  gap: clamp(28px, 4vw, 52px); align-items: start;
+}
+@media (max-width: 940px) { .docs-shell { grid-template-columns: 1fr; gap: 0; } }
+
+.docs-side {
+  position: sticky; top: 96px; align-self: start;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  --nb-fg: var(--nb-surface-fg); --nb-fg-muted: var(--nb-surface-fg-muted);
+  border: var(--nb-bd); border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh); padding: 16px 14px;
+}
+@media (max-width: 940px) { .docs-side { display: none; } }
+.docs-side .grp {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 10.5px;
+  letter-spacing: .11em; text-transform: uppercase;
+  color: var(--nb-fg-muted); margin: 16px 8px 7px;
+}
+.docs-side .grp:first-child { margin-top: 4px; }
+.docs-side a {
+  display: block; font-size: 13.5px; font-weight: 500;
+  color: var(--nb-fg-muted); padding: 7px 11px;
+  border-radius: var(--nb-r-sm); border: 2px solid transparent;
+  transition: color var(--nb-fast), background var(--nb-fast), border-color var(--nb-fast);
+}
+.docs-side a:hover { color: var(--nb-fg); background: rgba(255,255,255,.06); }
+.docs-side a.on {
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border-color: var(--nb-ink); box-shadow: var(--nb-sh-sm); font-weight: 700;
+}
+
+.docs-main { min-width: 0; }
+.docs-hero { margin-bottom: 8px; }
+.docs-hero h1 {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(32px, 4.6vw, 48px); line-height: 1.06;
+  letter-spacing: -.02em; margin: 14px 0 14px;
+}
+.docs-hero p { font-size: 16.5px; color: var(--nb-fg-muted); max-width: 62ch; line-height: 1.62; }
+
+.docs-main section { padding-top: 52px; scroll-margin-top: 96px; }
+.docs-main h2 {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 26px;
+  letter-spacing: -.01em; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 11px;
+}
+.docs-main h2 .step {
+  font-family: var(--nb-font-head); font-size: 14px; font-weight: 700;
+  color: var(--nb-ink); background: var(--nb-yellow);
+  width: 30px; height: 30px; flex: none;
+  border: var(--nb-bd-thin); border-radius: 9px; box-shadow: var(--nb-sh-sm);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.docs-main h2 .req, .docs-main h2 .ver {
+  font-family: var(--nb-font-head); font-size: 10.5px; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 4px 9px; border-radius: var(--nb-r-pill);
+  background: var(--nb-blue); color: var(--nb-ink); border: 2px solid var(--nb-ink);
+}
+.docs-main h3 { font-family: var(--nb-font-head); font-weight: 700; font-size: 17px; margin: 26px 0 10px; }
+.docs-main p { font-size: 15px; color: var(--nb-fg-muted); line-height: 1.68; margin-bottom: 12px; }
+.docs-main p b, .docs-main li b, .callout b { color: var(--nb-fg); }
+.docs-main ul, .docs-main ol { margin: 0 0 14px; padding-left: 22px; }
+.docs-main li { font-size: 15px; color: var(--nb-fg-muted); line-height: 1.62; margin-bottom: 7px; }
+.docs-main li::marker { color: var(--nb-yellow); }
+
+.docs-main code, td code, .inline-code {
+  font-family: var(--nb-font-mono); font-size: 12.8px;
+  color: var(--nb-yellow); background: rgba(255,249,62,.13);
+  border: 1.5px solid rgba(255,249,62,.28);
+  padding: 1.5px 6px; border-radius: 5px;
+}
+pre.code {
+  background: #0A0D13; border: var(--nb-bd); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh); padding: 18px 20px;
+  overflow-x: auto; margin: 6px 0 18px;
+}
+pre.code code {
+  font-family: var(--nb-font-mono); font-size: 12.7px; line-height: 1.75;
+  color: #D7DEE9; white-space: pre;
+  background: none; border: 0; padding: 0; border-radius: 0;
+}
+.tag { color: var(--nb-blue); }
+.at  { color: var(--nb-yellow); }
+.st  { color: var(--nb-green); }
+.cm  { color: #6B7686; }
+.kw  { color: var(--nb-pink); }
+.fn  { color: var(--nb-yellow); }
+.nm  { color: #C4B5FD; }
+
+.tbl-wrap {
+  overflow-x: auto; margin: 6px 0 20px;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  --nb-fg: var(--nb-surface-fg); --nb-fg-muted: var(--nb-surface-fg-muted);
+  border: var(--nb-bd); border-radius: var(--nb-r-sm); box-shadow: var(--nb-sh);
+}
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 500px; }
+th, td { text-align: left; padding: 12px 15px; border-bottom: 2px solid rgba(255,255,255,.08); vertical-align: top; color: var(--nb-fg-muted); }
+th {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 11px;
+  letter-spacing: .07em; text-transform: uppercase;
+  color: var(--nb-ink); background: var(--nb-yellow);
+  border-bottom: var(--nb-bd);
+}
+tr:last-child td { border-bottom: 0; }
+td .ver, .docs-main h3 .ver {
+  font-family: var(--nb-font-head); font-size: 9.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  padding: 3px 7px; border-radius: var(--nb-r-pill);
+  border: 2px solid var(--nb-ink); background: var(--nb-blue); color: var(--nb-ink);
+  display: inline-block; white-space: nowrap; vertical-align: 1px;
+}
+td .req, td .opt {
+  font-family: var(--nb-font-head); font-size: 9.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  padding: 3px 7px; border-radius: var(--nb-r-pill); border: 2px solid var(--nb-ink);
+  display: inline-block; white-space: nowrap;
+}
+td .req { background: var(--nb-pink); color: var(--nb-ink); }
+td .opt { background: rgba(255,255,255,.14); color: var(--nb-fg); border-color: rgba(255,255,255,.2); }
+
+.callout {
+  display: flex; gap: 13px; align-items: flex-start;
+  padding: 15px 17px; margin: 4px 0 18px;
+  font-size: 14px; line-height: 1.62; color: var(--nb-ink);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm); box-shadow: var(--nb-sh-sm);
+}
+.callout a { color: var(--nb-ink); text-decoration: underline; text-underline-offset: 2px; }
+.callout code { color: var(--nb-ink); background: rgba(0,0,0,.1); border-color: rgba(0,0,0,.22); }
+.callout b { color: var(--nb-ink); }
+.callout svg { width: 18px; height: 18px; flex: none; margin-top: 2px; fill: var(--nb-ink); }
+.callout.tip  { background: var(--nb-green); }
+.callout.warn { background: var(--nb-yellow); }
+.callout.note { background: var(--nb-blue); }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.tab-btn {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 12.5px;
+  color: var(--nb-fg-muted); padding: 8px 15px;
+  border: 2px solid transparent; border-radius: var(--nb-r-pill);
+  cursor: pointer; background: none;
+  transition: color var(--nb-fast), background var(--nb-fast), border-color var(--nb-fast);
+}
+.tab-btn:hover { color: var(--nb-fg); }
+.tab-btn.on {
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border-color: var(--nb-ink); box-shadow: var(--nb-sh-sm);
+}
+.tab-panel { display: none; }
+.tab-panel.on { display: block; }
+
+.pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 18px; }
+.pill {
+  font-family: var(--nb-font-mono); font-size: 12px; color: var(--nb-fg);
+  background: var(--nb-surface); border: var(--nb-bd-thin);
+  border-radius: var(--nb-r-sm); padding: 6px 11px; box-shadow: var(--nb-sh-sm);
+}
+.method-get  { color: var(--nb-green); font-weight: 700; }
+.method-post { color: var(--nb-blue); font-weight: 700; }
+
+.changelog { border-left: 3px solid var(--nb-ink); padding-left: 22px; margin-top: 12px; }
+.changelog .rel { margin-bottom: 24px; position: relative; }
+.changelog .rel::before {
+  content: ""; position: absolute; left: -30px; top: 4px;
+  width: 13px; height: 13px; border-radius: 50%;
+  background: var(--nb-yellow); border: 3px solid var(--nb-ink);
+}
+.changelog .rel.old::before { background: var(--nb-surface); }
+.changelog .v { font-family: var(--nb-font-head); font-weight: 700; font-size: 17px; }
+.changelog .d { font-size: 12px; color: var(--nb-fg-muted); margin-left: 9px; font-family: var(--nb-font-mono); }
+.changelog ul { margin-top: 9px; }
+</style>
+</head>
+<body>
+
+<a class="nb-skip" href="#main">Skip to content</a>
+
+<div class="nb-rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<nav class="nb-nav" id="nav">
+  <div class="nb-nav-in">
+    <a href="/lifecheck/" class="lc-brand" aria-label="Lifecheck by Swiftaw">
+      <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
+      <span class="lc-ver">v1.3</span>
+    </a>
+
+    <div class="nb-nav-links" id="navLinks">
+      <div class="lc-pills">
+        <a class="lc-pill" href="/lifecheck/">Overview</a>
+        <a class="lc-pill is-current" href="/lifecheck/docs" aria-current="page">Docs</a>
+        <a class="lc-pill" href="/lifecheck/keys">API keys</a>
+      </div>
+    </div>
+
+    <span class="nb-nav-spacer"></span>
+
+    <div class="nb-nav-actions">
+      <span data-swiftaw-launcher></span>
+      <span data-swiftaw-account></span>
+      <a class="nb-btn nb-btn--primary nb-btn--sm lc-nav-cta" href="/lifecheck/keys">Get a key</a>
+      <button class="nb-icon-btn nb-nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-bulb" viewBox="0 0 384 512"><path d="M272 384c9.6-31.9 29.5-59.1 49.2-86.2C334.7 279.4 348 261 358 240.6c30.2-61.9 15.9-133.4-32.5-181.8S189.9 5.3 128 35.5C65.8 65.8 32 128 32 192c0 27 6.7 52.5 18.5 74.9C60.5 287.3 73.8 305.6 87.3 324c19.7 27.1 39.6 54.3 49.2 86.2l135.5 0z"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 512 512"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480L40 480c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32z"/></symbol>
+  <symbol id="i-note" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 640 512"><path d="M246.9 18.3L271 3.8c21.6-13 46.3-19.8 71.5-19.8 36.8 0 72.2 14.6 98.2 40.7l63.9 63.9c15 15 23.4 35.4 23.4 56.6l0 30.9 19.7 19.7 0 0c15.6-15.6 40.9-15.6 56.6 0s15.6 40.9 0 56.6l-64 64c-15.6 15.6-40.9 15.6-56.6 0s-15.6-40.9 0-56.6L464 240 433.1 240c-21.2 0-41.6-8.4-56.6-23.4l-49.1-49.1c-15-15-23.4-35.4-23.4-56.6l0-12.7c0-11.2-5.9-21.7-15.5-27.4l-41.6-25c-10.4-6.2-10.4-21.2 0-27.4zM50.7 402.7l222.1-222.1 90.5 90.5-222.1 222.1c-25 25-65.5 25-90.5 0s-25-65.5 0-90.5z"/></symbol>
+</svg>
+
+<div class="docs-shell">
+
+  <aside class="docs-side" id="toc">
+    <div class="grp">Get started</div>
+    <a href="#quickstart">Quickstart</a>
+    <a href="#keys">Site &amp; secret keys</a>
+    <a href="#install">1 · Add the widget</a>
+    <a href="#clientside">2 · Read the token</a>
+    <a href="#verify">3 · Verify on server</a>
+    <div class="grp">Reference</div>
+    <a href="#api">Data attributes</a>
+    <a href="#js">JavaScript API</a>
+    <a href="#endpoint">Verify endpoint</a>
+    <a href="#invisible">Invisible mode</a>
+    <a href="#events">Frame events</a>
+    <a href="#errors">Error codes</a>
+    <div class="grp">More</div>
+    <a href="#protect">Anti-theft model</a>
+    <a href="#changelog">Changelog</a>
+  </aside>
+
+  <main class="docs-main" id="main">
+    <div class="docs-hero">
+      <span class="nb-sticker">Integration guide · v1.3</span>
+      <h1>Add Lifecheck to your site.</h1>
+      <p>Lifecheck is a drop-in human check. The widget runs in a sandboxed frame served from Swiftaw, hands the browser a one-time <b>token</b> on success, and you confirm that token on your server before trusting the request. Two lines to install, one call to verify.</p>
+    </div>
+
+    <section id="quickstart">
+      <h2>Quickstart</h2>
+      <p>The whole flow, top to bottom:</p>
+      <pre class="code"><code><span class="cm">&lt;!-- 1 · load Lifecheck once (in your &lt;head&gt; or before &lt;/body&gt;) --&gt;</span>
+<span class="tag">&lt;script</span> <span class="at">src</span>=<span class="st">"https://swiftaw.com/lifecheck/lifecheck.js"</span> <span class="at">async defer</span><span class="tag">&gt;&lt;/script&gt;</span>
+
+<span class="cm">&lt;!-- 2 · put the widget inside the form you want to protect --&gt;</span>
+<span class="tag">&lt;form</span> <span class="at">method</span>=<span class="st">"POST"</span> <span class="at">action</span>=<span class="st">"/signup"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="at">name</span>=<span class="st">"email"</span> <span class="at">type</span>=<span class="st">"email"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;div</span> <span class="at">class</span>=<span class="st">"lifecheck"</span> <span class="at">data-sitekey</span>=<span class="st">"YOUR_SITE_KEY"</span><span class="tag">&gt;&lt;/div&gt;</span>
+
+  <span class="tag">&lt;button</span> <span class="at">type</span>=<span class="st">"submit"</span><span class="tag">&gt;</span>Create account<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/form&gt;</span></code></pre>
+      <p>Lifecheck auto-renders the <code>.lifecheck</code> element, sizes its own frame, and injects a hidden <code>&lt;input name="lifecheck-token"&gt;</code> so the token rides along with a normal form POST. Then <a href="#verify">verify it on your server</a>. That's the entire integration.</p>
+      <div class="callout tip"><svg><use href="#i-bulb"/></svg><div><b>Just want to see it?</b> The <a href="/lifecheck/">overview page</a> embeds the real widget as a live demo, the same code you're pasting here.</div></div>
+    </section>
+
+    <section id="keys">
+      <h2>Site &amp; secret keys</h2>
+      <p>Lifecheck uses a key pair, one public and one private:</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>Key</th><th>Where it lives</th><th>What it does</th></tr>
+        <tr><td><code>Site key</code></td><td>In your HTML, on the widget</td><td>Public. Renders the widget and scopes it to your registered domain(s).</td></tr>
+        <tr><td><code>Secret key</code></td><td>On your server only</td><td>Private. Signs the call that verifies a token. Never ship it to the browser.</td></tr>
+      </table></div>
+      <p>Register your domain with Swiftaw to receive a pair. Keys look like <code>lc_site_xxx</code> and <code>lc_secret_xxx</code>.</p>
+      <div class="callout warn"><svg><use href="#i-warn"/></svg><div>Treat the <b>secret key</b> like a password. If it leaks, rotate it. Anyone who has it can forge verifications.</div></div>
+    </section>
+
+    <section id="install">
+      <h2><span class="step">1</span> Add the widget</h2>
+      <p>Load the script once per page, then place a container. You can configure it entirely with <code>data-</code> attributes:</p>
+      <pre class="code"><code><span class="tag">&lt;div</span> <span class="at">class</span>=<span class="st">"lifecheck"</span>
+     <span class="at">data-sitekey</span>=<span class="st">"YOUR_SITE_KEY"</span>
+     <span class="at">data-callback</span>=<span class="st">"onLifecheckPass"</span>
+     <span class="at">data-expired-callback</span>=<span class="st">"onLifecheckExpired"</span><span class="tag">&gt;&lt;/div&gt;</span></code></pre>
+      <p>See every attribute in the <a href="#api">data-attribute reference</a>. Prefer to render manually, say inside a modal that opens later? Skip the auto-render and call the API yourself:</p>
+      <pre class="code"><code><span class="tag">&lt;div</span> <span class="at">id</span>=<span class="st">"check"</span><span class="tag">&gt;&lt;/div&gt;</span>
+
+<span class="tag">&lt;script&gt;</span>
+  <span class="nm">Lifecheck</span>.<span class="fn">render</span>(<span class="st">"check"</span>, {
+    <span class="at">sitekey</span>: <span class="st">"YOUR_SITE_KEY"</span>,
+    <span class="at">callback</span>: <span class="kw">function</span>(token){ console.<span class="fn">log</span>(<span class="st">"passed:"</span>, token); }
+  });
+<span class="tag">&lt;/script&gt;</span></code></pre>
+      <div class="callout note"><svg><use href="#i-note"/></svg><div><b>Data &amp; consent.</b> Lifecheck records how visitors interact with the check and its mini-games (including robotic or suspicious signals) to run, improve and train Swiftaw's systems and AI. The widget shows this consent inline and links our <a href="/legal/terms-of-service">Terms</a>, <a href="/legal/privacy-policy">Privacy</a> and <a href="/legal/products-policy">Products</a> policies - no extra notice is required on your side.</div></div>
+    </section>
+
+    <section id="clientside">
+      <h2><span class="step">2</span> Read the token</h2>
+      <p>On a successful check, Lifecheck gives you the token three ways. Use whichever fits:</p>
+      <ul>
+        <li><b>Hidden field.</b> A <code>&lt;input name="lifecheck-token"&gt;</code> is added inside the container, so a plain form POST already carries it.</li>
+        <li><b>Callback.</b> Your <code>data-callback</code> function is invoked as <code>callback(token, widget)</code>.</li>
+        <li><b>DOM event.</b> The container emits a bubbling <code>lifecheck:verified</code> event with <code>detail.token</code>.</li>
+      </ul>
+      <p>Or pull it on demand:</p>
+      <pre class="code"><code><span class="kw">const</span> token = <span class="nm">Lifecheck</span>.<span class="fn">getResponse</span>();   <span class="cm">// "" until verified</span>
+
+<span class="cm">// e.g. gate an AJAX submit</span>
+form.<span class="fn">addEventListener</span>(<span class="st">"submit"</span>, <span class="kw">async</span> (e) =&gt; {
+  <span class="kw">const</span> t = <span class="nm">Lifecheck</span>.<span class="fn">getResponse</span>();
+  <span class="kw">if</span> (!t) { e.<span class="fn">preventDefault</span>(); <span class="fn">alert</span>(<span class="st">"Please complete the check."</span>); }
+});</code></pre>
+      <div class="callout note"><svg><use href="#i-note"/></svg><div>A token is <b>single-use</b> and expires ~2 minutes after it's minted. Call <code>Lifecheck.reset()</code> to hand the user a fresh challenge (e.g. after a failed submit).</div></div>
+    </section>
+
+    <section id="verify">
+      <h2><span class="step">3</span> Verify on your server</h2>
+      <p>The client token proves nothing on its own. Always confirm it from your <b>backend</b> (never browser JS, or you'll leak your secret and hit CORS). Verification is a single call to Lifecheck's function endpoint with your secret key and the token:</p>
+      <div class="pill-row">
+        <span class="pill"><span class="method-post">POST</span> https://mwszvynzzugbowdngzab.supabase.co/rest/v1/rpc/lifecheck_verify_token</span>
+        <span class="pill">Content-Type: application/json</span>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <div class="tab-btn on" data-tab="curl">cURL</div>
+        <div class="tab-btn" data-tab="node">Node.js</div>
+        <div class="tab-btn" data-tab="php">PHP</div>
+      </div>
+      <div class="tab-panel on" data-tab="curl">
+        <pre class="code"><code>curl -X POST \
+  <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/rest/v1/rpc/lifecheck_verify_token"</span> \
+  -H <span class="st">"apikey: sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf"</span> \
+  -H <span class="st">"Content-Type: application/json"</span> \
+  -d <span class="st">'{ "p_secret": "YOUR_SECRET_KEY", "p_token": "THE_TOKEN_FROM_THE_BROWSER" }'</span></code></pre>
+      </div>
+      <div class="tab-panel" data-tab="node">
+        <pre class="code"><code><span class="cm">// server-side only - keep YOUR_SECRET_KEY out of the browser</span>
+<span class="kw">const</span> res = <span class="kw">await</span> <span class="fn">fetch</span>(
+  <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/rest/v1/rpc/lifecheck_verify_token"</span>, {
+  <span class="at">method</span>: <span class="st">"POST"</span>,
+  <span class="at">headers</span>: {
+    <span class="st">"apikey"</span>: <span class="st">"sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf"</span>,
+    <span class="st">"Content-Type"</span>: <span class="st">"application/json"</span>
+  },
+  <span class="at">body</span>: <span class="nm">JSON</span>.<span class="fn">stringify</span>({
+    <span class="at">p_secret</span>: process.env.<span class="nm">LIFECHECK_SECRET</span>,
+    <span class="at">p_token</span>: req.body[<span class="st">"lifecheck-token"</span>]
+  })
+});
+<span class="kw">const</span> data = <span class="kw">await</span> res.<span class="fn">json</span>();
+<span class="kw">if</span> (!data.success) <span class="kw">return</span> res.<span class="fn">status</span>(<span class="nm">400</span>).<span class="fn">send</span>(<span class="st">"Failed Lifecheck"</span>);</code></pre>
+      </div>
+      <div class="tab-panel" data-tab="php">
+        <pre class="code"><code><span class="nm">$r</span> = <span class="fn">file_get_contents</span>(
+  <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/rest/v1/rpc/lifecheck_verify_token"</span>, <span class="kw">false</span>,
+  <span class="fn">stream_context_create</span>([<span class="st">"http"</span> =&gt; [
+    <span class="st">"method"</span>  =&gt; <span class="st">"POST"</span>,
+    <span class="st">"header"</span>  =&gt; <span class="st">"apikey: sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf\r\nContent-Type: application/json"</span>,
+    <span class="st">"content"</span> =&gt; <span class="fn">json_encode</span>([
+      <span class="st">"p_secret"</span> =&gt; <span class="nm">$SECRET</span>,
+      <span class="st">"p_token"</span>  =&gt; <span class="nm">$_POST</span>[<span class="st">"lifecheck-token"</span>]
+    ])
+  ]]));
+<span class="nm">$ok</span> = <span class="fn">json_decode</span>(<span class="nm">$r</span>)-&gt;success;</code></pre>
+      </div>
+
+      <h3>Response</h3>
+      <pre class="code"><code>{
+  <span class="at">"success"</span>:      <span class="kw">true</span>,
+  <span class="at">"score"</span>:        <span class="nm">0.85</span>,                  <span class="cm">// 0..1, real as of v1.3</span>
+  <span class="at">"passed"</span>:       <span class="st">"signals"</span>,             <span class="cm">// "signals" | "challenge" | "signals-invisible"</span>
+  <span class="at">"mode"</span>:         <span class="st">"checkbox"</span>,            <span class="cm">// "checkbox" | "invisible"</span>
+  <span class="at">"challenge_ts"</span>: <span class="st">"2026-07-31T18:04:11Z"</span>,
+  <span class="at">"hostname"</span>:     <span class="st">"yoursite.com"</span>,
+  <span class="at">"v"</span>:            <span class="st">"1.3"</span>,
+  <span class="at">"error-codes"</span>:  []
+}</code></pre>
+      <div class="callout tip"><svg><use href="#i-bulb"/></svg><div>Gate your action on <code>success === true</code>. <code>p_secret</code> is your private secret and must stay server-side. Tokens are single-use and expire ~2 minutes after issue.</div></div>
+      <div class="callout warn"><svg><use href="#i-note"/></svg><div><b>The <code>apikey</code> header is not your Lifecheck key.</b> It is Lifecheck's public API key - the fixed value shown above, identical for every customer, and safe to ship. Sending your own <code>lc_site_…</code> or <code>lc_secret_…</code> key there gets you <code>401 Invalid API key</code> before the token is ever read. Your keys go in the JSON body: <code>p_secret</code> only.</div></div>
+      <div class="callout note"><svg><use href="#i-note"/></svg><div>Keys are checked live, so managing them takes effect right away - <b>remove a key and it stops working immediately</b>, no redeploy needed.</div></div>
+
+      <h3>No backend? Verify in the browser safely</h3>
+      <p>A direct browser call to the verify RPC fails CORS on purpose - it stops you shipping your secret to the client. For a fully static site, deploy the <code>lifecheck-verify</code> Edge Function (in <code>supabase/functions/</code>): the browser sends only the <b>public</b> site key + token, and the function looks up the secret server-side and returns a CORS-enabled verdict. Your secret never leaves Supabase. Try it live on the <a href="/lifecheck/verify-test">token verifier</a>.</p>
+      <pre class="code"><code><span class="cm">// deploy once:  supabase functions deploy lifecheck-verify --no-verify-jwt</span>
+<span class="kw">const</span> r = <span class="kw">await</span> <span class="fn">fetch</span>(
+  <span class="st">"https://mwszvynzzugbowdngzab.supabase.co/functions/v1/lifecheck-verify"</span>, {
+  <span class="at">method</span>: <span class="st">"POST"</span>,
+  <span class="at">headers</span>: { <span class="st">"Content-Type"</span>: <span class="st">"application/json"</span> },
+  <span class="at">body</span>: <span class="nm">JSON</span>.<span class="fn">stringify</span>({ <span class="at">sitekey</span>: <span class="st">"lc_site_..."</span>, <span class="at">token</span>: <span class="nm">Lifecheck</span>.<span class="fn">getResponse</span>() })
+});
+<span class="kw">const</span> verdict = <span class="kw">await</span> r.<span class="fn">json</span>();   <span class="cm">// { success:true, passed:"challenge", ... }</span></code></pre>
+      <div class="callout warn"><svg><use href="#i-warn"/></svg><div>Browser verification trades a little strictness for convenience: it takes the public key, so it's best for low-risk gates. For anything sensitive, verify server-side with the secret as shown above.</div></div>
+    </section>
+
+    <section id="api">
+      <h2>Data-attribute reference</h2>
+      <div class="tbl-wrap"><table>
+        <tr><th>Attribute</th><th></th><th>Description</th></tr>
+        <tr><td><code>class="lifecheck"</code></td><td><span class="req">required</span></td><td>Marks the element for auto-render. (Or <code>data-lifecheck</code>.)</td></tr>
+        <tr><td><code>data-sitekey</code></td><td><span class="req">required</span></td><td>Your public site key.</td></tr>
+        <tr><td><code>data-callback</code></td><td><span class="opt">optional</span></td><td>Name of a global function called as <code>fn(token, widget)</code> on pass. Dotted paths like <code>app.onPass</code> work.</td></tr>
+        <tr><td><code>data-expired-callback</code></td><td><span class="opt">optional</span></td><td>Global function called when a token expires.</td></tr>
+        <tr><td><code>data-error-callback</code></td><td><span class="opt">optional</span></td><td>Global function called as <code>fn({code, message}, widget)</code> when the widget can't verify at all - <code>sitekey-rejected</code> (unknown key, or this domain isn't allow-listed), <code>issue-request-failed</code> (Lifecheck unreachable) or <code>no-sitekey</code>. Use it to fall back; the pass callback will never fire.</td></tr>
+        <tr><td><code>data-response-field</code></td><td><span class="opt">optional</span></td><td>Renames the hidden input (default <code>lifecheck-token</code>).</td></tr>
+        <tr><td><code>data-size="invisible"</code></td><td><span class="opt">optional</span></td><td><span class="ver">v1.3</span> Renders nothing. Call <code>Lifecheck.execute()</code> when you need the check; it passes silently or unfolds a challenge in place. See <a href="#invisible">invisible mode</a>.</td></tr>
+      </table></div>
+    </section>
+
+    <section id="js">
+      <h2>JavaScript API</h2>
+      <p>Everything hangs off the global <code>Lifecheck</code> object.</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>Method</th><th>Returns</th><th>Description</th></tr>
+        <tr><td><code>Lifecheck.render(el, opts?)</code></td><td><code>id</code></td><td>Renders a widget into <code>el</code> (element or id). <code>opts</code>: <code>sitekey</code>, <code>callback</code>, <code>expired-callback</code>, <code>error-callback</code>. Returns a numeric widget id.</td></tr>
+        <tr><td><code>Lifecheck.getResponse(ref?)</code></td><td><code>string</code></td><td>Current token, or <code>""</code> if not yet verified. <code>ref</code> = id, element, or container id; defaults to the first widget.</td></tr>
+        <tr><td><code>Lifecheck.reset(ref?)</code></td><td><code>void</code></td><td>Clears the token and loads a fresh challenge.</td></tr>
+        <tr><td><code>Lifecheck.execute(ref?)</code></td><td><code>widget</code></td><td><span class="ver">v1.3</span> Runs an invisible-mode check now. Forwards the page's cursor trail to the frame, which either mints a token (your pass callback fires) or unfolds a challenge.</td></tr>
+        <tr><td><code>Lifecheck.version</code></td><td><code>string</code></td><td>Loader version, e.g. <code>"1.3"</code>.</td></tr>
+      </table></div>
+    </section>
+
+    <section id="endpoint">
+      <h2>Verify endpoint</h2>
+      <p><span class="method-post">POST</span> <code>/rest/v1/rpc/lifecheck_verify_token</code> (JSON body) request parameters:</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>Param</th><th></th><th>Description</th></tr>
+        <tr><td><code>p_secret</code></td><td><span class="req">required</span></td><td>Your secret key (server-side only).</td></tr>
+        <tr><td><code>p_token</code></td><td><span class="req">required</span></td><td>The token returned by the widget in the browser.</td></tr>
+      </table></div>
+      <p>Send Lifecheck's public API key (<code>sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf</code> - the same for everyone, not one of your own keys) in the <code>apikey</code> header. The endpoint accepts cross-origin requests, but call it from your backend so <code>p_secret</code> never reaches a browser.</p>
+      <p>Response fields:</p>
+      <div class="tbl-wrap"><table>
+        <tr><th>Field</th><th>Type</th><th>Meaning</th></tr>
+        <tr><td><code>success</code></td><td>boolean</td><td>Whether the token is valid and unused. <b>Gate on this.</b></td></tr>
+        <tr><td><code>score</code></td><td>number</td><td>0.0-1.0 confidence the visitor is human, from the nine signals the widget read. <span class="ver">v1.3</span> - before this it was always <code>0.9</code>, and tokens minted by an older widget still answer <code>0.9</code>. Gate on <code>success</code>; use <code>score</code> for softer calls like holding a submission for review.</td></tr>
+        <tr><td><code>passed</code></td><td>string</td><td><code>"signals"</code> (passed on behaviour), <code>"challenge"</code> (solved a task) or <code>"signals-invisible"</code>.</td></tr>
+        <tr><td><code>mode</code></td><td>string</td><td><span class="ver">v1.3</span> <code>"checkbox"</code> or <code>"invisible"</code>.</td></tr>
+        <tr><td><code>challenge_ts</code></td><td>string</td><td>ISO-8601 timestamp of the check.</td></tr>
+        <tr><td><code>hostname</code></td><td>string</td><td>Domain the check was solved on.</td></tr>
+        <tr><td><code>v</code></td><td>string</td><td>Lifecheck version (<code>"1.3"</code>).</td></tr>
+        <tr><td><code>error-codes</code></td><td>array</td><td>Present when <code>success</code> is false. See below.</td></tr>
+      </table></div>
+    </section>
+
+    <section id="errors">
+      <h2>Error codes</h2>
+      <div class="tbl-wrap"><table>
+        <tr><th>Code</th><th>Meaning</th></tr>
+        <tr><td><code>missing-input-secret</code></td><td>The <code>p_secret</code> parameter was not sent.</td></tr>
+        <tr><td><code>invalid-input-secret</code></td><td>The secret key is unknown (or its key was deleted).</td></tr>
+        <tr><td><code>missing-input-token</code></td><td>The <code>p_token</code> parameter was not sent.</td></tr>
+        <tr><td><code>invalid-input-token</code></td><td>No such token for this key.</td></tr>
+        <tr><td><code>timeout-or-duplicate</code></td><td>The token has expired or was already verified once. Since v1.3 the widget warns you first: it fires <code>data-expired-callback</code> and resets itself just before a token goes stale, so a form left open no longer submits one that is already dead.</td></tr>
+        <tr><td><code>invalid-input-sitekey</code></td><td>Browser endpoint only. No key registered under the <code>sitekey</code> you sent.</td></tr>
+        <tr><td><code>invalid-input-token</code> on a <code>LC1.3-preview_…</code> token</td><td>Not a bug. Preview tokens come from a reserved <code>_public</code> site key, are minted entirely in the browser, and are meant to be unverifiable - that is what makes them safe to demo with. Use a real <code>lc_site_…</code> key to get a token that verifies.</td></tr>
+      </table></div>
+    </section>
+
+    <section id="invisible">
+      <h2>Invisible mode <span class="ver">v1.3</span></h2>
+      <p>Add <code>data-size="invisible"</code> and Lifecheck draws nothing at all. Call <code>Lifecheck.execute()</code> at the moment you actually need a human - on submit, usually. Most visitors never see a thing; the ones the check isn't sure about get a challenge that unfolds in place.</p>
+      <pre class="code"><code><span class="tag">&lt;div</span> <span class="at">class</span>=<span class="st">"lifecheck"</span>
+     <span class="at">data-sitekey</span>=<span class="st">"YOUR_SITE_KEY"</span>
+     <span class="at">data-size</span>=<span class="st">"invisible"</span>
+     <span class="at">data-callback</span>=<span class="st">"onPass"</span><span class="tag">&gt;&lt;/div&gt;</span>
+
+<span class="tag">&lt;script&gt;</span>
+  <span class="cm">// the token arrives here, exactly as in checkbox mode</span>
+  <span class="kw">function</span> <span class="fn">onPass</span>(token){ form.submit(); }
+
+  submitBtn.<span class="fn">addEventListener</span>(<span class="st">'click'</span>, <span class="kw">function</span>(e){
+    e.<span class="fn">preventDefault</span>();
+    Lifecheck.<span class="fn">execute</span>();
+  });
+<span class="tag">&lt;/script&gt;</span></code></pre>
+      <p>The container gets <code>data-lifecheck-expanded="true"</code> and fires a <code>lifecheck:expand</code> DOM event when a challenge appears, so you can make room for it. Leave the element where the challenge should show up.</p>
+      <div class="callout warn"><svg><use href="#i-note"/></svg><div><b>Know what you're trading.</b> A zero-size frame never sees the pointer, so the loader forwards your page's cursor trail into it - and anything collected on your page can be fabricated by script running on your page, unlike the samples the frame gathers for itself. Lifecheck holds host-supplied signals to a much higher bar before it will pass anyone on them alone, and still runs its environment checks inside the frame where the page can't reach them. Invisible mode buys <b>less friction</b>, not more certainty. For a login or a payment, the checkbox is the stronger choice.</div></div>
+    </section>
+
+    <section id="events">
+      <h2>Frame events (advanced)</h2>
+      <p>Under the hood the sandboxed widget talks to the loader over <code>postMessage</code>. You normally never touch this (the loader turns it into the callbacks above), but for custom hosts, messages are shaped:</p>
+      <pre class="code"><code>{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.3"</span>, <span class="at">event</span>: <span class="st">"verified"</span>, <span class="at">token</span>: <span class="st">"LC1.3_…"</span> }
+{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.3"</span>, <span class="at">event</span>: <span class="st">"resize"</span>,   <span class="at">height</span>: <span class="nm">74</span> }
+{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.3"</span>, <span class="at">event</span>: <span class="st">"ready"</span> }
+{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.3"</span>, <span class="at">event</span>: <span class="st">"error"</span>,   <span class="at">code</span>: <span class="st">"sitekey-rejected"</span>, <span class="at">message</span>: <span class="st">"…"</span> }
+{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.3"</span>, <span class="at">event</span>: <span class="st">"expand"</span> }   <span class="cm">// invisible mode wants a challenge</span>
+{ <span class="at">source</span>: <span class="st">"swiftaw-lifecheck"</span>, <span class="at">v</span>: <span class="st">"1.3"</span>, <span class="at">event</span>: <span class="st">"collapse"</span> } <span class="cm">// …and is done with it</span></code></pre>
+      <div class="callout note"><svg><use href="#i-note"/></svg><div>Always validate <code>event.origin</code> against Lifecheck's origin before trusting a message. The bundled loader does this for you.</div></div>
+      <h3>Testing aids <span class="ver">v1.3</span></h3>
+      <p>Two query parameters on the frame make a widget easier to look at while you're wiring it up. Both only affect what you can see - neither makes a check easier to pass.</p>
+      <table>
+        <thead><tr><th>Parameter</th><th>Does</th></tr></thead>
+        <tbody>
+        <tr><td><code>?lcdebug=1</code></td><td>Logs every signal and event the widget records to the console, and keeps them on <code>window.__lcEvents</code> so you can read exactly what Lifecheck saw.</td></tr>
+        <tr><td><code>?lcgame=trace</code></td><td>Pins the challenge to one game instead of picking at random, so you can look at the same one repeatedly. Any of the eleven ids: <code>imagepick</code>, <code>oddone</code>, <code>tally</code>, <code>grid</code>, <code>slider</code>, <code>rotate</code>, <code>sequence</code>, <code>code</code>, <code>trace</code>, <code>catchit</code>, <code>pairs</code>.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="protect">
+      <h2>Anti-theft model</h2>
+      <p>People ask how they can integrate Lifecheck without being able to just copy it. Here's the honest answer:</p>
+      <ul>
+        <li>The detection logic and the five challenges live in <code>embed.html</code>, served only from <b>swiftaw.com</b> and loaded inside a sandboxed <code>&lt;iframe&gt;</code>. Integrators embed a URL, not a re-hostable copy of the checks.</li>
+        <li><b>Tokens are minted server-side.</b> When a visitor passes, the widget asks Swiftaw to issue a token, which only happens if your site key <b>still exists</b> and the host is on its allow-list. A copied widget with no valid key gets nothing back.</li>
+        <li><b>Live revocation.</b> Delete a key and token issuance stops that instant, and the secret-side verify can no longer find the key. Pages already open can't keep verifying - no reload required.</li>
+        <li>The token is single-use and useless until <b>your secret key</b> verifies it. A stolen widget shell can't produce tokens that pass your server check.</li>
+      </ul>
+      <div class="callout warn"><svg><use href="#i-warn"/></svg><div>Like any browser check, a determined bot can still drive the widget itself - the honest guarantee is the pairing of <b>live key validation</b> and <b>server-side secret verification</b> (step 3), not client-side friction. Never skip step 3.</div></div>
+    </section>
+
+    <section id="changelog">
+      <h2>Changelog</h2>
+      <div class="changelog">
+        <div class="rel">
+          <span class="v">v1.3</span><span class="d">current</span>
+          <ul>
+            <li><b>Eleven signals, one score.</b> The cursor checks stopped being pass/fail questions: more signals joined the original three, and each costs confidence rather than deciding on its own. The odds of being challenged now follow the score rather than a fixed coin flip.</li>
+            <li><b>Half of all sessions play a game.</b> The other half are read from behaviour and only interrupted when the signals don't add up. Split at random per visit, so looking smooth is no longer a way through on its own. Invisible mode is exempt, by design.</li>
+            <li><b>Expiring tokens announce themselves.</b> <code>data-expired-callback</code> has been documented since v1.1 and could never actually fire; it does now, and the widget resets itself so the visitor can simply check again.</li>
+            <li><b>Every board is unique.</b> Tiles get their own rotation, scale and mirror, the beacons carry real numbers instead of always 1 to 5, and the traced beam is sometimes an S-bend. No two boards render the same pixels.</li>
+            <li><b>The two pointer-only games offer a way out.</b> Trace and Tag need a mouse, so they are never shown on touch, refuse keyboard activation, and carry a one-press swap to a fully keyboard-playable challenge.</li>
+            <li><b>Three new mini-games.</b> Trace the beam, tag the probe, find the twins - eleven in all.</li>
+            <li><b>Every challenge is keyboard-playable.</b> Tab and Enter to pick, arrows to steer the slider and the dial, real labels on everything. Grab-anywhere dragging, Enter to submit the code, and no more empty-grid submissions.</li>
+            <li><b>Invisible mode.</b> <code>data-size="invisible"</code> plus <code>Lifecheck.execute()</code>. See <a href="#invisible">the section above</a>, including what it trades away.</li>
+            <li><b>Friendlier failures.</b> A check that can't run says so in its own voice and offers another crank, instead of dead-ending on an error the visitor can't do anything about.</li>
+            <li><b>Reserved preview keys.</b> A site key ending in <code>_public</code> never reaches the server and mints an unverifiable <code>LC1.3-preview_…</code> token. It's how our own demos run; it is not something to ship on a real form.</li>
+            <li>Richer interaction insights, so the check - and Swiftaw's AI - keeps getting better.</li>
+          </ul>
+        </div>
+        <div class="rel old">
+          <span class="v">v1.2</span><span class="d">previous</span>
+          <ul>
+            <li><b>New mini-games.</b> Pick the life form, spot the odd one out, and count the life forms - drawn with Twemoji so they look the same everywhere.</li>
+            <li><b>Refreshed widget.</b> The LifeCheck wordmark, a wider card, and smoother motion.</li>
+            <li>Interaction insights that help the check keep getting better.</li>
+            <li>Hardened verification and behind-the-scenes tuning.</li>
+          </ul>
+        </div>
+        <div class="rel old">
+          <span class="v">v1.1</span><span class="d">previous</span>
+          <ul>
+            <li>Per-site API keys, server-issued tokens, and a verify endpoint.</li>
+            <li>Self-sizing frame via <code>resize</code> messages, so the box never clips.</li>
+            <li>Hidden-field auto-injection for zero-JS form submits.</li>
+            <li><code>lifecheck:verified</code> DOM event + dotted-path callbacks.</li>
+          </ul>
+        </div>
+        <div class="rel old">
+          <span class="v">v1.0</span><span class="d">initial</span>
+          <ul>
+            <li>Cursor-behaviour detection (distance, jitter, reaction time) with touch fallback.</li>
+            <li>Themed challenges + the &ldquo;I'm not a robot&rdquo; checkbox widget.</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:24px;">Ready to wire it up? Jump back to the <a href="#quickstart">quickstart</a> or see the <a href="/lifecheck/">overview</a>.</p>
+    </section>
+  </main>
+</div>
+
+<footer class="nb-footer">
+  <div class="nb-wrap">
+    <div class="nb-footer-grid">
+      <div class="lc-foot-brand">
+        <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
+        <p class="nb-muted" style="font-size:14px; max-width:32ch;">
+          Human verification, made by Swiftaw in Île-de-France, France.
+        </p>
+      </div>
+      <div>
+        <h4>Lifecheck</h4>
+        <div class="nb-footer-list">
+          <a href="/lifecheck/">Overview</a>
+          <a href="/lifecheck/docs">Docs</a>
+          <a href="/lifecheck/keys">API keys</a>
+          <a href="/lifecheck/verify-test">Token verifier</a>
+        </div>
+      </div>
+      <div>
+        <h4>Swiftaw</h4>
+        <div class="nb-footer-list">
+          <a href="https://swiftaw.com/">Home</a>
+          <a href="https://swiftaw.com/about-us">About</a>
+          <a href="https://swiftaw.com/newsroom">Newsroom</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="nb-footer-list">
+          <a href="https://swiftaw.com/legal/terms-of-service">Terms of Service</a>
+          <a href="https://swiftaw.com/legal/privacy-policy">Privacy Policy</a>
+          <a href="https://swiftaw.com/legal/products-policy">Products Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="nb-footer-base">
+      <span>© 2026 Swiftaw</span>
+      <span>Make It Matter.</span>
+    </div>
+  </div>
+  <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
+</footer>
+
+<script src="/css/swiftaw.js"></script>
+<script>
+(function(){
+
+  document.querySelectorAll('.tabs').forEach(function(tabs){
+    var section = tabs.closest('section');
+    tabs.querySelectorAll('.tab-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var name = btn.getAttribute('data-tab');
+        tabs.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.toggle('on', b === btn); });
+        section.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.toggle('on', p.getAttribute('data-tab') === name); });
+      });
+    });
+  });
+
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var map = {};
+  links.forEach(function(a){ var id = a.getAttribute('href').slice(1); map[id] = a; });
+  var spy = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        links.forEach(function(a){ a.classList.remove('on'); });
+        if(map[en.target.id]) map[en.target.id].classList.add('on');
+      }
+    });
+  }, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+  document.querySelectorAll('.docs-main section[id]').forEach(function(s){ spy.observe(s); });
+})();
+</script>
+</body>
+</html>

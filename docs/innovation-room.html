@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en" data-nb="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab - Swiftaw</title>
+<meta name="description" content="The Lab is where Swiftaw works on things that are not products yet. Innoprojects, in the open, before anyone announces anything.">
+<meta name="author" content="Swiftaw">
+<meta name="theme-color" content="#0C0F15">
+<link rel="canonical" href="https://swiftaw.com/innovation-room">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Swiftaw">
+<meta property="og:title" content="Lab - Swiftaw">
+<meta property="og:description" content="Where the weird ideas grow up. Most don't make it out.">
+<meta property="og:image" content="https://swiftaw.com/SwiftawLab-Swiftign.png">
+<meta property="og:url" content="https://swiftaw.com/innovation-room">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab - Swiftaw">
+<meta name="twitter:description" content="Where the weird ideas grow up. Most don't make it out.">
+<meta name="twitter:image" content="https://swiftaw.com/SwiftawLab-Swiftign.png">
+<link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw-nb.css">
+<style>
+
+html { scroll-padding-top: 88px; }
+
+.nb-nav-actions .swl-btn, .nb-nav-actions .swa-btn { flex: none; }
+.pg-nav-cta { margin-left: 2px; }
+@media (max-width: 560px) { .pg-nav-cta { display: none; } }
+
+.pg-head { position: relative; padding: clamp(64px, 9vw, 116px) 0 clamp(26px, 3.6vw, 44px); overflow: hidden; }
+.pg-slab {
+  position: relative; z-index: 2;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r-lg);
+  box-shadow: var(--nb-sh-lg);
+  padding: clamp(28px, 4vw, 52px);
+  max-width: 880px;
+
+  --nb-fg: var(--nb-surface-fg);
+  --nb-fg-muted: var(--nb-surface-fg-muted);
+}
+.pg-slab .dot { color: var(--nb-red); }
+.pg-slab .nb-lead { margin-top: 18px; max-width: 54ch; }
+.pg-slab .nb-eyebrow { display: block; margin-bottom: 14px; color: var(--nb-fg-muted); }
+
+[data-nb="dark"] .nb-dots {
+  background-image: radial-gradient(rgba(255,255,255,.28) 1.6px, transparent 1.6px);
+}
+.pg-head .nb-dots {
+  position: absolute; inset: auto -40px -30px auto;
+  width: 320px; height: 220px; z-index: 1; opacity: .55;
+}
+
+.lab-controls {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 26px;
+}
+.lab-search { position: relative; flex: 1 1 260px; max-width: 380px; }
+.lab-search svg {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  width: 15px; height: 15px; fill: var(--nb-fg-muted); pointer-events: none;
+}
+.lab-search .nb-input { padding-left: 40px; }
+
+.lab-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.lab-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 12.5px;
+  padding: 8px 13px;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+  box-shadow: var(--nb-sh-sm);
+  cursor: pointer;
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast), background var(--nb-fast);
+}
+.lab-chip:hover  { transform: translate(-1px, -1px); box-shadow: 3px 4px 0 var(--nb-ink); }
+.lab-chip:active { transform: translate(2px, 3px);   box-shadow: 0 0 0 var(--nb-ink); }
+.lab-chip[aria-pressed="true"] { background: var(--nb-yellow); color: var(--nb-ink); }
+.lab-chip .n {
+  font-size: 11px; padding: 1px 6px; border-radius: var(--nb-r-pill);
+  background: rgba(0,0,0,.14); color: inherit;
+}
+[data-nb="dark"] .lab-chip:not([aria-pressed="true"]) .n { background: rgba(255,255,255,.12); }
+
+.lab-chip .d { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--nb-ink); background: var(--nb-surface-2); }
+.lab-chip[data-status="live"]     .d { background: var(--nb-green); }
+.lab-chip[data-status="cooking"]  .d { background: var(--nb-yellow); }
+.lab-chip[data-status="dreaming"] .d { background: var(--nb-blue); }
+.lab-chip[data-status="shelved"]  .d { background: var(--nb-pink); }
+.lab-chip[data-status="killed"]   .d { background: var(--nb-red); }
+.lab-chip[data-status="All"]      .d { display: none; }
+
+.lab-grid { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+
+.lab-card { display: flex; flex-direction: column; text-align: left; width: 100%; font-family: var(--nb-font-body); }
+.lab-card-img {
+  display: block;
+  height: 168px; background: var(--nb-surface-2) center/cover no-repeat;
+  border-bottom: var(--nb-bd);
+}
+.lab-card-title, .lab-card-tagline, .lab-card-more { display: block; }
+.lab-card-img.placeholder { display: grid; place-items: center; }
+.lab-card-img.placeholder img { width: 56px; height: auto; opacity: .5; }
+.lab-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+.lab-card-top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.lab-card-num { font-family: var(--nb-font-mono); font-size: 11.5px; color: var(--nb-fg-muted); letter-spacing: .04em; }
+.lab-card-title { font-family: var(--nb-font-head); font-weight: 700; font-size: 22px; }
+.lab-card-tagline { font-size: 14px; color: var(--nb-fg-muted); line-height: 1.5; }
+.lab-card-more {
+  margin-top: auto; padding-top: 12px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px; color: var(--nb-blue);
+}
+
+.st { display: inline-flex; align-items: center; gap: 6px; }
+.st .d { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+
+#lab-list-view.hidden { display: none; }
+#project-view { display: none; padding: clamp(28px, 5vw, 56px) 0 clamp(50px, 8vw, 100px); }
+#project-view.open { display: block; }
+
+.proj-banner-img {
+  height: clamp(180px, 26vw, 320px);
+  background: var(--nb-surface-2) center/cover no-repeat;
+  border-bottom: var(--nb-bd);
+}
+.proj-banner-img.placeholder { display: grid; place-items: center; }
+.proj-banner-img.placeholder img { width: 74px; height: auto; opacity: .5; }
+.proj-banner-meta { padding: 22px clamp(20px, 3vw, 34px) 26px; display: flex; flex-direction: column; gap: 10px; }
+.proj-eyebrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.proj-title { font-family: var(--nb-font-display); font-weight: 400; font-synthesis: none; font-size: clamp(32px, 5vw, 58px); line-height: .95; }
+.proj-tagline { font-size: clamp(16px, 1.5vw, 19px); color: var(--nb-fg-muted); max-width: 56ch; }
+.proj-date { font-family: var(--nb-font-mono); font-size: 12.5px; color: var(--nb-fg-muted); }
+
+.proj-body {
+  max-width: 760px; margin-top: 30px;
+  font-size: 16px; line-height: 1.72;
+}
+.proj-body p  { margin-bottom: 16px; color: var(--nb-fg-muted); }
+.proj-body b  { color: var(--nb-fg); font-weight: 700; }
+.proj-body h3 {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(20px, 2.2vw, 26px);
+  margin: 34px 0 4px; color: var(--nb-fg);
+}
+.proj-body .sub-label {
+  display: block; margin-bottom: 14px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 12px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--nb-fg-muted);
+}
+.proj-body ul { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 10px; }
+.proj-body ul li {
+  position: relative; padding-left: 26px; color: var(--nb-fg-muted);
+}
+.proj-body ul li::before {
+  content: ""; position: absolute; left: 0; top: .55em;
+  width: 12px; height: 12px; background: var(--nb-blue);
+  border: var(--nb-bd-w-thin) solid var(--nb-line);
+}
+.proj-body code {
+  font-family: var(--nb-font-mono); font-size: .88em;
+  background: var(--nb-surface-2); color: var(--nb-fg);
+  border: var(--nb-bd-thin); border-radius: 5px; padding: 1px 6px;
+}
+.proj-callout {
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm);
+  padding: 16px 18px; margin: 22px 0;
+  --nb-fg: var(--nb-surface-fg);
+  --nb-fg-muted: var(--nb-surface-fg-muted);
+}
+.proj-callout strong { font-family: var(--nb-font-head); }
+.proj-directive {
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border: var(--nb-bd); border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh);
+  padding: 22px 24px; margin: 30px 0 8px;
+  --nb-fg: var(--nb-ink);
+  --nb-fg-muted: #3A3A2A;
+}
+.proj-directive .head {
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 11px;
+  letter-spacing: .16em; text-transform: uppercase;
+  background: var(--nb-ink); color: var(--nb-yellow);
+  padding: 6px 12px; border-radius: var(--nb-r-pill);
+}
+.proj-directive ul li::before { background: var(--nb-ink); }
+.proj-signoff {
+  border-top: var(--nb-bd-thin); padding-top: 18px; margin-top: 26px;
+  font-size: 14px; color: var(--nb-fg-muted);
+}
+.proj-works { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+.proj-works .lbl { font-family: var(--nb-font-head); font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--nb-fg-muted); }
+.proj-works .logo-chip img { width: 16px; height: 16px; object-fit: contain; }
+
+.lab-back { margin-bottom: 22px; }
+</style>
+</head>
+<body>
+
+<a class="nb-skip" href="#main">Skip to content</a>
+
+<div class="nb-rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<nav class="nb-nav" id="nav">
+  <div class="nb-nav-in">
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
+      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
+    </a>
+
+    <div class="nb-nav-links" id="navLinks">
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-products">Products <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-products">
+          <span class="nb-drop-label">Platforms</span>
+          <a class="nb-drop-item" href="https://fortized.com" rel="noopener"><img class="nb-drop-ico" src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Fortized</span><span class="nb-drop-d">Bastions, channels and DMs</span></span></a>
+          <span class="nb-drop-item is-soon" aria-disabled="true"><img class="nb-drop-ico" src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Hereld</span><span class="nb-drop-d">A professional network. Soon.</span></span></span>
+          <span class="nb-drop-label">Services</span>
+          <a class="nb-drop-item" href="/lifecheck/"><img class="nb-drop-ico" src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Lifecheck</span><span class="nb-drop-d">Human verification</span></span></a>
+          <a class="nb-drop-item" href="/supernova/"><img class="nb-drop-ico" src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true"><span class="nb-drop-txt"><span class="nb-drop-t">Supernova</span><span class="nb-drop-d">The AI service</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link is-current" aria-expanded="false" aria-haspopup="true" aria-controls="drop-company">Company <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-company">
+          <a class="nb-drop-item" href="/about-us"><span class="nb-drop-txt"><span class="nb-drop-t">About us</span><span class="nb-drop-d">Who we are and what we make</span></span></a>
+          <a class="nb-drop-item" href="/mission"><span class="nb-drop-txt"><span class="nb-drop-t">Our mission</span><span class="nb-drop-d">What we are aiming at</span></span></a>
+          <a class="nb-drop-item" href="/newsroom"><span class="nb-drop-txt"><span class="nb-drop-t">Newsroom</span><span class="nb-drop-d">Releases and announcements</span></span></a>
+          <a class="nb-drop-item" href="/innovation-room" aria-current="page"><span class="nb-drop-txt"><span class="nb-drop-t">Innovation Room</span><span class="nb-drop-d">Ideas we are still testing</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <button type="button" class="nb-nav-link" aria-expanded="false" aria-haspopup="true" aria-controls="drop-resources">Resources <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-resources">
+          <span class="nb-drop-label">Press</span>
+          <a class="nb-drop-item" href="/presskit"><span class="nb-drop-txt"><span class="nb-drop-t">Press kit</span><span class="nb-drop-d">Logos, colours and the facts</span></span></a>
+          <span class="nb-drop-label">Legal</span>
+          <a class="nb-drop-item" href="/legal/terms-of-service/"><span class="nb-drop-txt"><span class="nb-drop-t">Terms of Service</span><span class="nb-drop-d">The rules of using Swiftaw</span></span></a>
+          <a class="nb-drop-item" href="/legal/privacy-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Privacy Policy</span><span class="nb-drop-d">What we hold, and why</span></span></a>
+          <a class="nb-drop-item" href="/legal/products-policy/"><span class="nb-drop-txt"><span class="nb-drop-t">Products Policy</span><span class="nb-drop-d">Rules that apply per product</span></span></a>
+        </div>
+      </div>
+      <div class="nb-nav-item">
+        <a class="nb-nav-link" href="/contact">Contact</a>
+      </div>
+    </div>
+    <span class="nb-nav-spacer"></span>
+
+    <div class="nb-nav-actions">
+      <span data-swiftaw-launcher></span>
+      <span data-swiftaw-account></span>
+      <a class="nb-btn nb-btn--primary nb-btn--sm pg-nav-cta" href="https://fortized.com" rel="noopener">Fortized</a>
+      <button class="nb-icon-btn nb-nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+
+<div id="lab-list-view">
+
+  <section class="pg-head">
+    <div class="nb-wrap">
+      <div class="nb-dots" aria-hidden="true"></div>
+      <div class="pg-slab nb-reveal">
+        <span class="nb-eyebrow">The Lab</span>
+        <h1 class="nb-display nb-d2">Where the weird<br>ideas grow up<span class="dot">.</span></h1>
+        <p class="nb-lead nb-muted">
+          Most don't make it out. The ones that do, you'll see here first.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="nb-section" style="padding-top:clamp(20px,3vw,34px);">
+    <div class="nb-wrap">
+
+      <div class="nb-alert nb-alert--info nb-reveal" style="margin-bottom:30px; max-width:880px;">
+        <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+        <span>An <b>Innoproject</b> is something we are building because we want to, not something we have announced. Anything on this bench can stop at any point. When one becomes a real product, it gets written up in the <a href="/newsroom">Newsroom</a>.</span>
+      </div>
+
+      <div class="lab-controls nb-reveal">
+        <label class="lab-search">
+          <span class="nb-sr">Search the bench</span>
+          <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+          <input class="nb-input" id="lab-search-input" type="search" placeholder="Search the bench" autocomplete="off">
+        </label>
+        <div class="lab-chips" id="lab-chips" role="group" aria-label="Filter by status"></div>
+      </div>
+
+      <div class="lab-grid" id="lab-grid"></div>
+
+    </div>
+  </section>
+
+</div>
+
+<div id="project-view" aria-live="polite">
+  <div class="nb-wrap">
+    <button class="nb-btn nb-btn--sm lab-back" type="button" id="lab-back">← Back to the Lab</button>
+    <div id="project-content"></div>
+  </div>
+</div>
+
+</main>
+
+<footer class="nb-footer">
+  <div class="nb-wrap">
+    <div class="nb-footer-grid">
+      <div>
+        <a href="/" class="nb-foot-brand"><img src="/SWFTW_Logomark.png" alt="Swiftaw"></a>
+        <p class="nb-muted" style="font-size:14px; max-width:32ch;">
+          A European software company. Île-de-France, France.
+        </p>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div class="nb-footer-list">
+          <a href="/about-us">About</a>
+          <a href="/mission">Mission</a>
+          <a href="/innovation-room">Lab</a>
+          <a href="/newsroom">Newsroom</a>
+          <a href="/presskit">Press kit</a>
+          <a href="/contact">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4>Make</h4>
+        <div class="nb-footer-list">
+          <a href="https://fortized.com" rel="noopener">Fortized</a>
+          <a href="/lifecheck/">Lifecheck</a>
+          <a href="/supernova/">Supernova</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="nb-footer-list">
+          <a href="/legal/terms-of-service">Terms of Service</a>
+          <a href="/legal/privacy-policy">Privacy Policy</a>
+          <a href="/legal/products-policy">Products Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="nb-footer-base">
+      <span>© 2026 Swiftaw</span>
+      <span>Make It Matter.</span>
+    </div>
+  </div>
+  <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
+</footer>
+
+<script>
+
+const DECO = '/SWFT-Deco/pretty-logo.png';
+
+const PROJECTS = {
+  swiftign: {
+    innoLabel: 'Innoproject-1', sortIndex: 1, status: 'live', statusLabel: 'shipped · v1',
+    title: 'swiftign', tagline: 'the internal design language we build everything in.',
+    date: '13 jun 2026',
+    banner: '/SwiftawLab-Swiftign.png',
+    content: `
+      <p>swiftign is the internal design system we use across every Swiftaw and Fortized surface. born in 2026 while we were rebuilding both sites at the same time and realised we kept reaching for the same little tricks.</p>
+      <p>so we gave it a name and wrote it down.</p>
+      <h3>the vibe, in one breath</h3>
+      <p>dark, slightly playful, mildly off-axis. things tilt. things wobble a little. nothing is perfectly aligned because perfectly aligned is boring. <b>stickers, capsules, soft chips, 3D buttons</b> - all sitting on a near-black background with a single warm yellow doing most of the heavy lifting.</p>
+      <div class="proj-callout"><strong>rule of thumb:</strong> if it looks like a SaaS dashboard, you went too far. if it looks like a sticker someone slapped on a laptop, you're close.</div>
+      <h3>the tokens</h3>
+      <span class="sub-label">colours, type, surfaces. swap freely per product.</span>
+      <p><b>backgrounds</b> stay dark and near-neutral. <b>one yellow accent</b> per product carries the brand. <b>six soft tints</b> (yellow / pink / blue / mint / lilac / peach) handle everything else - chips, callouts, status pills, sticker tints.</p>
+      <h3>the components</h3>
+      <span class="sub-label">the building blocks we lean on most.</span>
+      <ul>
+        <li><b>floating capsule nav</b> - centered, blurred, rounded-999, logo handles home. yellow gradient active pill, mobile drawer with sliding "→".</li>
+        <li><b>3D buttons</b> (<code>.btn-3d</code> / <code>.btn-3d-ghost</code>) with hard offset shadows that press in on click.</li>
+        <li><b>sticker cards</b> with subtle tilts that straighten on hover.</li>
+        <li><b>soft chip tokens</b> in the six tints, used for status, eyebrows, callouts.</li>
+        <li><b>floating FontAwesome decos</b> that bob gently between sections.</li>
+        <li><b>Twemoji + Fortized custom emojis</b> (joyster, leafen, knight) used inline as real text.</li>
+      </ul>
+      <div class="proj-callout"><strong>copy tone:</strong> lowercase, conversational, no em-dashes (only "-"). short sentences. zero corporate. say "we build weird stuff", not "we are an innovative studio".</div>
+      <h3>how to use it</h3>
+      <span class="sub-label">a framework, not a cage.</span>
+      <p>swiftign is meant to be <b>remixed per product</b>. swap the accent. add a tint. invent your own sticker shape. the only fixed things are the <b>off-axis playfulness, the dark canvas, the typographic stack, and the tone of voice</b>. everything else is fair game.</p>
+      <div class="proj-directive">
+        <span class="head">★ swiftign directives</span>
+        <p>when you're building a new Swiftaw or Fortized app, treat <b>swiftaw.com</b> and <b>fortized.com</b> as your reference textures. open them, scroll them, screenshot them, and <b>take inspiration</b> - don't trace them. you're allowed to invent.</p>
+        <ul>
+          <li>keep the dark canvas, the single-yellow-accent rule, and the Syne + DM Sans pairing.</li>
+          <li>use stickers, capsules and 3D buttons before you reach for anything generic.</li>
+          <li>let things tilt slightly. straighten on hover. never align everything to a perfect grid.</li>
+          <li>match the voice: lowercase, short, a little weird, never corporate.</li>
+          <li>everything else - layout, components, surprise moments - invent freely.</li>
+        </ul>
+      </div>
+      <p class="proj-signoff">that's the whole system, as it was written in june 2026. the public sites have since been rebuilt on the neo-brutalist language, so treat this page as the record of swiftign, not a demonstration of it.</p>
+    `
+  }
+};
+
+const STATUSES = [
+  { key: 'All',      label: 'All' },
+  { key: 'live',     label: 'Live' },
+  { key: 'cooking',  label: 'Cooking' },
+  { key: 'dreaming', label: 'Dreaming' },
+  { key: 'shelved',  label: 'Shelved' },
+  { key: 'killed',   label: 'Killed' }
+];
+
+const STATUS_ORDER = { live: 0, cooking: 1, dreaming: 2, shelved: 3, killed: 4 };
+const STATUS_TAG   = { live: 'nb-tag--green', cooking: 'nb-tag--yellow', dreaming: 'nb-tag--blue', shelved: 'nb-tag--pink', killed: 'nb-tag--red' };
+
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+let activeStatus = 'All';
+let labSearch = '';
+
+function bannerHTML(banner, cls, tag){
+  const t = tag || 'div';
+  return banner
+    ? `<${t} class="${cls}" style="background-image:url('${esc(banner)}');"></${t}>`
+    : `<${t} class="${cls} placeholder"><img src="${DECO}" alt="" loading="lazy"></${t}>`;
+}
+
+function statePill(p){
+  return `<span class="nb-tag ${STATUS_TAG[p.status] || ''} st"><span class="d"></span>${esc(p.statusLabel)}</span>`;
+}
+
+function renderChips(){
+  const counts = {};
+  Object.values(PROJECTS).forEach(p => { counts[p.status] = (counts[p.status] || 0) + 1; });
+  const total = Object.values(PROJECTS).length;
+  const host = document.getElementById('lab-chips');
+  host.innerHTML = STATUSES.map(s => {
+    const n = s.key === 'All' ? total : (counts[s.key] || 0);
+    return `<button type="button" class="lab-chip" data-status="${s.key}" aria-pressed="${s.key === activeStatus}">
+      <span class="d"></span>${esc(s.label)}<span class="n">${n}</span></button>`;
+  }).join('');
+  host.querySelectorAll('.lab-chip').forEach(el => el.addEventListener('click', () => {
+    activeStatus = el.dataset.status;
+    renderChips(); renderGrid();
+  }));
+}
+
+function cardHTML(id, p){
+  return `<button type="button" class="nb-card nb-card--live nb-card--bare lab-card nb-reveal" data-project="${esc(id)}">
+    ${bannerHTML(p.banner, 'lab-card-img', 'span')}
+    <span class="lab-card-body">
+      <span class="lab-card-top">
+        <span class="lab-card-num">${esc(p.innoLabel)}</span>
+        ${statePill(p)}
+      </span>
+      <span class="lab-card-title">${esc(p.title)}</span>
+      <span class="lab-card-tagline">${esc(p.tagline)}</span>
+      <span class="lab-card-more">Read more →</span>
+    </span>
+  </button>`;
+}
+
+function renderGrid(){
+  const grid = document.getElementById('lab-grid');
+  const q = labSearch.toLowerCase().trim();
+  const entries = Object.entries(PROJECTS)
+    .filter(([, p]) => activeStatus === 'All' || p.status === activeStatus)
+    .filter(([, p]) => !q || p.title.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q))
+    .sort((a, b) => (STATUS_ORDER[a[1].status] ?? 9) - (STATUS_ORDER[b[1].status] ?? 9) || a[1].sortIndex - b[1].sortIndex);
+
+  if (!entries.length){
+    grid.innerHTML = `<div class="nb-card nb-card--lg nb-state" style="grid-column:1/-1;">
+      <img src="${DECO}" alt="" loading="lazy">
+      <h3>Nothing on this shelf</h3>
+      <p>${q ? 'No project matches that search.' : 'Nothing sits at this status right now.'}</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = entries.map(([id, p]) => cardHTML(id, p)).join('');
+  grid.querySelectorAll('[data-project]').forEach(el =>
+    el.addEventListener('click', () => openProject(el.dataset.project)));
+
+  if (window.SwiftawObserveReveals) window.SwiftawObserveReveals(grid);
+}
+
+function renderProject(id){
+  const p = PROJECTS[id];
+  if (!p) return false;
+
+  const works = (p.works || []).length ? `
+    <div class="proj-works">
+      <span class="lbl">Works with</span>
+      ${p.works.map(w => `<span class="nb-tag logo-chip"><img src="${esc(w.logo)}" alt="">${esc(w.label)}</span>`).join('')}
+    </div>` : '';
+
+  const note = p.status !== 'live' ? `
+    <div class="nb-alert nb-alert--info" style="margin-top:22px; max-width:760px;">
+      <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
+      <span>This is an <b>Innoproject</b>. We are exploring this corner of tech because we like building in it, not because it is an announced Swiftaw product. If it becomes one, the announcement goes up in the <a href="/newsroom">Newsroom</a>.</span>
+    </div>` : '';
+
+  document.getElementById('project-content').innerHTML = `
+    <article>
+      <div class="nb-card nb-card--lg nb-card--bare">
+        ${bannerHTML(p.banner, 'proj-banner-img')}
+        <div class="proj-banner-meta">
+          <div class="proj-eyebrow">
+            <span class="nb-tag nb-mono">${esc(p.innoLabel)}</span>
+            ${statePill(p)}
+          </div>
+          <h1 class="proj-title">${esc(p.title)}</h1>
+          <p class="proj-tagline">${esc(p.tagline)}</p>
+          <div class="proj-date">${esc(p.date)}</div>
+        </div>
+      </div>
+      ${note}
+      ${works}
+      <div class="proj-body">${p.content}</div>
+    </article>`;
+
+  document.title = p.title + ' - Swiftaw Lab';
+  document.getElementById('lab-list-view').classList.add('hidden');
+  document.getElementById('project-view').classList.add('open');
+  return true;
+}
+
+function showList(){
+  document.getElementById('lab-list-view').classList.remove('hidden');
+  document.getElementById('project-view').classList.remove('open');
+  document.title = 'Lab - Swiftaw';
+}
+
+function openProject(id){
+  if (!PROJECTS[id]) return;
+  const url = new URL(window.location.href);
+  url.searchParams.set('innoproject', id);
+  history.pushState({ projectId: id }, '', url.toString());
+  renderProject(id);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeProject(){
+  const url = new URL(window.location.href);
+  url.searchParams.delete('innoproject');
+  history.pushState({ projectId: null }, '', url.toString());
+  showList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('lab-back').addEventListener('click', closeProject);
+document.getElementById('lab-search-input').addEventListener('input', e => {
+  labSearch = e.target.value || '';
+  renderGrid();
+});
+
+window.addEventListener('popstate', e => {
+  const id = e.state && e.state.projectId;
+  if (id && PROJECTS[id]) renderProject(id); else showList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+renderChips();
+renderGrid();
+
+(function(){
+  const id = new URLSearchParams(window.location.search).get('innoproject');
+  if (id && PROJECTS[id]) {
+    renderProject(id);
+    history.replaceState({ projectId: id }, '', window.location.href);
+  }
+})();
+</script>
+
+<script src="/css/swiftaw.js"></script>
+
+</body>
+</html>

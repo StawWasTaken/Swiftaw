@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>Lifecheck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+
+    --bg:#0C0F15;
+    --card:#161B24;
+    --card-2:#12161F;
+    --ink-line:#000000;
+    --sh:4px 6px 0 #000;
+    --sh-sm:2px 3px 0 #000;
+    --sh-press:1px 2px 0 #000;
+    --stroke:#000000;
+    --stroke-soft:#000000;
+    --track:#0E1219;
+
+    --rail:#2A3342;
+
+    --yellow:#FFF93E; --yellow-s:#e6d21f;
+    --green:#3ECF6E;  --green-s:#268f45;
+    --blue:#2CAFFC;   --blue-s:#1f8ad6;
+    --red:#FF0033;    --red-s:#c00229;
+    --pink:#FF77E4;   --pink-s:#e065c8;
+    --ink:#0d1117;
+    --text:#f4f6fa;
+    --muted:#8b96a8;
+    --muted-2:#aeb8c8;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    background:transparent;
+    font-family:'Syne', sans-serif;
+    color:var(--text);
+    padding:2px;
+    user-select:none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+  }
+
+  img{ -webkit-user-drag:none; user-drag:none; }
+  canvas{ -webkit-user-drag:none; user-drag:none; display:block; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001s !important; transition-duration:0.001s !important; }
+  }
+
+  .stage{ width:392px; max-width:100%; }
+
+  .collapsed{
+    position:relative;
+    background:var(--card);
+    border:3px solid var(--stroke);
+    border-radius:16px;
+    box-shadow:var(--sh);
+    overflow:hidden;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  .collapsed .pad{ padding:12px 14px; }
+
+  .rainbaw{ display:flex; height:6px; width:100%; flex:0 0 auto; }
+  .rainbaw > i{ flex:1; display:block; }
+  .rainbaw > i:nth-child(1){ background:var(--red); }
+  .rainbaw > i:nth-child(2){ background:var(--green); }
+  .rainbaw > i:nth-child(3){ background:var(--blue); }
+  .rainbaw > i:nth-child(4){ background:var(--yellow); }
+  .rainbaw > i:nth-child(5){ background:var(--pink); }
+  @keyframes popIn{
+    0%{ opacity:0; transform:scale(.94) translateY(8px); }
+    100%{ opacity:1; transform:scale(1) translateY(0); }
+  }
+  .chk-row{ display:flex; align-items:center; gap:12px; }
+
+  .chk-box{
+    width:26px; height:26px;
+    border-radius:6px;
+    border:3px solid var(--stroke);
+    background:var(--track);
+    box-shadow:var(--sh-sm);
+    flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition:background .15s ease, transform .12s ease, box-shadow .12s ease;
+  }
+  .chk-box:hover{ transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .chk-box:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
+
+  .chk-box i{ font-size:13px; color:var(--ink); transform:scale(0); opacity:0; }
+
+  .chk-box i.chk-tick{
+    width:11px; height:6px; margin-top:-3px; font-size:0;
+    border-left:3px solid var(--ink); border-bottom:3px solid var(--ink);
+    transform:rotate(-45deg) scale(0); transform-origin:center;
+  }
+  .chk-box.spin i{ display:none; }
+
+  .spinner-ring{
+    display:none;
+    width:15px; height:15px;
+    border-radius:50%;
+    border:3px solid rgba(255,255,255,.16);
+    border-top-color:var(--red);
+  }
+  .chk-box.spin .spinner-ring{
+    display:block;
+    animation:spin .9s linear infinite, ringHue 4.5s steps(1) infinite;
+  }
+  .chk-box.checked{ background:var(--yellow); animation:checkPop .45s cubic-bezier(.34,1.9,.64,1) both; }
+
+  .chk-box.checked i{ color:var(--ink); transform:scale(1); opacity:1; transition:transform .3s cubic-bezier(.34,1.9,.64,1) .06s, opacity .2s ease .06s; }
+  .chk-box.checked i.chk-tick{ border-color:var(--ink); transform:rotate(-45deg) scale(1); }
+  .collapsed.is-verified .chk-box,
+  .collapsed.is-verified .chk-label{ cursor:default; pointer-events:none; }
+  .collapsed.is-verified .chk-box:hover{ transform:none; box-shadow:var(--sh-sm); }
+
+  .chk-box.jammed{ background:var(--red); }
+  .chk-box.jammed i{ color:#fff; transform:scale(1); opacity:1; animation:jam .7s cubic-bezier(.36,.07,.19,.97) both; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  @keyframes ringHue{
+    0%  { border-top-color:var(--red); }
+    20% { border-top-color:var(--green); }
+    40% { border-top-color:var(--blue); }
+    60% { border-top-color:var(--yellow); }
+    80% { border-top-color:var(--pink); }
+  }
+  @keyframes jam{
+    0%{ transform:rotate(0deg) scale(1); }
+    30%{ transform:rotate(52deg) scale(1.06); }
+    42%{ transform:rotate(40deg) scale(1); }
+    54%{ transform:rotate(48deg) scale(1); }
+    66%{ transform:rotate(41deg) scale(1); }
+    100%{ transform:rotate(45deg) scale(1); }
+  }
+  @keyframes checkPop{ 0%{transform:scale(1);} 45%{transform:scale(1.18);} 70%{transform:scale(.92);} 100%{transform:scale(1);} }
+
+  .chk-label{ flex:1 1 auto; font-weight:700; font-size:15px; color:var(--text); cursor:pointer; user-select:none; }
+  .chk-label .dots::after{ content:''; animation:dotting 1.2s steps(4,end) infinite; }
+  @keyframes dotting{ 0%{content:'';} 25%{content:'.';} 50%{content:'..';} 75%{content:'...';} 100%{content:'';} }
+
+  .wm{ filter:brightness(0) invert(1); }
+  .lc-badge{ flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-end; gap:3px; line-height:1; }
+  .lc-badge .wm{ height:13px; width:auto; display:block; }
+  .lc-badge .ver{ font-weight:700; font-size:8.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); }
+  .lc-badge .ver b{ color:var(--yellow); font-weight:800; }
+  .lc-badge .legal{ font-weight:600; font-size:8px; letter-spacing:.2px; }
+  .lc-badge .legal a{ color:var(--muted); text-decoration:none; }
+  .lc-badge .legal a:hover{ color:var(--muted-2); text-decoration:underline; }
+
+  .consent{
+    margin-top:7px; padding-top:6px;
+    border-top:2px solid var(--stroke-soft);
+    display:flex; gap:5px; align-items:center;
+    font-weight:500; font-size:7.4px; line-height:1.3; letter-spacing:.1px;
+    color:#6f7a8b;
+  }
+  .consent .cshield{ color:var(--green); font-size:8px; flex:0 0 auto; opacity:.9; }
+  .consent a{ color:#8b96a8; text-decoration:underline; text-decoration-color:rgba(255,255,255,.18); text-underline-offset:1px; }
+  .consent a:hover{ color:var(--text); }
+
+  .expanded{
+    position:relative;
+    background:var(--card);
+    border:3px solid var(--stroke);
+    border-radius:18px;
+    box-shadow:var(--sh);
+    overflow:hidden;
+    animation:expandIn .45s cubic-bezier(.34,1.5,.64,1) both;
+    background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1.5px);
+    background-size:16px 16px;
+  }
+  @keyframes expandIn{
+    0%{ opacity:0; transform:scale(.9) translateY(6px); }
+    100%{ opacity:1; transform:scale(1) translateY(0); }
+  }
+  .hidden{ display:none !important; }
+
+  .exp-header{
+    display:flex; align-items:center; justify-content:flex-start;
+    padding:15px 16px 12px;
+  }
+  .exp-header .brand-mark{ display:flex; align-items:center; gap:9px; }
+  .exp-header .wm{ height:14px; width:auto; }
+  .exp-header .tag{ font-weight:700; font-size:9px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); }
+  .exp-header .tag b{ color:var(--yellow); font-weight:800; }
+
+  .test-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-weight:700; font-size:10px; letter-spacing:.5px; text-transform:uppercase;
+    padding:4px 10px; border-radius:100px;
+    border:2px solid var(--stroke);
+    box-shadow:var(--sh-press);
+    color:var(--ink);
+    background:var(--chip, var(--muted));
+    width:fit-content;
+  }
+  .test-chip i{ font-size:9px; }
+
+  .exp-body{
+    border-top:2px solid var(--stroke);
+    padding:16px 16px 6px;
+    display:flex; flex-direction:column; gap:12px;
+  }
+
+  .prompt{ font-weight:700; font-size:15px; line-height:1.35; }
+  .prompt b.hl{ color:var(--yellow); font-weight:800; }
+  .prompt .sub{ display:block; font-weight:500; font-size:12px; color:var(--muted); margin-top:4px; }
+
+  .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+
+  .tile{
+    position:relative;
+    aspect-ratio:1/1; background:var(--track); border:3px solid var(--stroke); border-radius:11px;
+    box-shadow:var(--sh-sm);
+    display:flex; align-items:center; justify-content:center; font-size:18px; color:var(--text); cursor:pointer;
+    overflow:hidden;
+    transition:transform .12s ease, box-shadow .12s ease, background .15s ease, color .15s ease;
+  }
+  .tile:hover{ transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .tile:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
+  .tile canvas{ width:66%; height:66%; object-fit:contain; pointer-events:none; }
+  .tile.selected{ background:var(--blue); color:var(--ink); animation:tileBounce .35s cubic-bezier(.34,1.9,.64,1); }
+  @keyframes tileBounce{ 0%{transform:scale(1);} 50%{transform:scale(1.14);} 100%{transform:scale(1);} }
+  .tile.wrong{ background:var(--red) !important; color:#fff !important; animation:shakeSmall .4s ease; }
+
+  .tile:focus-visible, .numbtn:focus-visible, .beacon:focus-visible,
+  .probe:focus-visible, .handle:focus-visible, .dial-handle:focus-visible{
+    outline:3px solid var(--blue); outline-offset:2px;
+  }
+  .tile.correct-flash{ background:var(--green) !important; color:var(--ink) !important; }
+
+  .numpad{ display:grid; grid-template-columns:repeat(6,1fr); gap:7px; margin-top:2px; }
+  .numbtn{
+    aspect-ratio:1/1; background:var(--track); border:3px solid var(--stroke); border-radius:10px;
+    box-shadow:var(--sh-sm);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; color:var(--text); cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, background .14s ease, color .14s ease;
+  }
+  .numbtn:hover{ transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .numbtn:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
+  .numbtn.wrong{ background:var(--red); color:#fff; animation:shakeSmall .4s ease; }
+  .numbtn.right{ background:var(--green); color:var(--ink); }
+
+  .slide-wrap{ padding:6px 2px 2px; }
+  .track{ position:relative; height:44px; background:var(--track); border:3px solid var(--stroke); border-radius:22px; margin-top:24px; box-shadow:var(--sh-sm); }
+  .target-zone{ position:absolute; top:-4px; bottom:-4px; background:rgba(62,207,110,0.22); border-left:3px dashed var(--ink-line); border-right:3px dashed var(--ink-line); border-radius:8px; }
+  .target-zone i{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:var(--green); font-size:13px; }
+  .handle{ position:absolute; top:50%; left:0; width:38px; height:38px; margin-top:-19px; border-radius:50%; background:var(--green); border:3px solid var(--stroke); box-shadow:var(--sh-sm); display:flex; align-items:center; justify-content:center; cursor:grab; touch-action:none; }
+  .handle:active{ cursor:grabbing; }
+  .handle i{ color:var(--ink); font-size:15px; }
+  .handle.bob{ animation:handleBob 1.8s ease-in-out infinite; }
+  @keyframes handleBob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-2px);} }
+
+  .dial-wrap{ display:flex; justify-content:center; padding:6px 0 2px; }
+  .dial{ position:relative; width:150px; height:150px; touch-action:none; }
+  .dial svg{ width:100%; height:100%; display:block; }
+  .dial-handle{
+    position:absolute; width:30px; height:30px; margin:-15px;
+    border-radius:50%; background:var(--pink); border:3px solid var(--stroke);
+    box-shadow:var(--sh-sm);
+    display:flex; align-items:center; justify-content:center; cursor:grab;
+  }
+  .dial-handle i{ color:var(--ink); font-size:13px; }
+  .dial-center{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:var(--muted); font-size:11px; font-weight:700; text-align:center; pointer-events:none; }
+
+  .seq-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
+  .beacon{
+    aspect-ratio:1/1; background:var(--track); border:3px solid var(--stroke); border-radius:50%;
+    box-shadow:var(--sh-sm);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px; color:var(--text); cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, background .15s ease, color .15s ease;
+  }
+  .beacon:hover{ transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .beacon:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
+  .beacon.done{ background:var(--yellow); color:var(--ink); animation:tileBounce .35s cubic-bezier(.34,1.9,.64,1); }
+  .beacon.bad{ background:var(--red); color:#fff; animation:shakeSmall .4s ease; }
+  @keyframes shakeSmall{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-4px);} 75%{transform:translateX(4px);} }
+
+  .code-box{
+    position:relative;
+    background:var(--track); border:3px solid var(--stroke); border-radius:12px;
+    box-shadow:var(--sh-sm);
+    height:70px; display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .code-box svg.noise{ position:absolute; inset:0; width:100%; height:100%; opacity:.5; }
+  .code-char{ display:inline-block; font-weight:700; font-size:28px; letter-spacing:1px; position:relative; z-index:1; }
+  .code-input{
+    width:100%; background:var(--track); border:3px solid var(--stroke); border-radius:11px;
+    box-shadow:var(--sh-sm);
+    color:var(--text); font-family:'Syne',sans-serif; font-weight:700; font-size:16px; letter-spacing:3px;
+    text-align:center; text-transform:uppercase; padding:10px; outline:none;
+  }
+  .code-input:focus{ outline:3px solid var(--blue); outline-offset:2px; }
+  .code-input.wrong{ background:rgba(255,0,51,.16); animation:shakeSmall .4s ease; }
+
+  .exp-footer{
+    padding:12px 16px 18px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    border-top:2px solid var(--stroke);
+  }
+  .foot-note{ font-weight:500; font-size:8.5px; line-height:1.3; color:var(--muted); max-width:170px; }
+  .foot-note i{ color:var(--green); margin-right:3px; }
+
+  .verify-btn{
+    appearance:none; cursor:pointer;
+    background:var(--green); border:3px solid var(--stroke); color:var(--ink);
+    font-family:'Syne', sans-serif; font-weight:700; font-size:13px;
+    padding:9px 18px; border-radius:11px; flex:0 0 auto;
+    box-shadow:var(--sh-sm);
+    transition:transform .12s ease, box-shadow .12s ease, filter .15s ease;
+  }
+  .verify-btn:hover{ filter:brightness(1.04); transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .verify-btn:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
+  .verify-btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; box-shadow:var(--sh-sm); filter:none; }
+
+  .status{
+    margin:0 16px 16px; border-radius:12px; padding:11px 14px;
+    border:3px solid var(--stroke); box-shadow:var(--sh-sm);
+    display:flex; align-items:center; gap:10px; font-weight:700; font-size:13px;
+    animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes bounceIn{ 0%{ opacity:0; transform:scale(.7) translateY(6px);} 55%{ opacity:1; transform:scale(1.05) translateY(-2px);} 100%{ opacity:1; transform:scale(1) translateY(0);} }
+  .status.pass{ background:var(--green); color:var(--ink); }
+  .status.fail{ background:var(--red); color:#fff; animation:shake .5s ease both; }
+  .status i{ font-size:16px; flex:0 0 auto; }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-7px);} 40%{transform:translateX(6px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(3px);} }
+  .status span.d{ font-weight:400; font-size:10.5px; opacity:.85; display:block; margin-top:2px; }
+
+  .trace-wrap{ position:relative; touch-action:none; cursor:crosshair; padding:2px 0; }
+  .trace-svg{ width:100%; height:120px; display:block; overflow:visible; }
+  .beam-track{ fill:none; stroke:var(--rail); stroke-width:16; stroke-linecap:round; }
+
+  .beam-live{ fill:none; stroke:var(--blue); stroke-width:8;
+              stroke-linecap:round; stroke-linejoin:round; }
+  .beam-start{ fill:var(--yellow); stroke:var(--ink-line); stroke-width:3; animation:beamPulse 1.5s ease-in-out infinite; }
+  .beam-end{ fill:var(--green); stroke:var(--ink-line); stroke-width:3; }
+  @keyframes beamPulse{ 0%,100%{ opacity:1; r:9; } 50%{ opacity:.6; r:11; } }
+  .trace-wrap.live .beam-start{ animation:none; opacity:.55; }
+  .trace-wrap.stray .beam-live{ stroke:var(--red); }
+  .trace-wrap.ok .beam-live{ stroke:var(--green); }
+  .trace-hint{ text-align:center; color:var(--muted); font-size:11px; font-weight:700; margin-top:2px; }
+  .trace-wrap.ok .trace-hint{ color:var(--green); }
+
+  .catch-box{
+    position:relative; height:150px; border-radius:12px;
+    border:3px solid var(--stroke); background:var(--track);
+    box-shadow:var(--sh-sm);
+    overflow:hidden; cursor:crosshair;
+  }
+  .catch-box.missed{ background:rgba(255,0,51,.12); }
+  .probe{
+    position:absolute; width:44px; height:44px; margin:-22px 0 0 -22px;
+    border-radius:50%; background:var(--green); border:3px solid var(--stroke);
+    box-shadow:var(--sh-sm);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .probe i{ color:var(--ink); font-size:16px; pointer-events:none; }
+  .probe.tagged{ animation:tileBounce .3s cubic-bezier(.34,1.9,.64,1); background:var(--yellow); }
+  .probe.locked{ background:var(--yellow); }
+  .catch-tally{
+    position:absolute; right:8px; bottom:6px; pointer-events:none;
+    color:var(--muted); font-size:11px; font-weight:800; letter-spacing:.04em;
+  }
+
+  .pair-grid{ grid-template-columns:repeat(3,1fr); }
+
+  .swap-row{ display:flex; justify-content:center; margin-top:8px; }
+  .swap-btn{
+    appearance:none; background:none; border:none; cursor:pointer;
+    color:var(--muted); font-family:'Syne',sans-serif; font-weight:700; font-size:11.5px;
+    text-decoration:underline; text-underline-offset:3px; padding:4px 6px; border-radius:6px;
+  }
+  .swap-btn:hover{ color:var(--text); }
+  .swap-btn:focus-visible{ outline:3px solid var(--blue); outline-offset:2px; }
+
+  .retry-btn{
+    margin-top:8px; appearance:none; cursor:pointer;
+    background:var(--yellow); border:3px solid var(--stroke); color:var(--ink);
+    font-family:'Syne', sans-serif; font-weight:700; font-size:12.5px;
+    padding:8px 14px; border-radius:11px; box-shadow:var(--sh-sm);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .retry-btn:hover{ transform:translate(-1px,-1px); box-shadow:3px 4px 0 #000; }
+  .retry-btn:active{ transform:translate(2px,3px); box-shadow:var(--sh-press); }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <div class="collapsed" id="collapsed">
+    <div class="rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="pad">
+    <div class="chk-row">
+      <div class="chk-box" id="chkBox"><i class="chk-tick"></i><span class="spinner-ring"></span></div>
+      <div class="chk-label" id="chkLabel">I'm not a robot</div>
+      <div class="lc-badge">
+        <img class="wm" src="LifeCheck%20logo.png" alt="Lifecheck" draggable="false" />
+        <div class="ver">v<b>1.3</b></div>
+        <div class="legal"><a href="https://swiftaw.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy</a> &middot; <a href="https://swiftaw.com/legal/terms-of-service" target="_blank" rel="noopener">Terms</a></div>
+      </div>
+    </div>
+    <div class="consent">
+      <i class="fa-solid fa-shield-halved cshield"></i>
+      <div>Checking the box lets Swiftaw record how you move and play, and use it to improve its systems &amp; AI.</div>
+    </div>
+    </div>
+  </div>
+
+  <div class="expanded hidden" id="expanded">
+    <div class="rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="exp-header">
+      <div class="brand-mark">
+        <img class="wm" src="LifeCheck%20logo.png" alt="Lifecheck" draggable="false" />
+        <span class="tag">v<b>1.3</b></span>
+      </div>
+    </div>
+
+    <div class="exp-body">
+      <div class="test-chip" id="testChip"></div>
+      <div class="prompt" id="promptText"></div>
+      <div id="challengeArea"></div>
+    </div>
+
+    <div class="status hidden" id="statusBox"></div>
+
+    <div class="exp-footer" id="expFooter">
+      <div class="foot-note"><i class="fa-solid fa-shield-halved"></i>How you solve this is recorded to train &amp; improve Swiftaw's systems.</div>
+      <button class="verify-btn hidden" id="verifyBtn">Verify</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const VERSION = '1.3';
+
+  function post(event, extra){
+    try{
+      parent.postMessage(Object.assign({ source:'swiftaw-lifecheck', v:VERSION, event:event }, extra||{}), '*');
+    }catch(e){}
+  }
+  function reportSize(){
+
+    const h = document.querySelector('.stage').offsetHeight + 12;
+    post('resize', { height:h });
+  }
+  const ro = ('ResizeObserver' in window) ? new ResizeObserver(reportSize) : null;
+
+  const SUPA_URL = 'https://mwszvynzzugbowdngzab.supabase.co';
+  const SUPA_KEY = 'sb_publishable_dqsqX2klo1j4xSyEFA7O1w_UjM8lEGf';
+  const SUPA_CDN = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  const P = new URLSearchParams(location.search);
+  const SITE_KEY = P.get('k') || '';
+  const HOST = P.get('host') || '';
+
+  const PREVIEW_KEY = /_public$/i.test(SITE_KEY);
+  const SERVER_MODE = !!SITE_KEY && !PREVIEW_KEY;
+
+  const INVISIBLE = P.get('mode') === 'invisible';
+
+  const GAME_LANE = !INVISIBLE && Math.random() < 0.5;
+  const DEBUG = P.has('lcdebug');   
+  let sbClient = null;
+
+  const SESSION_ID = 'lcs_' + Math.random().toString(36).slice(2,12) + Date.now().toString(36);
+
+  function firstPartyEmbed(){
+    function ours(h){ return /(^|\.)swiftaw\.com$/i.test(h); }
+    try{
+      const ao = window.location.ancestorOrigins;
+      if(ao && ao.length) return ours(new URL(ao[0]).hostname);
+    }catch(e){}
+    try{
+      if(document.referrer) return ours(new URL(document.referrer).hostname);
+    }catch(e){}
+
+    return window.top === window.self;
+  }
+  const FIRST_PARTY = firstPartyEmbed();
+
+  function loadScript(src){
+    return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+  }
+  async function getSb(){
+    if(sbClient) return sbClient;
+    if(!window.supabase || !window.supabase.createClient) await loadScript(SUPA_CDN);
+    sbClient = window.supabase.createClient(SUPA_URL, SUPA_KEY, { auth: { persistSession: false } });
+    return sbClient;
+  }
+
+  function localToken(){
+    const rnd = () => Math.random().toString(36).slice(2, 12);
+    return 'LC' + VERSION + '-preview_' + rnd() + rnd() + '.' + Date.now().toString(36);
+  }
+
+  let LAST_TOKEN_ERR = '';
+  async function issueToken(passed){
+    LAST_TOKEN_ERR = '';
+    if(SERVER_MODE){
+      try {
+        const sb = await getSb();
+
+        const base = { p_site_key: SITE_KEY, p_host: HOST, p_passed: passed || 'challenge' };
+        let { data, error } = await sb.rpc('lifecheck_issue_token', Object.assign({
+          p_score: LAST_SIGNALS ? LAST_SIGNALS.score : null,
+          p_mode: INVISIBLE ? 'invisible' : 'checkbox'
+        }, base));
+        if(error && (error.code === 'PGRST202' || /function .*does not exist|schema cache/i.test(error.message || ''))){
+          logEvent('rpc_fallback', { detail:{ reason:'issue_token-signature', code:error.code || '' } });
+          ({ data, error } = await sb.rpc('lifecheck_issue_token', base));
+        }
+        if(error){ LAST_TOKEN_ERR = 'issue-request-failed'; return null; }
+        if(!data){ LAST_TOKEN_ERR = 'sitekey-rejected'; return null; }
+        return data;
+      } catch(e){ LAST_TOKEN_ERR = 'issue-request-failed'; return null; }
+    }
+
+    if(PREVIEW_KEY || FIRST_PARTY) return localToken();
+    LAST_TOKEN_ERR = 'no-sitekey';
+    return null;
+  }
+
+  let _evQueue = [];
+  let _flushT = null;
+
+  let _shown = 0, _wrong = 0, _susp = 0, _spot = false, _summarySent = false;
+  function logEvent(type, opts){
+    try{
+      opts = opts || {};
+      if(type !== 'session_summary'){
+        if(opts.suspicious) _susp++;
+        if(type === 'minigame_wrong' || type === 'challenge_fail') _wrong++;
+        if(type === 'challenge_open') _shown++;
+        if(type === 'spot_check') _spot = true;
+      }
+      const ev = {
+        t: type,
+        challenge: opts.challenge || '',
+        outcome: opts.outcome || '',
+        suspicious: !!opts.suspicious,
+        detail: opts.detail || {}
+      };
+
+      if(DEBUG){
+        (window.__lcEvents = window.__lcEvents || []).push(ev);
+        console.log('[Lifecheck]', ev.t, ev);
+      }
+      _evQueue.push(ev);
+      if(_evQueue.length > 60) _evQueue.shift();
+      scheduleFlush();
+    }catch(e){}
+  }
+
+  function sessionSummary(passed, via){
+    if(_summarySent) return;
+    _summarySent = true;
+    let stats = {}, reason = '', score = null;
+    try{ const a = analyzeCursor(); stats = a.stats; reason = a.reason; score = a.score; }catch(e){}
+    logEvent('session_summary', {
+      outcome: passed ? 'pass' : 'fail',
+      suspicious: _susp > 0,
+      detail: {
+        schema: 'lc-session-2',
+        v: VERSION,
+        durationMs: Date.now() - loadedAt,
+        via: via || '',
+        passed: !!passed,
+        touch: touchUsed,
+        pen: penUsed,
+        mode: INVISIBLE ? 'invisible' : 'checkbox',
+
+        lane: INVISIBLE ? 'invisible' : (GAME_LANE ? 'game' : 'signal'),
+        challengesShown: _shown,
+        wrongTaps: _wrong,
+        suspiciousSignals: _susp,
+        spotChecked: _spot,
+        cursorReason: reason,
+        humanScore: score,
+        cursor: stats
+      }
+    });
+    flushEvents();
+  }
+  function scheduleFlush(){ if(_flushT) return; _flushT = setTimeout(flushEvents, 1400); }
+  async function flushEvents(){
+    _flushT = null;
+    if(!_evQueue.length) return;
+    const batch = _evQueue.splice(0, _evQueue.length);
+    try{
+      const sb = await getSb();
+
+      const { error } = await sb.rpc('lifecheck_log_events', {
+        p_events: batch,
+        p_site_key: SITE_KEY || null,
+        p_host: HOST || null,
+        p_session: SESSION_ID
+      });
+      if(error){
+        console.warn('[Lifecheck] telemetry rejected:', error.message || error.hint || error.code || error);
+      } else if(DEBUG){
+        console.log('[Lifecheck] logged ' + batch.length + ' event(s)');
+      }
+    }catch(e){
+
+      console.warn('[Lifecheck] telemetry failed to send:', (e && e.message) || e);
+    }
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'hidden'){ try{ flushEvents(); }catch(e){} }
+  });
+  window.addEventListener('pagehide', () => { try{ sessionSummary(false, 'abandoned'); flushEvents(); }catch(e){} });
+
+  document.addEventListener('contextmenu', e => { e.preventDefault(); logEvent('tamper', { outcome:'suspicious', suspicious:true, detail:{ kind:'contextmenu' } }); });
+  document.addEventListener('dragstart', e => e.preventDefault());
+
+  const collapsed = document.getElementById('collapsed');
+  const chkBox = document.getElementById('chkBox');
+  const chkLabel = document.getElementById('chkLabel');
+
+  const expanded = document.getElementById('expanded');
+  const testChip = document.getElementById('testChip');
+  const promptText = document.getElementById('promptText');
+  const challengeArea = document.getElementById('challengeArea');
+  const verifyBtn = document.getElementById('verifyBtn');
+  const statusBox = document.getElementById('statusBox');
+  const expFooter = document.getElementById('expFooter');
+
+  const LOADING_PHRASES = [
+    'Detecting life forms',
+    'Scanning biosignals',
+    'Calibrating sensors',
+    'Reading heat signature',
+    'Checking pulse'
+  ];
+
+  const LIFE = [
+    {e:'🐶',n:'dog'},{e:'🐱',n:'cat'},{e:'🐸',n:'frog'},{e:'🐟',n:'fish'},
+    {e:'🐢',n:'turtle'},{e:'🦋',n:'butterfly'},{e:'🐝',n:'bee'},{e:'🌸',n:'flower'},
+    {e:'🍄',n:'mushroom'},{e:'🐌',n:'snail'},{e:'🦎',n:'lizard'},{e:'🌿',n:'leaf'}
+  ];
+  const MACHINE = [
+    {e:'🤖',n:'robot'},{e:'⚙️',n:'gear'},{e:'🛰️',n:'satellite'},{e:'🚀',n:'rocket'},
+    {e:'🔌',n:'plug'},{e:'🖥️',n:'computer'},{e:'📡',n:'dish'},{e:'🔋',n:'battery'}
+  ];
+
+  const TEST_META = {
+    imagepick:{ label:'Life scan · 01', icon:'fa-hand-pointer',   color:'var(--green)', colorS:'var(--green-s)' },
+    oddone:   { label:'Life scan · 02', icon:'fa-clone',          color:'var(--pink)',  colorS:'var(--pink-s)'  },
+    tally:    { label:'Life scan · 03', icon:'fa-hashtag',        color:'var(--yellow)',colorS:'var(--yellow-s)'},
+    grid:     { label:'Signal test · 04',icon:'fa-satellite-dish',color:'var(--blue)',  colorS:'var(--blue-s)'  },
+    slider:   { label:'Signal test · 05',icon:'fa-rocket',        color:'var(--green)', colorS:'var(--green-s)' },
+    rotate:   { label:'Signal test · 06',icon:'fa-compass',       color:'var(--pink)',  colorS:'var(--pink-s)'  },
+    sequence: { label:'Signal test · 07',icon:'fa-list-ol',       color:'var(--yellow)',colorS:'var(--yellow-s)'},
+    code:     { label:'Signal test · 08',icon:'fa-keyboard',      color:'var(--red)',   colorS:'var(--red-s)'   },
+
+    trace:    { label:'Signal test · 09',icon:'fa-route',         color:'var(--blue)',  colorS:'var(--blue-s)'  },
+    catchit:  { label:'Signal test · 10',icon:'fa-crosshairs',    color:'var(--green)', colorS:'var(--green-s)' },
+    pairs:    { label:'Life scan · 11',  icon:'fa-layer-group',   color:'var(--pink)',  colorS:'var(--pink-s)'  }
+  };
+  const TEST_TYPES = Object.keys(TEST_META);
+
+  const COARSE = (function(){
+    try{ return window.matchMedia && window.matchMedia('(pointer: coarse)').matches; }
+    catch(e){ return false; }
+  })();
+  const TOUCH_TYPES = ['imagepick','oddone','tally','grid','sequence','code','pairs','catchit'];
+  let lastType = null;
+  let challengeStart = 0;   
+
+  let samples = [];
+  let touchUsed = false;
+  let loadedAt = Date.now();
+  let penUsed = false;
+  let maxPressure = 0;
+  let scrollTicks = 0, keyTicks = 0;
+  let LAST_SIGNALS = null;
+  let TRACE = null;             
+
+  document.addEventListener('pointermove', (e) => {
+    if(e.pointerType === 'touch') touchUsed = true;
+    if(e.pointerType === 'pen') penUsed = true;
+    if(typeof e.pressure === 'number' && e.pressure > maxPressure) maxPressure = e.pressure;
+    samples.push({ x:e.clientX, y:e.clientY, t:Date.now() });
+    if(samples.length > 400) samples.shift();
+    if(TRACE) TRACE.sample(e.clientX, e.clientY);
+  }, { passive:true });
+  document.addEventListener('touchstart', () => { touchUsed = true; }, { passive:true });
+  window.addEventListener('wheel', () => { scrollTicks++; }, { passive:true });
+  document.addEventListener('keydown', () => { keyTicks++; }, { passive:true });
+
+  let untrusted = 0, trusted = 0;
+  let clickDowns = [], clickHolds = [];
+  document.addEventListener('pointerdown', (e) => {
+    if(e.isTrusted) trusted++; else untrusted++;
+    clickDowns.push(Date.now());
+    if(clickDowns.length > 20) clickDowns.shift();
+  }, { passive:true, capture:true });
+  document.addEventListener('pointerup', (e) => {
+    if(e.isTrusted) trusted++; else untrusted++;
+    const down = clickDowns[clickDowns.length - 1];
+    if(down != null){
+      clickHolds.push(Date.now() - down);
+      if(clickHolds.length > 20) clickHolds.shift();
+    }
+  }, { passive:true, capture:true });
+
+  function mean(a){ return a.length ? a.reduce((s,v)=>s+v,0)/a.length : 0; }
+  function stdev(a){
+    if(a.length < 2) return 0;
+    const m = mean(a);
+    return Math.sqrt(mean(a.map(v => (v-m)*(v-m))));
+  }
+
+  function envFlags(){
+    const f = [];
+    try{ if(navigator.webdriver) f.push('webdriver'); }catch(e){}
+    try{ if(/HeadlessChrome|PhantomJS|SlimerJS|Puppeteer|Playwright/i.test(navigator.userAgent)) f.push('headless-ua'); }catch(e){}
+    try{ if(!navigator.languages || !navigator.languages.length) f.push('no-languages'); }catch(e){}
+    try{ if(navigator.hardwareConcurrency === 0) f.push('no-cores'); }catch(e){}
+    try{
+      if(window.__nightmare || window._phantom || window.callPhantom ||
+         window.__selenium_unwrapped || window.domAutomation || window.__driver_evaluate) f.push('automation-hook');
+    }catch(e){}
+    return f;
+  }
+
+  function analyzeCursor(){
+    const elapsed = Date.now() - loadedAt;
+    const env = envFlags();
+
+    const PASS_AT = 0.5;
+    const hits = [];
+    let score = 1;
+    const hit = (name, penalty) => { hits.push(name); score -= penalty; };
+
+    if(env.length) hit('automation-env', 0.6);
+
+    if(untrusted > 0) hit('synthetic-events', 0.65);
+
+    if(clickHolds.length){
+      const holdMax = Math.max.apply(null, clickHolds);
+      if(holdMax <= 1) hit('instant-click', 0.35);
+    }
+
+    if(touchUsed && samples.length < 5){
+      if(elapsed <= 220) hit('touch-too-fast', 0.6);
+      const human = score >= PASS_AT;
+      return {
+        human, score:+score.toFixed(3),
+        reason: human ? 'touch' : (hits[0] || 'touch-flag'),
+        stats:{ touch:true, pen:penUsed, elapsed, env, flags:hits, score:+score.toFixed(3) }
+      };
+    }
+
+    const n = samples.length;
+
+    if(n < 5) hit('no-movement', 0.55);
+
+    if(elapsed < 300) hit('too-fast', 0.5);
+
+    let dist = 0, netDisp = 0, straight = 0;
+    let jitterRatio = 0, speedCv = 0, dtCv = 0, dwells = 0, fracCoords = 0;
+
+    if(n >= 5){
+      const dts = [], speeds = [];
+      for(let i=1;i<n;i++){
+        const dx = samples[i].x - samples[i-1].x;
+        const dy = samples[i].y - samples[i-1].y;
+        const dstep = Math.hypot(dx, dy);
+        const dt = Math.max(1, samples[i].t - samples[i-1].t);
+        dist += dstep;
+        dts.push(dt);
+        speeds.push(dstep / dt);
+        if(dt > 90) dwells++;
+      }
+      netDisp = Math.hypot(samples[n-1].x - samples[0].x, samples[n-1].y - samples[0].y);
+      straight = dist > 0 ? netDisp / dist : 0;
+
+      if(dist < 40) hit('barely-moved', 0.45);
+
+      let dirChanges = 0;
+      for(let i=2;i<n;i++){
+        const a = Math.atan2(samples[i-1].y-samples[i-2].y, samples[i-1].x-samples[i-2].x);
+        const b = Math.atan2(samples[i].y-samples[i-1].y, samples[i].x-samples[i-1].x);
+        let diff = Math.abs(a-b);
+        if(diff > Math.PI) diff = 2*Math.PI - diff;
+        if(diff > 0.15) dirChanges++;
+      }
+      jitterRatio = dirChanges / n;
+      if(jitterRatio < 0.04)      hit('robotic-path', 0.4);
+      else if(jitterRatio < 0.09) hit('low-wobble', 0.12);
+
+      if(n >= 12){
+        if(straight > 0.985)     hit('ruler-straight', 0.3);
+        else if(straight > 0.94) hit('very-direct', 0.1);
+      }
+
+      speedCv = mean(speeds) > 0 ? stdev(speeds) / mean(speeds) : 0;
+      if(n >= 12){
+        if(speedCv < 0.15)     hit('constant-speed', 0.3);
+        else if(speedCv < 0.32) hit('flat-speed', 0.1);
+      }
+
+      dtCv = mean(dts) > 0 ? stdev(dts) / mean(dts) : 0;
+      if(n >= 12 && dtCv < 0.08) hit('metronome-timing', 0.25);
+
+      if(n >= 25 && dwells === 0) hit('never-paused', 0.15);
+
+      let frac = 0;
+      for(let i=0;i<n;i++) if(samples[i].x % 1 !== 0 || samples[i].y % 1 !== 0) frac++;
+      fracCoords = frac / n;
+      if(n >= 30 && fracCoords === 0) hit('integer-coords', 0.08);
+    }
+
+    const human = score >= PASS_AT;
+    return {
+      human,
+      score: +score.toFixed(3),
+      reason: human ? 'clean' : (hits[0] || 'low-score'),
+      stats: {
+        n, elapsed,
+        dist: Math.round(dist),
+        net: Math.round(netDisp),
+        straight: +straight.toFixed(3),
+        jitter: +jitterRatio.toFixed(3),
+        speedCv: +speedCv.toFixed(3),
+        dtCv: +dtCv.toFixed(3),
+        dwells,
+        fracCoords: +fracCoords.toFixed(2),
+        maxPressure: +maxPressure.toFixed(2),
+        scrollTicks, keyTicks,
+        trusted, untrusted,
+        holdMs: clickHolds.length ? Math.max.apply(null, clickHolds) : null,
+        touch: touchUsed, pen: penUsed,
+        env,
+        flags: hits,
+        score: +score.toFixed(3)
+      }
+    };
+  }
+
+  TRACE = (function(){
+    const MAX_PATH    = 160;   
+    const MIN_GAP_MS  = 35;    
+    const MAX_ACTIONS = 60;
+    let cur = null;
+
+    function rect(){
+      const el = document.getElementById('challengeArea');
+      return el ? el.getBoundingClientRect() : null;
+    }
+
+    function norm(clientX, clientY, r){
+      r = r || rect();
+      if(!r || !r.width || !r.height) return null;
+      return [ +((clientX - r.left) / r.width).toFixed(4),
+               +((clientY - r.top)  / r.height).toFixed(4) ];
+    }
+
+    function boxOf(el){
+      const r = rect();
+      if(!r || !r.width || !r.height || !el) return null;
+      const b = el.getBoundingClientRect();
+      return [ +((b.left - r.left)/r.width).toFixed(4),
+               +((b.top  - r.top )/r.height).toFixed(4),
+               +(b.width /r.width ).toFixed(4),
+               +(b.height/r.height).toFixed(4) ];
+    }
+
+    return {
+      begin(game){
+        cur = { game:game, state:{}, path:{ x:[], y:[], t:[] },
+                actions:[], t0:Date.now(), lastT:-1e9 };
+      },
+      recording(){ return !!cur; },
+
+      state(obj){ if(cur) cur.state = obj || {}; },
+
+      measure(fn){
+        requestAnimationFrame(() => { try{ fn(boxOf); }catch(e){} });
+      },
+      sample(clientX, clientY){
+        if(!cur || cur.path.x.length >= MAX_PATH) return;
+        const t = Date.now() - cur.t0;
+        if(t - cur.lastT < MIN_GAP_MS) return;
+        const p = norm(clientX, clientY);
+        if(!p) return;
+        cur.lastT = t;
+        cur.path.x.push(p[0]); cur.path.y.push(p[1]); cur.path.t.push(t);
+      },
+
+      act(kind, extra){
+        if(!cur || cur.actions.length >= MAX_ACTIONS) return;
+        cur.actions.push(Object.assign({ k:kind, t:Date.now() - cur.t0 }, extra || {}));
+      },
+
+      tapOn(el, ev, extra){
+        let at = null, on = null;
+        try{
+          if(ev && ev.clientX != null){
+            at = norm(ev.clientX, ev.clientY);
+            const b = el.getBoundingClientRect();
+            if(b.width && b.height) on = [ +((ev.clientX-b.left)/b.width).toFixed(3),
+                                           +((ev.clientY-b.top )/b.height).toFixed(3) ];
+          }
+        }catch(e){}
+        this.act('tap', Object.assign({ at:at, on:on }, extra || {}));
+      },
+      end(solved, solveMs){
+        if(!cur) return;
+        const tr = cur; cur = null;
+        logEvent('demo_trace', {
+          challenge: tr.game,
+          outcome: solved ? 'pass' : 'fail',
+          detail: {
+            schema: 'lc-demo-1',
+            game: tr.game,
+            state: tr.state,
+            actions: tr.actions,
+            path: tr.path,
+            solved: !!solved,
+            solveMs: solveMs == null ? null : solveMs
+          }
+        });
+      },
+      abort(){ cur = null; }
+    };
+  })();
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+  function pick(arr,n){ return shuffle(arr).slice(0,n); }
+
+  const TWEMOJI_BASE = 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/72x72/';
+  function twemojiCode(str){
+    const pts = [];
+    for(const ch of str){
+      const c = ch.codePointAt(0);
+      if(c !== 0xFE0F) pts.push(c.toString(16)); 
+    }
+    return pts.join('-');
+  }
+  function emojiCanvas(emoji, px){
+    px = px || 96;
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const c = document.createElement('canvas');
+    c.width = px*dpr; c.height = px*dpr;
+    const ctx = c.getContext('2d');
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      ctx.clearRect(0, 0, c.width, c.height);
+      const pad = Math.round(px*0.10*dpr);
+      ctx.drawImage(img, pad, pad, c.width - 2*pad, c.height - 2*pad);
+    };
+    img.onerror = () => {
+      ctx.clearRect(0, 0, c.width, c.height);
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = Math.round(px*0.66) + 'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+      ctx.fillText(emoji, px/2, px/2 + px*0.03);
+      ctx.restore();
+    };
+    img.src = TWEMOJI_BASE + twemojiCode(emoji) + '.png';
+    return c;
+  }
+
+  function tileWith(emoji){
+    const el = document.createElement('div');
+    el.className = 'tile';
+    const art = emojiCanvas(emoji);
+    const rot = (Math.random()*28 - 14).toFixed(1);
+    const scale = 0.90 + Math.random()*0.15;
+    const flip = Math.random() < 0.5 ? -1 : 1;
+    art.style.transform =
+      `rotate(${rot}deg) scale(${(scale*flip).toFixed(3)}, ${scale.toFixed(3)})`;
+    el.appendChild(art);
+    return el;
+  }
+
+  function resetCollapsed(){
+    loadedAt = Date.now();
+    samples = [];
+    chkBox.className = 'chk-box';
+    chkBox.querySelector('i').className = 'chk-tick';
+    chkLabel.textContent = "I'm not a robot";
+    expanded.classList.add('hidden');
+    collapsed.classList.remove('hidden');
+    collapsed.style.animation = 'none';
+    void collapsed.offsetWidth;
+    collapsed.style.animation = '';
+    reportSize();
+  }
+
+  let locked = false;
+  chkBox.addEventListener('click', startVerify);
+  chkLabel.addEventListener('click', startVerify);
+
+  const PASS_INVISIBLE = 0.78;
+  let hostSignals = false;
+  let executed = false;
+
+  window.addEventListener('message', function(e){
+    const d = e.data;
+    if(!d || d.source !== 'swiftaw-lifecheck-host') return;
+    if(e.source !== parent) return;
+    if(d.event === 'signals' && Array.isArray(d.samples)){
+
+      for(let i=0;i<d.samples.length && i<400;i++){
+        const s = d.samples[i];
+        if(!s || s.length < 3) continue;
+        samples.push({ x:+s[0], y:+s[1], t:loadedAt + (+s[2]) });
+      }
+      if(samples.length) hostSignals = true;
+      if(samples.length > 400) samples = samples.slice(-400);
+    } else if(d.event === 'execute'){
+      executeInvisible();
+    }
+  });
+
+  function executeInvisible(){
+    if(!INVISIBLE || executed) return;
+    executed = true;
+    const a = analyzeCursor();
+    LAST_SIGNALS = a;
+    a.stats.hostSignals = hostSignals;
+    const bar = hostSignals ? PASS_INVISIBLE : 0.5;
+    const ok = a.score >= bar;
+    logEvent('invisible_execute', {
+      outcome: ok ? 'pass' : 'info',
+      suspicious: !ok,
+      detail: Object.assign({ bar:bar, hostSignals:hostSignals }, a.stats)
+    });
+    if(ok){
+      issueToken('signals-invisible').then(function(token){
+        if(!token){
+          const t = tokenFailText();
+          logEvent('key_fail', { outcome:'suspicious', suspicious:!FIRST_PARTY, detail:{ serverMode:SERVER_MODE, firstParty:FIRST_PARTY, reason:LAST_TOKEN_ERR, at:'invisible' } });
+          post('error', { code: LAST_TOKEN_ERR || 'no-sitekey', message: t.detail });
+          return;
+        }
+        logEvent('verified', { outcome:'pass', detail:{ via:'invisible' } });
+        sessionSummary(true, 'invisible');
+        post('verified', { token: token });
+        armExpiry();
+      });
+      return;
+    }
+
+    post('expand', {});
+    openChallenge();
+  }
+
+  function startVerify(){
+    if(locked) return;
+    locked = true;
+    chkLabel.removeAttribute('title');
+    chkBox.className = 'chk-box spin';           
+    logEvent('check_click', { detail:{ touch:touchUsed } });
+    const phrase = LOADING_PHRASES[Math.floor(Math.random()*LOADING_PHRASES.length)];
+    chkLabel.innerHTML = `${phrase}<span class="dots"></span>`;
+
+    setTimeout(()=>{
+      const a = analyzeCursor();
+      LAST_SIGNALS = a;
+      if(!a.human){
+        logEvent('cursor_flag', { outcome:'suspicious', suspicious:true, detail:{ reason:a.reason, score:a.score, stats:a.stats } });
+      }
+
+      if(GAME_LANE){
+        logEvent('lane_challenge', {
+          outcome: a.human ? 'info' : 'suspicious',
+          suspicious: !a.human,
+          detail: Object.assign({ lane:'game' }, a.stats)
+        });
+        openChallenge();
+        return;
+      }
+
+      const spotChance = Math.min(0.5, Math.max(0.08, 0.08 + (1 - a.score) * 0.75));
+      const spotCheck = a.human && Math.random() < spotChance;
+      if(a.human && spotCheck) logEvent('spot_check', { detail:Object.assign({ lane:'signal', spotChance:+spotChance.toFixed(2) }, a.stats) });
+      if(a.human && !spotCheck){
+        logEvent('passive_pass', { outcome:'pass', detail:Object.assign({ lane:'signal' }, a.stats) });
+        passCollapsed();
+      } else {
+        openChallenge();
+      }
+    }, 700);
+  }
+
+  const TOKEN_TTL_MS = 110000;   
+  let _expiryT = null;
+  function armExpiry(){
+    if(_expiryT) clearTimeout(_expiryT);
+    if(!SERVER_MODE) return;
+    _expiryT = setTimeout(function(){
+      _expiryT = null;
+      if(INVISIBLE){ executed = false; post('expired', {}); logEvent('token_expired', {}); return; }
+      logEvent('token_expired', {});
+      post('expired', {});
+
+      locked = false;
+      collapsed.classList.remove('is-verified');
+      resetCollapsed();
+      chkLabel.textContent = 'Check again, that one timed out';
+    }, TOKEN_TTL_MS);
+  }
+
+  function passCollapsed(){
+    issueToken('signals').then(function(token){
+      if(!token){ keyFail(); return; }
+      chkBox.classList.remove('spin');
+      chkBox.classList.add('checked');
+      chkLabel.textContent = 'Verified';
+      collapsed.classList.add('is-verified');
+      logEvent('verified', { outcome:'pass', detail:{ via:'signals' } });
+      sessionSummary(true, 'signals');
+      post('verified', { token: token });
+      armExpiry();
+    });
+  }
+
+  const FAIL_LINES = [
+    'Clunk! Gears stuck.',
+    'Sput! Belt slipped.',
+    'Bzzt! Fuse blown.',
+    'Beep, boop. Nothing doing.',
+    'Boop! Wires crossed.',
+    'Beep... beep... no signal.'
+  ];
+  let _lastFailLine = -1;
+  function failLine(){
+    let i = Math.floor(Math.random()*FAIL_LINES.length);
+    if(i === _lastFailLine) i = (i + 1) % FAIL_LINES.length;   
+    _lastFailLine = i;
+    return FAIL_LINES[i];
+  }
+  function tokenFailText(){
+    const line = failLine();
+    let detail;
+    if(LAST_TOKEN_ERR === 'issue-request-failed')
+      detail = "Lifecheck couldn't be reached. Check your connection and try again.";
+    else if(LAST_TOKEN_ERR === 'sitekey-rejected')
+      detail = "This site key doesn't exist, or " + (HOST || 'this domain') + " isn't on its allowed-domains list.";
+    else
+      detail = "Lifecheck isn't set up for this site.";
+    return { short: line, title: line, detail: detail };
+  }
+
+  function keyFail(){
+    const t = tokenFailText();
+    chkBox.classList.remove('spin');
+    chkBox.classList.add('jammed');
+    chkBox.querySelector('i').className = 'fa-solid fa-gear';
+    chkLabel.textContent = t.short;
+    chkLabel.title = t.detail;
+    logEvent('key_fail', { outcome:'suspicious', suspicious:!FIRST_PARTY, detail:{ serverMode:SERVER_MODE, firstParty:FIRST_PARTY, reason:LAST_TOKEN_ERR } });
+
+    post('error', { code: LAST_TOKEN_ERR || 'no-sitekey', message: t.detail });
+
+    setTimeout(function(){
+      if(chkBox.classList.contains('checked')) return;
+      chkBox.classList.remove('jammed');
+      chkBox.querySelector('i').className = 'fa-solid fa-rotate-right';
+      chkLabel.textContent = 'Give it another crank';
+    }, 2600);
+    locked = false;
+  }
+
+  function openChallenge(restrictTo){
+    const pool = restrictTo || ((COARSE || touchUsed) ? TOUCH_TYPES : TEST_TYPES);
+    let type = pool[Math.floor(Math.random()*pool.length)];
+    if(type === lastType) type = pool[(pool.indexOf(type)+1) % pool.length];
+
+    const forced = P.get('lcgame');
+    if(!restrictTo && forced && TEST_META[forced]) type = forced;
+    lastType = type;
+    challengeStart = Date.now();
+    TRACE.begin(type);
+
+    verifyBtn.onclick = null;
+
+    collapsed.classList.add('hidden');
+    expanded.classList.remove('hidden');
+    statusBox.classList.add('hidden');
+    statusBox.className = 'status hidden';
+    expFooter.classList.remove('hidden');
+    verifyBtn.classList.remove('hidden');
+    verifyBtn.disabled = false;
+    verifyBtn.textContent = 'Verify';
+
+    const meta = TEST_META[type];
+    testChip.style.setProperty('--chip', meta.color);
+    testChip.style.setProperty('--chip-s', meta.colorS);
+    testChip.innerHTML = `<i class="fa-solid ${meta.icon}"></i> ${meta.label}`;
+
+    logEvent('challenge_open', { challenge:type });
+
+    if(type === 'imagepick') buildImagePick();
+    if(type === 'oddone')    buildOddOne();
+    if(type === 'tally')     buildTally();
+    if(type === 'grid')      buildGrid();
+    if(type === 'slider')    buildSlider();
+    if(type === 'rotate')    buildRotate();
+    if(type === 'sequence')  buildSequence();
+    if(type === 'code')      buildCode();
+    if(type === 'trace')     buildTrace();
+    if(type === 'catchit')   buildCatch();
+    if(type === 'pairs')     buildPairs();
+    if(POINTER_ONLY.indexOf(type) >= 0) offerSwap();
+    reportSize();
+  }
+
+  function activatable(el, label, fn){
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    if(label) el.setAttribute('aria-label', label);
+    el.addEventListener('click', (ev) => fn(ev, el));
+    el.addEventListener('keydown', (ev) => {
+      if(ev.key === 'Enter' || ev.key === ' ' || ev.key === 'Spacebar'){
+        ev.preventDefault();
+        fn(ev, el);
+      }
+    });
+    return el;
+  }
+
+  const KEYBOARD_TYPES = ['imagepick','oddone','tally','grid','sequence','code','pairs','slider','rotate'];
+  const POINTER_ONLY   = ['trace','catchit'];
+  function offerSwap(){
+    const wrap = document.createElement('div');
+    wrap.className = 'swap-row';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'swap-btn';
+    btn.textContent = 'Needs a mouse? Get a different one';
+    btn.addEventListener('click', () => {
+      logEvent('challenge_swap', { challenge:lastType, detail:{ from:lastType } });
+      TRACE.abort();
+      openChallenge(KEYBOARD_TYPES);
+    });
+    wrap.appendChild(btn);
+    challengeArea.appendChild(wrap);
+  }
+
+  function onVerify(fn){
+    verifyBtn.onclick = (ev) => { TRACE.act('submit', {}); fn(ev); };
+  }
+
+  function dragify(el, onMove, onStart, onEnd){
+    let id = null;
+    el.style.touchAction = 'none';
+    el.addEventListener('pointerdown', (e) => {
+      id = e.pointerId;
+      try{ el.setPointerCapture(id); }catch(err){}
+      e.preventDefault();
+      if(onStart) onStart(e);
+      onMove(e);
+    });
+    el.addEventListener('pointermove', (e) => { if(id === e.pointerId) onMove(e); });
+    const stop = (e) => {
+      if(id !== e.pointerId) return;
+      try{ el.releasePointerCapture(id); }catch(err){}
+      id = null;
+      if(onEnd) onEnd(e);
+    };
+    el.addEventListener('pointerup', stop);
+    el.addEventListener('pointercancel', stop);
+  }
+
+  function buildImagePick(){
+    const items = pick(LIFE, 9);                     
+    const targetIdx = Math.floor(Math.random()*items.length);
+    const target = items[targetIdx];
+    promptText.innerHTML = `Click the <b class="hl">${target.n}</b><span class="sub">Tap its picture to prove you can see it.</span>`;
+    verifyBtn.classList.add('hidden');               
+
+    challengeArea.innerHTML = `<div class="grid" id="gridEl"></div>`;
+    const gridEl = document.getElementById('gridEl');
+    let done = false, wrong = 0;
+    const els = [];
+    items.forEach((it, i) => {
+      const el = tileWith(it.e);
+      els.push(el);
+      activatable(el, it.n, (ev) => {
+        if(done) return;
+        const right = it.n === target.n;
+        TRACE.tapOn(el, ev, { i:i, label:it.n, correct:right });
+        if(right){
+          done = true;
+          el.classList.add('correct-flash');
+          logEvent('minigame_correct', { challenge:'imagepick', outcome:'pass', detail:{ target:target.n } });
+          setTimeout(()=> decide(true, ''), 260);
+        } else {
+          wrong++;
+          el.classList.add('wrong');
+          logEvent('minigame_wrong', { challenge:'imagepick', outcome:'fail', detail:{ target:target.n, picked:it.n, wrong } });
+          if(wrong >= 2){ done = true; setTimeout(()=> decide(false, 'Wrong pick.'), 450); }
+          else setTimeout(()=> el.classList.remove('wrong'), 500);
+        }
+      });
+      gridEl.appendChild(el);
+    });
+    TRACE.measure(box => TRACE.state({
+      kind: 'pick-one',
+      prompt: 'click the ' + target.n,
+      answer: [targetIdx],
+      tiles: items.map((it, i) => ({ i:i, label:it.n, life:true, box:box(els[i]) }))
+    }));
+  }
+
+  function buildOddOne(){
+    const lifeTiles = pick(LIFE, 8);
+    const odd = MACHINE[Math.floor(Math.random()*MACHINE.length)];
+    promptText.innerHTML = `Tap the one that isn't alive<span class="sub">Eight life forms, one machine. Find the machine.</span>`;
+    verifyBtn.classList.add('hidden');
+
+    const all = shuffle(lifeTiles.map(x=>({...x,life:true})).concat([{...odd,life:false}]));
+    challengeArea.innerHTML = `<div class="grid" id="gridEl"></div>`;
+    const gridEl = document.getElementById('gridEl');
+    let done = false, wrong = 0;
+    const els = [];
+    all.forEach((it, i) => {
+      const el = tileWith(it.e);
+      els.push(el);
+      activatable(el, it.n, (ev) => {
+        if(done) return;
+        TRACE.tapOn(el, ev, { i:i, label:it.n, correct:!it.life });
+        if(!it.life){
+          done = true;
+          el.classList.add('correct-flash');
+          logEvent('minigame_correct', { challenge:'oddone', outcome:'pass', detail:{ odd:odd.n } });
+          setTimeout(()=> decide(true, ''), 260);
+        } else {
+          wrong++;
+          el.classList.add('wrong');
+          logEvent('minigame_wrong', { challenge:'oddone', outcome:'fail', detail:{ picked:it.n, wrong } });
+          if(wrong >= 2){ done = true; setTimeout(()=> decide(false, 'That one is alive.'), 450); }
+          else setTimeout(()=> el.classList.remove('wrong'), 500);
+        }
+      });
+      gridEl.appendChild(el);
+    });
+    TRACE.measure(box => TRACE.state({
+      kind: 'pick-one',
+      prompt: 'tap the one that is not alive',
+      answer: all.map((it,i)=> it.life ? -1 : i).filter(i=>i>=0),
+      tiles: all.map((it, i) => ({ i:i, label:it.n, life:it.life, box:box(els[i]) }))
+    }));
+  }
+
+  function buildTally(){
+    const lifeCount = 2 + Math.floor(Math.random()*4);          
+    const lifeTiles = pick(LIFE, lifeCount).map(x=>({...x,life:true}));
+    const machineTiles = pick(MACHINE, 9-lifeCount).map(x=>({...x,life:false}));
+    const all = shuffle(lifeTiles.concat(machineTiles));
+    promptText.innerHTML = `How many <b class="hl">life forms</b>?<span class="sub">Count the living things, then tap the number.</span>`;
+    verifyBtn.classList.add('hidden');
+
+    challengeArea.innerHTML = `<div class="grid" id="gridEl" style="pointer-events:none"></div><div class="numpad" id="numEl"></div>`;
+    const gridEl = document.getElementById('gridEl');
+    const tileEls = [];
+
+    gridEl.setAttribute('role', 'list');
+    gridEl.setAttribute('aria-label', 'Board to count');
+    all.forEach(it=>{
+      const el = tileWith(it.e);
+      el.setAttribute('role', 'listitem');
+      el.setAttribute('aria-label', it.n);
+      tileEls.push(el);
+      gridEl.appendChild(el);
+    });
+
+    const numEl = document.getElementById('numEl');
+    let done = false, wrong = 0;
+    const btnEls = [];
+    for(let k=1;k<=6;k++){
+      const b = document.createElement('div');
+      b.className = 'numbtn';
+      b.textContent = k;
+      btnEls.push(b);
+      activatable(b, k + '', (ev) => {
+        if(done) return;
+        TRACE.tapOn(b, ev, { value:k, correct:k === lifeCount });
+        if(k === lifeCount){
+          done = true;
+          b.classList.add('right');
+          logEvent('minigame_correct', { challenge:'tally', outcome:'pass', detail:{ count:lifeCount } });
+          setTimeout(()=> decide(true, ''), 260);
+        } else {
+          wrong++;
+          b.classList.add('wrong');
+          logEvent('minigame_wrong', { challenge:'tally', outcome:'fail', detail:{ count:lifeCount, picked:k, wrong } });
+          if(wrong >= 2){ done = true; setTimeout(()=> decide(false, 'Wrong count.'), 450); }
+          else setTimeout(()=> b.classList.remove('wrong'), 500);
+        }
+      });
+      numEl.appendChild(b);
+    }
+    TRACE.measure(box => TRACE.state({
+      kind: 'count',
+      prompt: 'how many life forms are on the board',
+      answer: lifeCount,
+      tiles: all.map((it, i) => ({ i:i, label:it.n, life:it.life, box:box(tileEls[i]) })),
+      options: btnEls.map((b, i) => ({ value:i+1, box:box(b) }))
+    }));
+  }
+
+  function buildGrid(){
+    promptText.innerHTML = `Select every life form<span class="sub">Tap all living things, then verify.</span>`;
+    const lifeCount = 4 + Math.floor(Math.random()*2);
+    const chosenLife = pick(LIFE, lifeCount).map(x=>({...x,life:true}));
+    const chosenMachine = pick(MACHINE, 9 - lifeCount).map(x=>({...x,life:false}));
+    const tiles = shuffle(chosenLife.concat(chosenMachine));
+    const correctSet = new Set(tiles.map((t,i)=>t.life ? i : null).filter(v=>v!==null));
+    const selected = new Set();
+
+    challengeArea.innerHTML = `<div class="grid" id="gridEl"></div>`;
+    const gridEl = document.getElementById('gridEl');
+    const els = [];
+
+    function syncBtn(){
+      verifyBtn.disabled = selected.size === 0;
+      verifyBtn.textContent = selected.size ? `Verify (${selected.size})` : 'Verify';
+    }
+    tiles.forEach((t, i) => {
+      const el = tileWith(t.e);
+      els.push(el);
+      activatable(el, t.n, (ev) => {
+        const nowOn = !selected.has(i);
+        if(nowOn){ selected.add(i); el.classList.add('selected'); }
+        else { selected.delete(i); el.classList.remove('selected'); }
+        el.setAttribute('aria-pressed', nowOn ? 'true' : 'false');
+        TRACE.tapOn(el, ev, { i:i, label:t.n, on:nowOn, correct:nowOn === correctSet.has(i) });
+        syncBtn();
+      });
+      el.setAttribute('aria-pressed', 'false');
+      gridEl.appendChild(el);
+    });
+    syncBtn();
+
+    onVerify(() => {
+      const correct = selected.size === correctSet.size && [...selected].every(i=>correctSet.has(i));
+      if(!correct){
+        [...gridEl.children].forEach((el,i)=>{
+          if(selected.has(i) && !correctSet.has(i)) el.classList.add('wrong');
+          if(correctSet.has(i) && !selected.has(i)) el.classList.add('correct-flash');
+        });
+      }
+      decide(correct, correct ? '' : 'Some signals were misread.');
+    });
+
+    TRACE.measure(box => TRACE.state({
+      kind: 'pick-many',
+      prompt: 'select every life form',
+      answer: [...correctSet],
+      tiles: tiles.map((t, i) => ({ i:i, label:t.n, life:t.life, box:box(els[i]) }))
+    }));
+  }
+
+  function buildSlider(){
+    promptText.innerHTML = `Guide the visitor home<span class="sub">Drag the craft into the landing zone.</span>`;
+    const zoneWidthPct = 16;
+    const startPct = 15 + Math.random()*(85-15-zoneWidthPct);
+    const target = { start:startPct, end:startPct+zoneWidthPct };
+    let value = 0;
+
+    challengeArea.innerHTML = `
+      <div class="slide-wrap">
+        <div class="track" id="trackEl">
+          <div class="target-zone" id="zoneEl"><i class="fa-solid fa-house-chimney"></i></div>
+          <div class="handle bob" id="handleEl" role="slider" tabindex="0"
+               aria-label="Craft position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i class="fa-solid fa-rocket"></i></div>
+        </div>
+      </div>`;
+    const trackEl = document.getElementById('trackEl');
+    const zoneEl = document.getElementById('zoneEl');
+    const handleEl = document.getElementById('handleEl');
+
+    requestAnimationFrame(()=>{
+      zoneEl.style.left = target.start + '%';
+      zoneEl.style.width = zoneWidthPct + '%';
+    });
+
+    function setHandle(pct){
+      pct = Math.max(0, Math.min(100, pct));
+      value = pct;
+      handleEl.style.left = `calc(${pct}% - ${pct/100*40}px)`;
+      handleEl.setAttribute('aria-valuenow', Math.round(pct));
+    }
+    setHandle(0);
+
+    function pctFromClientX(clientX){
+      const rect = trackEl.getBoundingClientRect();
+      return ((clientX - rect.left) / rect.width) * 100;
+    }
+
+    dragify(trackEl,
+      (e) => { setHandle(pctFromClientX(e.clientX)); TRACE.act('drag', { v:+value.toFixed(1) }); },
+      () => { handleEl.classList.remove('bob'); },
+      () => { TRACE.act('drop', { v:+value.toFixed(1) }); });
+
+    handleEl.addEventListener('keydown', (e) => {
+      const step = e.shiftKey ? 10 : 2;
+      if(e.key === 'ArrowRight' || e.key === 'ArrowUp'){ e.preventDefault(); handleEl.classList.remove('bob'); setHandle(value + step); TRACE.act('key', { key:e.key, v:+value.toFixed(1) }); }
+      if(e.key === 'ArrowLeft'  || e.key === 'ArrowDown'){ e.preventDefault(); handleEl.classList.remove('bob'); setHandle(value - step); TRACE.act('key', { key:e.key, v:+value.toFixed(1) }); }
+    });
+
+    onVerify(() => {
+      const correct = value >= target.start-2 && value <= target.end+2 && value > 3;
+      decide(correct, correct ? '' : 'The craft drifted off course.');
+    });
+
+    TRACE.measure(box => TRACE.state({
+      kind: 'continuous-1d',
+      prompt: 'drag the craft into the landing zone',
+      answer: { min:target.start-2, max:target.end+2, mid:+((target.start+target.end)/2).toFixed(2) },
+      track: box(trackEl),
+      zone: box(zoneEl),
+      handle: box(handleEl)
+    }));
+  }
+
+  function buildRotate(){
+    promptText.innerHTML = `Aim the dish<span class="sub">Rotate the marker into the highlighted arc.</span>`;
+    const r = 58, cx = 75, cy = 75;
+    const targetStart = Math.floor(Math.random()*360);
+    const targetSpan = 40;
+    const circumference = 2*Math.PI*r;
+    const arcLen = (targetSpan/360)*circumference;
+
+    challengeArea.innerHTML = `
+      <div class="dial-wrap">
+        <div class="dial" id="dialEl">
+          <svg viewBox="0 0 150 150">
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--rail)" stroke-width="10"/>
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--green)" stroke-width="10"
+              stroke-dasharray="${arcLen} ${circumference-arcLen}"
+              stroke-dashoffset="${-(targetStart/360)*circumference}"
+              transform="rotate(-90 ${cx} ${cy})" stroke-linecap="round" opacity="0.85"/>
+          </svg>
+          <div class="dial-center">Line up<br>the marker</div>
+          <div class="dial-handle" id="dialHandle" role="slider" tabindex="0"
+               aria-label="Dish bearing" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0"><i class="fa-solid fa-satellite-dish"></i></div>
+        </div>
+      </div>`;
+
+    const dialEl = document.getElementById('dialEl');
+    const handle = document.getElementById('dialHandle');
+    let angle = 0;
+
+    function place(deg){
+      angle = ((deg % 360) + 360) % 360;
+      const rad = (angle-90) * Math.PI/180;
+      handle.style.left = (cx + r*Math.cos(rad)) + 'px';
+      handle.style.top  = (cy + r*Math.sin(rad)) + 'px';
+      handle.setAttribute('aria-valuenow', Math.round(angle));
+    }
+    place(targetStart+180);
+
+    function angleFromEvent(clientX, clientY){
+      const rect = dialEl.getBoundingClientRect();
+      const dx = clientX - (rect.left+rect.width/2);
+      const dy = clientY - (rect.top+rect.height/2);
+      return (Math.atan2(dy,dx)*180/Math.PI) + 90;
+    }
+
+    dragify(dialEl,
+      (e) => { place(angleFromEvent(e.clientX, e.clientY)); TRACE.act('drag', { deg:Math.round(angle) }); },
+      null,
+      () => { TRACE.act('drop', { deg:Math.round(angle) }); });
+
+    handle.addEventListener('keydown', (e) => {
+      const step = e.shiftKey ? 15 : 4;
+      if(e.key === 'ArrowRight' || e.key === 'ArrowUp'){ e.preventDefault(); place(angle + step); TRACE.act('key', { key:e.key, deg:Math.round(angle) }); }
+      if(e.key === 'ArrowLeft'  || e.key === 'ArrowDown'){ e.preventDefault(); place(angle - step); TRACE.act('key', { key:e.key, deg:Math.round(angle) }); }
+    });
+
+    onVerify(() => {
+      let diff = ((angle - (targetStart+targetSpan/2) + 540) % 360) - 180;
+      const correct = Math.abs(diff) <= targetSpan/2 + 3;
+      decide(correct, correct ? '' : 'The dish missed the signal.');
+    });
+
+    TRACE.measure(box => TRACE.state({
+      kind: 'continuous-angle',
+      prompt: 'rotate the marker into the highlighted arc',
+      answer: { deg:(targetStart+targetSpan/2)%360, tolerance:targetSpan/2 + 3 },
+      arc: { start:targetStart, span:targetSpan },
+      dial: box(dialEl),
+      handle: box(handle)
+    }));
+  }
+
+  function buildSequence(){
+    promptText.innerHTML = `Tap the beacons in order<span class="sub">Lowest signal number first.</span>`;
+
+    const nums = shuffle(Array.from({length:29}, (_,i)=>i+1)).slice(0,5);
+    const order = shuffle(nums);
+    const sorted = nums.slice().sort((a,b)=>a-b);
+    let step = 0, restarts = 0;
+    let next = sorted[0];
+
+    challengeArea.innerHTML = `<div class="seq-grid" id="seqEl"></div>`;
+    const seqEl = document.getElementById('seqEl');
+    const els = [];
+    order.forEach(num=>{
+      const el = document.createElement('div');
+      el.className = 'beacon';
+      el.textContent = num;
+      els.push(el);
+      activatable(el, 'beacon ' + num, (ev) => {
+        if(el.classList.contains('done')) return;
+        TRACE.tapOn(el, ev, { value:num, expected:next, correct:num === next });
+        if(num === next){
+          el.classList.add('done');
+          step++;
+          next = sorted[step];
+          if(step === sorted.length){
+            logEvent('minigame_correct', { challenge:'sequence', outcome:'pass', detail:{ restarts } });
+            setTimeout(()=> decide(true, ''), 250);
+          }
+        } else {
+          el.classList.add('bad');
+          restarts++;
+          logEvent('minigame_wrong', { challenge:'sequence', outcome:'fail', detail:{ expected:next, tapped:num, restarts } });
+
+          if(restarts >= 3){ setTimeout(()=> decide(false, 'The beacons never lined up.'), 450); return; }
+          setTimeout(()=>{
+            [...seqEl.children].forEach(c=>c.classList.remove('done','bad'));
+            step = 0; next = sorted[0];
+          }, 400);
+        }
+      });
+      seqEl.appendChild(el);
+    });
+    verifyBtn.classList.add('hidden'); 
+
+    TRACE.measure(box => TRACE.state({
+      kind: 'ordered-taps',
+      prompt: 'tap the beacons in ascending order',
+      answer: sorted,
+      beacons: order.map((num, i) => ({ i:i, value:num, box:box(els[i]) }))
+    }));
+  }
+
+  function buildCode(){
+    promptText.innerHTML = `Type the signal code<span class="sub">Case doesn't matter.</span>`;
+    const charset = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for(let i=0;i<5;i++) code += charset[Math.floor(Math.random()*charset.length)];
+    const colors = ['var(--blue)','var(--green)','var(--pink)','var(--yellow)','var(--red)'];
+
+    let spans = '';
+    for(let i=0;i<code.length;i++){
+      const rot = (Math.random()*32-16).toFixed(1);
+      const ty = (Math.random()*10-5).toFixed(1);
+      const col = colors[i % colors.length];
+      spans += `<span class="code-char" style="transform:rotate(${rot}deg) translateY(${ty}px); color:${col};">${code[i]}</span>`;
+    }
+
+    challengeArea.innerHTML = `
+      <div class="code-box" aria-hidden="true">
+        <svg class="noise" viewBox="0 0 300 70" preserveAspectRatio="none">
+          ${Array.from({length:6}).map(()=>{
+            const y1=Math.random()*70, y2=Math.random()*70;
+            return `<line x1="0" y1="${y1.toFixed(1)}" x2="300" y2="${y2.toFixed(1)}" stroke="var(--rail)" stroke-width="2"/>`;
+          }).join('')}
+        </svg>
+        ${spans}
+      </div>
+      <input class="code-input" id="codeInput" maxlength="8" autocomplete="off" spellcheck="false"
+             autocapitalize="characters" aria-label="Signal code" placeholder="Enter code" />
+    `;
+
+    const input = document.getElementById('codeInput');
+
+    setTimeout(()=>{ try{ input.focus({ preventScroll:true }); }catch(e){} }, 60);
+    input.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter'){ e.preventDefault(); verifyBtn.click(); }
+      else TRACE.act('key', { len:input.value.length });
+    });
+
+    onVerify(() => {
+      const val = input.value.trim().toUpperCase();
+      const correct = val === code;
+      if(!correct) input.classList.add('wrong');
+      decide(correct, correct ? '' : "That code didn't match.");
+    });
+
+    TRACE.measure(box => TRACE.state({
+      kind: 'transcribe',
+      prompt: 'type the code shown',
+      answer: code,
+      length: code.length,
+      input: box(input)
+    }));
+  }
+
+  function buildTrace(){
+    promptText.innerHTML = `Trace the beam<span class="sub">Drag from the dot to the dish, staying on the line.</span>`;
+    verifyBtn.classList.add('hidden');               
+
+    const W = 300, H = 120, TOL = 26;                
+    const p0 = { x:22,  y:20 + Math.random()*80 };
+    const p2 = { x:278, y:20 + Math.random()*80 };
+
+    const sBend = Math.random() < 0.5;
+    const p1 = { x: sBend ? 105 : 150, y:Math.random() < 0.5 ? 8 + Math.random()*22 : H - 8 - Math.random()*22 };
+    const p1b = { x:200, y: sBend ? (H - p1.y) : p1.y };
+
+    const pts = [];
+    for(let i=0;i<=64;i++){
+      const t = i/64, u = 1-t;
+      if(sBend){
+        pts.push({ x: u*u*u*p0.x + 3*u*u*t*p1.x + 3*u*t*t*p1b.x + t*t*t*p2.x,
+                   y: u*u*u*p0.y + 3*u*u*t*p1.y + 3*u*t*t*p1b.y + t*t*t*p2.y });
+      } else {
+        pts.push({ x: u*u*p0.x + 2*u*t*p1.x + t*t*p2.x,
+                   y: u*u*p0.y + 2*u*t*p1.y + t*t*p2.y });
+      }
+    }
+    const pathD = sBend
+      ? `M${p0.x} ${p0.y} C${p1.x} ${p1.y} ${p1b.x} ${p1b.y} ${p2.x} ${p2.y}`
+      : `M${p0.x} ${p0.y} Q${p1.x} ${p1.y} ${p2.x} ${p2.y}`;
+
+    challengeArea.innerHTML = `
+      <div class="trace-wrap" id="traceWrap">
+        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="trace-svg">
+          <path d="${pathD}" class="beam-track"/>
+          <path d="" class="beam-live" id="beamLive"/>
+          <circle cx="${p0.x}" cy="${p0.y}" r="9" class="beam-start" id="beamStart"/>
+          <circle cx="${p2.x}" cy="${p2.y}" r="9" class="beam-end"/>
+        </svg>
+        <div class="trace-hint" id="traceHint">Start at the glowing dot</div>
+      </div>`;
+
+    const wrap = document.getElementById('traceWrap');
+    const live = document.getElementById('beamLive');
+    const hint = document.getElementById('traceHint');
+
+    let started = false, done = false, idx = 0, strays = 0;
+    let trail = [];
+
+    function toSvg(e){
+      const r = wrap.getBoundingClientRect();
+      return { x: ((e.clientX - r.left)/r.width)*W, y: ((e.clientY - r.top)/r.height)*H };
+    }
+
+    function dist(a,b){
+      const r = wrap.getBoundingClientRect();
+      return Math.hypot((a.x-b.x) * (r.width/W), (a.y-b.y) * (r.height/H));
+    }
+
+    function pushTrail(p){
+      const last = trail[trail.length - 1];
+      if(last && Math.hypot(p.x - last.x, p.y - last.y) < 1.2) return;
+      trail.push(p);
+
+      if(trail.length > 600) trail.shift();
+      redraw();
+    }
+    function redraw(){
+      if(!trail.length){ live.setAttribute('d', ''); return; }
+      const seg = trail.map(q => q.x.toFixed(1) + ' ' + q.y.toFixed(1));
+
+      live.setAttribute('d', 'M' + seg[0] + (seg.length > 1 ? 'L' + seg.slice(1).join('L') : 'L' + seg[0]));
+    }
+    function clearTrail(){ trail = []; redraw(); }
+
+    function move(e){
+      if(done) return;
+      const p = toSvg(e);
+      if(!started){
+        if(dist(p, p0) > TOL) return;                
+        started = true;
+        hint.textContent = 'Keep going…';
+        wrap.classList.add('live');
+      }
+      pushTrail(p);
+
+      let advanced = 0;
+      while(idx < pts.length-1 && dist(p, pts[idx+1]) < TOL){ idx++; advanced++; }
+      if(advanced){
+        TRACE.act('drag', { seg:idx, at:[+(p.x/W).toFixed(3), +(p.y/H).toFixed(3)] });
+      } else if(dist(p, pts[idx]) > TOL*1.9){
+        strays++;
+        wrap.classList.add('stray');
+        setTimeout(()=> wrap.classList.remove('stray'), 220);
+      }
+      if(idx >= pts.length-1){
+        done = true;
+        wrap.classList.add('ok');
+        hint.textContent = 'Signal locked.';
+        logEvent('minigame_correct', { challenge:'trace', outcome:'pass', detail:{ strays } });
+        setTimeout(()=> decide(true, ''), 320);
+      }
+    }
+    function release(){
+      if(done || !started) return;
+
+      started = false; idx = 0;
+      clearTrail();
+      wrap.classList.remove('live');
+      hint.textContent = 'Lost it. Start again at the dot';
+      strays++;
+      TRACE.act('drop', { seg:idx, aborted:true });
+      if(strays > 14){
+        done = true;
+        logEvent('minigame_wrong', { challenge:'trace', outcome:'fail', detail:{ strays } });
+        decide(false, 'The beam kept breaking.');
+      }
+    }
+    dragify(wrap, move, null, release);
+
+    TRACE.measure(box => TRACE.state({
+      kind: 'path-follow',
+      prompt: 'drag along the curve from start to end',
+      answer: pts.filter((_,i)=> i % 4 === 0)
+                 .map(p => [ +(p.x/W).toFixed(3), +(p.y/H).toFixed(3) ]),
+      tolerance: +(TOL/W).toFixed(3),
+      start: [ +(p0.x/W).toFixed(3), +(p0.y/H).toFixed(3) ],
+      end:   [ +(p2.x/W).toFixed(3), +(p2.y/H).toFixed(3) ],
+      area: box(wrap)
+    }));
+  }
+
+  function buildCatch(){
+    promptText.innerHTML = `Tag the probe<span class="sub">Click the drifting probe twice.</span>`;
+    verifyBtn.classList.add('hidden');
+
+    challengeArea.innerHTML = `
+      <div class="catch-box" id="catchBox">
+        <div class="probe" id="probeEl"><i class="fa-solid fa-satellite"></i></div>
+        <div class="catch-tally" id="catchTally">0 / 2</div>
+      </div>`;
+
+    const boxEl = document.getElementById('catchBox');
+    const probe = document.getElementById('probeEl');
+    const tally = document.getElementById('catchTally');
+
+    let hits = 0, misses = 0, done = false;
+    let px = 0.5, py = 0.5;                                  
+    let vx = (Math.random() < 0.5 ? -1 : 1) * 0.0035;
+    let vy = (Math.random() < 0.5 ? -1 : 1) * 0.0030;
+    let raf = 0;
+
+    function step(){
+      if(done) return;
+
+      vx += (Math.random()-0.5) * 0.00035;
+      vy += (Math.random()-0.5) * 0.00035;
+      const cap = 0.007 + hits*0.004;
+      vx = Math.max(-cap, Math.min(cap, vx));
+      vy = Math.max(-(cap*0.86), Math.min(cap*0.86, vy));
+      px += vx; py += vy;
+      if(px < 0.06){ px = 0.06; vx = Math.abs(vx); }
+      if(px > 0.94){ px = 0.94; vx = -Math.abs(vx); }
+      if(py < 0.12){ py = 0.12; vy = Math.abs(vy); }
+      if(py > 0.88){ py = 0.88; vy = -Math.abs(vy); }
+      probe.style.left = (px*100) + '%';
+      probe.style.top  = (py*100) + '%';
+      raf = requestAnimationFrame(step);
+    }
+    raf = requestAnimationFrame(step);
+    function stop(){ done = true; if(raf) cancelAnimationFrame(raf); }
+
+    probe.addEventListener('click', (ev) => {
+      if(done) return;
+      ev.stopPropagation();
+      hits++;
+      TRACE.act('hit', { n:hits, probe:[+px.toFixed(3), +py.toFixed(3)],
+                         v:[+(vx*1000).toFixed(2), +(vy*1000).toFixed(2)] });
+      probe.classList.add('tagged');
+      setTimeout(()=> probe.classList.remove('tagged'), 220);
+      tally.textContent = hits + ' / 2';
+
+      vx *= 1.45; vy *= 1.45;
+      if(hits >= 2){
+        stop();
+        probe.classList.add('locked');
+        logEvent('minigame_correct', { challenge:'catchit', outcome:'pass', detail:{ misses } });
+        setTimeout(()=> decide(true, ''), 300);
+      }
+    });
+
+    boxEl.addEventListener('click', (ev) => {
+      if(done) return;
+      misses++;
+      TRACE.act('miss', { n:misses, probe:[+px.toFixed(3), +py.toFixed(3)] });
+      boxEl.classList.add('missed');
+      setTimeout(()=> boxEl.classList.remove('missed'), 200);
+      if(misses >= 6){
+        stop();
+        logEvent('minigame_wrong', { challenge:'catchit', outcome:'fail', detail:{ hits, misses } });
+        decide(false, 'The probe got away.');
+      }
+    });
+
+    setTimeout(()=>{
+      if(done) return;
+      stop();
+      logEvent('minigame_wrong', { challenge:'catchit', outcome:'fail', detail:{ hits, misses, timeout:true } });
+      decide(false, 'The probe drifted out of range.');
+    }, 22000);
+
+    TRACE.measure(box => TRACE.state({
+      kind: 'moving-target',
+      prompt: 'click the drifting probe twice',
+      answer: { hits:2 },
+      area: box(boxEl),
+      probeRadius: 0.075
+    }));
+  }
+
+  function buildPairs(){
+    promptText.innerHTML = `Find the twins<span class="sub">Two of these are the same. Tap them both.</span>`;
+    verifyBtn.classList.add('hidden');
+
+    const base = pick(LIFE.concat(MACHINE), 5);
+    const twin = base[Math.floor(Math.random()*base.length)];
+    const items = shuffle(base.concat([twin]));
+    const twinIdx = items.map((it,i)=> it.n === twin.n ? i : -1).filter(i=>i>=0);
+
+    challengeArea.innerHTML = `<div class="grid pair-grid" id="gridEl"></div>`;
+    const gridEl = document.getElementById('gridEl');
+    const els = [];
+    let picked = [], done = false, wrong = 0;
+
+    items.forEach((it, i) => {
+      const el = tileWith(it.e);
+      els.push(el);
+      activatable(el, it.n, (ev) => {
+        if(done || picked.indexOf(i) >= 0) return;
+        picked.push(i);
+        el.classList.add('selected');
+        TRACE.tapOn(el, ev, { i:i, label:it.n, correct:twinIdx.indexOf(i) >= 0 });
+        if(picked.length < 2) return;
+
+        const right = picked.every(p => twinIdx.indexOf(p) >= 0);
+        if(right){
+          done = true;
+          picked.forEach(p => { els[p].classList.remove('selected'); els[p].classList.add('correct-flash'); });
+          logEvent('minigame_correct', { challenge:'pairs', outcome:'pass', detail:{ twin:twin.n } });
+          setTimeout(()=> decide(true, ''), 300);
+        } else {
+          wrong++;
+          const bad = picked.slice();
+          logEvent('minigame_wrong', { challenge:'pairs', outcome:'fail', detail:{ twin:twin.n, wrong } });
+          bad.forEach(p => { els[p].classList.remove('selected'); els[p].classList.add('wrong'); });
+          picked = [];
+          if(wrong >= 2){ done = true; setTimeout(()=> decide(false, "Those two weren't a match."), 500); }
+          else setTimeout(()=> bad.forEach(p => els[p].classList.remove('wrong')), 550);
+        }
+      });
+      gridEl.appendChild(el);
+    });
+
+    TRACE.measure(box => TRACE.state({
+      kind: 'find-pair',
+      prompt: 'tap the two identical tiles',
+      answer: twinIdx,
+      tiles: items.map((it, i) => ({ i:i, label:it.n, box:box(els[i]) }))
+    }));
+  }
+
+  function decide(pass, reason){
+    verifyBtn.disabled = true;
+    expFooter.classList.add('hidden');
+    statusBox.classList.remove('hidden');
+
+    const solveMs = challengeStart ? (Date.now() - challengeStart) : null;
+
+    const tooFast = pass && solveMs != null && solveMs < 450;
+    if(tooFast) logEvent('speed_flag', { challenge:lastType, outcome:'suspicious', suspicious:true, detail:{ solveMs } });
+
+    TRACE.end(pass, solveMs);
+
+    logEvent(pass ? 'challenge_pass' : 'challenge_fail', {
+      challenge: lastType,
+      outcome: pass ? 'pass' : 'fail',
+      detail: { solveMs: solveMs }
+    });
+
+    if(pass){
+      issueToken('challenge').then(function(token){
+        if(!token){
+          const t = tokenFailText();
+          statusBox.className = 'status fail';
+          statusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i><div>${t.title}<span class="d">${t.detail}</span></div>`;
+          logEvent('key_fail', { outcome:'suspicious', suspicious:!FIRST_PARTY, detail:{ serverMode:SERVER_MODE, firstParty:FIRST_PARTY, reason:LAST_TOKEN_ERR, at:'challenge' } });
+          post('error', { code: LAST_TOKEN_ERR || 'no-sitekey', message: t.detail });
+          reportSize();
+          return;
+        }
+        statusBox.className = 'status pass';
+        statusBox.innerHTML = `<i class="fa-solid fa-circle-check"></i><div>Verified. Life form confirmed.<span class="d">You may proceed.</span></div>`;
+        reportSize();
+        setTimeout(()=>{
+          logEvent('verified', { challenge:lastType, outcome:'pass', detail:{ via:'challenge' } });
+          sessionSummary(true, 'challenge');
+          post('verified', { token: token });
+          armExpiry();
+          if(INVISIBLE){
+
+            expanded.classList.add('hidden');
+            post('collapse', {});
+            return;
+          }
+          resetCollapsed();
+          chkBox.classList.add('checked');
+          chkLabel.textContent = 'Verified';
+          collapsed.classList.add('is-verified');
+          locked = true;
+        }, 1100);
+      });
+    } else {
+      statusBox.className = 'status fail';
+      statusBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i><div>Not verified.${reason ? ' '+reason : ''}<span class="d">Try a new challenge.</span></div>`;
+      const retry = document.createElement('button');
+      retry.className = 'retry-btn';
+      retry.textContent = 'Try again';
+      retry.onclick = () => { verifyBtn.onclick = null; openChallenge(); };
+      statusBox.appendChild(retry);
+      reportSize();
+    }
+  }
+
+  if(INVISIBLE){
+
+    collapsed.classList.add('hidden');
+    expanded.classList.add('hidden');
+  }
+  if(ro) ro.observe(document.querySelector('.stage'));
+  window.addEventListener('load', reportSize);
+  logEvent('widget_open', { detail:{ firstParty:FIRST_PARTY, serverMode:SERVER_MODE, mode:INVISIBLE ? 'invisible' : 'checkbox', lane:INVISIBLE ? 'invisible' : (GAME_LANE ? 'game' : 'signal') } });
+  post('ready');
+  reportSize();
+})();
+</script>
+
+</body>
+</html>

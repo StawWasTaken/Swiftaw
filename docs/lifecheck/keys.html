@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" data-nb="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API keys - Lifecheck</title>
+<meta name="description" content="Create a free Swiftaw account and generate your Lifecheck site key and secret key.">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://swiftaw.com/lifecheck/keys">
+<meta name="theme-color" content="#0C0F15">
+<link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw-nb.css">
+<link rel="stylesheet" href="/css/lifecheck.css">
+<style>
+.nb-nav-actions .swl-btn, .nb-nav-actions .swa-btn { flex: none; }
+@media (max-width: 560px) { .lc-nav-cta { display: none; } }
+
+.keys-wrap { max-width: 760px; margin: 0 auto; padding: clamp(96px, 11vw, 128px) 24px 0; }
+@media (max-width: 620px) { .keys-wrap { padding: 104px 18px 0; } }
+
+.keys-head { text-align: center; margin-bottom: 28px; }
+.keys-head h1 {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(30px, 4.6vw, 46px); line-height: 1.06;
+  letter-spacing: -.02em; margin: 14px 0 12px;
+}
+.keys-head p { font-size: 15.5px; color: var(--nb-fg-muted); max-width: 46ch; margin: 0 auto; line-height: 1.6; }
+
+.card {
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  --nb-fg: var(--nb-surface-fg); --nb-fg-muted: var(--nb-surface-fg-muted);
+  border: var(--nb-bd); border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh); padding: var(--nb-pad);
+}
+
+.signin-card { text-align: center; padding: 36px 26px; }
+.signin-card .lock {
+  width: 56px; height: 56px; border-radius: var(--nb-r-sm);
+  background: var(--nb-yellow); border: var(--nb-bd); box-shadow: var(--nb-sh-sm);
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 18px;
+}
+.signin-card .lock svg { width: 22px; height: 22px; fill: var(--nb-ink); }
+.signin-card h2 { font-family: var(--nb-font-head); font-weight: 700; font-size: 21px; margin-bottom: 7px; }
+.signin-card p { font-size: 14.5px; color: var(--nb-fg-muted); max-width: 38ch; margin: 0 auto 20px; line-height: 1.55; }
+.signin-card .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.msg {
+  margin-top: 16px; font-size: 13.5px; line-height: 1.55;
+  padding: 12px 15px; border-radius: var(--nb-r-sm); display: none;
+  border: var(--nb-bd-thin); box-shadow: var(--nb-sh-sm); color: var(--nb-ink);
+}
+.msg.show { display: block; }
+.msg.err { background: var(--nb-red); color: #fff; }
+.msg.ok  { background: var(--nb-green); }
+
+.dash-sub { text-align: center; font-size: 13px; color: var(--nb-fg-muted); margin-bottom: 18px; }
+.dash-sub b { color: var(--nb-fg); font-weight: 600; }
+
+.section-title {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 17px;
+  margin: 2px 0 16px; display: flex; align-items: center; gap: 10px;
+}
+.section-title svg { width: 16px; height: 16px; fill: var(--nb-yellow); }
+
+.newkey { display: grid; grid-template-columns: 1.1fr 1.5fr auto; gap: 12px 12px; align-items: end; margin-bottom: 22px; }
+.newkey .hint { grid-column: 1 / -1; font-size: 12px; color: var(--nb-fg-muted); line-height: 1.55; margin: -2px 0 0; }
+@media (max-width: 660px) { .newkey { grid-template-columns: 1fr; } }
+.newkey .field { margin: 0; }
+.field label {
+  display: block; font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 11.5px; letter-spacing: .04em; color: var(--nb-fg-muted); margin-bottom: 8px;
+}
+.field input {
+  width: 100%; background: var(--nb-surface-2); color: var(--nb-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  font-family: inherit; font-size: 14.5px; padding: 12px 14px; outline: none;
+  transition: box-shadow var(--nb-fast), border-color var(--nb-fast);
+}
+.field input:focus { border-color: var(--nb-ink); box-shadow: var(--nb-sh-sm); }
+.field input::placeholder { color: var(--nb-fg-muted); }
+.newkey button { white-space: nowrap; }
+
+.keylist { display: flex; flex-direction: column; gap: 14px; }
+.key-card {
+  background: var(--nb-surface-2);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm); padding: 18px;
+}
+.key-card .kc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.key-card .kc-name { font-family: var(--nb-font-head); font-weight: 700; font-size: 16px; }
+.key-card .kc-meta { font-size: 11.5px; color: var(--nb-fg-muted); margin-top: 4px; }
+.key-card .kc-del {
+  color: var(--nb-fg-muted); border: var(--nb-bd-thin); background: transparent;
+  width: 34px; height: 34px; border-radius: 9px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: color var(--nb-fast), background var(--nb-fast), transform var(--nb-fast), box-shadow var(--nb-fast);
+}
+.key-card .kc-del:hover {
+  background: var(--nb-red); color: #fff; border-color: var(--nb-ink);
+  transform: translate(-1px,-1px); box-shadow: var(--nb-sh-sm);
+}
+.key-card .kc-del:active { transform: translate(2px,3px); box-shadow: var(--nb-sh-press); }
+.key-card .kc-del svg { width: 13px; height: 13px; fill: currentColor; }
+
+.kv { margin-bottom: 12px; }
+.kv:last-child { margin-bottom: 0; }
+.kv .kv-lbl {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 10.5px;
+  letter-spacing: .07em; text-transform: uppercase; color: var(--nb-fg-muted); margin-bottom: 6px;
+}
+.kv .kv-lbl .tag-secret { color: var(--nb-pink); }
+.kv .kv-row { display: flex; align-items: center; gap: 9px; }
+.kv code {
+  flex: 1; min-width: 0; font-family: var(--nb-font-mono); font-size: 12.5px;
+  color: #D7DEE9; background: #0A0D13; border: var(--nb-bd-thin);
+  border-radius: 9px; padding: 10px 12px; overflow-x: auto; white-space: nowrap;
+}
+.kv code.secret { color: var(--nb-pink); letter-spacing: 1px; }
+.copy-btn, .reveal-btn {
+  flex: none; width: 38px; height: 38px; border-radius: 9px;
+  border: var(--nb-bd-thin); background: var(--nb-surface); color: var(--nb-fg);
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  box-shadow: var(--nb-sh-sm);
+  transition: background var(--nb-fast), color var(--nb-fast), transform var(--nb-fast), box-shadow var(--nb-fast);
+}
+.copy-btn:hover, .reveal-btn:hover {
+  background: var(--nb-yellow); color: var(--nb-ink);
+  transform: translate(-1px,-1px); box-shadow: 3px 4px 0 var(--nb-ink);
+}
+.copy-btn:active, .reveal-btn:active { transform: translate(2px,3px); box-shadow: var(--nb-sh-press); }
+.copy-btn.copied { background: var(--nb-green); color: var(--nb-ink); }
+.copy-btn svg, .reveal-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+.empty { text-align: center; padding: 30px 20px; color: var(--nb-fg-muted); font-size: 14.5px; }
+.empty svg { width: 30px; height: 30px; fill: var(--nb-fg-muted); opacity: .6; margin-bottom: 12px; }
+.doc-hint { text-align: center; margin: 22px 0 0; font-size: 13.5px; color: var(--nb-fg-muted); }
+.doc-hint a { color: var(--nb-yellow); text-decoration: underline; text-underline-offset: 2px; }
+.loading { text-align: center; padding: 46px 20px; color: var(--nb-fg-muted); font-family: var(--nb-font-head); font-weight: 700; }
+.hidden { display: none !important; }
+
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  background: rgba(5,6,8,.7);
+  opacity: 0; pointer-events: none; transition: opacity var(--nb-med);
+}
+.modal-overlay.show { opacity: 1; pointer-events: auto; }
+.modal {
+  width: 100%; max-width: 400px;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  --nb-fg: var(--nb-surface-fg); --nb-fg-muted: var(--nb-surface-fg-muted);
+  border: var(--nb-bd); border-radius: var(--nb-r);
+  box-shadow: var(--nb-sh-lg); padding: var(--nb-pad);
+  transform: translate(0, 14px); transition: transform var(--nb-med) var(--nb-ease);
+}
+.modal-overlay.show .modal { transform: none; }
+.modal .m-ic {
+  width: 50px; height: 50px; border-radius: var(--nb-r-sm);
+  background: var(--nb-red); border: var(--nb-bd); box-shadow: var(--nb-sh-sm);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
+}
+.modal .m-ic svg { width: 20px; height: 20px; fill: #fff; }
+.modal h3 { font-family: var(--nb-font-head); font-weight: 700; font-size: 19px; margin-bottom: 8px; }
+.modal p { font-size: 14.5px; color: var(--nb-fg-muted); line-height: 1.55; margin-bottom: 22px; }
+.modal .m-actions { display: flex; gap: 12px; justify-content: flex-end; }
+</style>
+</head>
+<body>
+
+<a class="nb-skip" href="#main">Skip to content</a>
+
+<div class="nb-rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="i-key" viewBox="0 0 512 512"><path d="M336 352c97.2 0 176-78.8 176-176S433.2 0 336 0S160 78.8 160 176c0 18.7 2.9 36.8 8.3 53.7L7 391c-4.5 4.5-7 10.6-7 17l0 80c0 13.3 10.7 24 24 24l80 0c13.3 0 24-10.7 24-24l0-40 40 0c13.3 0 24-10.7 24-24l0-40 40 0c6.4 0 12.5-2.5 17-7l33.3-33.3c16.9 5.4 35 8.3 53.7 8.3zM376 96a40 40 0 1 1 0 80 40 40 0 1 1 0-80z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 448 512"><path d="M384 336l-192 0c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l140.1 0L400 115.9 400 320c0 8.8-7.2 16-16 16zM192 384l192 0c35.3 0 64-28.7 64-64l0-204.1c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1L192 0c-35.3 0-64 28.7-64 64l0 256c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l192 0c35.3 0 64-28.7 64-64l0-32-48 0 0 32c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l32 0 0-48-32 0z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 576 512"><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0z"/></symbol>
+  <symbol id="i-eyeoff" viewBox="0 0 640 512"><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c8.4-19.3 10.6-41.4 4.8-63.3c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3c0 .9 0 1.8-.1 2.7l-96.9-76.3zM373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5L373 389.9z"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 448 512"><path d="M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></symbol>
+</svg>
+
+<nav class="nb-nav" id="nav">
+  <div class="nb-nav-in">
+    <a href="/lifecheck/" class="lc-brand" aria-label="Lifecheck by Swiftaw">
+      <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
+      <span class="lc-ver">v1.3</span>
+    </a>
+
+    <div class="nb-nav-links" id="navLinks">
+      <div class="lc-pills">
+        <a class="lc-pill" href="/lifecheck/">Overview</a>
+        <a class="lc-pill" href="/lifecheck/docs">Docs</a>
+        <a class="lc-pill is-current" href="/lifecheck/keys" aria-current="page">API keys</a>
+      </div>
+    </div>
+
+    <span class="nb-nav-spacer"></span>
+
+    <div class="nb-nav-actions">
+      <span data-swiftaw-launcher></span>
+      <span data-swiftaw-account></span>
+      <a class="nb-btn nb-btn--primary nb-btn--sm lc-nav-cta" href="/lifecheck/docs">Docs</a>
+      <button class="nb-icon-btn nb-nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main class="keys-wrap" id="main">
+  <div class="keys-head">
+    <span class="nb-eyebrow">Lifecheck v1.3</span>
+    <h1 id="headTitle">Your API keys.</h1>
+    <p id="headSub">Create a key for each site, then verify tokens on your server with the secret key.</p>
+  </div>
+
+  <div class="card loading" id="loadingCard">loading…</div>
+
+  <div class="card signin-card hidden" id="signinCard">
+    <div class="lock"><svg><use href="#i-key"/></svg></div>
+    <h2>Sign in to manage keys</h2>
+    <p>Your Lifecheck keys live in your Swiftaw account. Log in or create one to get started.</p>
+    <div class="btns">
+      <a class="nb-btn nb-btn--primary" id="loginLink">Log in</a>
+      <a class="nb-btn" id="createLink">Create account</a>
+    </div>
+  </div>
+
+  <div id="dashCard" class="hidden">
+    <div class="dash-sub">Signed in as <b id="acctEmail">…</b> · manage your account from the badge top-right.</div>
+    <div class="card">
+      <div class="section-title"><svg><use href="#i-key"/></svg> Your Lifecheck keys</div>
+      <form class="newkey" id="newKeyForm">
+        <div class="field">
+          <label for="keyName">Label</label>
+          <input type="text" id="keyName" placeholder="My website" maxlength="40" required>
+        </div>
+        <div class="field">
+          <label for="keyDomains">Allowed domains <span style="color:var(--nb-fg-muted);font-weight:400;">(optional)</span></label>
+          <input type="text" id="keyDomains" placeholder="example.com, app.example.com">
+        </div>
+        <button type="submit" class="nb-btn nb-btn--primary" id="createKeyBtn"><svg style="width:13px;height:13px;fill:currentColor;"><use href="#i-plus"/></svg> Create</button>
+        <p class="hint">Hostnames only - subdomains are included automatically, so <code class="lc-inline">example.com</code> also covers <code class="lc-inline">www.example.com</code>. Leave it empty to allow any domain.</p>
+      </form>
+      <div class="msg" id="keyMsg"></div>
+      <div class="keylist" id="keyList"></div>
+    </div>
+    <div class="doc-hint">Got your keys? Head to the <a href="/lifecheck/docs">docs</a> to wire it up.</div>
+  </div>
+</main>
+
+<div class="modal-overlay" id="confirmOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="m-ic"><svg><use href="#i-trash"/></svg></div>
+    <h3 id="confirmTitle">Delete this key?</h3>
+    <p id="confirmMsg">Sites using it will stop verifying right away.</p>
+    <div class="m-actions">
+      <button class="nb-btn nb-btn--sm" id="confirmCancel">Cancel</button>
+      <button class="nb-btn nb-btn--sm nb-btn--red" id="confirmOk">Delete key</button>
+    </div>
+  </div>
+</div>
+
+<footer class="nb-footer">
+  <div class="nb-wrap">
+    <div class="nb-footer-grid">
+      <div class="lc-foot-brand">
+        <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
+        <p class="nb-muted" style="font-size:14px; max-width:32ch;">
+          Human verification, made by Swiftaw in Île-de-France, France.
+        </p>
+      </div>
+      <div>
+        <h4>Lifecheck</h4>
+        <div class="nb-footer-list">
+          <a href="/lifecheck/">Overview</a>
+          <a href="/lifecheck/docs">Docs</a>
+          <a href="/lifecheck/keys">API keys</a>
+          <a href="/lifecheck/verify-test">Token verifier</a>
+        </div>
+      </div>
+      <div>
+        <h4>Swiftaw</h4>
+        <div class="nb-footer-list">
+          <a href="https://swiftaw.com/">Home</a>
+          <a href="https://swiftaw.com/about-us">About</a>
+          <a href="https://swiftaw.com/newsroom">Newsroom</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="nb-footer-list">
+          <a href="https://swiftaw.com/legal/terms-of-service">Terms of Service</a>
+          <a href="https://swiftaw.com/legal/privacy-policy">Privacy Policy</a>
+          <a href="https://swiftaw.com/legal/products-policy">Products Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="nb-footer-base">
+      <span>© 2026 Swiftaw</span>
+      <span>Make It Matter.</span>
+    </div>
+  </div>
+  <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
+</footer>
+
+<script src="/css/swiftaw-account.js"></script>
+<script src="/css/swiftaw.js"></script>
+<script>
+(function(){
+  var loadingCard = document.getElementById('loadingCard');
+  var signinCard  = document.getElementById('signinCard');
+  var dashCard    = document.getElementById('dashCard');
+  var keyMsg      = document.getElementById('keyMsg');
+  var sb = null;
+
+  var next = encodeURIComponent('/lifecheck/keys');
+  document.getElementById('loginLink').href  = '/account?next=' + next;
+  document.getElementById('createLink').href = '/account?mode=signup&next=' + next;
+
+  function show(el, kind, text){ el.className = 'msg show ' + kind; el.textContent = text; }
+  function hide(el){ el.className = 'msg'; }
+
+  function confirmDialog(opts){
+    opts = opts || {};
+    return new Promise(function(resolve){
+      var ov = document.getElementById('confirmOverlay');
+      var okBtn = document.getElementById('confirmOk');
+      var cancelBtn = document.getElementById('confirmCancel');
+      document.getElementById('confirmTitle').textContent = opts.title || 'Are you sure?';
+      document.getElementById('confirmMsg').textContent = opts.message || '';
+      okBtn.textContent = opts.confirmText || 'Confirm';
+      function close(val){
+        ov.classList.remove('show');
+        okBtn.removeEventListener('click', onOk);
+        cancelBtn.removeEventListener('click', onCancel);
+        ov.removeEventListener('click', onBackdrop);
+        document.removeEventListener('keydown', onKey);
+        resolve(val);
+      }
+      function onOk(){ close(true); }
+      function onCancel(){ close(false); }
+      function onBackdrop(e){ if(e.target === ov) close(false); }
+      function onKey(e){ if(e.key === 'Escape') close(false); }
+      okBtn.addEventListener('click', onOk);
+      cancelBtn.addEventListener('click', onCancel);
+      ov.addEventListener('click', onBackdrop);
+      document.addEventListener('keydown', onKey);
+      ov.classList.add('show');
+      okBtn.focus();
+    });
+  }
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+  function fmtDate(s){ try { return new Date(s).toLocaleDateString(undefined, { year:'numeric', month:'short', day:'numeric' }); } catch(e){ return ''; } }
+
+  function randKey(prefix, bytes){
+    var arr = new Uint8Array(bytes); crypto.getRandomValues(arr);
+    var hex = ''; for(var i=0;i<arr.length;i++) hex += arr[i].toString(16).padStart(2,'0');
+    return prefix + hex;
+  }
+
+  async function loadKeys(){
+    var list = document.getElementById('keyList');
+    list.innerHTML = '<div class="empty">loading keys…</div>';
+    var { data, error } = await sb.from('lifecheck_keys').select('*').order('created_at', { ascending: false });
+    if(error){ list.innerHTML = '<div class="empty">Could not load keys: ' + esc(error.message) + '</div>'; return; }
+    if(!data || !data.length){
+      list.innerHTML = '<div class="empty"><svg><use href="#i-key"/></svg><div>No keys yet. Create your first one above.</div></div>';
+      return;
+    }
+    list.innerHTML = data.map(function(k){
+      var domains = (k.domains && k.domains.length) ? esc(k.domains.join(', ')) : 'any domain';
+      return '<div class="key-card">' +
+        '<div class="kc-top"><div><div class="kc-name">'+esc(k.name)+'</div>' +
+          '<div class="kc-meta">'+domains+' · created '+fmtDate(k.created_at)+'</div></div>' +
+          '<button class="kc-del" title="Delete key" data-del="'+esc(k.id)+'"><svg><use href="#i-trash"/></svg></button></div>' +
+        '<div class="kv"><div class="kv-lbl">Site key <span style="color:var(--nb-fg-muted);font-weight:400;">(public)</span></div>' +
+          '<div class="kv-row"><code>'+esc(k.site_key)+'</code>' +
+          '<button class="copy-btn" data-copy="'+esc(k.site_key)+'" title="Copy"><svg><use href="#i-copy"/></svg></button></div></div>' +
+        '<div class="kv"><div class="kv-lbl"><span class="tag-secret">Secret key</span> <span style="color:var(--nb-fg-muted);font-weight:400;">(keep private)</span></div>' +
+          '<div class="kv-row"><code class="secret" data-secret="'+esc(k.secret_key)+'">•••••••••••••••••••••••••••</code>' +
+          '<button class="reveal-btn" title="Show / hide"><svg><use href="#i-eye"/></svg></button>' +
+          '<button class="copy-btn" data-copy="'+esc(k.secret_key)+'" title="Copy"><svg><use href="#i-copy"/></svg></button></div></div>' +
+      '</div>';
+    }).join('');
+  }
+
+  document.getElementById('keyList').addEventListener('click', async function(e){
+    var copyBtn = e.target.closest('[data-copy]');
+    if(copyBtn){ try { await navigator.clipboard.writeText(copyBtn.getAttribute('data-copy')); } catch(err){}
+      copyBtn.classList.add('copied'); setTimeout(function(){ copyBtn.classList.remove('copied'); }, 1200); return; }
+    var revealBtn = e.target.closest('.reveal-btn');
+    if(revealBtn){
+      var code = revealBtn.parentElement.querySelector('code.secret');
+      var shown = code.getAttribute('data-shown') === '1';
+      if(shown){ code.textContent = '•••••••••••••••••••••••••••'; code.setAttribute('data-shown','0'); revealBtn.querySelector('use').setAttribute('href','#i-eye'); }
+      else { code.textContent = code.getAttribute('data-secret'); code.setAttribute('data-shown','1'); revealBtn.querySelector('use').setAttribute('href','#i-eyeoff'); }
+      return;
+    }
+    var delBtn = e.target.closest('[data-del]');
+    if(delBtn){
+      var ok = await confirmDialog({ title: 'Delete this key?', message: 'Sites using it will stop verifying right away.', confirmText: 'Delete key' });
+      if(!ok) return;
+      var { error } = await sb.from('lifecheck_keys').delete().eq('id', delBtn.getAttribute('data-del'));
+      if(error){ show(keyMsg, 'err', 'Could not delete: ' + error.message); return; }
+      loadKeys();
+    }
+  });
+
+  function normDomain(d){
+    return String(d || '')
+      .trim().toLowerCase()
+      .replace(/^[a-z][a-z0-9+.-]*:\/\//, '')   
+      .replace(/^[^@/]*@/, '')                  
+      .split('/')[0]                            
+      .split('?')[0].split('#')[0]
+      .split(':')[0]                            
+      .replace(/\.$/, '');                      
+  }
+
+  document.getElementById('newKeyForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var name = document.getElementById('keyName').value.trim() || 'My site';
+    var raw = document.getElementById('keyDomains').value.trim();
+    var domains = raw ? raw.split(',').map(normDomain).filter(Boolean) : [];
+    var btn = document.getElementById('createKeyBtn');
+    btn.disabled = true; hide(keyMsg);
+    try {
+      var { data: { user } } = await sb.auth.getUser();
+      if(!user) throw new Error('Your session expired. Please log in again.');
+      var { error } = await sb.from('lifecheck_keys').insert({
+        user_id: user.id, name: name,
+        site_key: randKey('lc_site_', 12), secret_key: randKey('lc_secret_', 20), domains: domains
+      });
+      if(error) throw error;
+      document.getElementById('keyName').value = ''; document.getElementById('keyDomains').value = '';
+      show(keyMsg, 'ok', 'New key created. Keep your secret key private.');
+      loadKeys();
+    } catch(err){ show(keyMsg, 'err', err.message || 'Could not create the key.'); }
+    finally { btn.disabled = false; }
+  });
+
+  function render(){
+    var user = window.SwiftawAccount.user();
+    loadingCard.classList.add('hidden');
+    if(user){
+      signinCard.classList.add('hidden');
+      dashCard.classList.remove('hidden');
+      document.getElementById('acctEmail').textContent = user.email || 'your account';
+      loadKeys();
+    } else {
+      dashCard.classList.add('hidden');
+      signinCard.classList.remove('hidden');
+    }
+  }
+
+  window.SwiftawAccount.ready(function(){
+    sb = window.SwiftawAccount.client();
+    render();
+    window.SwiftawAccount.onChange(render);
+  });
+})();
+</script>
+</body>
+</html>

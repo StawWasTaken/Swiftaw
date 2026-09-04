@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en" data-nb="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overview - Lifecheck</title>
+<meta name="description" content="Lifecheck is Swiftaw's take on the 'I am not a robot' box. It reads how the cursor moved, plays a short game when it is not sure, and hands your server a token to verify. On v1.3.">
+<meta name="author" content="Swiftaw">
+<meta name="theme-color" content="#0C0F15">
+<link rel="canonical" href="https://swiftaw.com/lifecheck/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Swiftaw">
+<meta property="og:title" content="Lifecheck by Swiftaw">
+<meta property="og:description" content="The friendlier robot check. Prove you are a life form. On v1.3.">
+<meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
+<meta property="og:url" content="https://swiftaw.com/lifecheck/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lifecheck by Swiftaw">
+<meta name="twitter:description" content="The friendlier robot check. Prove you are a life form.">
+<meta name="twitter:image" content="https://swiftaw.com/SWFTW_Logomark.png">
+<link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw-nb.css">
+<link rel="stylesheet" href="/css/lifecheck.css">
+<style>
+
+html { scroll-padding-top: 88px; }
+
+.nb-nav-actions .swl-btn, .nb-nav-actions .swa-btn { flex: none; }
+@media (max-width: 560px) { .lc-nav-cta { display: none; } }
+
+.lc-split { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: clamp(26px, 4vw, 60px); align-items: start; }
+@media (max-width: 940px) { .lc-split { grid-template-columns: 1fr; gap: 26px; } }
+.lc-split-head h2 { margin: 10px 0 12px; }
+.lc-split-head p { font-size: 15px; line-height: 1.6; }
+.lc-note { margin-top: 18px; padding-top: 16px; border-top: var(--nb-bd-thin); font-size: 13.5px; line-height: 1.6; }
+
+.lc-hero { position: relative; padding: clamp(44px, 6vw, 80px) 0 clamp(26px, 3.4vw, 44px); overflow: hidden; }
+.lc-hero-grid {
+  position: relative; z-index: 2;
+  display: grid; grid-template-columns: 1fr minmax(0, 480px); gap: clamp(28px, 4vw, 56px); align-items: center;
+}
+@media (max-width: 940px) { .lc-hero-grid { grid-template-columns: 1fr; } }
+
+.lc-hero h1 { margin: 14px 0 18px; font-size: clamp(34px, 4.6vw, 62px); }
+.lc-hero h1 .dot { color: var(--nb-yellow); }
+.lc-hero-lede { max-width: 44ch; margin-bottom: 26px; }
+
+.lc-deco-1 { top: 78px; right: 4%; --nb-rot: 12deg; }
+.lc-deco-2 { bottom: 34px; right: 9%; --nb-rot: -14deg; }
+@media (max-width: 1080px) { .lc-deco-1, .lc-deco-2 { display: none; } }
+
+.lc-part + .lc-part { margin-top: 26px; padding-top: 24px; border-top: var(--nb-bd-thin); }
+.lc-part-label {
+  display: block; margin-bottom: 16px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 11.5px;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--nb-surface-fg-muted);
+}
+
+.lc-signal { display: flex; gap: 14px; align-items: flex-start; }
+.lc-signal + .lc-signal { margin-top: 16px; }
+.lc-signal .g {
+  width: 34px; height: 34px; flex: none; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--lcx); border: var(--nb-bd-thin); border-radius: 8px;
+}
+.lc-signal .g svg { width: 15px; height: 15px; fill: var(--nb-ink); }
+.lc-signal h3 { font-size: 16px; margin: 0 0 4px; }
+.lc-signal p { font-size: 13.5px; line-height: 1.55; margin: 0; }
+
+.lc-names { display: flex; flex-wrap: wrap; gap: 8px; }
+.lc-name {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px;
+  padding: 7px 13px; border-radius: var(--nb-r-pill);
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd-thin);
+}
+.lc-name.is-new { background: var(--nb-yellow); color: var(--nb-ink); }
+.lc-names-note { margin: 14px 0 0; font-size: 13px; line-height: 1.6; }
+
+.lc-points { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 34px; }
+@media (max-width: 700px) { .lc-points { grid-template-columns: 1fr; } }
+.lc-point { border-top: var(--nb-bd-w) solid var(--lcx, var(--nb-yellow)); padding-top: 14px; }
+.lc-point h3 { font-size: 17px; margin: 0 0 7px; }
+.lc-point p { font-size: 13.5px; line-height: 1.6; margin: 0; }
+
+.lc-outro { text-align: center; }
+.lc-outro h2 { margin-bottom: 12px; }
+.lc-outro p { max-width: 48ch; margin: 0 auto 24px; }
+
+.nb-section { padding: clamp(44px, 5.6vw, 82px) 0; }
+
+</style>
+</head>
+<body>
+
+<a class="nb-skip" href="#main">Skip to content</a>
+
+<div class="nb-rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-cursor" viewBox="0 0 320 512"><path d="M0 55.2L0 426c0 12.2 9.9 22 22 22 6.3 0 12.4-2.7 16.6-7.5L121.2 346l58.1 116.3c7.9 15.8 27.1 22.2 42.9 14.3s22.2-27.1 14.3-42.9L179.8 320l118.4 0c12.2 0 22.1-9.9 22.1-22.1 0-6.3-2.7-12.3-7.4-16.5L38.6 37.9C34.3 34.1 28.9 32 23.2 32 10.4 32 0 42.4 0 55.2z"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 512 512"><path d="M0 256C0 114.6 114.6 0 256 0S512 114.6 512 256s-114.6 256-256 256S0 397.4 0 256zm352-96a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM192 288c0 35.3 28.7 64 64 64s64-28.7 64-64c0-8.8-7.2-16-16-16l-96 0c-8.8 0-16 7.2-16 16zm-32-96a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 512 512"><path d="M256 0a256 256 0 1 1 0 512A256 256 0 1 1 256 0zM232 120l0 136c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2 280 120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></symbol>
+</svg>
+
+<nav class="nb-nav" id="nav">
+  <div class="nb-nav-in">
+    <a href="/lifecheck/" class="lc-brand" aria-label="Lifecheck by Swiftaw">
+      <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
+      <span class="lc-ver">v1.3</span>
+    </a>
+
+    <div class="nb-nav-links" id="navLinks">
+      <div class="lc-pills">
+        <a class="lc-pill is-current" href="/lifecheck/" aria-current="page">Overview</a>
+        <a class="lc-pill" href="/lifecheck/docs">Docs</a>
+        <a class="lc-pill" href="/lifecheck/keys">API keys</a>
+      </div>
+    </div>
+
+    <span class="nb-nav-spacer"></span>
+
+    <div class="nb-nav-actions">
+      <span data-swiftaw-launcher></span>
+      <span data-swiftaw-account></span>
+      <a class="nb-btn nb-btn--primary nb-btn--sm lc-nav-cta" href="/lifecheck/keys">Get a key</a>
+      <button class="nb-icon-btn nb-nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+
+<section class="lc-hero">
+  <span class="nb-deco nb-shape nb-shape--circle nb-poke nb-float lc-deco-1" data-depth="18" aria-hidden="true"></span>
+  <span class="nb-deco nb-shape nb-shape--sq nb-poke nb-float lc-deco-2" data-depth="24" aria-hidden="true"></span>
+
+  <div class="nb-wrap">
+    <div class="lc-hero-grid">
+      <div class="nb-reveal">
+        <span class="nb-sticker">The friendlier robot check</span>
+        <h1 class="nb-display nb-d2">Prove you are a life form<span class="dot">.</span></h1>
+        <p class="nb-lead lc-hero-lede nb-muted">
+          Lifecheck is our version of the "I am not a robot" box. It reads how
+          the cursor moved on the way to the click, plays a short game when
+          that is not enough, and hands your server a token you can check.
+          That is the whole product.
+        </p>
+        <div class="nb-row">
+          <a class="nb-btn nb-btn--primary nb-btn--lg" href="/lifecheck/keys">Get a key</a>
+          <a class="nb-btn nb-btn--paper nb-btn--lg" href="#how">How it works</a>
+        </div>
+      </div>
+
+      <div class="nb-card nb-card--lg nb-reveal">
+        <div class="lc-demo">
+          <div class="lc-demo-head">
+            <span class="nb-h4">Try it. This one is real.</span>
+            <span class="lc-live"><i></i> Live</span>
+          </div>
+          <div class="lc-slot">
+            <div class="lifecheck" data-sitekey="lc_demo_public" data-callback="onLifecheckDemo"></div>
+          </div>
+          <div class="lc-out" id="demoOut">No token yet. Tick the box.</div>
+          <p class="nb-muted" style="font-size:12.5px; line-height:1.5;">
+            This is the same widget your visitors get. When it passes, it calls
+            your callback with a token.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="nb-rule">
+
+<section class="nb-section" id="how">
+  <div class="nb-wrap">
+    <div class="lc-split">
+      <div class="lc-split-head nb-reveal">
+        <span class="nb-eyebrow">How it works</span>
+        <h2 class="nb-h2">We read you, or we play you.</h2>
+        <p class="nb-muted">
+          Half of all visits are judged on how the pointer moved, and only
+          interrupted when that does not add up. The other half get a game no
+          matter how they moved. Which half you land in is decided fresh on
+          every visit, so nobody can learn their way past it.
+        </p>
+        <p class="nb-muted lc-note">
+          No single reading decides anything. Each one costs a little
+          confidence and the widget acts on the total, so one odd moment never
+          condemns a real person. On a phone it falls back to what a touch
+          screen can honestly report.
+        </p>
+      </div>
+
+      <div class="nb-card nb-card--lg nb-reveal">
+        <div class="lc-part">
+          <span class="lc-part-label">When we read you</span>
+          <div class="lc-signal" style="--lcx: var(--nb-blue);">
+            <span class="g"><svg><use href="#i-cursor"/></svg></span>
+            <div>
+              <h3 class="nb-h4">Did it move?</h3>
+              <p class="nb-muted">A pointer that barely twitched, or a click with no travel in front of it, is not somebody reaching for a button.</p>
+            </div>
+          </div>
+          <div class="lc-signal" style="--lcx: var(--nb-pink);">
+            <span class="g"><svg><use href="#i-wave"/></svg></span>
+            <div>
+              <h3 class="nb-h4">Does it wobble?</h3>
+              <p class="nb-muted">Hands shake constantly, even steady ones. A path drawn by maths barely changes direction on the way.</p>
+            </div>
+          </div>
+          <div class="lc-signal" style="--lcx: var(--nb-green);">
+            <span class="g"><svg><use href="#i-clock"/></svg></span>
+            <div>
+              <h3 class="nb-h4">Does it hesitate?</h3>
+              <p class="nb-muted">People stop to read, then stop again to aim. A trail that never once paused is doing something other than deciding.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lc-part">
+          <span class="lc-part-label">When we play you</span>
+          <div class="lc-names">
+            <span class="lc-name">Spot the life</span>
+            <span class="lc-name">Guide it home</span>
+            <span class="lc-name">Aim the dish</span>
+            <span class="lc-name">Beacon order</span>
+            <span class="lc-name">Signal code</span>
+            <span class="lc-name">Odd one out</span>
+            <span class="lc-name">Count the living</span>
+            <span class="lc-name">Select every life form</span>
+            <span class="lc-name is-new">Trace the beam</span>
+            <span class="lc-name is-new">Tag the probe</span>
+            <span class="lc-name is-new">Find the twins</span>
+          </div>
+          <p class="nb-muted lc-names-note">
+            Eleven of them, five seconds each. No blurry traffic lights and no
+            crosswalks, just small tasks that are awkward to script and quick
+            for a person. The three in yellow are new in v1.3, and every one
+            can be played on a keyboard alone.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="nb-rule">
+
+<section class="nb-section">
+  <div class="nb-wrap">
+    <div class="lc-split">
+      <div class="lc-split-head nb-reveal">
+        <span class="nb-eyebrow">Why teams pick it</span>
+        <h2 class="nb-h2">Small, kind, hard to fake.</h2>
+        <p class="nb-muted">
+          Six things it does that the box on everyone else's form does not.
+        </p>
+      </div>
+
+      <div class="lc-points nb-reveal">
+        <div class="lc-point" style="--lcx: var(--nb-yellow);">
+          <h3 class="nb-h4">It gets out of the way</h3>
+          <p class="nb-muted">Most real people go straight through without seeing a game. The people you want are not the ones who should be paying for this.</p>
+        </div>
+        <div class="lc-point" style="--lcx: var(--nb-blue);">
+          <h3 class="nb-h4">Yours to verify</h3>
+          <p class="nb-muted">Every pass mints a one time token. Check it from your own server with your secret key before you trust anything the form said.</p>
+        </div>
+        <div class="lc-point" style="--lcx: var(--nb-green);">
+          <h3 class="nb-h4">It cannot be lifted</h3>
+          <p class="nb-muted">The checking runs inside a sandboxed frame on our domain. What you embed is a URL, not code somebody can read and copy.</p>
+        </div>
+        <div class="lc-point" style="--lcx: var(--nb-pink);">
+          <h3 class="nb-h4">Nothing follows you out</h3>
+          <p class="nb-muted">No cookies, no profile, nothing sold. What we do keep is behaviour: how the pointer moved and how the game was played. Never what you typed into the page around it.</p>
+        </div>
+        <div class="lc-point" style="--lcx: var(--nb-red);">
+          <h3 class="nb-h4">Invisible when you want it</h3>
+          <p class="nb-muted">New in v1.3. Add <code class="lc-inline">data-size="invisible"</code> and nothing is drawn. Call <code class="lc-inline">Lifecheck.execute()</code> on submit and a game only appears if the check is unconvinced.</p>
+        </div>
+        <div class="lc-point" style="--lcx: var(--nb-yellow);">
+          <h3 class="nb-h4">Playable without a mouse</h3>
+          <p class="nb-muted">Every challenge is a real button. Tab to it, Enter to pick, arrow keys to steer the slider and the dial. The two that want a pointer offer you a different one instead.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="nb-rule">
+
+<section class="nb-section">
+  <div class="nb-wrap">
+    <div class="lc-split nb-reveal">
+      <div class="lc-split-head">
+        <span class="nb-eyebrow">Install</span>
+        <h2 class="nb-h2">Two lines and you are done.</h2>
+        <p class="nb-muted" style="margin-bottom:20px;">
+          Take a key, load the script once, and drop a
+          <code class="lc-inline">.lifecheck</code> box into your form. The
+          docs cover the callbacks, invisible mode and verifying the token.
+        </p>
+        <div class="nb-row">
+          <a class="nb-btn nb-btn--primary" href="/lifecheck/keys">Get a key</a>
+          <a class="nb-btn nb-btn--paper" href="/lifecheck/docs">Read the docs</a>
+        </div>
+      </div>
+      <div class="lc-code"><span class="c">&lt;!-- load Lifecheck once --&gt;</span>
+<span class="t">&lt;script</span> <span class="a">src</span>=<span class="s">"https://swiftaw.com/lifecheck/lifecheck.js"</span> <span class="a">async defer</span><span class="t">&gt;&lt;/script&gt;</span>
+
+<span class="c">&lt;!-- drop it into your form --&gt;</span>
+<span class="t">&lt;div</span> <span class="a">class</span>=<span class="s">"lifecheck"</span>
+     <span class="a">data-sitekey</span>=<span class="s">"YOUR_SITE_KEY"</span>
+     <span class="a">data-callback</span>=<span class="s">"onPass"</span><span class="t">&gt;&lt;/div&gt;</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="nb-section" style="padding-top:0;">
+  <div class="nb-wrap">
+    <div class="nb-card nb-card--lg lc-outro nb-reveal" style="background:var(--nb-yellow); color:var(--nb-ink);">
+      <h2 class="nb-h1">Put a friendlier wall on your forms.</h2>
+      <p>Lifecheck v1.3 is free to try and quick to wire up. Built by the people behind Fortized.</p>
+      <div class="nb-row" style="justify-content:center;">
+        <a class="nb-btn nb-btn--ink nb-btn--lg" href="/lifecheck/keys">Get a key</a>
+        <a class="nb-btn nb-btn--paper nb-btn--lg" href="https://swiftaw.com/">More from Swiftaw</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="nb-footer">
+  <div class="nb-wrap">
+    <div class="nb-footer-grid">
+      <div class="lc-foot-brand">
+        <img src="/lifecheck/LifeCheck%20logo.png" alt="Lifecheck">
+        <p class="nb-muted" style="font-size:14px; max-width:32ch;">
+          Human verification, made by Swiftaw in Île-de-France, France.
+        </p>
+      </div>
+      <div>
+        <h4>Lifecheck</h4>
+        <div class="nb-footer-list">
+          <a href="/lifecheck/">Overview</a>
+          <a href="/lifecheck/docs">Docs</a>
+          <a href="/lifecheck/keys">API keys</a>
+        </div>
+      </div>
+      <div>
+        <h4>Swiftaw</h4>
+        <div class="nb-footer-list">
+          <a href="https://swiftaw.com/">Home</a>
+          <a href="https://swiftaw.com/about-us">About</a>
+          <a href="https://swiftaw.com/newsroom">Newsroom</a>
+        </div>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <div class="nb-footer-list">
+          <a href="https://swiftaw.com/legal/terms-of-service">Terms of Service</a>
+          <a href="https://swiftaw.com/legal/privacy-policy">Privacy Policy</a>
+          <a href="https://swiftaw.com/legal/products-policy">Products Policy</a>
+        </div>
+      </div>
+    </div>
+    <div class="nb-footer-base">
+      <span>© 2026 Swiftaw</span>
+      <span>Make It Matter.</span>
+    </div>
+  </div>
+  <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
+</footer>
+
+<script src="/lifecheck/lifecheck.js" async defer></script>
+<script src="/css/swiftaw.js"></script>
+<script>
+  function onLifecheckDemo(token) {
+    var out = document.getElementById('demoOut');
+    if (!out) return;
+    out.classList.add('ok');
+    out.textContent = 'Verified. Token: ' + token;
+  }
+</script>
+
+</body>
+</html>
