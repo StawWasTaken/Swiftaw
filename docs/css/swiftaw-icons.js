@@ -102,11 +102,11 @@ if (!body) return '';
 return '<svg viewBox="' + esc(row.view_box) + '" ' + attrs + '>' + body + '</svg>';
 }
 function catMark(c, cls) {
-var body = clean(c.icon_body || '');
+var body = clean(c.mark_body || c.icon_body || '');
 if (body) {
 return '<span class="' + cls + '" aria-hidden="true"><svg viewBox="' +
-esc(c.icon_view_box || '0 0 24 24') + '" fill="currentColor">' +
-body + '</svg></span>';
+esc(c.mark_view_box || c.icon_view_box || '0 0 24 24') +
+'" fill="currentColor">' + body + '</svg></span>';
 }
 return '<span class="' + cls + ' is-letter" aria-hidden="true">' +
 esc(String(c.name || '?').trim().charAt(0).toUpperCase()) + '</span>';
@@ -430,8 +430,7 @@ el('icNext').innerHTML = ICO.right;
 skeletons();
 window.SwiftawAccount.ready(function () {
 db = window.SwiftawAccount.client();
-db.from('icon_categories').select('id,slug,name,icon_body,icon_view_box')
-.order('position').then(function (res) {
+db.rpc('icon_category_list').then(function (res) {
 cats = res.data || [];
 paintCats();
 load();
@@ -899,16 +898,26 @@ n.classList.toggle('is-bad', kind === 'bad');
 n.textContent = text;
 }
 function paintCats() {
-var bare = cats.filter(function (c) { return !c.icon_body; }).length;
+var borrowed = 0, bare = 0;
+cats.forEach(function (c) {
+if (c.mark_from === 'first') borrowed++;
+else if (!c.icon_body) bare++;
+});
+var said = [];
+if (borrowed) said.push(borrowed + ' borrowing its first icon');
+if (bare) said.push(bare + ' still without a mark');
 el('icCatN').textContent = cats.length
 ? cats.length + (cats.length === 1 ? ' shelf' : ' shelves') +
-(bare ? ', ' + bare + ' still without a mark' : '')
+(said.length ? ', ' + said.join(', ') : '')
 : 'None yet';
 el('icCatRows').innerHTML = cats.map(function (c, i) {
+var why = c.icon_body ? 'Change the mark'
+: c.mark_from === 'first' ? 'Borrowing its first icon. Choose one instead'
+: 'Choose a mark';
 return '<div class="ic-cat-row">' +
 '<button type="button" class="ic-cat-mark" data-mark="' + i + '" ' +
 'aria-label="Mark for ' + esc(c.name) + '" ' +
-'title="' + (c.icon_body ? 'Change the mark' : 'Choose a mark') + '">' +
+'title="' + why + '">' +
 catMark(c, 'ic-cat-ico') + '</button>' +
 '<input class="nb-input" data-name="' + i + '" type="text" value="' + esc(c.name) +
 '" maxlength="60" aria-label="Name of ' + esc(c.name) + '">' +
@@ -922,9 +931,7 @@ catMark(c, 'ic-cat-ico') + '</button>' +
 }).join('');
 }
 function loadCats() {
-db.from('icon_categories')
-.select('id,slug,name,position,icon_body,icon_view_box,icon_source')
-.order('position')
+db.rpc('icon_category_list')
 .then(function (r) { cats = r.data || []; paintCats(); });
 }
 function putCat(slug, name, pos, icon, source) {

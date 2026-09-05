@@ -579,47 +579,123 @@ grant execute on function public.icon_category_upsert(text, text, int, text, tex
 -- 6. The categories to start with
 -- ─────────────────────────────────────────────────────────────────────────────
 -- Categories are data, not a list in the code, so these are a starting set and
--- not a limit. Brand marks lead because they are the ones nobody else has.
+-- not a limit. Brand icons lead because they are the ones nobody else has.
 --
--- Seven arrive wearing a FontAwesome mark, which is the second half of the
--- rule: look through ours first, and ours is one icon deep on the day this
--- runs. The other five are left bare on purpose rather than given something
--- that nearly fits. The rail draws a lettered tile for a bare shelf, so it
--- reads as a shelf waiting for its mark and not as a picture that failed to
--- load, and the manage screen says which ones are still waiting.
+-- Eight of these wear a mark drawn by Swiftaw, which is the first half of the
+-- rule: look through ours first. The drawings are long, so they are set by
+-- 2026-09-05-swiftaw-icon-category-marks.sql rather than inline here, and the
+-- shelves are seeded bare below so that file has something to land on. Five
+-- wear a FontAwesome mark, which is the second half of the rule: ours had
+-- nothing that fits. Two are left with no mark at all rather than given
+-- something that nearly does.
+--
+-- A shelf with no mark of its own borrows its first published icon, which is
+-- what icon_category_list below is for. The lettered tile is the last resort,
+-- for a shelf that is both unmarked and empty.
 --
 -- do update ... where the mark is still empty: re-running this fills a gap and
 -- never argues with a mark somebody has since chosen.
 
+-- Two shelves were named before Swiftaw named them. Renaming in place keeps
+-- every icon already filed on them, where a second insert would build a second
+-- shelf beside the first. Guarded so it cannot collide with a rename already
+-- done, which is what makes this file safe to run twice.
+update public.icon_categories c set slug = 'brand-icons', name = 'Brand icons'
+ where c.slug = 'brand-marks'
+   and not exists (select 1 from public.icon_categories x where x.slug = 'brand-icons');
+update public.icon_categories c set slug = 'users', name = 'Users'
+ where c.slug = 'people'
+   and not exists (select 1 from public.icon_categories x where x.slug = 'users');
+
 insert into public.icon_categories (slug, name, position, icon_body, icon_view_box, icon_source) values
-  ('brand-marks',    'Brand marks',    10,
-   '<path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2-.5 99.2-41.3 280.7-213.7 363.2-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/>',
-   '0 0 512 512', 'fontawesome'),
+  ('brand-icons',    'Brand icons',    10, '', '0 0 24 24', ''),
+  ('users',          'Users',          40, '', '0 0 24 24', ''),
+  ('emojis',         'Emojis',         50, '', '0 0 24 24', ''),
+  ('editing',        'Editing',        70, '', '0 0 24 24', ''),
+  ('gaming',         'Gaming',         80, '', '0 0 24 24', ''),
   ('interface',      'Interface',      20,
    '<path d="M0 55.2L0 426c0 12.2 9.9 22 22 22 6.3 0 12.4-2.7 16.6-7.5L121.2 346l58.1 116.3c7.9 15.8 27.1 22.2 42.9 14.3s22.2-27.1 14.3-42.9L179.8 320l118.4 0c12.2 0 22.1-9.9 22.1-22.1 0-6.3-2.7-12.3-7.4-16.5L38.6 37.9C34.3 34.1 28.9 32 23.2 32 10.4 32 0 42.4 0 55.2z"/>',
    '0 0 320 512', 'fontawesome'),
   ('communication',  'Communication',  30,
    '<path d="M512 240c0 114.9-114.6 208-256 208-37.1 0-72.3-6.4-104.1-17.9-11.9 8.7-31.3 20.6-54.3 30.6C73.6 471.1 44.7 480 16 480c-6.5 0-12.3-3.9-14.8-9.9s-1.1-12.9 3.4-17.4c.4-.4 .8-.8 1.3-1.3 2.5-2.6 6.1-6.5 10.2-11.5 8.2-10.1 17.9-24.4 23.7-40.7C14.6 366.4 0 304.6 0 240 0 125.1 114.6 32 256 32s256 93.1 256 208zM128 208a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm128 0a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/>',
    '0 0 512 512', 'fontawesome'),
-  ('people',         'People',         40,
-   '<path d="M224 256a128 128 0 1 0 0-256 128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3 0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/>',
-   '0 0 448 512', 'fontawesome'),
-  ('alert',          'Alert',          50,
+  ('alert',          'Alert',         100,
    '<path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480L40 480c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32z"/>',
    '0 0 512 512', 'fontawesome'),
-  ('accessibility',  'Accessibility',  60, '', '0 0 24 24', ''),
-  ('coding',         'Coding',         70,
+  ('accessibility',  'Accessibility', 120, '', '0 0 24 24', ''),
+  ('coding',         'Coding',       110,
    '<path d="M80 104a24 24 0 1 0 0-48 24 24 0 1 0 0 48zm80-24c0 32.8-19.7 61-48 73.3l0 87.8c18.8-10.9 40.7-17.1 64-17.1l96 0c35.3 0 64-28.7 64-64l0-6.7C307.7 141 288 112.8 288 80c0-44.2 35.8-80 80-80s80 35.8 80 80c0 32.8-19.7 61-48 73.3l0 6.7c0 70.7-57.3 128-128 128l-96 0c-35.3 0-64 28.7-64 64l0 6.7c28.3 12.3 48 40.5 48 73.3c0 44.2-35.8 80-80 80s-80-35.8-80-80c0-32.8 19.7-61 48-73.3l0-241.4C51.7 141 32 112.8 32 80C32 35.8 67.8 0 112 0s80 35.8 80 80zM80 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48zM368 104a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>',
    '0 0 448 512', 'fontawesome'),
-  ('business',       'Business',       80, '', '0 0 24 24', ''),
-  ('buildings',      'Buildings',      90, '', '0 0 24 24', ''),
-  ('construction',   'Construction',  100, '', '0 0 24 24', ''),
-  ('astronomy',      'Astronomy',     110,
+  ('business',       'Business',      90, '', '0 0 24 24', ''),
+  ('buildings',      'Buildings',    140, '', '0 0 24 24', ''),
+  ('construction',   'Construction',  150, '', '0 0 24 24', ''),
+  ('astronomy',      'Astronomy',    130,
    '<path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>',
    '0 0 576 512', 'fontawesome'),
-  ('media',          'Media',         120, '', '0 0 24 24', '')
+  ('media',          'Media',         60, '', '0 0 24 24', '')
 on conflict (slug) do update set
   icon_body     = excluded.icon_body,
   icon_view_box = excluded.icon_view_box,
   icon_source   = excluded.icon_source
 where icon_categories.icon_body = '' and excluded.icon_body <> '';
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- 7. Reading the shelves
+-- ─────────────────────────────────────────────────────────────────────────────
+-- A shelf that has not been given a mark wears its first icon instead. That is
+-- nearly always the right picture: the first thing filed on a shelf is what
+-- somebody thought the shelf was for.
+--
+-- It is resolved here rather than on the page so the rail and the manage screen
+-- cannot come to different answers about what a shelf looks like, and so it
+-- costs one round trip instead of one per bare shelf.
+--
+-- Invoker rights, not security definer, so the read policy on icons still
+-- applies: a visitor borrows from the published icons only, and a draft can
+-- never become the face of a shelf on the public rail.
+--
+-- mark_from is the honest part. "chosen" is a mark somebody picked, "first" is
+-- one being borrowed, "none" is a shelf that is both unmarked and empty. The
+-- manage screen needs that difference to count what is still waiting, and the
+-- picker needs it to know whether there is a mark to take off.
+
+create or replace function public.icon_category_list()
+returns table (
+  id            uuid,
+  slug          text,
+  name          text,
+  -- Quoted: position is reserved in a parameter list, though not in a column
+  -- definition, so the table above takes it bare and this one cannot.
+  "position"    int,
+  icon_body     text,
+  icon_view_box text,
+  icon_source   text,
+  mark_body     text,
+  mark_view_box text,
+  mark_from     text
+)
+language sql
+stable
+as $$
+  select c.id, c.slug, c.name, c.position,
+         c.icon_body, c.icon_view_box, c.icon_source,
+         coalesce(nullif(c.icon_body, ''), f.body, '')                as mark_body,
+         case when c.icon_body <> ''  then c.icon_view_box
+              when f.body is not null then f.view_box
+              else '' end                                             as mark_view_box,
+         case when c.icon_body <> ''  then 'chosen'
+              when f.body is not null then 'first'
+              else 'none' end                                         as mark_from
+    from public.icon_categories c
+    left join lateral (
+      select i.body, i.view_box
+        from public.icons i
+       where i.category_id = c.id
+       order by i.created_at, i.slug
+       limit 1
+    ) f on true
+   order by c.position, c.name;
+$$;
+
+revoke all on function public.icon_category_list() from public;
+grant execute on function public.icon_category_list() to anon, authenticated;
