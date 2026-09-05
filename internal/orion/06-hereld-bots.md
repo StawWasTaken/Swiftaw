@@ -99,7 +99,12 @@ and `2026-09-05-hereld-bot-workers.sql` has to be run.
 - [ ] **B4. Bots stay out of moderation queues** as reporters, and they do not
       pile onto real people.
 
-### The roster was readable by anybody with an account
+### The roster was readable by anybody with an account, and stayed that way
+
+**Read D4b before this section.** What follows is the diagnosis, which was
+right. The migration written from it was not, and the roster was still open
+after it ran.
+
 
 `bots_read` is `using (public.is_staff())` and that is deliberate. Four worker
 functions were granted to `authenticated` anyway, and being `security definer`
@@ -136,17 +141,73 @@ list where they get broken:
       not a bot problem but it lives in the same cron.
 - [!] **D3. An account with the handle `supernova`** must exist for the
       `@supernova` replies to have anywhere to come from.
-- [!] **D4. Run the outstanding migrations,** in order:
+- [!] **D4. Run the outstanding migrations,** in this order, which is a
+      dependency order and **not** the alphabetical one:
       `2026-08-29-hereld-core`, `-algorithm`, `-supernova`,
-      `2026-08-30-hereld-affiliates`, `-features`,
-      `2026-08-31-hereld-composer`, `-assoc-mark`,
+      `2026-08-30-hereld-affiliates`,
+      `2026-08-31-hereld-assoc-mark`, `-composer`,
+      `2026-08-30-hereld-features`,
       `2026-09-01-hereld-bot-fix`, `-bot-queue-fix`, `-edit`,
       `-premium-bots`, `2026-09-04-hereld-attachments`,
-      `2026-09-04-hereld-edit-columns`, `2026-09-05-hereld-bot-workers`.
+      `2026-09-04-hereld-edit-columns`, `2026-09-05-hereld-bot-workers`,
+      `2026-09-05-hereld-bot-grants`.
       `2026-08-31-hereld-assoc-mark` has never been run against any database.
-      The last two are new and both close something real: the first stops an
-      author clearing the mark that says a post was edited, the second takes
-      the roster back off anybody with an account.
+
+      **Two of these had to be repaired first, and the repairs are the
+      finding.** The whole schema was loaded into a local Postgres 16 and asked
+      who could call what, which had never been done, and it answered twice.
+
+      `-features` reads `p.disclosure`, which `-composer` creates, so
+      alphabetical order fails on it. Ordering here is by what depends on what.
+
+- [x] **D4a. `-premium-bots` could not run, and stopped at line 161.** It
+      revokes on `bot_create_premium_internal(text x7)`. The function takes
+      **nine** arguments. Postgres answers `function does not exist`, the
+      script stops, and **everything below that line has never existed in any
+      database this file was run against**: the staff-checked
+      `bot_create_premium`, `bot_fill_premium`, the tier-aware `bot_due` and
+      `feed_premium`.
+
+      Which explains two things nobody had connected. The worker calls
+      `bot_fill_premium` on every run and logs an error every time. And it
+      reads `b.tier` off `bot_due`, which without the tier-aware version is
+      never there, so `isPremium` has been false since the day it was written.
+      **The premium tier has never once worked.** With the signature corrected
+      the file loads, and so does the whole schema.
+
+- [x] **D4b. `-bot-workers` does not do what it says.** This is the migration
+      written last time to take the roster back off anybody with an account,
+      and it did not. It revokes `from anon, authenticated`, which removes two
+      named grants and leaves alone the grant every function is created with,
+      **EXECUTE to PUBLIC**, of which anon and authenticated are both members.
+
+      Read back out of the database after applying it, where a leading
+      `=X/postgres` is PUBLIC holding EXECUTE:
+
+      ```
+      bot_due             ->  =X/postgres , postgres=X/postgres
+      bot_fill_premium    ->  =X/postgres , postgres=X/postgres
+      bot_suggest_persona ->  =X/postgres , postgres=X/postgres
+      bot_fill            ->  postgres=X/postgres
+      ```
+
+      `bot_fill` is the only one genuinely closed, and it is the only one of
+      the four whose original line, written a week earlier in
+      `-supernova`, said `revoke all ... from public`. **The old line was
+      right and the correction to it was wrong.**
+
+      `2026-09-05-hereld-bot-grants.sql` revokes from PUBLIC on all seven,
+      takes its signatures out of `pg_proc` rather than from memory, since a
+      signature from memory is what caused D4a, and skips a function the
+      database does not have rather than stopping, since stopping is what
+      caused D4a as well. Three read `PUBLIC can execute` before it and all
+      seven read `restricted` after; it is idempotent; and `service_role`
+      keeps its grant across a re-run, so the worker is unaffected.
+
+      **The lesson is the one this project keeps relearning.** Both of these
+      were written from a correct diagnosis, read correctly on the page, and
+      were false. A grant is not closed because a migration says it is closed.
+      Load it and ask the database.
 - [!] **D5. Redeploy the `supernova` edge function** from the dashboard editor.
       The deployed copy predates the `write` job, which is why rewriting still
       answers "Nothing was asked." **It also predates B0, B2 and B5**, so
