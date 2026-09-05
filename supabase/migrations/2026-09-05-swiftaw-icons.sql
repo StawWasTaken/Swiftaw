@@ -270,6 +270,16 @@ create table if not exists public.icon_categories (
   created_at timestamptz not null default now()
 );
 
+-- A shelf carries a mark of its own. It is stored the same way an icon is,
+-- body and box, because it goes through the same gate and is drawn by the same
+-- code. Where it came from is written down next to it: a shelf mark may be one
+-- of ours or one of FontAwesome's, and only ours are ever handed out, so the
+-- two must not become indistinguishable once they are both just a path.
+alter table public.icon_categories
+  add column if not exists icon_body     text not null default '',
+  add column if not exists icon_view_box text not null default '0 0 24 24',
+  add column if not exists icon_source   text not null default '';
+
 create table if not exists public.icons (
   id          uuid primary key default gen_random_uuid(),
   slug        text not null unique check (slug ~ '^[a-z0-9]+(-[a-z0-9]+)*$'),
@@ -487,15 +497,27 @@ begin
 end;
 $$;
 
+-- The older three-argument shape has to go before the wider one lands, or both
+-- exist at once and a call naming only the three is ambiguous rather than
+-- resolved by the defaults.
+drop function if exists public.icon_category_upsert(text, text, int);
+
 create or replace function public.icon_category_upsert(
-  p_slug text, p_name text, p_position int default 100
+  p_slug text, p_name text, p_position int default 100,
+  p_icon text default null, p_icon_source text default null
 )
 returns uuid
 language plpgsql
 security definer
 set search_path = public, pg_temp
 as $$
-declare v_id uuid; v_slug text := lower(btrim(coalesce(p_slug, '')));
+declare
+  v_id    uuid;
+  v_slug  text := lower(btrim(coalesce(p_slug, '')));
+  v_check jsonb;
+  v_body  text := '';
+  v_vb    text := '0 0 24 24';
+  v_src   text := '';
 begin
   if public.swiftaw_rank(auth.uid()) < 2 then
     raise exception 'Only an admin can add a category.' using errcode = '42501';
@@ -504,9 +526,35 @@ begin
     raise exception 'The name in the URL has to be lowercase letters, numbers and dashes.'
       using errcode = '22023';
   end if;
-  insert into public.icon_categories (slug, name, position)
-  values (v_slug, btrim(p_name), coalesce(p_position, 100))
-  on conflict (slug) do update set name = excluded.name, position = excluded.position
+
+  -- Three answers, not two. No icon argument at all means the caller is saving
+  -- a name or an order and the mark is none of its business; an empty one means
+  -- take the mark off. Without that split, renaming a shelf from the list would
+  -- quietly strip the mark somebody chose for it.
+  if p_icon is not null and btrim(p_icon) <> '' then
+    v_check := public.icon_check_svg(p_icon);
+    if not coalesce((v_check->>'ok')::boolean, false) then
+      raise exception '%', coalesce(v_check->>'error', 'That file was refused.')
+        using errcode = '22023';
+    end if;
+    v_body := v_check->>'body';
+    v_vb   := v_check->>'view_box';
+    v_src  := left(btrim(coalesce(p_icon_source, '')), 80);
+  end if;
+
+  insert into public.icon_categories
+    (slug, name, position, icon_body, icon_view_box, icon_source)
+  values
+    (v_slug, btrim(p_name), coalesce(p_position, 100), v_body, v_vb, v_src)
+  on conflict (slug) do update set
+    name          = excluded.name,
+    position      = excluded.position,
+    icon_body     = case when p_icon is null
+                    then icon_categories.icon_body     else excluded.icon_body end,
+    icon_view_box = case when p_icon is null
+                    then icon_categories.icon_view_box else excluded.icon_view_box end,
+    icon_source   = case when p_icon is null
+                    then icon_categories.icon_source   else excluded.icon_source end
   returning id into v_id;
   return v_id;
 end;
@@ -519,31 +567,59 @@ revoke all on function public.icon_upsert(text, text, text, text[], text, boolea
 revoke all on function public.icon_set_published(text, boolean)                    from public;
 revoke all on function public.icon_rename(text, text)                              from public;
 revoke all on function public.icon_delete(text)                                    from public;
-revoke all on function public.icon_category_upsert(text, text, int)                from public;
+revoke all on function public.icon_category_upsert(text, text, int, text, text)    from public;
 
 grant execute on function public.icon_upsert(text, text, text, text[], text, boolean) to authenticated;
 grant execute on function public.icon_set_published(text, boolean)                    to authenticated;
 grant execute on function public.icon_rename(text, text)                              to authenticated;
 grant execute on function public.icon_delete(text)                                    to authenticated;
-grant execute on function public.icon_category_upsert(text, text, int)                to authenticated;
+grant execute on function public.icon_category_upsert(text, text, int, text, text)    to authenticated;
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- 6. The categories to start with
 -- ─────────────────────────────────────────────────────────────────────────────
 -- Categories are data, not a list in the code, so these are a starting set and
 -- not a limit. Brand marks lead because they are the ones nobody else has.
+--
+-- Seven arrive wearing a FontAwesome mark, which is the second half of the
+-- rule: look through ours first, and ours is one icon deep on the day this
+-- runs. The other five are left bare on purpose rather than given something
+-- that nearly fits. The rail draws a lettered tile for a bare shelf, so it
+-- reads as a shelf waiting for its mark and not as a picture that failed to
+-- load, and the manage screen says which ones are still waiting.
+--
+-- do update ... where the mark is still empty: re-running this fills a gap and
+-- never argues with a mark somebody has since chosen.
 
-insert into public.icon_categories (slug, name, position) values
-  ('brand-marks',    'Brand marks',    10),
-  ('interface',      'Interface',      20),
-  ('communication',  'Communication',  30),
-  ('people',         'People',         40),
-  ('alert',          'Alert',          50),
-  ('accessibility',  'Accessibility',  60),
-  ('coding',         'Coding',         70),
-  ('business',       'Business',       80),
-  ('buildings',      'Buildings',      90),
-  ('construction',   'Construction',  100),
-  ('astronomy',      'Astronomy',     110),
-  ('media',          'Media',         120)
-on conflict (slug) do nothing;
+insert into public.icon_categories (slug, name, position, icon_body, icon_view_box, icon_source) values
+  ('brand-marks',    'Brand marks',    10,
+   '<path d="M256 0c4.6 0 9.2 1 13.4 2.9L457.7 82.8c22 9.3 38.4 31 38.3 57.2-.5 99.2-41.3 280.7-213.7 363.2-16.7 8-36.1 8-52.8 0C57.3 420.7 16.5 239.2 16 140c-.1-26.2 16.3-47.9 38.3-57.2L242.7 2.9C246.8 1 251.4 0 256 0z"/>',
+   '0 0 512 512', 'fontawesome'),
+  ('interface',      'Interface',      20,
+   '<path d="M0 55.2L0 426c0 12.2 9.9 22 22 22 6.3 0 12.4-2.7 16.6-7.5L121.2 346l58.1 116.3c7.9 15.8 27.1 22.2 42.9 14.3s22.2-27.1 14.3-42.9L179.8 320l118.4 0c12.2 0 22.1-9.9 22.1-22.1 0-6.3-2.7-12.3-7.4-16.5L38.6 37.9C34.3 34.1 28.9 32 23.2 32 10.4 32 0 42.4 0 55.2z"/>',
+   '0 0 320 512', 'fontawesome'),
+  ('communication',  'Communication',  30,
+   '<path d="M512 240c0 114.9-114.6 208-256 208-37.1 0-72.3-6.4-104.1-17.9-11.9 8.7-31.3 20.6-54.3 30.6C73.6 471.1 44.7 480 16 480c-6.5 0-12.3-3.9-14.8-9.9s-1.1-12.9 3.4-17.4c.4-.4 .8-.8 1.3-1.3 2.5-2.6 6.1-6.5 10.2-11.5 8.2-10.1 17.9-24.4 23.7-40.7C14.6 366.4 0 304.6 0 240 0 125.1 114.6 32 256 32s256 93.1 256 208zM128 208a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm128 0a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zm96 32a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/>',
+   '0 0 512 512', 'fontawesome'),
+  ('people',         'People',         40,
+   '<path d="M224 256a128 128 0 1 0 0-256 128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3 0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/>',
+   '0 0 448 512', 'fontawesome'),
+  ('alert',          'Alert',          50,
+   '<path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480L40 480c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32z"/>',
+   '0 0 512 512', 'fontawesome'),
+  ('accessibility',  'Accessibility',  60, '', '0 0 24 24', ''),
+  ('coding',         'Coding',         70,
+   '<path d="M80 104a24 24 0 1 0 0-48 24 24 0 1 0 0 48zm80-24c0 32.8-19.7 61-48 73.3l0 87.8c18.8-10.9 40.7-17.1 64-17.1l96 0c35.3 0 64-28.7 64-64l0-6.7C307.7 141 288 112.8 288 80c0-44.2 35.8-80 80-80s80 35.8 80 80c0 32.8-19.7 61-48 73.3l0 6.7c0 70.7-57.3 128-128 128l-96 0c-35.3 0-64 28.7-64 64l0 6.7c28.3 12.3 48 40.5 48 73.3c0 44.2-35.8 80-80 80s-80-35.8-80-80c0-32.8 19.7-61 48-73.3l0-241.4C51.7 141 32 112.8 32 80C32 35.8 67.8 0 112 0s80 35.8 80 80zM80 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48zM368 104a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>',
+   '0 0 448 512', 'fontawesome'),
+  ('business',       'Business',       80, '', '0 0 24 24', ''),
+  ('buildings',      'Buildings',      90, '', '0 0 24 24', ''),
+  ('construction',   'Construction',  100, '', '0 0 24 24', ''),
+  ('astronomy',      'Astronomy',     110,
+   '<path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/>',
+   '0 0 576 512', 'fontawesome'),
+  ('media',          'Media',         120, '', '0 0 24 24', '')
+on conflict (slug) do update set
+  icon_body     = excluded.icon_body,
+  icon_view_box = excluded.icon_view_box,
+  icon_source   = excluded.icon_source
+where icon_categories.icon_body = '' and excluded.icon_body <> '';

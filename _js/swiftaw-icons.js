@@ -153,6 +153,20 @@
     return '<svg viewBox="' + esc(row.view_box) + '" ' + attrs + '>' + body + '</svg>';
   }
 
+  /* A shelf's own mark. A shelf without one gets its initial on a tile, not a
+     gap: a shelf still waiting for its mark should look like a decision nobody
+     has made yet, rather than like a picture that failed to arrive. */
+  function catMark(c, cls) {
+    var body = clean(c.icon_body || '');
+    if (body) {
+      return '<span class="' + cls + '" aria-hidden="true"><svg viewBox="' +
+             esc(c.icon_view_box || '0 0 24 24') + '" fill="currentColor">' +
+             body + '</svg></span>';
+    }
+    return '<span class="' + cls + ' is-letter" aria-hidden="true">' +
+           esc(String(c.name || '?').trim().charAt(0).toUpperCase()) + '</span>';
+  }
+
   /* What the set is handed out under. It is written once here because it goes
      on the file, and a licence that says one thing on the page and another on
      the file is worse than no licence at all. */
@@ -243,7 +257,14 @@
     copy: '<svg viewBox="0 0 448 512"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg>',
     tick: '<svg viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>',
     left: '<svg viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>',
-    right: '<svg viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>'
+    right: '<svg viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>',
+    // Four squares, the same figure the launcher button makes. Drawn here
+    // rather than looked up, because four squares is not worth a lookup and
+    // this is the one mark on the rail that stands for no category at all.
+    all: '<rect x="2.5" y="2.5" width="8.5" height="8.5" rx="2.2"/>' +
+         '<rect x="13" y="2.5" width="8.5" height="8.5" rx="2.2"/>' +
+         '<rect x="2.5" y="13" width="8.5" height="8.5" rx="2.2"/>' +
+         '<rect x="13" y="13" width="8.5" height="8.5" rx="2.2"/>'
   };
 
   /* ── Who is looking ───────────────────────────────────────────────────────
@@ -317,10 +338,13 @@
 
     function paintCats() {
       var h = '<button type="button" class="ic-cat' + (state.cat ? '' : ' is-on') +
-              '" data-cat="">Everything</button>';
+              '" data-cat="">' + catMark({ name: 'Everything', icon_body: ICO.all,
+                icon_view_box: '0 0 24 24' }, 'ic-cat-ico') +
+              '<span class="ic-cat-name">Everything</span></button>';
       cats.forEach(function (c) {
         h += '<button type="button" class="ic-cat' + (state.cat === c.slug ? ' is-on' : '') +
-             '" data-cat="' + esc(c.slug) + '">' + esc(c.name) + '</button>';
+             '" data-cat="' + esc(c.slug) + '">' + catMark(c, 'ic-cat-ico') +
+             '<span class="ic-cat-name">' + esc(c.name) + '</span></button>';
       });
       catBox.innerHTML = h;
     }
@@ -548,11 +572,12 @@
 
     window.SwiftawAccount.ready(function () {
       db = window.SwiftawAccount.client();
-      db.from('icon_categories').select('id,slug,name').order('position').then(function (res) {
-        cats = res.data || [];
-        paintCats();
-        load();
-      });
+      db.from('icon_categories').select('id,slug,name,icon_body,icon_view_box')
+        .order('position').then(function (res) {
+          cats = res.data || [];
+          paintCats();
+          load();
+        });
       // The way in to the manage screen, for the accounts that have one. It is
       // a shortcut, not a permission: the screen checks for itself and so does
       // every write behind it.
@@ -1139,11 +1164,17 @@
     }
 
     function paintCats() {
+      var bare = cats.filter(function (c) { return !c.icon_body; }).length;
       el('icCatN').textContent = cats.length
-        ? cats.length + (cats.length === 1 ? ' shelf' : ' shelves')
+        ? cats.length + (cats.length === 1 ? ' shelf' : ' shelves') +
+          (bare ? ', ' + bare + ' still without a mark' : '')
         : 'None yet';
       el('icCatRows').innerHTML = cats.map(function (c, i) {
         return '<div class="ic-cat-row">' +
+          '<button type="button" class="ic-cat-mark" data-mark="' + i + '" ' +
+            'aria-label="Mark for ' + esc(c.name) + '" ' +
+            'title="' + (c.icon_body ? 'Change the mark' : 'Choose a mark') + '">' +
+            catMark(c, 'ic-cat-ico') + '</button>' +
           '<input class="nb-input" data-name="' + i + '" type="text" value="' + esc(c.name) +
             '" maxlength="60" aria-label="Name of ' + esc(c.name) + '">' +
           '<code>' + esc(c.slug) + '</code>' +
@@ -1157,13 +1188,158 @@
     }
 
     function loadCats() {
-      db.from('icon_categories').select('id,slug,name,position').order('position')
+      db.from('icon_categories')
+        .select('id,slug,name,position,icon_body,icon_view_box,icon_source')
+        .order('position')
         .then(function (r) { cats = r.data || []; paintCats(); });
     }
 
-    function putCat(slug, name, pos) {
-      return db.rpc('icon_category_upsert',
-                    { p_slug: slug, p_name: name, p_position: pos });
+    /* Four arguments saves a name and an order and says nothing about the
+       mark, which is what the row editor wants. Five speaks about the mark:
+       an SVG to set one, an empty string to take it off. The database reads
+       the difference between "not mentioned" and "empty" the same way, so a
+       rename can never quietly strip a mark somebody chose. */
+    function putCat(slug, name, pos, icon, source) {
+      var args = { p_slug: slug, p_name: name, p_position: pos };
+      if (icon !== undefined) {
+        args.p_icon = icon;
+        args.p_icon_source = source || '';
+      }
+      return db.rpc('icon_category_upsert', args);
+    }
+
+    /* ── Choosing a shelf's mark ─────────────────────────────────────────
+       Ours first, then FontAwesome. That is the house rule, and this is the
+       screen where it is easiest to break it, so the screen enforces it by
+       shape: the library is what opens, searchable, filling the dialog. The
+       paste box is underneath, behind a line that says to look above first.
+       Whichever you pick, the same gate reads it, and which of the two it
+       was is written down beside it, because only ours are ever handed out. */
+
+    var pickOn = null;
+
+    function pickShut() {
+      if (!pickOn) return;
+      document.removeEventListener('keydown', pickKey);
+      pickOn.remove();
+      pickOn = null;
+    }
+
+    function pickKey(e) { if (e.key === 'Escape') pickShut(); }
+
+    function pickResults(box, rows, q) {
+      if (!rows.length) {
+        box.innerHTML = '<p class="ic-pick-none">' +
+          (q ? 'Nothing of ours matches "' + esc(q) + '".'
+             : 'The library has nothing in it yet.') +
+          ' Paste a FontAwesome one below.</p>';
+        return;
+      }
+      box.innerHTML = rows.map(function (r) {
+        return '<button type="button" class="ic-pick-i" data-slug="' + esc(r.slug) + '" ' +
+               'title="' + esc(r.name) + '">' +
+               drawIcon(r, 'aria-hidden="true" fill="currentColor"') +
+               '<span>' + esc(r.name) + '</span></button>';
+      }).join('');
+    }
+
+    function markPick(i) {
+      var c = cats[i];
+      if (!c) return;
+      pickShut();
+
+      var back = document.createElement('div');
+      back.className = 'nb-dialog-back';
+      back.innerHTML =
+        '<div class="nb-dialog ic-pick" role="dialog" aria-modal="true" aria-label="A mark for ' +
+          esc(c.name) + '">' +
+          '<div class="nb-dialog-head"><h2 class="nb-h4">A mark for ' + esc(c.name) + '</h2></div>' +
+          '<div class="nb-dialog-body">' +
+            '<label class="nb-label" for="icPickQ">Ours</label>' +
+            '<input class="nb-input" id="icPickQ" type="search" autocomplete="off" ' +
+              'placeholder="Search the library">' +
+            '<div class="ic-pick-grid" id="icPickGrid"></div>' +
+            '<div class="ic-pick-or"><span>Nothing above fits</span></div>' +
+            '<label class="nb-label" for="icPickPaste">A FontAwesome one</label>' +
+            '<textarea class="nb-input ic-pick-paste" id="icPickPaste" rows="3" ' +
+              'placeholder="Paste the whole SVG"></textarea>' +
+            '<p class="nb-note">It goes through the same check an uploaded icon does. ' +
+              'It stays on this shelf and is never handed out with the set.</p>' +
+            '<p class="nb-note is-bad" id="icPickSaid" hidden></p>' +
+          '</div>' +
+          '<div class="nb-dialog-foot">' +
+            (c.icon_body
+              ? '<button type="button" class="nb-btn nb-btn--ghost nb-btn--sm" id="icPickOff">Take it off</button>'
+              : '') +
+            '<button type="button" class="nb-btn nb-btn--ghost nb-btn--sm" id="icPickX">Cancel</button>' +
+            '<button type="button" class="nb-btn nb-btn--primary nb-btn--sm" id="icPickUse">Use the pasted one</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(back);
+      pickOn = back;
+      document.addEventListener('keydown', pickKey);
+
+      var grid = back.querySelector('#icPickGrid');
+      var said = back.querySelector('#icPickSaid');
+      var busy = false;
+
+      function moan(t) { said.hidden = false; said.textContent = t; }
+
+      function set(icon, source) {
+        if (busy) return;
+        busy = true;
+        putCat(c.slug, c.name, c.position == null ? 100 : c.position, icon, source)
+          .then(function (res) {
+            busy = false;
+            if (res.error) { moan(res.error.message); return; }
+            pickShut();
+            catSaid('ok', icon ? 'The mark on "' + c.name + '" was changed.'
+                               : 'The mark came off "' + c.name + '".');
+            loadCats();
+          });
+      }
+
+      function search(q) {
+        var sel = db.from('icons').select('slug,name,body,view_box').limit(48)
+                    .order('name');
+        if (q) sel = sel.ilike('search', '%' + q.toLowerCase() + '%');
+        sel.then(function (r) { pickResults(grid, r.data || [], q); });
+      }
+
+      grid.innerHTML = '<div class="ic-pick-wait"><span class="nb-spin"></span></div>';
+      search('');
+
+      var timer = null;
+      back.querySelector('#icPickQ').addEventListener('input', function (e) {
+        var q = e.target.value.trim();
+        clearTimeout(timer);
+        timer = setTimeout(function () { search(q); }, 220);
+      });
+
+      grid.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-slug]');
+        if (!b) return;
+        var pick = null;
+        (function () {
+          // The row is already on the page, so the SVG is rebuilt from what
+          // was drawn rather than fetched again.
+          var svg = b.querySelector('svg');
+          if (svg) pick = svg.outerHTML;
+        })();
+        if (!pick) { moan('That one could not be read.'); return; }
+        set(pick, 'swiftaw:' + b.dataset.slug);
+      });
+
+      back.querySelector('#icPickUse').addEventListener('click', function () {
+        var v = back.querySelector('#icPickPaste').value.trim();
+        if (!v) { moan('Paste an SVG first, or pick one above.'); return; }
+        set(v, 'fontawesome');
+      });
+
+      var off = back.querySelector('#icPickOff');
+      if (off) off.addEventListener('click', function () { set('', ''); });
+      back.querySelector('#icPickX').addEventListener('click', pickShut);
+      back.addEventListener('mousedown', function (e) { if (e.target === back) pickShut(); });
     }
 
     function tag(r) {
@@ -1264,6 +1440,8 @@
     });
 
     el('icCatRows').addEventListener('click', function (e) {
+      var m = e.target.closest('[data-mark]');
+      if (m) { markPick(+m.dataset.mark); return; }
       var b = e.target.closest('[data-save]');
       if (!b) return;
       var i = +b.dataset.save, c = cats[i];
@@ -1294,7 +1472,8 @@
         btn.disabled = false;
         if (res.error) { catSaid('bad', res.error.message); return; }
         catSaid('ok', had ? '"' + slug + '" already existed, so it was changed instead.'
-                          : '"' + name + '" added. It is on the upload screen now.');
+                          : '"' + name + '" added. It is on the upload screen now. ' +
+                            'Click its tile above to give it a mark.');
         el('icCatName').value = ''; el('icCatSlug').value = ''; el('icCatPos').value = 100;
         loadCats();
       });
