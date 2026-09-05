@@ -44,12 +44,38 @@ is the only reason anything is visible at all, and for as long as
       `preload` on the artwork, so the splash is painted before the external
       stylesheet lands. `--nb-blue` carries a literal fallback there for the
       same reason.
-- [ ] **A1c.** Still open. A mask whose image fails to load hides the element
-      completely, which is the bug found in `.hd-nova-av-wrap::after` on
-      2026-09-04, and the splash now depends on one. `SPLASH_HOLD` is 2300ms and
-      the dismissal is on a timer rather than on load, so a slow fetch of
-      `HereldAt.png` can still show an empty screen for the whole hold. Either
-      hold until the artwork has decoded, or accept the timer and say so.
+- [x] **A1c. Both halves of that either/or, since neither was enough alone.**
+      The beat is counted from the artwork now rather than from the page. The
+      inline script loads `HereldAt.png` itself and stamps `__hdSplashArt` when
+      it decodes; `splashOff` waits for that stamp and holds `SPLASH_HOLD` from
+      there. `SPLASH_CAP` of 4200ms is the ceiling on the waiting, because a
+      fetch that never resolves either way must not hold the door shut, and by
+      then what is behind it is ready anyway.
+
+      And a fetch that fails puts the name up in words. Holding on the artwork
+      is worth nothing if the artwork is never coming: the mask would draw
+      nothing, the hold would run to the cap, and the screen would be empty for
+      every second of it. On `onerror` the mark becomes `Hereld` set in Syne,
+      and the hold drops to the plain beat since there is no longer anything to
+      wait for.
+
+      Three paths checked, timed inside the page: artwork present, gone at
+      2931ms with the mark up from 73ms; artwork 2600ms late, gone at 4825ms,
+      which is the cap holding rather than 2600 + 2300; artwork failed, words
+      up at 106ms and gone at 2946ms.
+
+      **The harness lesson is worth more than the fix.** A slow image cannot be
+      simulated by Playwright routing here. The script that starts the clock
+      sits after a `<link rel=stylesheet>`, the Google Fonts stylesheet is
+      blocked in the sandbox, so by the time the script runs the delayed image
+      has already landed: three route hits each held 2600ms and the artwork
+      still arrived 4ms after the splash went up. Routing was measuring the
+      sandbox, not the page. Stub the `Image` constructor instead, which is the
+      boundary the code actually depends on. And the run before that one
+      reported "all clear" while proving nothing, because the delay never
+      landed and the slow case finished in the same 2.96s as the baseline. A
+      test that cannot fail is not a test: assert on the measured arrival, not
+      only on the outcome.
 
 ### A2. Sign-in is asking for the handle where it should ask for the email
 
