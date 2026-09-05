@@ -120,9 +120,13 @@ cases, and the third turned out not to be a shadow problem at all.
       148px to live in. The breakpoints are now restated for `.hd-wide`.
       **The lesson is general:** an unconditional override placed below a set of
       media queries defeats all of them. Worth grepping for elsewhere.
-- [ ] **A3d.** The press state is still unswept: the sweep measured rest and
-      derived the hover growth, but `:active` translates the button `3px, 4px`
-      and that was not measured. A button can look right until it is pushed.
+- [x] **A3d. The press state is clean**, measured rather than assumed. Every
+      control on all eight routes at both widths was forced into `:active` and
+      `:hover` through CDP and re-measured against its clipping ancestor.
+      Nothing is cut. The reason is in the geometry and is worth knowing: the
+      button moves `3px, 4px` while its shadow shrinks from `4px 6px` to
+      `1px 2px`, so the outer envelope is 4 right and 6 down either way. Press
+      cannot clip anything that rest does not. **A3 is closed.**
 
 ### A4. Feed, Explore and Home do not read like X
 
@@ -213,23 +217,71 @@ Claude, 18 StawWasTaken, 41 stawwastaken. The files that account touched most:
 The features named in those commit subjects, which is the audit list:
 
 - [ ] **C1.** Premium bot system: tier column, ten personas, article-style posts,
-      the `create_premium` job.
-- [ ] **C2.** Auto-mentions, with logging.
-- [ ] **C3.** The explain / analyse card.
-- [ ] **C4.** Profile summaries, in the hover card and on the profile page.
-- [ ] **C5.** The floating new-posts capsule.
+      the `create_premium` job. **Goes with list 6**, and one finding is already
+      recorded there: the persona prompt tells a bot it "can mention @handles
+      when it fits naturally", and a model inventing a handle will sooner or
+      later invent a real one. Bots @-ing strangers unprompted is a spam vector
+      and it is live.
+- [x] **C2. Auto-mentions.** This is Supernova answering when it is called into
+      a thread, and it is sound: it checks whether it already replied, logs
+      every attempt with the model and the reason it failed, and writes nothing
+      when nothing usable came back.
+- [x] **C3. The explain / analyse card.** Two real faults, both fixed.
+      **It was built in an `hd-grok-*` namespace** - 29 class names carrying a
+      competitor's product name, a hundred times over across the script and the
+      stylesheet, in the page source of every deploy. Renamed to `hd-look-*`. And **Supernova's first answer lost its formatting**: the
+      opening answer was escaped as plain text while every follow-up in the same
+      panel went through the renderer, so one conversation formatted two ways.
+      Copy rewritten off "Analysing Post..." and "Thinking about your request".
+- [x] **C4. Profile summaries.** Same `hd-grok-*` namespace, same rename. Both
+      code paths are reachable after all, one from the hover card and one from
+      the profile menu, so neither is dead.
+- [x] **C5. The floating new-posts capsule.** Two faults. **It leaked a scroll
+      listener on every visit to a feed**, and they stack for the life of the
+      page. And it worked out which view it was on by **serialising the whole
+      column and searching the string for the word Latest**, which any post
+      could contain, and which the new Explore tab now contains by name. It
+      asks the route now.
 - [ ] **C6.** Replier avatars, via the `post_repliers` RPC. **Ties to A4e:**
       every card carries this strip, identically, which is a large part of why
       the column reads as one shape repeated. Audit it and reconsider the shape
       in the same pass.
-- [ ] **C7.** Always-on markdown live preview in the composer.
-- [ ] **C8.** Community notes.
-- [ ] **C9.** Disclosures.
-- [ ] **C10.** The splash colour overlay. This is A1. Same code, same commit.
-- [ ] **C11.** The compass icon replacement.
+- [x] **C7. The composer preview.** The comment above it says the preview stays
+      out of the way below the bar where the renderer actually does something.
+      The code previewed everything, so most posts, which are plain, were typed
+      back at their author underneath themselves. It does what it says now.
+- [x] **C8. Community notes.** Sound, and better than expected. The opener the
+      CEO specified is not merely asked for in the prompt, it is **checked, and
+      a summary that does not start with it is thrown away** rather than
+      published. Contributions are attributed, disagreement is kept.
+- [x] **C9. Disclosures.** Sound. Drawn before the words rather than after, so
+      it is read before the thing it qualifies rather than as a footnote to it.
+- [x] **C10.** The splash colour overlay. This is A1, done.
+- [x] **C11. The compass icon.** It was added to the registry **twice, byte for
+      byte identical**, so one of the two had never been read by anything. The
+      duplicate is gone. It was the only duplicated key in 57.
 - [ ] **C12.** The Supernova redesign. This is the "ugly" complaint, and it
-      confirms the two are the same thing.
-- [ ] **C13.** Post editing.
+      confirms the two are the same thing. Goes with list 2.
+- [x] **C13. Post editing.** The migration says "nothing else is allowed to be
+      edited through this door", and that is what it meant, but **a row policy
+      cannot say which columns an update may touch.** The counts are already
+      safe, the core migration revokes `view_count`, `endorse_count`,
+      `reply_count`, `relay_count`, `hidden` and `author` at the column level,
+      which is the right way to do it. Two things were still open, both reachable
+      as the author's own request to the API with no button to find first:
+      **clearing `edited_at`**, which is the one thing the whole feature exists
+      to show, and **moving `created_at`**, and with it their place in a timeline
+      sorted on it. `2026-09-04-hereld-edit-columns.sql` stamps the mark in the
+      database instead of accepting it from the client and pins the columns that
+      place a post. **It has to be run.**
+
+**Also swept:** every RPC the client calls exists in a migration, all 27 of
+them, so nothing is calling into a function that was never written. Two em
+dashes, one in a toast and one in a migration comment. And the app was calling
+one thing two names: the action row says Relay, the notification filter and the
+analyse card said Repost. Relay is ours, so Relay everywhere now, including in
+the prompt Supernova reads, which could otherwise have said Repost back to a
+reader.
 
 **How to audit one.** Not "does it render". Against the standards file: does it
 work in all four states, is the permission check at the mutation, is there one
