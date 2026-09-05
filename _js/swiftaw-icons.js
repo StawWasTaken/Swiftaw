@@ -168,6 +168,37 @@
            '     © ' + new Date().getFullYear() + ' Swiftaw -->\n';
   }
 
+  /* One shape to a line, nested the way the drawing is nested. A body arrives
+     as a single run of tags with every space squeezed out of it, which is the
+     right way to store it and the wrong way to read it: laid out flat it is a
+     paragraph of digits, and you cannot see at a glance whether you are
+     looking at one path or nine. */
+  function lay(body, pad) {
+    var root = readSvg('<svg>' + body + '</svg>');
+    if (!root) return pad + body;
+
+    function line(node, depth) {
+      var tab = pad + new Array(depth + 1).join('  ');
+      var kids = Array.prototype.filter.call(node.children, function (n) {
+        return n.nodeType === 1;
+      });
+      var open = new XMLSerializer().serializeToString(node)
+        .replace(/\sxmlns(:\w+)?="[^"]*"/g, '');
+      if (!kids.length) return tab + open;
+      // A group is a line of its own with its children stepped in under it,
+      // so the shape of the drawing survives the trip to the clipboard.
+      var name = node.nodeName;
+      var head = open.slice(0, open.indexOf('>') + 1);
+      return tab + head + '\n' +
+             kids.map(function (k) { return line(k, depth + 1); }).join('\n') + '\n' +
+             tab + '</' + name + '>';
+    }
+
+    return Array.prototype.map.call(root.children, function (n) {
+      return line(n, 0);
+    }).join('\n');
+  }
+
   /* The two snippets the card hands over, both written from the shapes and the
      box and nothing else. They are different on purpose: one is a file that
      stands on its own, the other is a tag that takes the size and colour of the
@@ -178,24 +209,16 @@
     if (kind === 'html') {
       return '<svg viewBox="' + vb + '" width="1em" height="1em" ' +
              (row.monochrome ? 'fill="currentColor" ' : '') +
-             'aria-hidden="true" focusable="false">' + body + '</svg>';
+             'aria-hidden="true" focusable="false">\n' +
+             lay(body, '  ') + '\n</svg>';
     }
     return stamp(row) +
            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb + '" ' +
            'width="24" height="24"' +
            (row.monochrome ? ' fill="' + esc(colour || '#000000') + '"' : '') +
-           '>' + body + '</svg>\n';
+           '>\n' + lay(body, '  ') + '\n</svg>\n';
   }
 
-  /* The file the download button writes. It is built in the page rather than
-     fetched, so there is no request and nothing to serve. */
-  function saveFile(name, text) {
-    var url = URL.createObjectURL(new Blob([text], { type: 'image/svg+xml' }));
-    var a = document.createElement('a');
-    a.href = url; a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-  }
 
   function copy(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -220,9 +243,42 @@
     copy: '<svg viewBox="0 0 448 512"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg>',
     tick: '<svg viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>',
     left: '<svg viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>',
-    right: '<svg viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>',
-    down: '<svg viewBox="0 0 512 512"><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 242.7-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7 288 32zM64 352c-35.3 0-64 28.7-64 64l0 32c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-32c0-35.3-28.7-64-64-64l-101.5 0-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352 64 352z"/></svg>'
+    right: '<svg viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>'
   };
+
+  /* ── Who is looking ───────────────────────────────────────────────────────
+     Three screens ask the same question of the database, and the navbar on
+     all three asks it again. Asked once and remembered, so opening the manage
+     screen is one round trip rather than two.
+
+     What comes back decides what is DRAWN, and nothing else. Every write
+     re-checks the rank in the database, so a rank forced to 3 here buys
+     nothing but a button that fails. */
+  var rankAsked = null;
+  function rankOnce(db) {
+    if (!rankAsked) {
+      rankAsked = db.rpc('icon_my_rank').then(function (r) {
+        return r.error ? 0 : (r.data || 0);
+      }, function () { return 0; });
+    }
+    return rankAsked;
+  }
+
+  /* ── The navbar ───────────────────────────────────────────────────────────
+     Workstation is its own site, so its navbar carries its own services and
+     nothing else. One dropdown per service; Lifecheck gets the next one.
+     The staff pages inside a service are marked in the markup and only drawn
+     for the accounts that have them. */
+  function chrome() {
+    var hidden = document.querySelectorAll('[data-ic-staff]');
+    if (!hidden.length || !window.SwiftawAccount) return;
+    window.SwiftawAccount.ready(function () {
+      rankOnce(window.SwiftawAccount.client()).then(function (rank) {
+        if (rank < 2) return;
+        Array.prototype.forEach.call(hidden, function (n) { n.hidden = false; });
+      });
+    });
+  }
 
   /* ── The library ──────────────────────────────────────────────────────── */
 
@@ -389,8 +445,6 @@
            '<button type="button" class="ic-tab' + (tab === 'svg' ? ' is-on' : '') + '" data-t="svg">SVG</button>' +
            '<button type="button" class="ic-tab' + (tab === 'html' ? ' is-on' : '') + '" data-t="html">HTML</button>' +
            '</div>';
-      // One line, scrolled sideways. A path is thousands of characters long and
-      // laid out as a paragraph it buries the card it is sitting in.
       h += '<div class="ic-code" id="icCode"><code>' + esc(snippet(r, tab, fill)) + '</code>' +
            '<button class="ic-code-btn" type="button" id="icCopy" aria-label="Copy">' + ICO.copy + '</button>' +
            '</div>';
@@ -398,10 +452,7 @@
            (tab === 'svg'
              ? 'A file on its own, at 24 pixels in the colour above.'
              : 'A tag for your markup. It takes the size and colour of the text around it.') +
-           '</span>' +
-           '<button class="nb-btn nb-btn--paper nb-btn--sm" type="button" id="icDl">' +
-             ICO.down + 'Download SVG</button>' +
-           '</div>';
+           '</span></div>';
       h += '<p class="ic-licence">Written out by Swiftaw. ' + esc(LICENCE) + '</p>';
       h += '</div>';
 
@@ -461,10 +512,6 @@
       var tb = e.target.closest('.ic-tab');
       if (tb) { tab = tb.dataset.t; paintCard(); return; }
       if (e.target.closest('#icClose')) { closeCard(); return; }
-      if (e.target.closest('#icDl')) {
-        saveFile(open.slug + '.svg', snippet(open, 'svg', colour));
-        return;
-      }
       var cp = e.target.closest('#icCopy');
       if (cp) {
         copy(snippet(open, tab, colour)).then(function () {
@@ -510,8 +557,8 @@
       // a shortcut, not a permission: the screen checks for itself and so does
       // every write behind it.
       var mg = el('icStaff');
-      if (mg) db.rpc('icon_my_rank').then(function (r) {
-        if (!r.error && (r.data || 0) >= 2) mg.hidden = false;
+      if (mg) rankOnce(db).then(function (rank) {
+        if (rank >= 2) mg.hidden = false;
       });
     });
   }
@@ -1021,8 +1068,8 @@
       // The screen is drawn from what the database says the caller is, and the
       // write is refused by the database as well. Hiding the form is the
       // courtesy; the check inside icon_upsert is the part that holds.
-      db.rpc('icon_my_rank').then(function (res) {
-        rank = res.error ? 0 : (res.data || 0);
+      rankOnce(db).then(function (got) {
+        rank = got;
         if (rank < 2) {
           gate.hidden = false;
           gate.querySelector('p').textContent = window.SwiftawAccount.user()
@@ -1282,8 +1329,8 @@
 
     window.SwiftawAccount.ready(function () {
       db = window.SwiftawAccount.client();
-      db.rpc('icon_my_rank').then(function (res) {
-        rank = res.error ? 0 : (res.data || 0);
+      rankOnce(db).then(function (got) {
+        rank = got;
         if (rank < 2) {
           gate.hidden = false;
           gate.querySelector('p').textContent = window.SwiftawAccount.user()
@@ -1298,5 +1345,7 @@
     });
   }
 
-  window.SwiftawIcons = { browse: browse, upload: upload, manage: manage };
+  window.SwiftawIcons = {
+    browse: browse, upload: upload, manage: manage, chrome: chrome
+  };
 })();

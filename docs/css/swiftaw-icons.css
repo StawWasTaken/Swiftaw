@@ -10,16 +10,8 @@ display: flex; align-items: center; gap: 16px;
 flex-wrap: wrap;
 }
 .ic-brand {
-display: flex; align-items: baseline; gap: 10px; flex: none;
+display: flex; align-items: center; flex: none;
 text-decoration: none; color: inherit;
-}
-.ic-brand b {
-font-family: var(--nb-font-head); font-weight: 700;
-font-size: 20px; letter-spacing: -.02em;
-}
-.ic-brand i {
-font-style: normal; font-size: 12px; letter-spacing: .1em;
-text-transform: uppercase; color: var(--nb-fg-muted);
 }
 .ic-search { position: relative; flex: 1 1 260px; min-width: 0; }
 .ic-search input {
@@ -233,10 +225,11 @@ overflow: hidden;
 }
 .ic-code code {
 display: block; padding: 15px 0 15px 15px;
-white-space: pre; overflow-x: auto; line-height: 1.7;
+white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word;
+line-height: 1.75; max-height: 232px; overflow-y: auto;
 scrollbar-width: thin;
 }
-.ic-code code::-webkit-scrollbar { height: 8px; }
+.ic-code code::-webkit-scrollbar { width: 8px; }
 .ic-code code::-webkit-scrollbar-thumb {
 background: rgba(255, 255, 255, .22); border-radius: 99px;
 }
@@ -259,8 +252,6 @@ padding: 14px 0 0;
 font-size: 12.5px; color: var(--nb-surface-fg-muted);
 }
 .ic-card-foot span { flex: 1 1 190px; line-height: 1.5; }
-.ic-card-foot .nb-btn { flex: none; }
-.ic-card-foot .nb-btn svg { width: 13px; height: 13px; margin-right: 7px; fill: currentColor; }
 .ic-licence {
 margin: 14px 0 0; padding-top: 13px;
 border-top: 2px dashed var(--nb-line-soft, rgba(255, 255, 255, .16));

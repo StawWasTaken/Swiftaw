@@ -175,7 +175,14 @@
       if (trigger) {
         trigger.addEventListener('click', e => {
           e.preventDefault();
-          setDrop(item, !item.classList.contains('is-open'));
+          const open = item.classList.contains('is-open');
+          // On a desktop the pointer opened this on the way to clicking it, so
+          // a plain toggle here shuts the menu on the click that was meant to
+          // open it. While the pointer is still on the group, the click leaves
+          // it alone; leaving, Escape and a click outside all still close it.
+          // Keyboard and touch never match :hover, so they keep the toggle.
+          if (open && hoverable.matches && item.matches(':hover')) return;
+          setDrop(item, !open);
         });
       }
     });

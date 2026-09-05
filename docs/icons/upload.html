@@ -27,17 +27,17 @@
       <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
     </a>
     <div class="nb-nav-links" id="navLinks">
+      <!-- Workstation is its own site. One dropdown per service on the
+           bench; Lifecheck gets the next one. Everything that leads back
+           to Swiftaw lives in the launcher and the footer, not here. -->
       <div class="nb-nav-item">
-        <a class="nb-nav-link" href="/icons/">The library</a>
-      </div>
-      <div class="nb-nav-item">
-        <a class="nb-nav-link" href="/icons/manage.html">Manage</a>
-      </div>
-      <div class="nb-nav-item">
-        <a class="nb-nav-link is-current" href="/icons/upload.html">Add an icon</a>
-      </div>
-      <div class="nb-nav-item">
-        <a class="nb-nav-link" href="/contact">Contact</a>
+        <button type="button" class="nb-nav-link is-current" aria-expanded="false" aria-haspopup="true" aria-controls="drop-icons">Swiftaw Icons <svg class="nb-nav-caret" viewBox="0 0 448 512" aria-hidden="true"><path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 274.7 86.6 137.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg></button>
+        <div class="nb-drop" id="drop-icons">
+          <a class="nb-drop-item" href="/icons/"><span class="nb-drop-txt"><span class="nb-drop-t">The library</span><span class="nb-drop-d">Every icon, free to use</span></span></a>
+          <span class="nb-drop-label" data-ic-staff hidden>Swiftaw only</span>
+          <a class="nb-drop-item" href="/icons/upload.html" aria-current="page" data-ic-staff hidden><span class="nb-drop-txt"><span class="nb-drop-t">Add an icon</span><span class="nb-drop-d">Artwork in, icon out</span></span></a>
+          <a class="nb-drop-item" href="/icons/manage.html" data-ic-staff hidden><span class="nb-drop-txt"><span class="nb-drop-t">Manage</span><span class="nb-drop-d">Everything, drafts included</span></span></a>
+        </div>
       </div>
     </div>
     <span class="nb-nav-spacer"></span>
@@ -219,6 +219,6 @@
 <script src="/css/swiftaw-pick.js"></script>
 <script src="/css/swiftaw-trace.js"></script>
 <script src="/css/swiftaw-icons.js"></script>
-<script>SwiftawIcons.upload();</script>
+<script>SwiftawIcons.chrome(); SwiftawIcons.upload();</script>
 </body>
 </html>

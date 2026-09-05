@@ -143,6 +143,12 @@
 
 /* ═══════ RESET & BASE ═══════════════════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* The browser hides [hidden] with a rule so weak that any component setting
+   its own display beats it, so hiding a flex row by attribute quietly does
+   nothing. Every component that hit this used to carry its own patch. Said
+   once, here, so the attribute means what it says everywhere. */
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 

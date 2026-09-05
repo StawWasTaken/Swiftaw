@@ -34,7 +34,7 @@ icon: BASE + '/product-logos/Lifecheck%20icon.png'
 id: 'workstation', name: 'Workstation', kind: 'service',
 what: 'Icons, and the rest of the bench',
 href: ORIGIN + '/icons/',
-icon: BASE + '/Workstation%20logo.png', crop: 'left'
+icon: BASE + '/product-logos/Workstation%20icon.png'
 },
 {
 id: 'supernova', name: 'Supernova', kind: 'service',

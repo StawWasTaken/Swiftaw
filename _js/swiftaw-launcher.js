@@ -71,9 +71,7 @@
       // Until the bench itself has a front door, this opens the part of it
       // that is finished.
       href: ORIGIN + '/icons/',
-      // The lockup is wide, so the tile is cropped to its mark rather than
-      // shrinking a whole wordmark into 52 pixels.
-      icon: BASE + '/Workstation%20logo.png', crop: 'left'
+      icon: BASE + '/product-logos/Workstation%20icon.png'
     },
     {
       id: 'supernova', name: 'Supernova', kind: 'service',

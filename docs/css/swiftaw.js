@@ -148,7 +148,9 @@ closeT = setTimeout(() => setDrop(item, false), 140);
 if (trigger) {
 trigger.addEventListener('click', e => {
 e.preventDefault();
-setDrop(item, !item.classList.contains('is-open'));
+const open = item.classList.contains('is-open');
+if (open && hoverable.matches && item.matches(':hover')) return;
+setDrop(item, !open);
 });
 }
 });

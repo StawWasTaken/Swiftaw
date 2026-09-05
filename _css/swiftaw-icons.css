@@ -23,17 +23,12 @@
   display: flex; align-items: center; gap: 16px;
   flex-wrap: wrap;
 }
+/* The navbar lockup. It was also a text wordmark in the library's own bar
+   until the navbar started carrying the Workstation mark, which said the same
+   thing twice. */
 .ic-brand {
-  display: flex; align-items: baseline; gap: 10px; flex: none;
+  display: flex; align-items: center; flex: none;
   text-decoration: none; color: inherit;
-}
-.ic-brand b {
-  font-family: var(--nb-font-head); font-weight: 700;
-  font-size: 20px; letter-spacing: -.02em;
-}
-.ic-brand i {
-  font-style: normal; font-size: 12px; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--nb-fg-muted);
 }
 
 /* The search capsule. It is the widest thing in the bar because it is the
@@ -286,14 +281,17 @@
   font-family: var(--nb-font-mono); font-size: 12.5px;
   overflow: hidden;
 }
-/* A path is thousands of characters long. Wrapped it becomes a wall of digits
-   that owns the card; on one line it stays a thing you copy. */
+/* It reads downward. Sideways it was one line a mile long, which is fine to
+   copy and impossible to look at; a path is broken across lines here, and the
+   box scrolls down rather than across so nothing sits off the right edge
+   where it cannot be seen. */
 .ic-code code {
   display: block; padding: 15px 0 15px 15px;
-  white-space: pre; overflow-x: auto; line-height: 1.7;
+  white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word;
+  line-height: 1.75; max-height: 232px; overflow-y: auto;
   scrollbar-width: thin;
 }
-.ic-code code::-webkit-scrollbar { height: 8px; }
+.ic-code code::-webkit-scrollbar { width: 8px; }
 .ic-code code::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, .22); border-radius: 99px;
 }
@@ -317,8 +315,6 @@
   font-size: 12.5px; color: var(--nb-surface-fg-muted);
 }
 .ic-card-foot span { flex: 1 1 190px; line-height: 1.5; }
-.ic-card-foot .nb-btn { flex: none; }
-.ic-card-foot .nb-btn svg { width: 13px; height: 13px; margin-right: 7px; fill: currentColor; }
 
 .ic-licence {
   margin: 14px 0 0; padding-top: 13px;
