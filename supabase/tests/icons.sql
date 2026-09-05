@@ -238,6 +238,45 @@ select pg_temp.tried('a hostile file is refused at the write, not only in the ch
   'select icon_upsert(''c'', ''C'', ''brand-marks'', ''{}''::text[], ' ||
   '''<svg viewBox="0 0 10 10"><script>x()</script></svg>'')', true);
 
+-- ── Moving an icon ───────────────────────────────────────────────────────────
+-- The address is what a published icon is found by, so a move is proved to
+-- actually move it, and proved not to eat the icon already sitting on the
+-- address it is moved onto.
+
+-- The file is run more than once against the same database, and a move leaves
+-- its icon behind at the new address.
+delete from icons where slug like 'mv-%';
+
+select pg_temp.tried('setting up two icons to move between',
+  '00000000-0000-0000-0000-00000000000b',
+  'select icon_upsert(''mv-one'', ''One'', ''brand-marks'', ''{}''::text[], ' || :'ICON' || '), ' ||
+  '       icon_upsert(''mv-two'', ''Two'', ''brand-marks'', ''{}''::text[], ' || :'ICON' || ')', false);
+
+select pg_temp.tried('a moderator cannot move an icon',
+  '00000000-0000-0000-0000-00000000000c', 'select icon_rename(''mv-one'', ''mv-three'')', true);
+
+select pg_temp.tried('a move onto a taken address is refused',
+  '00000000-0000-0000-0000-00000000000b', 'select icon_rename(''mv-one'', ''mv-two'')', true);
+
+select pg_temp.tried('a move onto a bad address is refused',
+  '00000000-0000-0000-0000-00000000000b', 'select icon_rename(''mv-one'', ''Not A Slug'')', true);
+
+select pg_temp.tried('an admin can move an icon',
+  '00000000-0000-0000-0000-00000000000b', 'select icon_rename(''mv-one'', ''mv-three'')', false);
+
+select pg_temp.ok('the icon is at its new address and not its old one',
+  (select count(*) = 1 from icons where slug = 'mv-three')
+  and (select count(*) = 0 from icons where slug = 'mv-one'));
+
+select pg_temp.ok('the icon it was moved past is untouched',
+  (select name = 'Two' from icons where slug = 'mv-two'));
+
+select pg_temp.tried('an admin can unpublish',
+  '00000000-0000-0000-0000-00000000000b', 'select icon_set_published(''mv-two'', false)', false);
+
+select pg_temp.tried('a stranger cannot unpublish',
+  '00000000-0000-0000-0000-00000000000d', 'select icon_set_published(''mv-two'', true)', true);
+
 -- ── What lands in the row ────────────────────────────────────────────────────
 
 do $$
@@ -298,7 +337,7 @@ end $$;
 do $$
 declare f text; bad text := '';
 begin
-  foreach f in array array['icon_upsert', 'icon_delete', 'icon_set_published',
+  foreach f in array array['icon_upsert', 'icon_delete', 'icon_rename', 'icon_set_published',
                            'icon_category_upsert', 'icon_my_rank',
                            'icon_check_svg', 'swiftaw_rank']
   loop

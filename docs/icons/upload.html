@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-nb="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add an icon - Swiftaw Icons</title>
+<meta name="description" content="Add or change an icon in Swiftaw Icons.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0C0F15">
+<link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/swiftaw-nb.css">
+<link rel="stylesheet" href="/css/swiftaw-icons.css">
+<style>
+.nb-nav-actions .swl-btn, .nb-nav-actions .swa-btn { flex: none; }
+.up-head { margin-bottom: 26px; }
+.up-head h1 { margin: 0 0 10px; font-family: var(--nb-font-head); font-weight: 700; font-size: clamp(28px, 4vw, 40px); letter-spacing: -.02em; }
+.up-head p { margin: 0; color: var(--nb-fg-muted); line-height: 1.65; max-width: 58ch; }
+.up-card { padding: clamp(20px, 3vw, 30px); }
+.up-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
+.up-file { display: inline-flex; align-items: center; gap: 10px; }
+.up-file input { display: none; }
+</style>
+</head>
+<body>
+
+<a class="nb-skip" href="#main">Skip to content</a>
+
+<div class="nb-rainbaw" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+<nav class="nb-nav" id="nav">
+  <div class="nb-nav-in">
+    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
+      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+      <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
+    </a>
+    <div class="nb-nav-links" id="navLinks">
+      <div class="nb-nav-item">
+        <a class="nb-nav-link" href="/icons/">The library</a>
+      </div>
+      <div class="nb-nav-item">
+        <a class="nb-nav-link" href="/icons/manage.html">Manage</a>
+      </div>
+      <div class="nb-nav-item">
+        <a class="nb-nav-link is-current" href="/icons/upload.html">Add an icon</a>
+      </div>
+      <div class="nb-nav-item">
+        <a class="nb-nav-link" href="/contact">Contact</a>
+      </div>
+    </div>
+    <span class="nb-nav-spacer"></span>
+    <div class="nb-nav-actions">
+      <span data-swiftaw-launcher></span>
+      <span data-swiftaw-account></span>
+      <button class="nb-icon-btn nb-nav-burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 448 512" aria-hidden="true"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+  <div class="nb-wrap">
+
+    <div class="ic-gate" id="icGate" hidden>
+      <h1>Not this account</h1>
+      <p></p>
+      <a class="nb-btn nb-btn--primary" href="/icons/">Back to the library</a>
+    </div>
+
+    <form class="ic-up" id="icUpForm" hidden novalidate>
+      <div class="up-head">
+        <h1 data-ic-mode="title">Add an icon</h1>
+        <p data-ic-mode="lead">Paste the file or pick it off disk. It is read before it is saved, and what comes back says either what it is or what is wrong with it. Nothing is cleaned up on the way in, so a file that is refused is refused for a reason worth reading.</p>
+      </div>
+
+      <div class="nb-card up-card">
+        <div class="ic-up-grid">
+
+          <div class="nb-field">
+            <label class="nb-label" for="icName">Name</label>
+            <input class="nb-input" id="icName" type="text" autocomplete="off" placeholder="Bell" maxlength="80" required>
+            <span class="nb-hint">What it is called in the library.</span>
+          </div>
+
+          <div class="nb-field">
+            <label class="nb-label" for="icSlug">Address</label>
+            <input class="nb-input" id="icSlug" type="text" autocomplete="off" placeholder="bell" maxlength="60" required>
+            <span class="nb-hint">Written from the name until you type here. Changing it on an icon that already exists moves the icon, and the old address stops working.</span>
+          </div>
+
+          <div class="nb-field">
+            <label class="nb-label" for="icCat">Category</label>
+            <select class="nb-select" id="icCat" required></select>
+          </div>
+
+          <div class="nb-field">
+            <label class="nb-label" for="icTags">Tags</label>
+            <input class="nb-input" id="icTags" type="text" autocomplete="off" placeholder="alert, notification, ring">
+            <span class="nb-hint">Separated by commas. Searched alongside the name.</span>
+          </div>
+
+          <div class="nb-field ic-up-full">
+            <label class="nb-label" for="icSvg">The file</label>
+            <textarea class="nb-textarea nb-mono" id="icSvg" rows="9" spellcheck="false" placeholder="&lt;svg viewBox=&quot;0 0 24 24&quot;&gt;..."></textarea>
+            <span class="nb-hint">Only the shapes are kept. The outer tag is thrown away and the icon is drawn by the library's own wrapper, so it cannot carry its own size or colour behaviour.</span>
+          </div>
+
+          <div class="ic-up-full">
+            <div class="ic-verdict" id="icVerdict" hidden></div>
+          </div>
+
+        </div>
+
+        <div class="up-actions">
+          <button class="nb-btn nb-btn--red nb-btn--sm ic-up-danger" id="icDelete" type="button" hidden>Delete it</button>
+          <label class="up-file">
+            <span class="nb-btn nb-btn--paper nb-btn--sm">Pick a file</span>
+            <input id="icFile" type="file" accept=".svg,image/svg+xml">
+          </label>
+          <label class="nb-check">
+            <input id="icPub" type="checkbox">
+            <span class="nb-box" aria-hidden="true"></span>
+            <span>Publish it now</span>
+          </label>
+          <span class="nb-nav-spacer" style="flex:1"></span>
+          <button class="nb-btn nb-btn--primary" id="icSave" type="submit" disabled data-ic-mode="save">Save the icon</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+</main>
+
+<footer class="nb-footer">
+  <div class="nb-wrap">
+    <div class="nb-footer-base">
+      <span>© 2026 Swiftaw</span>
+      <span>Make It Matter.</span>
+    </div>
+  </div>
+  <div class="nb-rainbaw" aria-hidden="true" style="margin-top:26px;"><i></i><i></i><i></i><i></i><i></i></div>
+</footer>
+
+<script src="/css/swiftaw-account.js"></script>
+<script src="/css/swiftaw.js"></script>
+<script src="/css/swiftaw-icons.js"></script>
+<script>SwiftawIcons.upload();</script>
+</body>
+</html>

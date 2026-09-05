@@ -1,0 +1,405 @@
+/* SWIFTAW ICONS
+   The library, the card, and the upload screen.
+
+   No hero. Somebody arriving here wants an icon, so the first thing on the
+   page is the search field and the grid under it, and the page is laid out as
+   a tool: a bar across the top, categories down the left, results in the
+   middle. Everything below is on the shared tokens; nothing here invents a
+   colour, a radius or a shadow. */
+
+/* ── The shell ─────────────────────────────────────────────────────────── */
+
+.ic-shell { min-height: calc(100vh - 70px); }
+
+/* The bar carries the two things that change what the grid shows, so it stays
+   on screen while the grid scrolls under it. */
+.ic-bar {
+  position: sticky; top: 71px; z-index: 20;
+  background: var(--nb-bg);
+  border-bottom: var(--nb-bd);
+  padding: 16px 0;
+}
+.ic-bar-in {
+  display: flex; align-items: center; gap: 16px;
+  flex-wrap: wrap;
+}
+.ic-brand {
+  display: flex; align-items: baseline; gap: 10px; flex: none;
+  text-decoration: none; color: inherit;
+}
+.ic-brand b {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 20px; letter-spacing: -.02em;
+}
+.ic-brand i {
+  font-style: normal; font-size: 12px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--nb-fg-muted);
+}
+
+/* The search capsule. It is the widest thing in the bar because it is the
+   control people came to use. */
+.ic-search { position: relative; flex: 1 1 260px; min-width: 0; }
+.ic-search input {
+  width: 100%; display: block;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r-pill);
+  padding: 12px 44px 12px 46px;
+  font-family: var(--nb-font-body); font-size: 15px;
+  box-shadow: var(--nb-sh-sm);
+  transition: box-shadow var(--nb-fast), transform var(--nb-fast);
+}
+.ic-search input::placeholder { color: var(--nb-surface-fg-muted); opacity: .8; }
+.ic-search input:focus {
+  outline: 0; transform: translate(-1px, -2px);
+  box-shadow: var(--nb-sh);
+}
+.ic-search svg {
+  position: absolute; left: 17px; top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px; fill: var(--nb-surface-fg-muted);
+  pointer-events: none;
+}
+.ic-search-x {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  width: 30px; height: 30px; padding: 0;
+  display: none; place-items: center;
+  background: none; border: 0; cursor: pointer;
+  color: var(--nb-surface-fg-muted); border-radius: 50%;
+}
+.ic-search-x svg { position: static; transform: none; width: 13px; height: 13px; fill: currentColor; }
+.ic-search-x:hover { background: var(--nb-track); color: var(--nb-surface-fg); }
+.ic-search.has-q .ic-search-x { display: grid; }
+
+.ic-bar-count {
+  flex: none; font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 13px; color: var(--nb-fg-muted);
+}
+@media (max-width: 620px) { .ic-bar-count { display: none; } }
+
+/* ── Columns ───────────────────────────────────────────────────────────── */
+
+.ic-body {
+  display: grid; gap: clamp(20px, 3vw, 40px);
+  grid-template-columns: 210px minmax(0, 1fr);
+  padding: clamp(22px, 3vw, 38px) 0 clamp(50px, 6vw, 90px);
+}
+
+.ic-side { position: sticky; top: 158px; align-self: start; }
+.ic-side h2 {
+  margin: 0 0 12px; font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--nb-fg-muted);
+}
+.ic-cats { display: flex; flex-direction: column; gap: 2px; }
+.ic-cat {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; text-align: left; cursor: pointer;
+  background: none; border: 0; color: var(--nb-fg);
+  padding: 8px 11px; border-radius: var(--nb-r-sm);
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 14px;
+  transition: background var(--nb-fast), color var(--nb-fast);
+}
+.ic-cat:hover { background: var(--nb-track); }
+.ic-cat span {
+  font-family: var(--nb-font-body); font-weight: 500; font-size: 12px;
+  color: var(--nb-fg-muted);
+}
+.ic-cat.is-on {
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border: var(--nb-bd-thin); padding: 6px 9px;
+  box-shadow: var(--nb-sh-sm);
+}
+.ic-cat.is-on span { color: var(--nb-ink); opacity: .7; }
+
+@media (max-width: 840px) {
+  .ic-body { grid-template-columns: 1fr; }
+  .ic-side { position: static; }
+  .ic-side h2 { display: none; }
+  /* On a narrow screen the list becomes a row you swipe, because a column of
+     twelve categories above the results pushes the results off the screen. */
+  .ic-cats {
+    flex-direction: row; overflow-x: auto; gap: 8px;
+    padding-bottom: 6px; scrollbar-width: thin;
+  }
+  .ic-cat { width: auto; flex: none; border: var(--nb-bd-thin); padding: 6px 12px; }
+  .ic-cat span { display: none; }
+}
+
+/* ── The grid ──────────────────────────────────────────────────────────── */
+
+.ic-grid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+}
+
+.ic-tile {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; aspect-ratio: 1; padding: 10px;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  cursor: pointer; text-align: center;
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast), background var(--nb-fast);
+}
+.ic-tile:hover {
+  transform: translate(-2px, -3px); box-shadow: var(--nb-sh);
+  background: var(--nb-yellow); color: var(--nb-ink);
+}
+.ic-tile:focus-visible { outline: 3px solid var(--nb-blue); outline-offset: 3px; }
+.ic-tile:active { transform: translate(1px, 1px); box-shadow: var(--nb-sh-press); }
+.ic-tile svg { width: 34px; height: 34px; fill: currentColor; }
+.ic-tile b {
+  font-family: var(--nb-font-body); font-weight: 500; font-size: 11.5px;
+  line-height: 1.25; word-break: break-word;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+/* A mark with its own colours keeps them, so hovering must not repaint it. */
+.ic-tile.is-colour:hover { background: var(--nb-surface); color: var(--nb-surface-fg); }
+
+/* An icon still loading is a box the right size, so the grid does not jump
+   when the rows arrive. */
+.ic-skel {
+  aspect-ratio: 1; border-radius: var(--nb-r-sm);
+  border: var(--nb-bd-thin); background: var(--nb-track);
+  opacity: .5; animation: icPulse 1.1s var(--nb-ease) infinite alternate;
+}
+@keyframes icPulse { to { opacity: .18; } }
+
+.ic-empty {
+  grid-column: 1 / -1; padding: 54px 20px; text-align: center;
+}
+.ic-empty h3 { margin: 0 0 8px; font-family: var(--nb-font-head); font-size: 20px; }
+.ic-empty p { margin: 0 auto; max-width: 44ch; color: var(--nb-fg-muted); font-size: 14.5px; line-height: 1.6; }
+
+/* ── The pager ─────────────────────────────────────────────────────────── */
+/* Pages rather than an endless scroll, so somebody who found an icon on page
+   three can go back to page three. */
+
+.ic-pager {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  margin-top: 30px;
+}
+.ic-pager[hidden] { display: none; }
+.ic-pager-n {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 15px;
+  min-width: 76px; text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── The card ──────────────────────────────────────────────────────────── */
+
+.ic-scrim {
+  /* Above the sticky nav, which is 400, and below the launcher and the consent
+     banner, which have to stay reachable whatever is open. */
+  position: fixed; inset: 0; z-index: 900;
+  display: grid; place-items: center; padding: 20px;
+  background: rgba(0, 0, 0, .62);
+  animation: icFade .16s var(--nb-ease);
+}
+.ic-scrim[hidden] { display: none; }
+@keyframes icFade { from { opacity: 0; } }
+
+.ic-card {
+  position: relative;
+  width: min(720px, 100%); max-height: min(86vh, 720px);
+  overflow: auto;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd); border-radius: var(--nb-r-lg);
+  box-shadow: var(--nb-sh-lg);
+  animation: icPop .2s var(--nb-ease);
+}
+@keyframes icPop { from { transform: translate(-4px, -8px); opacity: 0; } }
+
+.ic-card-top {
+  display: grid; gap: clamp(16px, 3vw, 28px); align-items: center;
+  grid-template-columns: 200px minmax(0, 1fr);
+  padding: clamp(18px, 3vw, 26px);
+  border-bottom: var(--nb-bd);
+}
+@media (max-width: 620px) { .ic-card-top { grid-template-columns: 1fr; } }
+
+/* The preview. It is a checkerboard so a white mark and a transparent
+   background are not the same picture. */
+.ic-stage {
+  aspect-ratio: 1; display: grid; place-items: center;
+  border: var(--nb-bd-thin); border-radius: var(--nb-r);
+  background-color: var(--nb-bg);
+  background-image:
+    linear-gradient(45deg, var(--nb-track) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--nb-track) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--nb-track) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--nb-track) 75%);
+  background-size: 18px 18px;
+  background-position: 0 0, 0 9px, 9px -9px, -9px 0;
+}
+.ic-stage svg {
+  width: 58%; height: 58%;
+  -webkit-user-drag: none; user-select: none;
+  pointer-events: none;
+}
+
+.ic-card-head h2 {
+  margin: 0; font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(21px, 3vw, 27px); letter-spacing: -.02em;
+}
+.ic-slug {
+  display: inline-block; margin: 8px 0 0;
+  font-family: var(--nb-font-mono); font-size: 12.5px;
+  color: var(--nb-surface-fg-muted);
+}
+.ic-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+
+.ic-colours { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+.ic-sw {
+  width: 28px; height: 28px; padding: 0; cursor: pointer;
+  border: var(--nb-bd-thin); border-radius: 50%;
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast);
+}
+.ic-sw:hover { transform: translateY(-2px); box-shadow: var(--nb-sh-sm); }
+.ic-sw.is-on { box-shadow: 0 0 0 3px var(--nb-surface), 0 0 0 6px var(--nb-line); }
+.ic-sw--auto {
+  width: auto; border-radius: var(--nb-r-pill); padding: 0 12px; height: 28px;
+  background: var(--nb-surface-2); color: var(--nb-surface-fg);
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 12px;
+}
+.ic-fixed {
+  margin: 16px 0 0; font-size: 13px; line-height: 1.55;
+  color: var(--nb-surface-fg-muted);
+}
+
+/* ── The copy block ────────────────────────────────────────────────────── */
+
+.ic-copy { padding: clamp(18px, 3vw, 26px); }
+.ic-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+.ic-tab {
+  padding: 7px 15px; cursor: pointer;
+  background: none; color: var(--nb-surface-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px;
+}
+.ic-tab.is-on { background: var(--nb-ink); color: #FFFFFF; }
+
+.ic-code {
+  position: relative;
+  background: var(--nb-night); color: #E6E9EF;
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  padding: 14px 52px 14px 15px;
+  font-family: var(--nb-font-mono); font-size: 12.5px; line-height: 1.65;
+  white-space: pre-wrap; word-break: break-all;
+  max-height: 190px; overflow: auto;
+}
+.ic-code-btn {
+  position: absolute; top: 9px; right: 9px;
+  width: 34px; height: 34px; padding: 0; cursor: pointer;
+  display: grid; place-items: center;
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  box-shadow: var(--nb-sh-sm);
+  transition: transform var(--nb-fast), box-shadow var(--nb-fast);
+}
+.ic-code-btn svg { width: 14px; height: 14px; fill: currentColor; }
+.ic-code-btn:hover { transform: translate(-1px, -2px); box-shadow: 3px 4px 0 var(--nb-ink); }
+.ic-code-btn:active { transform: translate(1px, 2px); box-shadow: none; }
+.ic-code-btn.is-done { background: var(--nb-green); }
+
+.ic-card-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px clamp(18px, 3vw, 26px) clamp(18px, 3vw, 26px);
+  font-size: 12.5px; color: var(--nb-surface-fg-muted);
+}
+
+.ic-x {
+  position: absolute; top: 14px; right: 14px;
+  width: 36px; height: 36px;
+}
+
+/* ── The upload screen ─────────────────────────────────────────────────── */
+
+.ic-up { max-width: 760px; margin: 0 auto; padding: clamp(26px, 4vw, 52px) 0 90px; }
+.ic-up-grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 620px) { .ic-up-grid { grid-template-columns: 1fr; } }
+.ic-up-full { grid-column: 1 / -1; }
+
+/* What the database said about the file, good or bad, printed where it can be
+   read rather than reduced to "something went wrong". */
+.ic-verdict {
+  display: grid; gap: 14px; align-items: center;
+  grid-template-columns: 96px minmax(0, 1fr);
+  padding: 14px; margin-top: 4px;
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  background: var(--nb-surface-2);
+}
+.ic-verdict[hidden] { display: none; }
+.ic-verdict .ic-stage { border-radius: var(--nb-r-sm); }
+.ic-verdict b { display: block; font-family: var(--nb-font-head); font-size: 15px; }
+.ic-verdict p { margin: 4px 0 0; font-size: 13px; line-height: 1.55; color: var(--nb-surface-fg-muted); }
+.ic-verdict.is-bad { border-color: var(--nb-red); }
+.ic-verdict.is-bad b { color: var(--nb-red); }
+
+.ic-gate { max-width: 520px; margin: 90px auto; text-align: center; }
+.ic-gate h1 { font-family: var(--nb-font-head); font-size: 28px; margin: 0 0 12px; }
+.ic-gate p { color: var(--nb-fg-muted); line-height: 1.65; margin: 0 0 22px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ic-tile, .ic-search input, .ic-sw, .ic-code-btn { transition: none; }
+  .ic-scrim, .ic-card, .ic-skel { animation: none; }
+}
+
+/* ── The manage screen ─────────────────────────────────────────────────── */
+/* A list rather than a grid, because what is being read here is not the shape
+   of the icon but its state: is it live, where is it filed, what is it called
+   in the address. */
+
+.ic-mg-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 18px; flex-wrap: wrap; margin-bottom: 22px;
+}
+.ic-mg-head h1 {
+  margin: 0 0 8px; font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(28px, 4vw, 40px); letter-spacing: -.02em;
+}
+.ic-mg-head p { margin: 0; color: var(--nb-fg-muted); max-width: 52ch; line-height: 1.6; }
+.ic-mg-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.ic-mg-said {
+  padding: 12px 15px; margin-bottom: 18px;
+  background: var(--nb-surface-2); border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  font-size: 14px;
+}
+.ic-mg-said[hidden] { display: none; }
+
+.ic-mg-list { display: flex; flex-direction: column; gap: 10px; }
+
+.ic-mg-row {
+  display: grid; align-items: center; gap: 14px;
+  grid-template-columns: 46px minmax(0, 1fr) auto auto;
+  padding: 12px 14px;
+  background: var(--nb-surface); color: var(--nb-surface-fg);
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+}
+.ic-mg-prev {
+  width: 46px; height: 46px; display: grid; place-items: center;
+  border: var(--nb-bd-thin); border-radius: var(--nb-r-sm);
+  background: var(--nb-bg);
+}
+.ic-mg-prev svg { width: 24px; height: 24px; }
+.ic-mg-txt { min-width: 0; }
+.ic-mg-txt b {
+  display: block; font-family: var(--nb-font-head); font-weight: 700; font-size: 15px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ic-mg-txt code {
+  font-family: var(--nb-font-mono); font-size: 12px;
+  color: var(--nb-surface-fg-muted);
+}
+.ic-mg-tags { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.ic-mg-act { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+@media (max-width: 760px) {
+  .ic-mg-row { grid-template-columns: 46px minmax(0, 1fr); }
+  .ic-mg-tags, .ic-mg-act { grid-column: 1 / -1; justify-content: flex-start; }
+}
+
+/* Delete sits at the far end of the row from Save, so the one that cannot be
+   undone is never next to the one that is pressed every time. */
+.ic-up-danger { order: -1; }
+.ic-up-danger[hidden] { display: none; }

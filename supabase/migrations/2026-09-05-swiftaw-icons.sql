@@ -436,6 +436,39 @@ begin
 end;
 $$;
 
+-- Editing an existing icon is icon_upsert again, because it is keyed on the
+-- address. That leaves one thing it cannot do: change the address. Doing it
+-- through the upsert would write a second icon and leave the first one
+-- standing, so moving one is its own operation, and it refuses an address
+-- something else already holds instead of quietly replacing that icon.
+create or replace function public.icon_rename(p_from text, p_to text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  v_from text := lower(btrim(coalesce(p_from, '')));
+  v_to   text := lower(btrim(coalesce(p_to, '')));
+begin
+  if public.swiftaw_rank(auth.uid()) < 2 then
+    raise exception 'Only an admin can change an icon.' using errcode = '42501';
+  end if;
+  if v_to !~ '^[a-z0-9]+(-[a-z0-9]+)*$' then
+    raise exception 'The name in the URL has to be lowercase letters, numbers and dashes.'
+      using errcode = '22023';
+  end if;
+  if v_from = v_to then
+    return true;
+  end if;
+  if exists (select 1 from public.icons where slug = v_to) then
+    raise exception 'There is already an icon at "%".', v_to using errcode = '23505';
+  end if;
+  update public.icons set slug = v_to where slug = v_from;
+  return found;
+end;
+$$;
+
 -- Deleting is the one that cannot be undone, so it sits a rank higher than
 -- adding. An admin who wants an icon gone can unpublish it.
 create or replace function public.icon_delete(p_slug text)
@@ -484,11 +517,13 @@ $$;
 -- closes it, so it is written first every time.
 revoke all on function public.icon_upsert(text, text, text, text[], text, boolean) from public;
 revoke all on function public.icon_set_published(text, boolean)                    from public;
+revoke all on function public.icon_rename(text, text)                              from public;
 revoke all on function public.icon_delete(text)                                    from public;
 revoke all on function public.icon_category_upsert(text, text, int)                from public;
 
 grant execute on function public.icon_upsert(text, text, text, text[], text, boolean) to authenticated;
 grant execute on function public.icon_set_published(text, boolean)                    to authenticated;
+grant execute on function public.icon_rename(text, text)                              to authenticated;
 grant execute on function public.icon_delete(text)                                    to authenticated;
 grant execute on function public.icon_category_upsert(text, text, int)                to authenticated;
 
