@@ -42,12 +42,23 @@ while the function to set one sat in the database unused.
       and no `max` at all, so the reported "no more than 0" cannot come from
       this field as it stands. Either it was already fixed or it was another
       field. Left as it is rather than changed on a guess.
-- [ ] **A3. Cooldown and rate settings** as a screen rather than constants in
-      the function. Per bot is done, as part of A1. Globally, the four settings
-      now exist and are read - `bots_max_per_day`, `bots_min_gap_min`,
-      `bots_notes_per_post`, `bots_quiet_hours` - but nothing in the console
-      renders them. That is the half still open. The switch rendering at
-      `_js/hereld-staff.js:978` is the pattern.
+- [x] **A3. Cooldown and rate settings** as a screen rather than constants in
+      the function. Per bot was done as part of A1; globally is done now, and
+      the reason it took a second pass is worth keeping: **the settings page had
+      one control, a switch.** Every flag was drawn as on or off, so a flag
+      holding a number could be read by the database and set by nobody.
+      `staff_set_flag` has taken `p_number` since the day it was written and
+      only one caller ever passed one.
+
+      There is a number row now. The page is in two parts, the seed account
+      settings and everything else, and the sentence under each control is the
+      flag's own `text_value` out of the database, so the console cannot
+      describe a setting differently from the way it was written down.
+
+      One thing deliberately refused: **an empty field is not zero.** Zero means
+      something different on each of the three - no ceiling, no floor, no notes
+      at all - so clearing the box and pressing Save would make one of those by
+      accident. A blank is turned away and a typed zero is not.
 - [x] **A6. The kill switch was not connected to anything.** It has been tested
       now, which is how that was found. `staff_set_flag` writes
       `bots_emergency` and **no function read it**: not `bot_due`, not
