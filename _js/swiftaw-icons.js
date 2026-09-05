@@ -15,6 +15,17 @@
   ];
 
   function el(id) { return document.getElementById(id); }
+
+  /* An icon and a category are addressed the same way, so they are written the
+     same way, from one place. The escape is spelled out rather than typed as a
+     range of accents, because typed in it is invisible in the file and the next
+     person to touch the line cannot see what it matches. */
+  function slugify(s) {
+    return String(s == null ? '' : s).toLowerCase().normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
+  }
+
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -34,27 +45,156 @@
     return b;
   }
 
+  /* Whatever made the source file signed it: an editor's name in a comment, a
+     <title> nobody asked for, the layer names left behind as ids. None of that
+     belongs in something we hand out under our own name, so it comes off. Ids
+     survive only where a gradient or a clip still points at one, because
+     removing those would break the drawing rather than clean it. */
+  function clean(b) {
+    var out = String(safeBody(b) || '')
+      .replace(/<!--[\s\S]*?-->/g, '')
+      .replace(/<\s*(title|desc|metadata)\b[\s\S]*?<\s*\/\s*\1\s*>/gi, '')
+      .replace(/<\s*(title|desc|metadata)\b[^>]*\/\s*>/gi, '')
+      .replace(/\s(?:data-name|inkscape:[\w-]+|sodipodi:[\w-]+|serif:id|xmlns:[\w-]+)\s*=\s*(["'])[\s\S]*?\1/gi, '');
+    out = out.replace(/\sclass\s*=\s*(["'])[\s\S]*?\1/gi, '');
+    if (!/url\(\s*#/.test(out)) {
+      out = out.replace(/\sid\s*=\s*(["'])[\s\S]*?\1/gi, '');
+    } else {
+      // An id is how a gradient or a clip is pointed at, so it cannot simply
+      // go. It is renamed instead: the drawing keeps working, and "Layer_1"
+      // does not travel out with it.
+      var map = {}, n = 0;
+      out = out.replace(/\sid\s*=\s*(["'])([^"']*)\1/gi, function (m, q, id) {
+        if (!map[id]) map[id] = 's' + (++n);
+        return ' id="' + map[id] + '"';
+      });
+      out = out.replace(/url\(\s*#([^)\s"']+)\s*\)/gi, function (m, id) {
+        return map[id] ? 'url(#' + map[id] + ')' : m;
+      });
+    }
+    return out.replace(/\s{2,}/g, ' ').replace(/>\s+</g, '><').trim();
+  }
+
+  /* One colour, decided while the icon is being made rather than while it is
+     being drawn. Every colour the artwork carried comes off the shapes instead
+     of being painted over: a five-stop gradient arrives as one shape in one
+     colour, with nothing underneath it left to show through.
+
+     Left without a colour of its own the mark takes the colour of the text
+     around it, which is the only reason to want an icon as SVG at all. Welding
+     a colour in is the other choice, and it stays a choice. */
+  var PAINT = ['fill', 'stroke', 'stop-color', 'fill-opacity', 'stroke-opacity',
+               'opacity', 'style', 'mask', 'clip-path', 'filter', 'color'];
+  var PAINT_TAGS = ['defs', 'linearGradient', 'radialGradient', 'pattern', 'mask',
+                    'clipPath', 'filter', 'style', 'title', 'desc', 'metadata'];
+
+  function readSvg(text) {
+    var doc = new DOMParser().parseFromString(String(text || ''), 'image/svg+xml');
+    if (!doc.getElementsByTagName('parsererror').length &&
+        doc.documentElement && doc.documentElement.nodeName.toLowerCase() === 'svg') {
+      return doc.documentElement;
+    }
+    // Not valid XML. Plenty of real exports are not, so it gets a second read
+    // by the lenient parser before being called unreadable.
+    var alt = new DOMParser().parseFromString(String(text || ''), 'text/html');
+    return alt.querySelector('svg');
+  }
+
+  function flatten(text, weld) {
+    var root = readSvg(text);
+    if (!root) return null;
+
+    var vb = root.getAttribute('viewBox') || root.getAttribute('viewbox');
+    if (!vb) {
+      var w = parseFloat(root.getAttribute('width'));
+      var h = parseFloat(root.getAttribute('height'));
+      if (!(w > 0 && h > 0)) return null;
+      vb = '0 0 ' + w + ' ' + h;
+    }
+
+    // A gradient, a mask or a clip is a colour instruction wearing a name. The
+    // shapes stay; the instructions do not.
+    PAINT_TAGS.forEach(function (t) {
+      var n = root.getElementsByTagName(t), i;
+      for (i = n.length - 1; i >= 0; i--) n[i].parentNode.removeChild(n[i]);
+    });
+
+    var ink = weld || 'currentColor';
+    (function walk(node) {
+      var kids = Array.prototype.slice.call(node.children), i;
+      for (i = 0; i < kids.length; i++) walk(kids[i]);
+      if (node === root) return;
+      var line = (node.getAttribute('stroke') || '').trim().toLowerCase();
+      var hollow = (node.getAttribute('fill') || '').trim().toLowerCase() === 'none';
+      PAINT.forEach(function (a) { node.removeAttribute(a); });
+      node.removeAttribute('id'); node.removeAttribute('class');
+      // An outline icon draws nothing without a stroke and floods solid without
+      // fill="none". Both go back on, rather than being left to a default that
+      // would turn a drawing into a blob.
+      if (line && line !== 'none') {
+        node.setAttribute('stroke', ink);
+        if (hollow) node.setAttribute('fill', 'none');
+      }
+    })(root);
+
+    var out = '';
+    Array.prototype.forEach.call(root.childNodes, function (n) {
+      if (n.nodeType === 1) out += new XMLSerializer().serializeToString(n);
+    });
+    out = clean(out.replace(/\sxmlns(:\w+)?="[^"]*"/g, ''));
+    if (!out) return null;
+    if (weld) out = '<g fill="' + esc(weld) + '">' + out + '</g>';
+    return '<svg viewBox="' + esc(vb) + '">' + out + '</svg>';
+  }
+
   function drawIcon(row, attrs) {
-    var body = safeBody(row.body);
+    var body = clean(row.body);
     if (!body) return '';
     return '<svg viewBox="' + esc(row.view_box) + '" ' + attrs + '>' + body + '</svg>';
   }
 
-  /* The two snippets the card hands over. They are different on purpose: one is
-     a file that stands on its own, the other is a tag that takes the size and
-     colour of the text it is dropped into. */
+  /* What the set is handed out under. It is written once here because it goes
+     on the file, and a licence that says one thing on the page and another on
+     the file is worse than no licence at all. */
+  var LICENCE = 'Free to use in your own work, on its own or changed, with no ' +
+                'credit required. Not for resale or for redistribution as a set.';
+
+  function stamp(row) {
+    // Two hyphens in a row end a comment early, so a name carrying them is
+    // flattened rather than allowed to cut the file in half.
+    var n = String(row.name || 'Icon').replace(/-{2,}/g, '-').replace(/[<>]/g, '');
+    return '<!-- ' + n + ' - Swiftaw Icons\n' +
+           '     Drawn and written out by Swiftaw. ' + LICENCE + '\n' +
+           '     © ' + new Date().getFullYear() + ' Swiftaw -->\n';
+  }
+
+  /* The two snippets the card hands over, both written from the shapes and the
+     box and nothing else. They are different on purpose: one is a file that
+     stands on its own, the other is a tag that takes the size and colour of the
+     text it is dropped into. */
   function snippet(row, kind, colour) {
-    var body = safeBody(row.body);
+    var body = clean(row.body);
     var vb = esc(row.view_box);
     if (kind === 'html') {
       return '<svg viewBox="' + vb + '" width="1em" height="1em" ' +
              (row.monochrome ? 'fill="currentColor" ' : '') +
              'aria-hidden="true" focusable="false">' + body + '</svg>';
     }
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb + '" ' +
+    return stamp(row) +
+           '<svg xmlns="http://www.w3.org/2000/svg" viewBox="' + vb + '" ' +
            'width="24" height="24"' +
            (row.monochrome ? ' fill="' + esc(colour || '#000000') + '"' : '') +
-           '>' + body + '</svg>';
+           '>' + body + '</svg>\n';
+  }
+
+  /* The file the download button writes. It is built in the page rather than
+     fetched, so there is no request and nothing to serve. */
+  function saveFile(name, text) {
+    var url = URL.createObjectURL(new Blob([text], { type: 'image/svg+xml' }));
+    var a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
   }
 
   function copy(text) {
@@ -80,7 +220,8 @@
     copy: '<svg viewBox="0 0 448 512"><path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/></svg>',
     tick: '<svg viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>',
     left: '<svg viewBox="0 0 320 512"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>',
-    right: '<svg viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>'
+    right: '<svg viewBox="0 0 320 512"><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>',
+    down: '<svg viewBox="0 0 512 512"><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 242.7-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7 288 32zM64 352c-35.3 0-64 28.7-64 64l0 32c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-32c0-35.3-28.7-64-64-64l-101.5 0-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352 64 352z"/></svg>'
   };
 
   /* ── The library ──────────────────────────────────────────────────────── */
@@ -248,14 +389,20 @@
            '<button type="button" class="ic-tab' + (tab === 'svg' ? ' is-on' : '') + '" data-t="svg">SVG</button>' +
            '<button type="button" class="ic-tab' + (tab === 'html' ? ' is-on' : '') + '" data-t="html">HTML</button>' +
            '</div>';
-      h += '<div class="ic-code" id="icCode">' + esc(snippet(r, tab, fill)) +
+      // One line, scrolled sideways. A path is thousands of characters long and
+      // laid out as a paragraph it buries the card it is sitting in.
+      h += '<div class="ic-code" id="icCode"><code>' + esc(snippet(r, tab, fill)) + '</code>' +
            '<button class="ic-code-btn" type="button" id="icCopy" aria-label="Copy">' + ICO.copy + '</button>' +
            '</div>';
       h += '<div class="ic-card-foot"><span>' +
            (tab === 'svg'
              ? 'A file on its own, at 24 pixels in the colour above.'
              : 'A tag for your markup. It takes the size and colour of the text around it.') +
-           '</span></div>';
+           '</span>' +
+           '<button class="nb-btn nb-btn--paper nb-btn--sm" type="button" id="icDl">' +
+             ICO.down + 'Download SVG</button>' +
+           '</div>';
+      h += '<p class="ic-licence">Written out by Swiftaw. ' + esc(LICENCE) + '</p>';
       h += '</div>';
 
       card.innerHTML = h;
@@ -314,6 +461,10 @@
       var tb = e.target.closest('.ic-tab');
       if (tb) { tab = tb.dataset.t; paintCard(); return; }
       if (e.target.closest('#icClose')) { closeCard(); return; }
+      if (e.target.closest('#icDl')) {
+        saveFile(open.slug + '.svg', snippet(open, 'svg', colour));
+        return;
+      }
       var cp = e.target.closest('#icCopy');
       if (cp) {
         copy(snippet(open, tab, colour)).then(function () {
@@ -382,16 +533,15 @@
     var editing = new URLSearchParams(location.search).get('slug') || '';
     var at = 0, far = 0;
     var pic = null, traceT = null;
+    // White, because the pages these land on are dark. Welding is off, so the
+    // icon leaves without a colour of its own and takes the colour of whatever
+    // text it is dropped into.
+    var ink = '#FFFFFF', weld = false;
 
     var DETAIL = [
       { eps: 1.9, word: 'Loose' }, { eps: 1.3, word: 'Easy' }, { eps: 0.9, word: 'Medium' },
       { eps: 0.6, word: 'Close' }, { eps: 0.38, word: 'Tight' }
     ];
-
-    function slugify(s) {
-      return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
-    }
 
     /* ── the sliding card ──────────────────────────────────────────────── */
 
@@ -455,8 +605,19 @@
       sync();
     }
 
+    /* What actually gets checked and saved. The box holds the file as it
+       arrived; this is what it becomes once its own colours have been taken off
+       it. Falling back to the raw text when the flatten cannot read it is
+       deliberate: the database writes a better error message than a guess
+       would, and the person gets told what is really wrong with the file. */
+    function composed() {
+      var raw = el('icSvg').value;
+      if (!raw.trim()) return '';
+      return flatten(raw, weld ? ink : null) || raw;
+    }
+
     function check() {
-      var svg = el('icSvg').value;
+      var svg = composed();
       checked = null;
       gateNext();
       if (!svg.trim()) { el('icVerdict').hidden = true; sync(); return; }
@@ -470,10 +631,35 @@
           r.monochrome ? 'Accepted, one colour.' : 'Accepted, keeps its own colours.',
           r.monochrome
             ? 'It will take the colour of the text around it, and the card will offer the colour control.'
-            : 'The card will say the colours are part of the mark rather than offering a control that would do nothing.',
+            : 'This one is welded to ' + ink + ', so the card will say the colour is part of the ' +
+              'mark rather than offering a control that would do nothing.',
           '<svg viewBox="' + esc(r.view_box) + '" ' +
-          (r.monochrome ? 'fill="#FFFFFF"' : '') + '>' + safeBody(r.body) + '</svg>');
+          (r.monochrome ? 'fill="' + esc(ink) + '"' : '') + '>' + safeBody(r.body) + '</svg>');
       });
+    }
+
+    /* ── one colour ────────────────────────────────────────────────────────
+       The artwork arrives however it arrived, and leaves in one colour. This is
+       the "I am not opening Photoshop for this" control: it strips the colours
+       the file was carrying rather than covering them, so a gradient mark comes
+       out as a single shape. White is the default because these land on dark
+       pages. */
+
+    function paintInk() {
+      var box = el('icInk');
+      if (!box) return;
+      box.innerHTML = SWATCHES.map(function (s) {
+        return '<button type="button" class="ic-sw' + (ink === s[0] ? ' is-on' : '') +
+          '" style="background:' + s[0] + '" data-c="' + s[0] + '" title="' + s[1] +
+          '" aria-label="' + s[1] + '"></button>';
+      }).join('') +
+        '<label class="ic-ink-own" title="Any other colour">' +
+          '<input type="color" id="icInkOwn" value="' + esc(ink) + '" aria-label="Any other colour">' +
+        '</label>';
+      var out = el('icTraceOut').firstElementChild;
+      if (out) out.setAttribute('fill', ink);
+      var v = el('icVerdict').querySelector('svg');
+      if (v && checked && checked.monochrome) v.setAttribute('fill', ink);
     }
 
     /* ── reading a picture ─────────────────────────────────────────────── */
@@ -501,7 +687,7 @@
         return;
       }
       el('icTraceOut').innerHTML = '<svg viewBox="' + esc(out.viewBox) +
-        '" fill="#FFFFFF">' + out.body + '</svg>';
+        '" fill="' + esc(ink) + '">' + out.body + '</svg>';
       var note = out.shapes + (out.shapes === 1 ? ' shape' : ' shapes') + ', ' +
         Math.round(out.bytes / 1024 * 10) / 10 + ' KB of outline.';
       if (out.coarse) note += ' Read less finely than asked, because at that setting it came out ' +
@@ -609,7 +795,7 @@
       var one = function (px) {
         return '<div class="ic-final-size"><div class="ic-stage" style="width:' + px +
           'px;height:' + px + 'px"><svg viewBox="' + vb + '"' +
-          (checked.monochrome ? ' fill="#FFFFFF"' : '') + '>' + body + '</svg></div>' +
+          (checked.monochrome ? ' fill="' + esc(ink) + '"' : '') + '>' + body + '</svg></div>' +
           '<span>' + px + '</span></div>';
       };
       var cat = '';
@@ -627,8 +813,8 @@
             ? tags.map(function (t) { return '<span class="nb-tag">' + esc(t) + '</span>'; }).join('')
             : 'None') + '</dd></div>' +
           '<div><dt>Colour</dt><dd>' + (checked.monochrome
-            ? 'Takes the colour of the text around it'
-            : 'Carries its own colours') + '</dd></div>' +
+            ? 'One colour, and it takes the colour of the text around it'
+            : 'Welded to ' + esc(ink)) + '</dd></div>' +
         '</dl>';
     }
 
@@ -645,7 +831,7 @@
         p_name: el('icName').value.trim(),
         p_category: el('icCat').value,
         p_tags: tags,
-        p_svg: el('icSvg').value,
+        p_svg: composed(),
         p_publish: el('icPub').checked
       }).then(function (res) {
         btn.disabled = false;
@@ -679,6 +865,8 @@
       el('icDrop').querySelector('b').textContent = 'Drop a file here, or pick one';
       window.SwiftawPick.refresh(el('icCat'));
       pic = null; checked = null; far = 0;
+      ink = '#FFFFFF'; weld = false;
+      paintInk();
       go(0);
     }
 
@@ -734,6 +922,24 @@
         el('icDetN').textContent = DETAIL[parseInt(el('icDet').value, 10) - 1].word;
         nudge();
       });
+    });
+
+    el('icInk').addEventListener('click', function (e) {
+      var sw = e.target.closest('.ic-sw');
+      if (!sw) return;
+      ink = sw.dataset.c;
+      paintInk();
+      if (weld) check();
+    });
+    el('icInk').addEventListener('input', function (e) {
+      if (e.target.id !== 'icInkOwn') return;
+      ink = e.target.value.toUpperCase();
+      paintInk();
+      if (weld) { clearTimeout(t); t = setTimeout(check, 300); }
+    });
+    el('icWeld').addEventListener('change', function () {
+      weld = el('icWeld').checked;
+      check();
     });
 
     var drop = el('icDrop');
@@ -835,6 +1041,7 @@
             return '<option value="' + esc(c.slug) + '">' + esc(c.name) + '</option>';
           }).join('');
           window.SwiftawPick.wrap(el('icCat'));
+          paintInk();
           go(0);
 
           if (!editing) return;
@@ -869,7 +1076,48 @@
   function manage() {
     var db = null, rank = 0, page = 1, q = '', total = 0, rows = [];
     var gate = el('icMgGate'), wrap = el('icMgWrap'), list = el('icMgList');
-    var timer = null;
+    var timer = null, cats = [];
+
+    /* ── the shelves ─────────────────────────────────────────────────────
+       A category is only a name and an order, so it is edited in place rather
+       than on a screen of its own. The address is not editable: it is what the
+       icons are linked by, and moving it would take the shelf away from
+       everything standing on it. */
+
+    function catSaid(kind, text) {
+      var n = el('icCatSaid');
+      n.hidden = false;
+      n.classList.toggle('is-bad', kind === 'bad');
+      n.textContent = text;
+    }
+
+    function paintCats() {
+      el('icCatN').textContent = cats.length
+        ? cats.length + (cats.length === 1 ? ' shelf' : ' shelves')
+        : 'None yet';
+      el('icCatRows').innerHTML = cats.map(function (c, i) {
+        return '<div class="ic-cat-row">' +
+          '<input class="nb-input" data-name="' + i + '" type="text" value="' + esc(c.name) +
+            '" maxlength="60" aria-label="Name of ' + esc(c.name) + '">' +
+          '<code>' + esc(c.slug) + '</code>' +
+          '<input class="nb-input ic-cat-pos" data-pos="' + i + '" type="number" value="' +
+            (c.position == null ? 100 : c.position) + '" min="0" max="9999" step="10" ' +
+            'aria-label="Order of ' + esc(c.name) + '">' +
+          '<button type="button" class="nb-btn nb-btn--paper nb-btn--sm" data-save="' + i +
+            '" disabled>Save</button>' +
+          '</div>';
+      }).join('');
+    }
+
+    function loadCats() {
+      db.from('icon_categories').select('id,slug,name,position').order('position')
+        .then(function (r) { cats = r.data || []; paintCats(); });
+    }
+
+    function putCat(slug, name, pos) {
+      return db.rpc('icon_category_upsert',
+                    { p_slug: slug, p_name: name, p_position: pos });
+    }
 
     function tag(r) {
       return r.published
@@ -961,6 +1209,61 @@
       }
     });
 
+    el('icCatRows').addEventListener('input', function (e) {
+      var i = e.target.dataset.name || e.target.dataset.pos;
+      if (i == null || i === '') return;
+      var b = el('icCatRows').querySelector('[data-save="' + i + '"]');
+      if (b) b.disabled = false;
+    });
+
+    el('icCatRows').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-save]');
+      if (!b) return;
+      var i = +b.dataset.save, c = cats[i];
+      var name = el('icCatRows').querySelector('[data-name="' + i + '"]').value.trim();
+      var pos = parseInt(el('icCatRows').querySelector('[data-pos="' + i + '"]').value, 10);
+      if (!name) { catSaid('bad', 'A category needs a name.'); return; }
+      b.disabled = true;
+      putCat(c.slug, name, isNaN(pos) ? 100 : pos).then(function (res) {
+        if (res.error) { b.disabled = false; catSaid('bad', res.error.message); return; }
+        catSaid('ok', '"' + name + '" saved.');
+        loadCats();
+      });
+    });
+
+    el('icCatNew').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = el('icCatName').value.trim();
+      var slug = el('icCatSlug').value.trim().toLowerCase();
+      var pos = parseInt(el('icCatPos').value, 10);
+      if (!name || !slug) { catSaid('bad', 'A category needs a name and an address.'); return; }
+      var btn = el('icCatAdd');
+      // The upsert is keyed on the address, so adding one that already exists
+      // changes it rather than failing. Which of the two happened is only
+      // knowable before the write, so it is read now rather than afterwards.
+      var had = cats.some(function (c) { return c.slug === slug; });
+      btn.disabled = true;
+      putCat(slug, name, isNaN(pos) ? 100 : pos).then(function (res) {
+        btn.disabled = false;
+        if (res.error) { catSaid('bad', res.error.message); return; }
+        catSaid('ok', had ? '"' + slug + '" already existed, so it was changed instead.'
+                          : '"' + name + '" added. It is on the upload screen now.');
+        el('icCatName').value = ''; el('icCatSlug').value = ''; el('icCatPos').value = 100;
+        loadCats();
+      });
+    });
+
+    // Written from the name until it is typed in, the same as an icon's own
+    // address, because it is the same kind of thing.
+    el('icCatName').addEventListener('input', function () {
+      var s = el('icCatSlug');
+      if (s.dataset.touched) return;
+      s.value = slugify(el('icCatName').value);
+    });
+    el('icCatSlug').addEventListener('input', function () {
+      el('icCatSlug').dataset.touched = '1';
+    });
+
     el('icMgQ').addEventListener('input', function () {
       clearTimeout(timer);
       timer = setTimeout(function () { q = el('icMgQ').value.trim(); page = 1; load(); }, 220);
@@ -989,6 +1292,7 @@
           return;
         }
         wrap.hidden = false;
+        loadCats();
         load();
       });
     });

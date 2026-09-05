@@ -79,6 +79,30 @@
         </div>
       </div>
 
+      <details class="ic-cat-mg" id="icCatMg">
+        <summary><b>Categories</b><span id="icCatN"></span></summary>
+        <div class="ic-cat-body">
+          <p class="ic-cat-lead">A category is what the library's shelves are. Changing a name changes it everywhere at once. The address is what the shelf is linked by, so it is set when the category is made and does not move afterwards.</p>
+          <div class="ic-cat-rows" id="icCatRows"></div>
+          <form class="ic-cat-new" id="icCatNew" novalidate>
+            <div class="nb-field">
+              <label class="nb-label" for="icCatName">Name</label>
+              <input class="nb-input" id="icCatName" type="text" autocomplete="off" placeholder="Weather" maxlength="60" required>
+            </div>
+            <div class="nb-field">
+              <label class="nb-label" for="icCatSlug">Address</label>
+              <input class="nb-input" id="icCatSlug" type="text" autocomplete="off" placeholder="weather" maxlength="60" required>
+            </div>
+            <div class="nb-field ic-cat-pos">
+              <label class="nb-label" for="icCatPos">Order</label>
+              <input class="nb-input" id="icCatPos" type="number" value="100" min="0" max="9999" step="10">
+            </div>
+            <button class="nb-btn nb-btn--primary nb-btn--sm" id="icCatAdd" type="submit">Add it</button>
+          </form>
+          <p class="ic-cat-said" id="icCatSaid" hidden></p>
+        </div>
+      </details>
+
       <p class="ic-mg-said" id="icMgSaid" hidden></p>
 
       <div class="ic-mg-list" id="icMgList"></div>
