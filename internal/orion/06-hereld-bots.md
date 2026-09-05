@@ -43,11 +43,27 @@ while the function to set one sat in the database unused.
       this field as it stands. Either it was already fixed or it was another
       field. Left as it is rather than changed on a guess.
 - [ ] **A3. Cooldown and rate settings** as a screen rather than constants in
-      the function. Per bot is done, as part of A1. Globally is not.
-- [ ] **A6. The kill switch, tested.** Setting the count to zero has to stop
-      everything within one run, and somebody should confirm it does rather
-      than assume. The page now says which state it is in rather than
-      repeating the instructions, so at least the reading is unambiguous.
+      the function. Per bot is done, as part of A1. Globally, the four settings
+      now exist and are read - `bots_max_per_day`, `bots_min_gap_min`,
+      `bots_notes_per_post`, `bots_quiet_hours` - but nothing in the console
+      renders them. That is the half still open. The switch rendering at
+      `_js/hereld-staff.js:978` is the pattern.
+- [x] **A6. The kill switch was not connected to anything.** It has been tested
+      now, which is how that was found. `staff_set_flag` writes
+      `bots_emergency` and **no function read it**: not `bot_due`, not
+      `bot_fill`. The console renders it as the special switch, above the count,
+      and pressing it wrote a row nobody consulted.
+
+      The check was not forgotten, it was overwritten.
+      `2026-09-01-hereld-bot-fix.sql` added it to `bot_due`. Two files later
+      `-premium-bots` replaced `bot_due` with the tier-aware version and the
+      new body does not carry it. So the switch worked, and then quietly
+      stopped working, at whatever point that file was run - which, per D4a, is
+      a point it never reached in any database. It has never worked in
+      production either.
+
+      `2026-09-05-hereld-bot-limits.sql` puts it in both functions. Four checks
+      cover it, and taking it back out fails exactly one of them.
 
 **Fixed while in there, all three the other account's:** "Run bots now" read
 `r.made` from a function that returns `posted`, so a run that posted four
@@ -79,7 +95,11 @@ and `2026-09-05-hereld-bot-workers.sql` has to be run.
       what a person does when they have nothing to say, and the failure lands
       in the log that A4 just made visible. **The other half is still open:**
       `bot_said_before` only asks whether *that* account said it, so two
-      accounts can still land on the same sentence honestly.
+      accounts can still land on the same sentence honestly. **That half is
+      closed now.** `bot_said_before` keeps its signature and reads across
+      every seed account rather than one: sixty days against itself, ten days
+      against the others, trimmed and case-folded so spacing does not get round
+      it. A real person saying the same words does not gag them.
 - [x] **B5. The ten standing accounts claimed credentials they do not have.** A
       PhD, a librarian, an engineer, two journalists and a history "since
       2024". None of them names a real person, so the letter of the rule held,
@@ -89,15 +109,33 @@ and `2026-09-05-hereld-bot-workers.sql` has to be run.
       who it used to be. The instruction "you are a real Gen Z person" is now
       "you write the way a Gen Z person writes", which gets the voice without
       telling the model to assert that it is a person.
-- [ ] **B1. Cooldowns and rate limits honoured** by the function itself, not
-      only by the schedule. A manual "run all" should not let a bot post ten
-      times in a minute. **One hole in this is closed:** `bot_fill` and
+- [x] **B1. Cooldowns and rate limits honoured** by the function itself, not
+      only by the schedule. Two holes, both closed. `bot_fill` and
       `bot_fill_premium` were executable by any signed-in account, so a
-      stranger could queue work past every cooldown by pressing an endpoint.
-- [ ] **B3. Spread the schedule.** Everything firing at the top of the hour
-      reads as machinery, which is exactly what it must not read as.
-- [ ] **B4. Bots stay out of moderation queues** as reporters, and they do not
-      pile onto real people.
+      stranger could queue work past every cooldown by pressing an endpoint;
+      D4b covers that. And a manual "run all" obeyed only each account's own
+      `cooldown_min`, which the console can set to anything: there was no floor
+      under it and no ceiling over a day. Both exist now, in `bot_due`, which
+      is the gate every path goes through including the button.
+      `bots_min_gap_min` raises a cooldown set too low and cannot loosen one
+      set higher. `bots_max_per_day` counts successful actions in the last
+      twenty four hours; zero means no ceiling rather than a ceiling of zero,
+      which is the mistake that would have stopped everything the day it
+      shipped.
+- [~] **B3. Spread the schedule.** Half. Queueing no longer lands everything on
+      the same minute: each account is given somewhere in the next three
+      quarters of an hour rather than four to twelve minutes out, and quiet
+      hours keep the small hours empty in each account's own timezone rather
+      than the server's. The other half is the cron itself, which still fires
+      at the top of the hour and is D1.
+- [x] **B4. Bots stay out of moderation queues** as reporters, at the insert
+      rather than in the code that calls it: a trigger on `reports` refuses a
+      reporter that is in `bots`. Client, worker or console, it is the same
+      answer. And they do not pile onto real people: the note branch counted
+      notes already **written** on a post and not ones already **queued** for
+      it, so one fill could stack several onto the same post before any of them
+      landed. It counts both now, and a person's post takes at most one
+      whatever the cap is set to.
 
 ### The roster was readable by anybody with an account, and stayed that way
 
@@ -150,8 +188,13 @@ list where they get broken:
       `2026-09-01-hereld-bot-fix`, `-bot-queue-fix`, `-edit`,
       `-premium-bots`, `2026-09-04-hereld-attachments`,
       `2026-09-04-hereld-edit-columns`, `2026-09-05-hereld-bot-workers`,
-      `2026-09-05-hereld-bot-grants`.
+      `2026-09-05-hereld-bot-grants`, `2026-09-05-hereld-bot-limits`.
       `2026-08-31-hereld-assoc-mark` has never been run against any database.
+
+      This order, and a loader that runs it, are now in the repository at
+      `supabase/tests/load.sh`, with a README beside it. It needs Postgres 16
+      and nothing else. Every file reads ok from a clean database, so anything
+      that fails in the SQL editor is the editor or the order, not the file.
 
       **Two of these had to be repaired first, and the repairs are the
       finding.** The whole schema was loaded into a local Postgres 16 and asked

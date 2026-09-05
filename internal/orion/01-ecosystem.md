@@ -23,19 +23,75 @@ the estate today.
 
 ## A - Finish the sites
 
-- [ ] **A1. Rebuild the Supernova site on the shared system.** Per **D7** the
-      overview page goes and the chat becomes the front door, so the site is
-      chat plus docs plus keys, not a marketing page with a chat behind it.
-      Keep `supernova/chat.html` working throughout; it is the product.
+### A0. New layouts, not a repaint of the old ones
+
+**This is the correction to the last pass and it governs the rest of this
+list.** Every Swiftaw page was redesigned and none of them was re-laid-out. The
+shape underneath is the shape the first draft was generated into: a hero, then
+a row of three, then an alternating strip, then a call to action, on every page,
+whatever the page is for. Restyling that shape produces a better looking version
+of the same generated page, which is what happened, and Staw's read of it is
+that it is not a real website.
+
+So: **a new layout per page, decided by what that page is for.** Contact is a
+form and the ways to reach a person; it is not a hero. Press kit is a set of
+files to take away. A legal page is a document and wants a document's furniture,
+a contents list and anchors, not marketing furniture. About and Our Mission are
+prose and should read like something written rather than something assembled.
+The Newsroom is an index. Innovation Room is folding into the Newsroom anyway,
+per **B1**.
+
+Two things stay, named by Staw: **the homepage header**, and **"How is this
+landing?"**. Everything else on the homepage is open.
+
+The rule for judging a draft: if the page could be swapped for any other page by
+changing the words in the boxes, it has no layout. Start from what the visitor
+came to do.
+
+**What is left to redesign, in Staw's words:** Fortized web, the Fortized app,
+Supernova. Plus these Swiftaw pages, plus Lifecheck at **A8**. The Fortized app
+is [list 7](07-fortized.md); everything else is here.
+
+- [ ] **A1. Supernova needs no site.** Superseded, and this is the correction:
+      the plan said rebuild the site with the chat as the front door, and Staw's
+      answer is that there is no site to rebuild. **The chat and a sign-in page.**
+      No overview, no feature strip, no pricing panel: it is not a thing you buy
+      a subscription to off a landing page, it is a thing that is either open to
+      you or not. Docs and keys stay because a person with an API key needs
+      them, and they are reference pages, not sales pages. Keep
+      `supernova/chat.html` working throughout; it is the product.
 - [ ] **A2. Rebuild the Fortized web pages** on the shared system. **D1 is
       answered and the app goes too,** but that is large enough to be its own
       workstream: the public pages belong here, the app belongs to
       [list 7](07-fortized.md). Build the pages first so the app has finished
       components to land on.
 - [ ] **A3. Retire Hereld's overview page** and make the signed-out app the
-      front door. Confirm against **D7**. A signed-out visitor still needs a
-      real first screen with something to read, not an empty shell behind a
-      login wall.
+      front door. Confirmed by Staw, in the same breath as A1: Hereld has a
+      whole page presenting it the way Swiftaw itself is presented, and it is
+      **presented like a thing you buy**, which it is not. Too much of it, and
+      the wrong register. A signed-out visitor still needs a real first screen
+      with something to read, not an empty shell behind a login wall, but that
+      screen is the app with posts in it and a sign-in, not a pitch.
+
+      Hereld and Supernova are the two that go. **Fortized is a different
+      story** and keeps its public pages: it is a platform people join,
+      with a shop, a currency and an app to download.
+
+- [ ] **A8. Lifecheck, twice over.** Same complaint as the Swiftaw pages and one
+      more on top.
+
+      The copy is too much of it and says too little, and the layout is the
+      generated one. Same treatment as **A0**: a verification service's page is
+      for somebody deciding whether to put it on their site, so what it does,
+      what it costs them, and how to add it. Not a hero and three cards.
+
+      **And it is not on the design system.** The navbar is the visible tell:
+      Lifecheck's nav buttons are capsules and they do not animate, where
+      Swiftaw's are rounded squares that do. That is one component to bring
+      across, but it means the page was built beside the system rather than on
+      it, so the rest of it wants the same check: the shared header and footer
+      per **A5**, the type hierarchy per **A4**, the tokens rather than its own
+      values.
 - [ ] **A7. Repolish Hereld's UI.** Staw's read is that it functions well and
       looks decent, and that it now wants a **fuller, more Twitter-like layout**
       rather than the airy one it has. Two jobs in one: give the columns real

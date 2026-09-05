@@ -358,10 +358,7 @@ The features named in those commit subjects, which is the audit list:
       app speaks nowhere else and every phone messaging app speaks everywhere,
       capping an answer at 78% of half a column); an exchange reads down the
       column now, question as a heading, answer full width beneath it, parted by
-      the same 3px rule the rest of the app uses. The mark arrives and then
-      **stops** rather than panning five colours on a six second loop forever,
-      on every mark on screen, which is the house style of every assistant on
-      the internet and is not ours. The name is said once where it was said
+      the same 3px rule the rest of the app uses. The name is said once where it was said
       three times in 500px. The composer sits in the card the way the post
       composer does. And an empty screen is an opener with three starting
       questions, each one something this can actually answer, since a button
@@ -377,6 +374,18 @@ The features named in those commit subjects, which is the audit list:
       Checked at 1360 and 430, on both surfaces: attribution both ways, the
       answer at full column width (640 of 640), the panel sitting at the newest
       turn, no sideways scroll, no bubble left drawn.
+
+- [x] **C12a. The mark is white.** The first pass stopped the five brand colours
+      panning on a six second loop and had them arrive once and settle, which
+      was the wrong half of the fix: a gradient that runs once is still a
+      gradient, and it is the house style of every assistant on the internet.
+      Staw asked for white and white is better. The wrapper, the overlay and the
+      keyframes are deleted rather than switched off, the three call sites still
+      naming the retired class no longer do, and the mark keeps its own 256:336
+      proportion instead of being squared into a slot. One comment in
+      `docs/app.html` referred to that overlay to explain why a mask whose
+      artwork never loads disappears; the explanation stands, the reference is
+      rewritten.
 - [x] **C13. Post editing.** The migration says "nothing else is allowed to be
       edited through this door", and that is what it meant, but **a row policy
       cannot say which columns an update may touch.** The counts are already
