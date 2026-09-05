@@ -62,4 +62,3 @@ border: var(--nb-bd-thin);
 word-break: break-all; min-height: 42px;
 }
 .lc-out.ok { background: var(--nb-green); color: var(--nb-ink); }
-.lc-foot-brand img { height: 22px; width: auto; display: block; margin-bottom: 12px; }

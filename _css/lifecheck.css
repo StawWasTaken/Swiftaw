@@ -80,5 +80,5 @@ code.lc-inline {
 }
 .lc-out.ok { background: var(--nb-green); color: var(--nb-ink); }
 
-/* ── footer ─────────────────────────────────────────────────────────────── */
-.lc-foot-brand img { height: 22px; width: auto; display: block; margin-bottom: 12px; }
+/* The footer used to have a Lifecheck-shaped variant here. It is the shared
+   one now, mark and all, and it lives in swiftaw-footer.css. */

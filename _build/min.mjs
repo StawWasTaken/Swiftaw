@@ -12,6 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { render as renderFooter } from './footer.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CHECK = process.argv.includes('--check');
@@ -146,5 +147,45 @@ for (const job of JOBS) {
     built++;
   }
 }
-if (CHECK && stale) process.exit(1);
-if (!CHECK) console.log(built ? built + ' file(s) built' : 'up to date');
+/* ── The footer, stamped in ────────────────────────────────────────────────
+   A page marks where its footer goes and which site it belongs to:
+
+     <!--footer:workstation-->
+     <!--/footer-->
+
+   and everything between the two is replaced with what _build/footer.mjs
+   renders. The pages keep real HTML, so the footer is crawlable and needs no
+   script, while there is still only one place the shape is written down.
+   `--check` reports a page whose footer has drifted instead of fixing it. */
+const FOOT_RE = /([ \t]*)<!--footer:([a-z0-9-]+)-->[\s\S]*?<!--\/footer-->/g;
+
+function walkHtml(dir, out = []) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) walkHtml(p, out);
+    else if (e.name.endsWith('.html')) out.push(p);
+  }
+  return out;
+}
+
+let footStale = 0, footBuilt = 0;
+for (const f of walkHtml(path.join(ROOT, 'docs'))) {
+  const src = fs.readFileSync(f, 'utf8');
+  if (src.indexOf('<!--footer:') < 0) continue;
+  const next = src.replace(FOOT_RE, (whole, indent, site) =>
+    indent + '<!--footer:' + site + '-->\n' +
+    renderFooter(site, indent) + '\n' +
+    indent + '<!--/footer-->');
+  if (next === src) continue;
+  const rel = path.relative(ROOT, f);
+  if (CHECK) { console.error('stale footer: ' + rel); footStale++; continue; }
+  fs.writeFileSync(f, next);
+  console.log('footer   ' + rel);
+  footBuilt++;
+}
+
+if (CHECK && (stale || footStale)) process.exit(1);
+if (!CHECK) {
+  console.log(built ? built + ' file(s) built' : 'up to date');
+  if (footBuilt) console.log(footBuilt + ' footer(s) stamped');
+}

@@ -724,51 +724,11 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   .nb-nav-caret, .nb-drop, .nb-nav-burger svg { transition: none; animation: none; }
 }
 
-/* ═══════ FOOTER ═════════════════════════════════════════════════════════ */
-.nb-footer {
-  background: var(--nb-surface); color: var(--nb-surface-fg);
-  border-top: var(--nb-bd);
-  padding: clamp(40px, 6vw, 72px) 0 32px;
-}
-.nb-footer-grid {
-  display: grid; gap: 34px;
-  grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
-}
-@media (max-width: 860px) { .nb-footer-grid { grid-template-columns: 1fr 1fr; } }
-@media (max-width: 520px) { .nb-footer-grid { grid-template-columns: 1fr; } }
-
-/* The footer mark is its own component, not the nav logo. The nav one stacks
-   two absolutely positioned images inside a fixed box so it can swap the
-   wordmark for the mark on scroll, which only works while it is a flex item.
-   Dropped into a plain footer column it collapses to nothing. */
-.nb-foot-brand { display: inline-block; margin-bottom: 14px; }
-.nb-foot-brand img { height: 26px; width: auto; display: block; }
-.nb-footer h4 {
-  font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
-  margin-bottom: 14px;
-}
-.nb-footer-list { display: flex; flex-direction: column; gap: 9px; }
-.nb-footer-list a { font-size: 14.5px; color: var(--nb-surface-fg-muted); width: fit-content; }
-.nb-footer-list a:hover { color: var(--nb-surface-fg); text-decoration: underline; text-underline-offset: 3px; }
-.nb-footer-base {
-  margin-top: 38px; padding-top: 22px;
-  border-top: var(--nb-bd-thin);
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 16px; flex-wrap: wrap;
-  font-size: 13.5px; color: var(--nb-surface-fg-muted);
-}
-
-/* ═══════ THE RAINBAW BAR ════════════════════════════════════════════════
-   Five flat stripes. The ecosystem's signature - it goes at the very top
-   or the very bottom of a page, never in the middle of content. */
-.nb-rainbaw { display: flex; height: 8px; width: 100%; }
-.nb-rainbaw > i { flex: 1; display: block; }
-.nb-rainbaw > i:nth-child(1) { background: var(--nb-red); }
-.nb-rainbaw > i:nth-child(2) { background: var(--nb-green); }
-.nb-rainbaw > i:nth-child(3) { background: var(--nb-blue); }
-.nb-rainbaw > i:nth-child(4) { background: var(--nb-yellow); }
-.nb-rainbaw > i:nth-child(5) { background: var(--nb-pink); }
-.nb-rainbaw--tall { height: 14px; }
+/* ═══════ FOOTER AND RAINBAW ═════════════════════════════════════════════
+   Both moved out to swiftaw-footer.css. They are the two things every site
+   we own shares verbatim, Fortized included, and Fortized does not load this
+   sheet. One definition, in the file that can travel. Every page here loads
+   it alongside this one. */
 
 /* ═══════ DECO ═══════════════════════════════════════════════════════════
    The 1960s geometry. Flat shapes with a black outline, positioned by hand,
