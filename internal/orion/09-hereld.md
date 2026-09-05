@@ -164,19 +164,40 @@ not a specification:
       called when they will not be shown.
 - [x] **A4d. Nothing is invented.** Every count on both screens comes from
       `the_cry` and `who_to_follow`. No placeholder numbers were added anywhere.
-- [ ] **A4e. The post card itself is still one shape.** This is the half of A4
-      that is not done, and it is the half the complaint is really about: every
-      row in the column is the same card, and every one of them carries an
-      identical "N people replied" avatar strip. That strip is **C6**, so the
-      two want doing together rather than twice. Quote posts, media led posts
-      and polls already render differently in the data but not enough in the
-      layout to break the rhythm.
+- [x] **A4e. The post card is not one shape any more.** Done with **C6**, as
+      that entry said it had to be. Two things came off it.
+
+      The strip is gone from every post that has no replies. It used to go on
+      all of them, make a request, then remove itself, so a quiet column was a
+      column of round trips spent drawing nothing, and every card ended the
+      same way whether or not it had anything to end with.
+
+      And a post that is one short line is now set at 21px instead of 15.5.
+      Six words at the size of six paragraphs sit lost in the middle of all
+      that border, and that was most of what made a column of text posts read
+      as the same card nine times over. Only where the words are all there is:
+      a picture, a ballot, a quote or a note already gives a card its own
+      shape, a link blown up is just a URL blown up, and in a thread the post
+      being answered is the one that should carry the weight, so replies keep
+      the ordinary setting.
+
+      What was already true stays true: quote posts, media posts and polls
+      differ in the data. They now differ enough in the layout to break the
+      rhythm, because the two cards either side of them are no longer
+      identical to each other.
 
 **Fixed along the way:** the new Explore pushed the page 196px wider than the
 viewport at 1360. A grid item will not shrink below its content unless it is
 told to, and a sideways scroller inside one expands the item instead of
 scrolling. `min-width: 0` on the children. Worth remembering, it is the same
 family of mistake as A3c: a rule that looks local and is not.
+
+**And one that looked like that mistake and was not.** Checking A4e at 430,
+`scrollWidth` said the page was 102px too wide. It is not: the suggestions
+strip is a sideways scroller, and its own scroll extent counts towards
+`scrollWidth` whether or not anything can move. `body` clips it and setting
+`scrollLeft` does nothing. Ask whether the page can actually be scrolled
+sideways, not what `scrollWidth` says, on any page carrying a scroller.
 
 ---
 
@@ -249,10 +270,25 @@ The features named in those commit subjects, which is the audit list:
       column and searching the string for the word Latest**, which any post
       could contain, and which the new Explore tab now contains by name. It
       asks the route now.
-- [ ] **C6.** Replier avatars, via the `post_repliers` RPC. **Ties to A4e:**
-      every card carries this strip, identically, which is a large part of why
-      the column reads as one shape repeated. Audit it and reconsider the shape
-      in the same pass.
+- [x] **C6. The strip was stating a number it could not know.** It printed the
+      length of the face list, and the face list is asked for three, so a post
+      with forty answers said "3 people replied". Wrong, on a social platform,
+      about that platform's own activity, and the reply button an inch below it
+      carried the true count the whole time. So the strip was the same figure
+      twice when it happened to be right and a false one when it was not, in
+      the same words on every card in the column.
+
+      It names people now, which is the one thing the button cannot do and the
+      one thing that differs post to post: two names and how many others, with
+      the total taken off the post's own `reply_count`, which was already on
+      the row and cost nothing to ask.
+
+      **Two more, found while in there.** The strip went on every post
+      including the ones with no replies, so those made a request and then
+      removed themselves. And the requests were awaited in a loop, so a column
+      of twenty posts was twenty round trips end to end with the faces
+      arriving down the page for as long as that took. Gated on the count and
+      sent together. Done with **A4e**, as this entry said it had to be.
 - [x] **C7. The composer preview.** The comment above it says the preview stays
       out of the way below the bar where the renderer actually does something.
       The code previewed everything, so most posts, which are plain, were typed
