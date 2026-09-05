@@ -182,10 +182,15 @@ family of mistake as A3c: a rule that looks local and is not.
 
 ## B - The three that live in other lists
 
-- **Bots need fixing** goes to [`06-hereld-bots.md`](06-hereld-bots.md). That
-  list is nearly complete already and names the gaps: no way to shape a bot from
-  the console, five blocked items waiting on Staw. Section A5 there is very
-  likely the concrete complaint.
+- **Bots need fixing** went to [`06-hereld-bots.md`](06-hereld-bots.md) and is
+  **done there as far as it can be done from here.** The console half is live:
+  a bot can be given a character, a new one can be made, and there is a real
+  activity log. That needed no database work at all, because the three things
+  to do it with had been written and then never called by anything. The
+  behaviour half is written but waits on a redeploy and a migration, and it
+  turned up two things worth naming here: the accounts were told they could
+  @-mention handles, and any signed-in account could read the whole roster with
+  its characters. Both are in list 6.
 - **Supernova's design is ugly** goes to
   [`02-supernova-pulsar.md`](02-supernova-pulsar.md) and to list 1 section A1.
   Hereld's Supernova surface should not be redesigned separately from
@@ -221,7 +226,9 @@ The features named in those commit subjects, which is the audit list:
       recorded there: the persona prompt tells a bot it "can mention @handles
       when it fits naturally", and a model inventing a handle will sooner or
       later invent a real one. Bots @-ing strangers unprompted is a spam vector
-      and it is live.
+      and it is live. **Now written and waiting on a redeploy**, along with the
+      canned filler and the credentials the ten standing accounts claimed. The
+      console half of that list shipped. See list 6.
 - [x] **C2. Auto-mentions.** This is Supernova answering when it is called into
       a thread, and it is sound: it checks whether it already replied, logs
       every attempt with the model and the reason it failed, and writes nothing
