@@ -31,6 +31,12 @@ href: ORIGIN + '/lifecheck/',
 icon: BASE + '/product-logos/Lifecheck%20icon.png'
 },
 {
+id: 'workstation', name: 'Workstation', kind: 'service',
+what: 'Icons, and the rest of the bench',
+href: ORIGIN + '/icons/',
+icon: BASE + '/Workstation%20logo.png', crop: 'left'
+},
+{
 id: 'supernova', name: 'Supernova', kind: 'service',
 what: 'The AI service',
 href: ORIGIN + '/supernova/',
@@ -116,7 +122,8 @@ var flag = here ? '<span class="swl-flag swl-flag--here">You\'re here</span>'
 : soon ? '<span class="swl-flag swl-flag--soon">Coming soon</span>'
 : '';
 return '<' + tag + attr + ' data-id="' + esc(e.id) + '">' +
-'<img class="swl-ico" src="' + esc(e.icon) + '" alt="" width="52" height="52" loading="lazy">' +
+'<img class="swl-ico' + (e.crop ? ' swl-ico--' + esc(e.crop) : '') + '" src="' +
+esc(e.icon) + '" alt="" width="52" height="52" loading="lazy">' +
 '<span class="swl-meta">' +
 '<span class="swl-name">' + esc(e.name) + '</span>' + flag +
 '</span>' +

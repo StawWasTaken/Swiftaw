@@ -366,19 +366,77 @@
   }
 
   /* ── The upload screen ────────────────────────────────────────────────── */
+  /* One card, three questions, asked in the order somebody actually has them:
+     what is the artwork, what is it called, and is it going in. The artwork
+     answers most of the second question by itself, so the middle step is
+     usually a read rather than a form to fill. */
 
   function upload() {
-    var db = null, checked = null, rank = 0;
+    var db = null, checked = null, rank = 0, cats = [];
     var gate = el('icGate'), form = el('icUpForm');
+    var view = el('icView'), track = el('icTrack'), rail = el('icRail');
+    var steps = Array.prototype.slice.call(track.children);
     // Set when the screen was opened on an icon that already exists. It holds
     // the address the icon had on arrival, because that is what a move has to
     // be told to move away from.
     var editing = new URLSearchParams(location.search).get('slug') || '';
+    var at = 0, far = 0;
+    var pic = null, traceT = null;
+
+    var DETAIL = [
+      { eps: 1.9, word: 'Loose' }, { eps: 1.3, word: 'Easy' }, { eps: 0.9, word: 'Medium' },
+      { eps: 0.6, word: 'Close' }, { eps: 0.38, word: 'Tight' }
+    ];
 
     function slugify(s) {
       return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
         .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
     }
+
+    /* ── the sliding card ──────────────────────────────────────────────── */
+
+    function sync() {
+      var pad = steps[at].firstElementChild;
+      view.style.height = pad.offsetHeight + 'px';
+    }
+
+    function go(i) {
+      if (i < 0 || i > 2) return;
+      at = i;
+      if (i > far) far = i;
+      track.style.transform = 'translateX(' + (-i * 100) + '%)';
+      steps.forEach(function (s, n) {
+        s.setAttribute('aria-hidden', n === i ? 'false' : 'true');
+        // Off-screen steps are still in the page, so they are taken out of the
+        // tab order rather than left in it where a keyboard lands on fields
+        // nobody can see.
+        if ('inert' in s) s.inert = n !== i;
+      });
+      Array.prototype.forEach.call(rail.children, function (p, n) {
+        p.classList.toggle('is-on', n === i);
+        p.classList.toggle('is-done', n < far || (n < i));
+        p.classList.toggle('is-open', n <= far);
+      });
+      el('icBack').hidden = i === 0;
+      el('icNext').hidden = i === 2;
+      el('icSave').hidden = i !== 2;
+      if (i === 2) paintFinal();
+      gateNext();
+      sync();
+    }
+
+    /* Continue is off until the step it is under has been answered. It is a
+       courtesy: the save itself is refused by the database, not by this. */
+    function gateNext() {
+      var ok = true;
+      if (at === 0) ok = !!checked;
+      if (at === 1) ok = !!(el('icName').value.trim() && el('icSlug').value.trim() && el('icCat').value);
+      el('icNext').disabled = !ok;
+      el('icSave').disabled = !(checked && el('icName').value.trim() &&
+                                el('icSlug').value.trim() && el('icCat').value);
+    }
+
+    /* ── what the check said ───────────────────────────────────────────── */
 
     function verdict(kind, title, body, preview) {
       var v = el('icVerdict');
@@ -386,19 +444,28 @@
       v.classList.toggle('is-bad', kind === 'bad');
       v.innerHTML = (preview ? '<div class="ic-stage">' + preview + '</div>' : '<div></div>') +
         '<div><b>' + esc(title) + '</b><p>' + esc(body) + '</p></div>';
+      sync();
+    }
+
+    function said(kind, title, body) {
+      var s = el('icSaid');
+      s.hidden = false;
+      s.classList.toggle('is-bad', kind === 'bad');
+      s.innerHTML = '<b>' + esc(title) + '</b><p>' + esc(body) + '</p>';
+      sync();
     }
 
     function check() {
       var svg = el('icSvg').value;
       checked = null;
-      el('icSave').disabled = true;
-      if (!svg.trim()) { el('icVerdict').hidden = true; return; }
+      gateNext();
+      if (!svg.trim()) { el('icVerdict').hidden = true; sync(); return; }
       db.rpc('icon_check_svg', { p_svg: svg }).then(function (res) {
         if (res.error) { verdict('bad', 'The check did not run.', res.error.message); return; }
         var r = res.data;
         if (!r.ok) { verdict('bad', 'Not accepted.', r.error); return; }
         checked = r;
-        el('icSave').disabled = false;
+        gateNext();
         verdict('ok',
           r.monochrome ? 'Accepted, one colour.' : 'Accepted, keeps its own colours.',
           r.monochrome
@@ -409,31 +476,163 @@
       });
     }
 
-    var t = null;
-    el('icSvg').addEventListener('input', function () { clearTimeout(t); t = setTimeout(check, 300); });
+    /* ── reading a picture ─────────────────────────────────────────────── */
 
-    el('icName').addEventListener('input', function () {
-      var s = el('icSlug');
-      // Once the address has been typed by hand it is left alone: it is what a
-      // published icon is found by, and renaming the icon must not move it.
-      if (!s.dataset.touched) s.value = slugify(el('icName').value);
-    });
-    el('icSlug').addEventListener('input', function () { el('icSlug').dataset.touched = '1'; });
-
-    el('icFile').addEventListener('change', function (e) {
-      var f = e.target.files && e.target.files[0];
-      if (!f) return;
-      var fr = new FileReader();
-      fr.onload = function () {
-        el('icSvg').value = String(fr.result);
-        if (!el('icName').value) {
-          el('icName').value = f.name.replace(/\.svg$/i, '').replace(/[-_]+/g, ' ').trim();
-          el('icName').dispatchEvent(new Event('input'));
-        }
-        check();
+    function traceOpts() {
+      return {
+        cut: parseInt(el('icCut').value, 10) / 100,
+        detail: DETAIL[parseInt(el('icDet').value, 10) - 1].eps,
+        invert: el('icInv').checked,
+        trim: el('icTrim').checked
       };
-      fr.readAsText(f);
-    });
+    }
+
+    function retrace() {
+      if (!pic) return;
+      var out;
+      try { out = window.SwiftawTrace.fromImage(pic.image, traceOpts()); }
+      catch (e) { out = null; }
+      if (!out) {
+        el('icTraceOut').innerHTML = '';
+        el('icTraceSaid').textContent =
+          'Nothing came back at this setting. Move the edge, or take the other half.';
+        el('icSvg').value = '';
+        check();
+        return;
+      }
+      el('icTraceOut').innerHTML = '<svg viewBox="' + esc(out.viewBox) +
+        '" fill="#FFFFFF">' + out.body + '</svg>';
+      var note = out.shapes + (out.shapes === 1 ? ' shape' : ' shapes') + ', ' +
+        Math.round(out.bytes / 1024 * 10) / 10 + ' KB of outline.';
+      if (out.coarse) note += ' Read less finely than asked, because at that setting it came out ' +
+        'bigger than an icon is allowed to be.';
+      if (!out.flat) note += ' The artwork is not flat, so this is a silhouette of it rather than ' +
+        'a copy. Tracing only reads one shape out of a picture.';
+      el('icTraceSaid').textContent = note;
+      el('icSvg').value = out.svg;
+      check();
+      sync();
+    }
+
+    function nudge() { clearTimeout(traceT); traceT = setTimeout(retrace, 90); }
+
+    /* ── what the file already tells us ────────────────────────────────── */
+
+    var STOP = { the: 1, and: 1, icon: 1, png: 1, svg: 1, final: 1, copy: 1, new: 1,
+                 img: 1, image: 1, logo: 0, v1: 1, v2: 1, export: 1, artboard: 1 };
+
+    function words(fileName) {
+      return fileName.replace(/\.[a-z0-9]+$/i, '')
+        .replace(/[-_.]+/g, ' ')
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .toLowerCase().split(/\s+/)
+        .filter(function (w) { return w.length > 1 && !STOP[w] && !/^\d+$/.test(w); });
+    }
+
+    /* The file is named something, and whoever named it was describing the
+       icon. So the name, the address and a first go at the tags come off it,
+       and the category is taken if one of the words is one. All of it is
+       written into fields that can be typed over. */
+    function seed(fileName) {
+      var w = words(fileName);
+      if (!w.length) return;
+
+      if (!el('icName').value) {
+        var n = w.join(' ');
+        el('icName').value = n.charAt(0).toUpperCase() + n.slice(1);
+      }
+      if (!el('icSlug').dataset.touched) el('icSlug').value = slugify(el('icName').value);
+
+      var hit = null;
+      cats.forEach(function (c) {
+        if (hit) return;
+        var cw = c.name.toLowerCase().split(/\s+/);
+        if (w.some(function (x) { return cw.indexOf(x) >= 0 || c.slug === x; })) hit = c.slug;
+      });
+      if (hit) { el('icCat').value = hit; window.SwiftawPick.refresh(el('icCat')); }
+
+      if (!el('icTags').value) el('icTags').value = w.join(', ');
+      suggest(w);
+      gateNext();
+    }
+
+    function suggest(w) {
+      var box = el('icTagSug');
+      var have = el('icTags').value.toLowerCase();
+      var extra = w.filter(function (x) { return have.indexOf(x) < 0; });
+      if (!extra.length) { box.hidden = true; return; }
+      box.hidden = false;
+      box.innerHTML = extra.map(function (x) {
+        return '<button type="button" class="ic-tagsug-b">+ ' + esc(x) + '</button>';
+      }).join('');
+    }
+
+    function takeFile(f) {
+      if (!f) return;
+      var isSvg = /\.svg$/i.test(f.name) || f.type === 'image/svg+xml';
+      el('icDrop').classList.add('has-file');
+      el('icDrop').querySelector('b').textContent = f.name;
+
+      if (isSvg) {
+        pic = null;
+        el('icTrace').hidden = true;
+        var fr = new FileReader();
+        fr.onload = function () {
+          el('icSvg').value = String(fr.result);
+          seed(f.name);
+          check();
+        };
+        fr.readAsText(f);
+        return;
+      }
+
+      window.SwiftawTrace.fromFile(f, traceOpts()).then(function (r) {
+        pic = { image: r.image, name: f.name };
+        el('icTrace').hidden = false;
+        el('icTraceSrc').innerHTML = '';
+        el('icTraceSrc').appendChild(r.image);
+        seed(f.name);
+        retrace();
+      }).catch(function (e) {
+        pic = null;
+        el('icTrace').hidden = true;
+        verdict('bad', 'That file could not be read.', e.message || String(e));
+      });
+    }
+
+    /* ── the last look ─────────────────────────────────────────────────── */
+
+    function paintFinal() {
+      var box = el('icFinal');
+      if (!checked) { box.innerHTML = ''; return; }
+      var vb = esc(checked.view_box), body = safeBody(checked.body);
+      var one = function (px) {
+        return '<div class="ic-final-size"><div class="ic-stage" style="width:' + px +
+          'px;height:' + px + 'px"><svg viewBox="' + vb + '"' +
+          (checked.monochrome ? ' fill="#FFFFFF"' : '') + '>' + body + '</svg></div>' +
+          '<span>' + px + '</span></div>';
+      };
+      var cat = '';
+      cats.forEach(function (c) { if (c.slug === el('icCat').value) cat = c.name; });
+      var tags = el('icTags').value.split(',').map(function (s) { return s.trim(); })
+        .filter(Boolean);
+
+      box.innerHTML =
+        '<div class="ic-final-sizes">' + one(96) + one(40) + one(20) + '</div>' +
+        '<dl class="ic-final-facts">' +
+          '<div><dt>Name</dt><dd>' + esc(el('icName').value) + '</dd></div>' +
+          '<div><dt>Address</dt><dd><code>' + esc(el('icSlug').value) + '</code></dd></div>' +
+          '<div><dt>Category</dt><dd>' + esc(cat || 'None') + '</dd></div>' +
+          '<div><dt>Tags</dt><dd>' + (tags.length
+            ? tags.map(function (t) { return '<span class="nb-tag">' + esc(t) + '</span>'; }).join('')
+            : 'None') + '</dd></div>' +
+          '<div><dt>Colour</dt><dd>' + (checked.monochrome
+            ? 'Takes the colour of the text around it'
+            : 'Carries its own colours') + '</dd></div>' +
+        '</dl>';
+    }
+
+    /* ── saving ────────────────────────────────────────────────────────── */
 
     function save() {
       var btn = el('icSave');
@@ -450,28 +649,106 @@
         p_publish: el('icPub').checked
       }).then(function (res) {
         btn.disabled = false;
-        if (res.error) { verdict('bad', 'Not saved.', res.error.message); return; }
+        if (res.error) { said('bad', 'Not saved.', res.error.message); return; }
 
         if (editing) {
           editing = slug;
           history.replaceState({}, '', location.pathname + '?slug=' + encodeURIComponent(slug));
-          verdict('ok', 'Changed.',
+          said('ok', 'Changed.',
             el('icPub').checked
               ? 'The library is showing the new version. Nothing needs deploying.'
               : 'Saved, and it is a draft, so it is not in the library.');
           return;
         }
-        verdict('ok', 'Saved.',
+        said('ok', 'Saved.',
           el('icPub').checked
             ? 'It is in the library now. Nothing needs deploying.'
             : 'Kept as a draft. It is not in the library until it is published.');
-        form.reset();
-        el('icSlug').dataset.touched = '';
-        el('icSvg').value = '';
-        checked = null;
-        btn.disabled = true;
+        reset();
       });
     }
+
+    function reset() {
+      form.reset();
+      el('icSlug').dataset.touched = '';
+      el('icSvg').value = '';
+      el('icVerdict').hidden = true;
+      el('icTrace').hidden = true;
+      el('icTagSug').hidden = true;
+      el('icDrop').classList.remove('has-file');
+      el('icDrop').querySelector('b').textContent = 'Drop a file here, or pick one';
+      window.SwiftawPick.refresh(el('icCat'));
+      pic = null; checked = null; far = 0;
+      go(0);
+    }
+
+    /* ── wiring ────────────────────────────────────────────────────────── */
+
+    el('icNext').addEventListener('click', function () { go(at + 1); });
+    el('icBack').addEventListener('click', function () { go(at - 1); });
+    rail.addEventListener('click', function (e) {
+      var p = e.target.closest('.ic-wz-pip');
+      if (!p) return;
+      var i = parseInt(p.dataset.go, 10);
+      if (i <= far) go(i);
+    });
+
+    var t = null;
+    el('icSvg').addEventListener('input', function () {
+      pic = null;
+      el('icTrace').hidden = true;
+      clearTimeout(t); t = setTimeout(check, 300);
+    });
+
+    el('icName').addEventListener('input', function () {
+      var s = el('icSlug');
+      // Once the address has been typed by hand it is left alone: it is what a
+      // published icon is found by, and renaming the icon must not move it.
+      if (!s.dataset.touched) s.value = slugify(el('icName').value);
+      gateNext();
+    });
+    el('icSlug').addEventListener('input', function () {
+      el('icSlug').dataset.touched = '1'; gateNext();
+    });
+    el('icCat').addEventListener('change', gateNext);
+    el('icTags').addEventListener('input', gateNext);
+
+    el('icTagSug').addEventListener('click', function (e) {
+      var b = e.target.closest('.ic-tagsug-b');
+      if (!b) return;
+      var word = b.textContent.replace(/^\+\s*/, '');
+      var f = el('icTags');
+      f.value = (f.value.trim() ? f.value.replace(/,\s*$/, '') + ', ' : '') + word;
+      b.remove();
+      if (!el('icTagSug').children.length) el('icTagSug').hidden = true;
+      sync();
+    });
+
+    el('icFile').addEventListener('change', function (e) {
+      takeFile(e.target.files && e.target.files[0]);
+    });
+
+    ['icCut', 'icDet', 'icInv', 'icTrim'].forEach(function (id) {
+      el(id).addEventListener('input', function () {
+        el('icCutN').textContent = el('icCut').value;
+        el('icDetN').textContent = DETAIL[parseInt(el('icDet').value, 10) - 1].word;
+        nudge();
+      });
+    });
+
+    var drop = el('icDrop');
+    ['dragenter', 'dragover'].forEach(function (n) {
+      drop.addEventListener(n, function (e) { e.preventDefault(); drop.classList.add('is-over'); });
+    });
+    ['dragleave', 'drop'].forEach(function (n) {
+      drop.addEventListener(n, function (e) { e.preventDefault(); drop.classList.remove('is-over'); });
+    });
+    drop.addEventListener('drop', function (e) {
+      takeFile(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
+    });
+
+    el('icRaw').addEventListener('toggle', sync);
+    window.addEventListener('resize', sync);
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -487,8 +764,8 @@
         db.rpc('icon_rename', { p_from: editing, p_to: slug }).then(function (res) {
           if (res.error) {
             btn.disabled = false;
-            verdict('bad', 'The address did not change, so nothing else was saved either.',
-                    res.error.message);
+            said('bad', 'The address did not change, so nothing else was saved either.',
+                 res.error.message);
             return;
           }
           editing = slug;
@@ -506,7 +783,7 @@
                           'Unpublishing takes it out of the library and keeps it.')) return;
       del.disabled = true;
       db.rpc('icon_delete', { p_slug: editing }).then(function (res) {
-        if (res.error) { del.disabled = false; verdict('bad', 'Not deleted.', res.error.message); return; }
+        if (res.error) { del.disabled = false; said('bad', 'Not deleted.', res.error.message); return; }
         location.href = '/icons/manage.html?gone=' + encodeURIComponent(editing);
       });
     });
@@ -520,9 +797,17 @@
       el('icSlug').dataset.touched = '1';
       el('icTags').value = (row.tags || []).join(', ');
       el('icPub').checked = !!row.published;
-      if (row.icon_categories && row.icon_categories.slug) el('icCat').value = row.icon_categories.slug;
+      if (row.icon_categories && row.icon_categories.slug) {
+        el('icCat').value = row.icon_categories.slug;
+        window.SwiftawPick.refresh(el('icCat'));
+      }
       el('icSvg').value = '<svg viewBox="' + row.view_box + '">' + row.body + '</svg>';
+      el('icRaw').open = true;
       check();
+      // The drawing is already there, so the step that asks for one is behind
+      // rather than in front.
+      far = 2;
+      go(1);
     }
 
     window.SwiftawAccount.ready(function () {
@@ -545,17 +830,20 @@
         if (del && rank >= 3 && editing) del.hidden = false;
 
         db.from('icon_categories').select('slug,name').order('position').then(function (r) {
-          el('icCat').innerHTML = (r.data || []).map(function (c) {
+          cats = r.data || [];
+          el('icCat').innerHTML = cats.map(function (c) {
             return '<option value="' + esc(c.slug) + '">' + esc(c.name) + '</option>';
           }).join('');
+          window.SwiftawPick.wrap(el('icCat'));
+          go(0);
 
           if (!editing) return;
           var MODE = {
             title: 'Edit an icon',
             save: 'Save the changes',
-            lead: 'The box below holds the icon as the library keeps it, not the file that ' +
-                  'was uploaded: only the shapes and the box survived the check. Replace it ' +
-                  'to change the drawing, or leave it alone and change the rest.'
+            lead: 'The drawing here is the icon as the library keeps it, not the file that was ' +
+                  'uploaded: only the shapes and the box survived the check. Drop a new file on ' +
+                  'the first step to replace it, or leave it and change the rest.'
           };
           document.querySelectorAll('[data-ic-mode]').forEach(function (n) {
             if (MODE[n.dataset.icMode]) n.textContent = MODE[n.dataset.icMode];

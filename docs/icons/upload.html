@@ -13,16 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/swiftaw-nb.css">
 <link rel="stylesheet" href="/css/swiftaw-icons.css">
-<style>
-.nb-nav-actions .swl-btn, .nb-nav-actions .swa-btn { flex: none; }
-.up-head { margin-bottom: 26px; }
-.up-head h1 { margin: 0 0 10px; font-family: var(--nb-font-head); font-weight: 700; font-size: clamp(28px, 4vw, 40px); letter-spacing: -.02em; }
-.up-head p { margin: 0; color: var(--nb-fg-muted); line-height: 1.65; max-width: 58ch; }
-.up-card { padding: clamp(20px, 3vw, 30px); }
-.up-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
-.up-file { display: inline-flex; align-items: center; gap: 10px; }
-.up-file input { display: none; }
-</style>
 </head>
 <body>
 
@@ -32,8 +22,8 @@
 
 <nav class="nb-nav" id="nav">
   <div class="nb-nav-in">
-    <a href="/" class="nb-nav-logo" aria-label="Swiftaw home">
-      <img class="nb-logo-word" src="/SWFTW_Logomark.png" alt="Swiftaw">
+    <a href="/icons/" class="nb-nav-logo ic-brand" aria-label="Swiftaw Workstation">
+      <img class="nb-logo-word ic-brand-word" src="/Workstation%20logo.png" alt="Swiftaw Workstation">
       <img class="nb-logo-mark" src="/SwiftawLogo.png" alt="" aria-hidden="true">
     </a>
     <div class="nb-nav-links" id="navLinks">
@@ -71,62 +61,129 @@
     </div>
 
     <form class="ic-up" id="icUpForm" hidden novalidate>
-      <div class="up-head">
+
+      <div class="ic-wz-head">
         <h1 data-ic-mode="title">Add an icon</h1>
-        <p data-ic-mode="lead">Paste the file or pick it off disk. It is read before it is saved, and what comes back says either what it is or what is wrong with it. Nothing is cleaned up on the way in, so a file that is refused is refused for a reason worth reading.</p>
+        <p data-ic-mode="lead">Drop the artwork in and the rest is mostly filled in for you. A PNG is turned into a real icon here in the browser, so nothing leaves this page until you save.</p>
       </div>
 
-      <div class="nb-card up-card">
-        <div class="ic-up-grid">
+      <div class="nb-card ic-wz">
 
-          <div class="nb-field">
-            <label class="nb-label" for="icName">Name</label>
-            <input class="nb-input" id="icName" type="text" autocomplete="off" placeholder="Bell" maxlength="80" required>
-            <span class="nb-hint">What it is called in the library.</span>
+        <ol class="ic-wz-rail" id="icRail">
+          <li class="ic-wz-pip is-on" data-go="0"><b>1</b><span>The artwork</span></li>
+          <li class="ic-wz-pip" data-go="1"><b>2</b><span>What it is called</span></li>
+          <li class="ic-wz-pip" data-go="2"><b>3</b><span>Last look</span></li>
+        </ol>
+
+        <div class="ic-wz-view" id="icView">
+          <div class="ic-wz-track" id="icTrack">
+
+            <!-- ── one ────────────────────────────────────────────────── -->
+            <section class="ic-wz-step" data-step="0" aria-label="The artwork">
+              <div class="ic-wz-pad">
+
+                <label class="ic-drop" id="icDrop">
+                  <input id="icFile" type="file" accept=".svg,image/svg+xml,.png,image/png,.jpg,.jpeg,image/jpeg,.webp,image/webp">
+                  <span class="ic-drop-ico" aria-hidden="true"></span>
+                  <b>Drop a file here, or pick one</b>
+                  <span>An SVG goes in as it is. A PNG is read and traced, which works on flat artwork on transparency or on a plain ground, and not on a photograph.</span>
+                </label>
+
+                <div class="ic-trace" id="icTrace" hidden>
+                  <div class="ic-trace-pair">
+                    <figure><div class="ic-trace-box" id="icTraceSrc"></div><figcaption>What you gave it</figcaption></figure>
+                    <figure><div class="ic-trace-box" id="icTraceOut"></div><figcaption>What it becomes</figcaption></figure>
+                  </div>
+                  <div class="ic-trace-ctl">
+                    <label class="nb-field">
+                      <span class="nb-label">Where the edge sits <i id="icCutN">50</i></span>
+                      <input class="ic-range" id="icCut" type="range" min="10" max="90" value="50">
+                    </label>
+                    <label class="nb-field">
+                      <span class="nb-label">How closely it follows <i id="icDetN">Medium</i></span>
+                      <input class="ic-range" id="icDet" type="range" min="1" max="5" value="3">
+                    </label>
+                    <div class="ic-trace-flags">
+                      <label class="nb-check nb-check--sm">
+                        <input id="icInv" type="checkbox">
+                        <span class="nb-box" aria-hidden="true"></span>
+                        <span>Take the other half</span>
+                      </label>
+                      <label class="nb-check nb-check--sm">
+                        <input id="icTrim" type="checkbox" checked>
+                        <span class="nb-box" aria-hidden="true"></span>
+                        <span>Trim the empty edge</span>
+                      </label>
+                    </div>
+                  </div>
+                  <p class="ic-trace-said" id="icTraceSaid"></p>
+                </div>
+
+                <details class="ic-raw" id="icRaw">
+                  <summary>Paste the markup instead</summary>
+                  <textarea class="nb-textarea nb-mono" id="icSvg" rows="7" spellcheck="false" placeholder="&lt;svg viewBox=&quot;0 0 24 24&quot;&gt;..."></textarea>
+                  <span class="nb-hint">Only the shapes are kept. The outer tag is thrown away and the icon is drawn by the library's own wrapper, so it cannot carry its own size or colour behaviour.</span>
+                </details>
+
+                <div class="ic-verdict" id="icVerdict" hidden></div>
+              </div>
+            </section>
+
+            <!-- ── two ────────────────────────────────────────────────── -->
+            <section class="ic-wz-step" data-step="1" aria-label="What it is called">
+              <div class="ic-wz-pad">
+                <div class="ic-up-grid">
+
+                  <div class="nb-field">
+                    <label class="nb-label" for="icName">Name</label>
+                    <input class="nb-input" id="icName" type="text" autocomplete="off" placeholder="Bell" maxlength="80" required>
+                    <span class="nb-hint">What it is called in the library.</span>
+                  </div>
+
+                  <div class="nb-field">
+                    <label class="nb-label" for="icSlug">Address</label>
+                    <input class="nb-input" id="icSlug" type="text" autocomplete="off" placeholder="bell" maxlength="60" required>
+                    <span class="nb-hint">Written from the name until you type here. Changing it on an icon that already exists moves the icon, and the old address stops working.</span>
+                  </div>
+
+                  <div class="nb-field">
+                    <label class="nb-label" for="icCat">Category</label>
+                    <select class="nb-select" id="icCat" data-placeholder="Pick a category" required></select>
+                  </div>
+
+                  <div class="nb-field">
+                    <label class="nb-label" for="icTags">Tags</label>
+                    <input class="nb-input" id="icTags" type="text" autocomplete="off" placeholder="alert, notification, ring">
+                    <span class="nb-hint">Separated by commas. Searched alongside the name.</span>
+                    <div class="ic-tagsug" id="icTagSug" hidden></div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
+            <!-- ── three ──────────────────────────────────────────────── -->
+            <section class="ic-wz-step" data-step="2" aria-label="Last look">
+              <div class="ic-wz-pad">
+                <div class="ic-final" id="icFinal"></div>
+                <label class="nb-check ic-final-pub">
+                  <input id="icPub" type="checkbox">
+                  <span class="nb-box" aria-hidden="true"></span>
+                  <span><b>Put it in the library now</b><i>Leave this off to keep it as a draft. A draft is only visible on the manage screen.</i></span>
+                </label>
+                <div class="ic-final-said" id="icSaid" hidden></div>
+              </div>
+            </section>
+
           </div>
-
-          <div class="nb-field">
-            <label class="nb-label" for="icSlug">Address</label>
-            <input class="nb-input" id="icSlug" type="text" autocomplete="off" placeholder="bell" maxlength="60" required>
-            <span class="nb-hint">Written from the name until you type here. Changing it on an icon that already exists moves the icon, and the old address stops working.</span>
-          </div>
-
-          <div class="nb-field">
-            <label class="nb-label" for="icCat">Category</label>
-            <select class="nb-select" id="icCat" required></select>
-          </div>
-
-          <div class="nb-field">
-            <label class="nb-label" for="icTags">Tags</label>
-            <input class="nb-input" id="icTags" type="text" autocomplete="off" placeholder="alert, notification, ring">
-            <span class="nb-hint">Separated by commas. Searched alongside the name.</span>
-          </div>
-
-          <div class="nb-field ic-up-full">
-            <label class="nb-label" for="icSvg">The file</label>
-            <textarea class="nb-textarea nb-mono" id="icSvg" rows="9" spellcheck="false" placeholder="&lt;svg viewBox=&quot;0 0 24 24&quot;&gt;..."></textarea>
-            <span class="nb-hint">Only the shapes are kept. The outer tag is thrown away and the icon is drawn by the library's own wrapper, so it cannot carry its own size or colour behaviour.</span>
-          </div>
-
-          <div class="ic-up-full">
-            <div class="ic-verdict" id="icVerdict" hidden></div>
-          </div>
-
         </div>
 
-        <div class="up-actions">
+        <div class="ic-wz-foot">
           <button class="nb-btn nb-btn--red nb-btn--sm ic-up-danger" id="icDelete" type="button" hidden>Delete it</button>
-          <label class="up-file">
-            <span class="nb-btn nb-btn--paper nb-btn--sm">Pick a file</span>
-            <input id="icFile" type="file" accept=".svg,image/svg+xml">
-          </label>
-          <label class="nb-check">
-            <input id="icPub" type="checkbox">
-            <span class="nb-box" aria-hidden="true"></span>
-            <span>Publish it now</span>
-          </label>
-          <span class="nb-nav-spacer" style="flex:1"></span>
-          <button class="nb-btn nb-btn--primary" id="icSave" type="submit" disabled data-ic-mode="save">Save the icon</button>
+          <button class="nb-btn nb-btn--paper nb-btn--sm" id="icBack" type="button" hidden>Back</button>
+          <span class="ic-wz-gap"></span>
+          <button class="nb-btn nb-btn--primary" id="icNext" type="button" disabled>Continue</button>
+          <button class="nb-btn nb-btn--primary" id="icSave" type="submit" hidden data-ic-mode="save">Save the icon</button>
         </div>
       </div>
     </form>
@@ -146,6 +203,8 @@
 
 <script src="/css/swiftaw-account.js"></script>
 <script src="/css/swiftaw.js"></script>
+<script src="/css/swiftaw-pick.js"></script>
+<script src="/css/swiftaw-trace.js"></script>
 <script src="/css/swiftaw-icons.js"></script>
 <script>SwiftawIcons.upload();</script>
 </body>

@@ -151,6 +151,9 @@
   object-fit: cover;
   background: transparent;
 }
+/* For a lockup rather than an icon: the tile takes the mark off the front of
+   it instead of the middle of a word. */
+.swl-ico--left { object-position: left center; }
 
 .swl-meta { min-width: 0; width: 100%; display: block; }
 .swl-name {
