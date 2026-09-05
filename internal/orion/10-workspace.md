@@ -35,19 +35,32 @@ others, and it keeps its own front door.
 by someone who arrived straight at it and has never seen the Workspace, because
 most people will.
 
-- [!] **A1. The name.** "Swiftaw Workspace" or "Swiftaw Devs" were both said.
-      They point at different audiences: Workspace reads as a place anyone
-      works, Devs reads as a developer toolbelt. The tenant list as described
-      (icons, Lifecheck, accounts, mail) is not a developer toolbelt, so
-      Workspace fits the contents better. **D13.**
+- [!] **A1. The name.** Two names are in play and they answer different
+      questions. **The service is named: Swiftaw Icons.** The container it will
+      one day sit in is not, and Staw has said the Workspace itself "is not
+      really done and planned", so it is not being named to unblock a build that
+      does not need it. "Swiftaw Workspace" or "Swiftaw Devs" were both said;
+      Workspace fits the tenant list better, because icons, Lifecheck, accounts
+      and mail are not a developer toolbelt. **D13 stays open and blocks
+      nothing.**
 - [ ] **A2. The shell.** Header, app grid, account menu, footer. Built once,
       shared, and to the Neo-Brutalist standard like everything else.
-- [ ] **A3. Routing and domains.** Whether a tenant is a path
-      (`swiftaw.com/workspace/icons`) or a subdomain (`icons.swiftaw.com`)
-      changes hosting, cookies and how the account is shared. Decide before the
-      first tenant, because moving afterwards costs redirects forever. Note the
-      GitHub Pages constraint already hit: **one custom domain per Pages repo**,
-      so a subdomain per tenant means a repository per tenant.
+- [x] **A3. Routing and domains. Settled: a path on swiftaw.com, and the
+      subdomain waits for the Workspace to be a real thing.** Staw wants a
+      subdomain for the Workspace eventually and none for the individual
+      service, and says the Workspace "isnt really done and planned" yet.
+
+      So Swiftaw Icons lives at **`/icons/`**, at the top level rather than
+      under a `/workspace/` prefix that names something undecided. The point of
+      the warning in this row is that moving costs redirects forever, and a
+      short top-level path is the one address that survives every version of
+      the Workspace question: if the Workspace gets a subdomain later, the
+      tenant moves there and `/icons/` keeps answering, which it would have to
+      do anyway.
+
+      The GitHub Pages constraint stands and is the reason a subdomain is not
+      free: **one custom domain per Pages repo**, so a subdomain per tenant
+      means a repository per tenant.
 - [ ] **A4. One identity across the tenants.** This is list 3's job, not this
       one's. Cross-reference, do not rebuild.
       See [`03-swiftaw-account.md`](03-swiftaw-account.md).
@@ -58,13 +71,21 @@ most people will.
 
 ---
 
-## B - The icon service
+## B - Swiftaw Icons
 
 > a swiftaw service, like fontawesome, where there could be in disposition of
 > everyone; svg icons that they could added as svg & html
 
 The first tenant, and a good one to be first: it is self-contained, it has an
 obvious shape, and Swiftaw already needs it internally for the brand marks.
+
+**Where the icons live.** Not in the repository. Staw: *"i'll upload them
+through the swiftaw account, rather than putting them into the github repo"*,
+and *"you can use the database we use for swiftaw accounts"*. So the SVG source
+is a column in the Swiftaw Accounts project (`mwszvynzzugbowdngzab`), written
+through the upload screen by a signed-in staff account, and the site reads it
+back. Nothing about the library ships in a commit, which also means adding an
+icon never needs a deploy.
 
 ### B1 - What it holds
 
@@ -91,6 +112,16 @@ building rather than only using someone else's library.
       hidden button. Standing rule, and this is the screen where it matters
       most: an unchecked upload endpoint means anyone can put anything on our
       CDN under our name.
+
+      **A note on who counts as staff, because Swiftaw Accounts has no roles
+      yet.** The one rule in the project today is `is_support_staff`, which is
+      literally `username = 'swiftaw'`. Ranks are list 3's and list 4's work and
+      this list does not get to invent them. So the icons migration adds its own
+      small roster, `swiftaw_staff`, with a rank per account, and seeds nothing:
+      the `swiftaw` account is recognised as superadmin by the same fallback the
+      support system already uses, so the service works on day one without
+      anybody hand-editing a table. When the real role system lands, that
+      fallback is the one thing to delete.
 - [ ] **B2c.** Sanitise on upload. An SVG can carry `<script>`, event handlers
       and external references. We are about to serve these to other people's
       websites, so an unsanitised SVG is not a bug, it is a supply-chain
@@ -153,22 +184,22 @@ and the service is useful without it.
 > Swiftaw would both use fontawesome svg icons (cuz we've already started to do
 > so and that theyre kinda good) and also our own svg icons
 
-Using Font Awesome Free **in our own products** is what we do today and there is
-no question in it.
+- [x] **D12. Answered: we use Font Awesome, we do not hand it out.** Staw drew
+      the line in one sentence and it is the right line: *"using doesnt mean
+      distributing"*. Font Awesome Free icons keep being used inside our own
+      products, which is what we already do and what its licence allows. **The
+      library serves only Swiftaw's own icons**, uploaded through the site by
+      the Swiftaw account.
 
-**Redistributing Font Awesome Free icons through our icon service is a different
-act and needs a decision.** Font Awesome Free licenses its icons under CC BY 4.0,
-which permits redistribution with attribution, and its code under MIT. So it is
-allowed and it is not free of obligation: the attribution has to be present and
-correct wherever those icons are offered, and it needs to be clear to a visitor
-which icons are ours and which are Font Awesome's, because the terms they get
-them under are different.
+      Two consequences worth holding on to. It means the library is small on day
+      one and grows at the speed we draw, which is slower than importing
+      somebody else's set and is the trade Staw took knowingly. And it means the
+      service carries no attribution obligation and no "whose terms is this one
+      under" label on the grid, because every icon in it is ours: nothing on the
+      page has to explain a second licence to a visitor.
 
-- [!] **D12. Do we redistribute Font Awesome through the service, or only link
-      to it?** Redistributing means a bigger library on day one and an
-      attribution and labelling obligation forever. Linking means a smaller
-      library that is unambiguously ours. Neither is wrong. This is a decision,
-      not an assumption, and nobody should quietly pick one by building it.
+      Nothing in the service reads from a Font Awesome package, and no upload
+      path exists that would put one in. If that changes it changes here first.
 
 ---
 
@@ -184,7 +215,7 @@ them under are different.
 
 ## Done means
 
-One shell, one identity, and the icon service inside it: an admin can upload a
+One shell, one identity, and Swiftaw Icons inside it: an admin can upload a
 brand mark from the website, anyone can find it by search or category, take the
 SVG or the HTML, and recolour the preview before they do. Nothing on the page
 claims to protect something it cannot, and the Font Awesome question has an
