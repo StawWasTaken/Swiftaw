@@ -329,8 +329,54 @@ The features named in those commit subjects, which is the audit list:
 - [x] **C11. The compass icon.** It was added to the registry **twice, byte for
       byte identical**, so one of the two had never been read by anything. The
       duplicate is gone. It was the only duplicated key in 57.
-- [ ] **C12.** The Supernova redesign. This is the "ugly" complaint, and it
-      confirms the two are the same thing. Goes with list 2.
+- [x] **C12. The Supernova redesign, and the defect under the taste
+      complaint.** "The supernova design is ugly" was right, and it was sitting
+      on top of something worse: **every turn was signed by the wrong speaker.**
+      A question the reader typed was drawn beside Supernova's mark, and an
+      answer Supernova generated was drawn beside the reader's own face.
+      Machine text under a person's name is the one attribution an assistant
+      must never get wrong, and nobody had noticed because both halves looked
+      plausible on their own.
+
+      **The cause is one word carrying two meanings.** On the wire a turn is
+      `you` or `them`, and both are written from Supernova's side of the
+      conversation: `supabase/functions/supernova/index.ts:58` reads `you` as
+      the assistant. The send handler pushed by that rule. The page renderer
+      read `you` as "you, the reader". And the follow-up chat on a post card
+      spoke a **third** vocabulary, opposite again, two lines away from a push
+      that used the wire's. Three readings of one word inside one file.
+
+      The wire strings are untouched, because the function that reads them
+      cannot be redeployed from here, and renaming them client-side would break
+      every conversation the moment it shipped. Instead `saidByNova` is now the
+      **only** place the word is interpreted, and `addChatTurn` takes the wire's
+      role and hands off to the same renderer the page uses. One vocabulary, one
+      reading of it.
+
+      The shape was rebuilt in Hereld's own language rather than a new one:
+      the bubbles are gone (18px pills with a clipped tail corner, a shape this
+      app speaks nowhere else and every phone messaging app speaks everywhere,
+      capping an answer at 78% of half a column); an exchange reads down the
+      column now, question as a heading, answer full width beneath it, parted by
+      the same 3px rule the rest of the app uses. The mark arrives and then
+      **stops** rather than panning five colours on a six second loop forever,
+      on every mark on screen, which is the house style of every assistant on
+      the internet and is not ours. The name is said once where it was said
+      three times in 500px. The composer sits in the card the way the post
+      composer does. And an empty screen is an opener with three starting
+      questions, each one something this can actually answer, since a button
+      offering to post or moderate is a lie the first click exposes.
+
+      One regression caught in the making: with only a `min-height` the card
+      grew with the conversation, which put the scroll on the window, made the
+      panel's own scroll-to-newest a no-op, and pushed the composer off the
+      page. A fixed height fixed it, and then `flex: none` on the turns, because
+      **a column flex item shrinks by default**, so a long answer in a short
+      panel is squeezed rather than scrolled past.
+
+      Checked at 1360 and 430, on both surfaces: attribution both ways, the
+      answer at full column width (640 of 640), the panel sitting at the newest
+      turn, no sideways scroll, no bubble left drawn.
 - [x] **C13. Post editing.** The migration says "nothing else is allowed to be
       edited through this door", and that is what it meant, but **a row policy
       cannot say which columns an update may touch.** The counts are already
