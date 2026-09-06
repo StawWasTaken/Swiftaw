@@ -190,6 +190,15 @@ Per page, in that page's own inline style:
   filling itself with placeholder cards, and a single piece is the whole issue
   rather than opening a half-filled second deck. A piece with no picture drops
   the picture column instead of drawing an empty box.
+- **Lab** is a bench log. A state board across the top that doubles as the
+  filter, an index bar with the search and a count, then every Innoproject as
+  one ruled row of a manifest tinted by its state. A card grid renders one
+  lonely card in a 1200px row when there is one project, and it says pick one
+  of these when the honest thing to say is here is everything, including the
+  parts that died. Zero states stay on the board, dimmed, because a board that
+  drops its empty columns is not a picture of the whole bench. Numbers on the
+  board are Syne, not Tropicon: Tropicon's figures are drawn for a headline and
+  its 0 reads as a struck-through blob at counter size.
 
 ## Comments do not ship
 

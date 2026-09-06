@@ -32,115 +32,159 @@ html { scroll-padding-top: 88px; }
 .pg-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-.pg-head { position: relative; padding: clamp(64px, 9vw, 116px) 0 clamp(26px, 3.6vw, 44px); overflow: hidden; }
-.pg-slab {
-  position: relative; z-index: 2;
-  background: var(--nb-surface); color: var(--nb-surface-fg);
-  border: var(--nb-bd); border-radius: var(--nb-r-lg);
-  box-shadow: var(--nb-sh-lg);
-  padding: clamp(28px, 4vw, 52px);
-  max-width: 880px;
-
-  --nb-fg: var(--nb-surface-fg);
-  --nb-fg-muted: var(--nb-surface-fg-muted);
+.lb-head { padding: clamp(44px, 6vw, 82px) 0 0; }
+.lb-title {
+  margin: 0 0 clamp(14px, 2vw, 20px);
+  font-size: clamp(42px, 8.4vw, 116px); line-height: .86; letter-spacing: -.03em;
 }
-.pg-slab .dot { color: var(--nb-red); }
-.pg-slab .nb-lead { margin-top: 18px; max-width: 54ch; }
-.pg-slab .nb-eyebrow { display: block; margin-bottom: 14px; color: var(--nb-fg-muted); }
-
-[data-nb="dark"] .nb-dots {
-  background-image: radial-gradient(rgba(255,255,255,.28) 1.6px, transparent 1.6px);
+.lb-title .dot { color: var(--nb-red); }
+.lb-say {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40ch);
+  gap: clamp(16px, 4vw, 60px); align-items: end;
+  padding-bottom: clamp(22px, 3vw, 34px); border-bottom: var(--nb-bd);
 }
-.pg-head .nb-dots {
-  position: absolute; inset: auto -40px -30px auto;
-  width: 320px; height: 220px; z-index: 1; opacity: .55;
+.lb-say p { margin: 0; color: var(--nb-fg-muted); line-height: 1.6; max-width: 40ch; }
+.lb-say .nb-lead { font-size: clamp(19px, 2.2vw, 27px); line-height: 1.35; max-width: 24ch; color: var(--nb-fg); }
+.lb-say p b { color: var(--nb-fg); font-family: var(--nb-font-head); }
+@media (max-width: 820px) { .lb-say { grid-template-columns: 1fr; align-items: start; } }
+
+.lb-board { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.lb-cell {
+  position: relative; display: block; width: 100%; text-align: left;
+  font-family: var(--nb-font-body); color: inherit; cursor: pointer;
+  padding: clamp(16px, 2.4vw, 26px) clamp(12px, 1.6vw, 20px);
+  background: none; border: 0; border-bottom: var(--nb-bd);
+  border-left: var(--nb-bd-w-thin) solid var(--nb-line);
+  transition: background var(--nb-fast) var(--nb-ease);
+}
+.lb-cell:first-child { border-left: 0; }
+.lb-cell:hover { background: rgba(255, 255, 255, .05); }
+[data-nb="light"] .lb-cell:hover, [data-nb="yellow"] .lb-cell:hover { background: rgba(0, 0, 0, .05); }
+
+.lb-cell .n {
+  display: block; font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(28px, 3.8vw, 50px); line-height: .9; margin-bottom: 10px;
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+}
+.lb-cell .l {
+  display: flex; align-items: center; gap: 7px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 11px;
+  letter-spacing: .15em; text-transform: uppercase; color: var(--nb-fg-muted);
+}
+.lb-cell .d { width: 9px; height: 9px; border-radius: 50%; flex: none; background: var(--nb-fg-muted); }
+.lb-cell[data-status="live"]     .d { background: var(--nb-green); }
+.lb-cell[data-status="cooking"]  .d { background: var(--nb-yellow); }
+.lb-cell[data-status="dreaming"] .d { background: var(--nb-blue); }
+.lb-cell[data-status="shelved"]  .d { background: var(--nb-pink); }
+.lb-cell[data-status="killed"]   .d { background: var(--nb-red); }
+.lb-cell[data-status="All"]      .d { display: none; }
+
+.lb-cell.is-zero .n, .lb-cell.is-zero .l { opacity: .34; }
+
+.lb-cell[aria-pressed="true"]::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: calc(var(--nb-bd-w) * -1);
+  height: var(--nb-bd-w); background: var(--nb-brand);
+}
+.lb-cell[aria-pressed="true"] .n { color: var(--nb-fg); }
+.lb-cell[aria-pressed="true"] .l { color: var(--nb-fg); }
+@media (max-width: 900px) {
+  .lb-board { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lb-cell:nth-child(4) { border-left: 0; }
+}
+@media (max-width: 460px) {
+  .lb-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lb-cell:nth-child(odd) { border-left: 0; }
+  .lb-cell:nth-child(4) { border-left: var(--nb-bd-w-thin) solid var(--nb-line); }
 }
 
 .lab-controls {
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-  margin-bottom: 26px;
+  padding: 13px 0; border-bottom: var(--nb-bd);
+  margin-bottom: clamp(6px, 1.4vw, 14px);
 }
-.lab-search { position: relative; flex: 1 1 260px; max-width: 380px; }
+.lab-search { position: relative; flex: 1 1 240px; max-width: 340px; }
 .lab-search svg {
   position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
   width: 15px; height: 15px; fill: var(--nb-fg-muted); pointer-events: none;
 }
 .lab-search .nb-input { padding-left: 40px; }
-
-.lab-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-
-.lab-chip {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--nb-font-head); font-weight: 700; font-size: 12.5px;
-  padding: 8px 13px;
-  background: var(--nb-surface); color: var(--nb-surface-fg);
-  border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
-  box-shadow: var(--nb-sh-sm);
-  cursor: pointer;
-  transition: transform var(--nb-fast), box-shadow var(--nb-fast), background var(--nb-fast);
+.lab-showing {
+  margin-left: auto; font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--nb-fg-muted);
 }
-.lab-chip:hover  { transform: translate(-1px, -1px); box-shadow: 3px 4px 0 var(--nb-ink); }
-.lab-chip:active { transform: translate(2px, 3px);   box-shadow: 0 0 0 var(--nb-ink); }
-.lab-chip[aria-pressed="true"] { background: var(--nb-yellow); color: var(--nb-ink); }
-.lab-chip .n {
-  font-size: 11px; padding: 1px 6px; border-radius: var(--nb-r-pill);
-  background: rgba(0,0,0,.14); color: inherit;
-}
-[data-nb="dark"] .lab-chip:not([aria-pressed="true"]) .n { background: rgba(255,255,255,.12); }
 
-.lab-chip .d { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--nb-ink); background: var(--nb-surface-2); }
-.lab-chip[data-status="live"]     .d { background: var(--nb-green); }
-.lab-chip[data-status="cooking"]  .d { background: var(--nb-yellow); }
-.lab-chip[data-status="dreaming"] .d { background: var(--nb-blue); }
-.lab-chip[data-status="shelved"]  .d { background: var(--nb-pink); }
-.lab-chip[data-status="killed"]   .d { background: var(--nb-red); }
-.lab-chip[data-status="All"]      .d { display: none; }
-
-.lab-grid { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
-
-.lab-card { display: flex; flex-direction: column; text-align: left; width: 100%; font-family: var(--nb-font-body); }
-.lab-card-img {
-  display: block;
-  height: 168px; background: var(--nb-surface-2) center/cover no-repeat;
-  border-bottom: var(--nb-bd);
+#lab-bench { border-top: 0; }
+.lb-row .nb-mf-t { text-transform: lowercase; }
+.lb-row .nb-mf-n {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(24px, 2.8vw, 36px); letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
 }
-.lab-card-title, .lab-card-tagline, .lab-card-more { display: block; }
-.lab-card-img.placeholder { display: grid; place-items: center; }
-.lab-card-img.placeholder img { width: 56px; height: auto; opacity: .5; }
-.lab-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
-.lab-card-top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
-.lab-card-num { font-family: var(--nb-font-mono); font-size: 11.5px; color: var(--nb-fg-muted); letter-spacing: .04em; }
-.lab-card-title { font-family: var(--nb-font-head); font-weight: 700; font-size: 22px; }
-.lab-card-tagline { font-size: 14px; color: var(--nb-fg-muted); line-height: 1.5; }
-.lab-card-more {
-  margin-top: auto; padding-top: 12px;
-  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px; color: var(--nb-blue);
+.lb-row .nb-mf-n small {
+  display: block; margin-top: 7px; line-height: 1.3;
+  font-family: var(--nb-font-mono); font-size: 10.5px;
+  letter-spacing: .1em; text-transform: uppercase;
 }
+.lb-row[data-status="live"]     { --nb-mf-wash: var(--nb-green); }
+.lb-row[data-status="cooking"]  { --nb-mf-wash: var(--nb-yellow); }
+.lb-row[data-status="dreaming"] { --nb-mf-wash: var(--nb-blue); }
+.lb-row[data-status="shelved"]  { --nb-mf-wash: var(--nb-pink); }
+.lb-row[data-status="killed"]   { --nb-mf-wash: var(--nb-red); }
+
+@media (max-width: 720px) { .lb-row .nb-mf-n small { display: none; } }
+.lb-row .when { font-family: var(--nb-font-mono); font-size: 12px; color: var(--nb-fg-muted); }
+.lb-row:hover .when { color: var(--nb-ink); }
+.lb-none { padding: clamp(40px, 6vw, 76px) 0; text-align: center; border-bottom: var(--nb-bd); }
+.lb-none img { width: 108px; height: auto; opacity: .45; margin: 0 auto 18px; }
+.lb-none h2 { margin: 0 0 10px; }
+.lb-none p { margin: 0 auto; max-width: 40ch; color: var(--nb-fg-muted); line-height: 1.6; }
 
 .st { display: inline-flex; align-items: center; gap: 6px; }
 .st .d { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
 
 #lab-list-view.hidden { display: none; }
-#project-view { display: none; padding: clamp(28px, 5vw, 56px) 0 clamp(50px, 8vw, 100px); }
+#project-view { display: none; padding: clamp(26px, 4vw, 48px) 0 clamp(50px, 8vw, 100px); }
 #project-view.open { display: block; }
+.lab-back { margin-bottom: 22px; }
 
+.proj-head { border-bottom: var(--nb-bd); padding-bottom: clamp(20px, 3vw, 30px); margin-bottom: clamp(24px, 3.4vw, 38px); }
+.proj-eyebrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 13px; }
+.proj-title {
+  font-family: var(--nb-font-display); font-weight: 400; font-synthesis: none;
+  font-size: clamp(34px, 6vw, 76px); line-height: .9; margin: 0 0 14px;
+  text-transform: lowercase;
+}
+.proj-tagline { font-size: clamp(16px, 1.6vw, 20px); color: var(--nb-fg-muted); max-width: 52ch; margin: 0; }
 .proj-banner-img {
   height: clamp(180px, 26vw, 320px);
   background: var(--nb-surface-2) center/cover no-repeat;
-  border-bottom: var(--nb-bd);
+  border: var(--nb-bd); border-radius: var(--nb-r-sm); box-shadow: var(--nb-sh);
+  margin-bottom: clamp(24px, 3.4vw, 38px);
 }
-.proj-banner-img.placeholder { display: grid; place-items: center; }
-.proj-banner-img.placeholder img { width: 74px; height: auto; opacity: .5; }
-.proj-banner-meta { padding: 22px clamp(20px, 3vw, 34px) 26px; display: flex; flex-direction: column; gap: 10px; }
-.proj-eyebrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.proj-title { font-family: var(--nb-font-display); font-weight: 400; font-synthesis: none; font-size: clamp(32px, 5vw, 58px); line-height: .95; }
-.proj-tagline { font-size: clamp(16px, 1.5vw, 19px); color: var(--nb-fg-muted); max-width: 56ch; }
-.proj-date { font-family: var(--nb-font-mono); font-size: 12.5px; color: var(--nb-fg-muted); }
 
-.proj-body {
-  max-width: 760px; margin-top: 30px;
-  font-size: 16px; line-height: 1.72;
+.proj-wrap {
+  display: grid; grid-template-columns: minmax(0, 206px) minmax(0, 1fr);
+  gap: clamp(22px, 5vw, 72px); align-items: start;
 }
+.proj-rail { position: sticky; top: 104px; display: grid; gap: 16px; }
+.proj-rail .nb-eyebrow { display: block; margin-bottom: -6px; }
+.proj-date { font-family: var(--nb-font-mono); font-size: 12.5px; color: var(--nb-fg-muted); }
+.proj-works { display: grid; gap: 8px; justify-items: start; }
+.proj-works .lbl { font-family: var(--nb-font-head); font-weight: 700; font-size: 11px; letter-spacing: .15em; text-transform: uppercase; color: var(--nb-fg-muted); }
+.proj-works .logo-chip img { width: 16px; height: 16px; object-fit: contain; }
+.proj-note {
+  border-left: var(--nb-bd-w) solid var(--nb-blue); padding-left: 14px;
+  font-size: 13.5px; line-height: 1.55; color: var(--nb-fg-muted);
+}
+.proj-note b { color: var(--nb-fg); font-family: var(--nb-font-head); }
+.proj-note a { color: var(--nb-blue); }
+@media (max-width: 860px) {
+  .proj-wrap { grid-template-columns: 1fr; gap: 22px; }
+  .proj-rail { position: static; }
+}
+
+.proj-body { max-width: 66ch; font-size: 16.5px; line-height: 1.72; }
 .proj-body p  { margin-bottom: 16px; color: var(--nb-fg-muted); }
 .proj-body b  { color: var(--nb-fg); font-weight: 700; }
 .proj-body h3 {
@@ -154,9 +198,7 @@ html { scroll-padding-top: 88px; }
   letter-spacing: .14em; text-transform: uppercase; color: var(--nb-fg-muted);
 }
 .proj-body ul { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 10px; }
-.proj-body ul li {
-  position: relative; padding-left: 26px; color: var(--nb-fg-muted);
-}
+.proj-body ul li { position: relative; padding-left: 26px; color: var(--nb-fg-muted); }
 .proj-body ul li::before {
   content: ""; position: absolute; left: 0; top: .55em;
   width: 12px; height: 12px; background: var(--nb-blue);
@@ -196,11 +238,6 @@ html { scroll-padding-top: 88px; }
   border-top: var(--nb-bd-thin); padding-top: 18px; margin-top: 26px;
   font-size: 14px; color: var(--nb-fg-muted);
 }
-.proj-works { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
-.proj-works .lbl { font-family: var(--nb-font-head); font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--nb-fg-muted); }
-.proj-works .logo-chip img { width: 16px; height: 16px; object-fit: contain; }
-
-.lab-back { margin-bottom: 22px; }
 </style>
 </head>
 <body>
@@ -269,37 +306,32 @@ html { scroll-padding-top: 88px; }
 
 <div id="lab-list-view">
 
-  <section class="pg-head">
+  <section class="lb-head">
     <div class="nb-wrap">
-      <div class="nb-dots" aria-hidden="true"></div>
-      <div class="pg-slab nb-reveal">
-        <span class="nb-eyebrow">The Lab</span>
-        <h1 class="nb-display nb-d2">Where the weird<br>ideas grow up<span class="dot">.</span></h1>
-        <p class="nb-lead nb-muted">
-          Most don't make it out. The ones that do, you'll see here first.
-        </p>
+      <span class="nb-eyebrow">The Lab</span>
+      <h1 class="nb-display lb-title">the bench<span class="dot">.</span></h1>
+      <div class="lb-say">
+        <p class="nb-lead">Everything Swiftaw has on the bench, in the order we put it there. Most of it stops here.</p>
+        <p>An <b>Innoproject</b> is something we build because we want to, not something we have announced. Any of it can stop at any point. When one turns into a real product, it gets written up in the <a href="/newsroom">Newsroom</a>.</p>
       </div>
     </div>
   </section>
 
-  <section class="nb-section" style="padding-top:clamp(20px,3vw,34px);">
+  <section class="nb-section" style="padding-top:0;">
     <div class="nb-wrap">
 
-      <div class="nb-alert nb-alert--info nb-reveal" style="margin-bottom:30px; max-width:880px;">
-        <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
-        <span>An <b>Innoproject</b> is something we are building because we want to, not something we have announced. Anything on this bench can stop at any point. When one becomes a real product, it gets written up in the <a href="/newsroom">Newsroom</a>.</span>
-      </div>
+      <div class="lb-board" id="lab-board" role="group" aria-label="Filter by state"></div>
 
-      <div class="lab-controls nb-reveal">
+      <div class="lab-controls">
         <label class="lab-search">
           <span class="nb-sr">Search the bench</span>
           <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
           <input class="nb-input" id="lab-search-input" type="search" placeholder="Search the bench" autocomplete="off">
         </label>
-        <div class="lab-chips" id="lab-chips" role="group" aria-label="Filter by status"></div>
+        <span class="lab-showing" id="lab-showing"></span>
       </div>
 
-      <div class="lab-grid" id="lab-grid"></div>
+      <div class="nb-manifest" id="lab-bench"></div>
 
     </div>
   </section>
@@ -308,7 +340,7 @@ html { scroll-padding-top: 88px; }
 
 <div id="project-view" aria-live="polite">
   <div class="nb-wrap">
-    <button class="nb-btn nb-btn--sm lab-back" type="button" id="lab-back">← Back to the Lab</button>
+    <button class="nb-btn nb-btn--sm lab-back" type="button" id="lab-back">← Back to the bench</button>
     <div id="project-content"></div>
   </div>
 </div>
@@ -411,7 +443,7 @@ const PROJECTS = {
 };
 
 const STATUSES = [
-  { key: 'All',      label: 'All' },
+  { key: 'All',      label: 'Everything' },
   { key: 'live',     label: 'Live' },
   { key: 'cooking',  label: 'Cooking' },
   { key: 'dreaming', label: 'Dreaming' },
@@ -427,69 +459,72 @@ function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&
 let activeStatus = 'All';
 let labSearch = '';
 
-function bannerHTML(banner, cls, tag){
-  const t = tag || 'div';
-  return banner
-    ? `<${t} class="${cls}" style="background-image:url('${esc(banner)}');"></${t}>`
-    : `<${t} class="${cls} placeholder"><img src="${DECO}" alt="" loading="lazy"></${t}>`;
-}
-
 function statePill(p){
   return `<span class="nb-tag ${STATUS_TAG[p.status] || ''} st"><span class="d"></span>${esc(p.statusLabel)}</span>`;
 }
 
-function renderChips(){
+function renderBoard(){
+  const all = Object.values(PROJECTS);
   const counts = {};
-  Object.values(PROJECTS).forEach(p => { counts[p.status] = (counts[p.status] || 0) + 1; });
-  const total = Object.values(PROJECTS).length;
-  const host = document.getElementById('lab-chips');
+  all.forEach(p => { counts[p.status] = (counts[p.status] || 0) + 1; });
+  const host = document.getElementById('lab-board');
+
   host.innerHTML = STATUSES.map(s => {
-    const n = s.key === 'All' ? total : (counts[s.key] || 0);
-    return `<button type="button" class="lab-chip" data-status="${s.key}" aria-pressed="${s.key === activeStatus}">
-      <span class="d"></span>${esc(s.label)}<span class="n">${n}</span></button>`;
+    const n = s.key === 'All' ? all.length : (counts[s.key] || 0);
+    return `<button type="button" class="lb-cell${n ? '' : ' is-zero'}" data-status="${s.key}" aria-pressed="${s.key === activeStatus}">
+      <span class="n">${n}</span>
+      <span class="l"><span class="d"></span>${esc(s.label)}</span>
+    </button>`;
   }).join('');
-  host.querySelectorAll('.lab-chip').forEach(el => el.addEventListener('click', () => {
+
+  host.querySelectorAll('.lb-cell').forEach(el => el.addEventListener('click', () => {
     activeStatus = el.dataset.status;
-    renderChips(); renderGrid();
+    renderBoard(); renderBench();
   }));
 }
 
-function cardHTML(id, p){
-  return `<button type="button" class="nb-card nb-card--live nb-card--bare lab-card nb-reveal" data-project="${esc(id)}">
-    ${bannerHTML(p.banner, 'lab-card-img', 'span')}
-    <span class="lab-card-body">
-      <span class="lab-card-top">
-        <span class="lab-card-num">${esc(p.innoLabel)}</span>
-        ${statePill(p)}
-      </span>
-      <span class="lab-card-title">${esc(p.title)}</span>
-      <span class="lab-card-tagline">${esc(p.tagline)}</span>
-      <span class="lab-card-more">Read more →</span>
-    </span>
-  </button>`;
+function rowHTML(id, p){
+  return `<div class="nb-mf nb-mf--live lb-row nb-reveal" data-status="${esc(p.status)}">
+    <div class="nb-mf-n">${String(p.sortIndex).padStart(2, '0')}<small>Innoproject</small></div>
+    <div>
+      <h2 class="nb-mf-t">${esc(p.title)}</h2>
+      <p class="nb-mf-d">${esc(p.tagline)}</p>
+    </div>
+    <div class="nb-mf-side">
+      <span class="when">${esc(p.date)}</span>
+      ${statePill(p)}
+    </div>
+    <button type="button" class="nb-mf-link" data-project="${esc(id)}">
+      <span class="nb-sr">Open ${esc(p.title)}</span>
+    </button>
+  </div>`;
 }
 
-function renderGrid(){
-  const grid = document.getElementById('lab-grid');
+function renderBench(){
+  const bench = document.getElementById('lab-bench');
+  const showing = document.getElementById('lab-showing');
   const q = labSearch.toLowerCase().trim();
   const entries = Object.entries(PROJECTS)
     .filter(([, p]) => activeStatus === 'All' || p.status === activeStatus)
     .filter(([, p]) => !q || p.title.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q))
     .sort((a, b) => (STATUS_ORDER[a[1].status] ?? 9) - (STATUS_ORDER[b[1].status] ?? 9) || a[1].sortIndex - b[1].sortIndex);
 
+  showing.textContent = entries.length === 1 ? '1 on the bench' : entries.length + ' on the bench';
+
   if (!entries.length){
-    grid.innerHTML = `<div class="nb-card nb-card--lg nb-state" style="grid-column:1/-1;">
+    bench.innerHTML = `<div class="lb-none">
       <img src="${DECO}" alt="" loading="lazy">
-      <h3>Nothing on this shelf</h3>
-      <p>${q ? 'No project matches that search.' : 'Nothing sits at this status right now.'}</p>
+      <h2 class="nb-h2">Nothing at this state</h2>
+      <p>${q ? 'No Innoproject matches that search.' : 'The bench is empty here right now.'}</p>
     </div>`;
     return;
   }
-  grid.innerHTML = entries.map(([id, p]) => cardHTML(id, p)).join('');
-  grid.querySelectorAll('[data-project]').forEach(el =>
+
+  bench.innerHTML = entries.map(([id, p]) => rowHTML(id, p)).join('');
+  bench.querySelectorAll('[data-project]').forEach(el =>
     el.addEventListener('click', () => openProject(el.dataset.project)));
 
-  if (window.SwiftawObserveReveals) window.SwiftawObserveReveals(grid);
+  if (window.SwiftawObserveReveals) window.SwiftawObserveReveals(bench);
 }
 
 function renderProject(id){
@@ -503,28 +538,39 @@ function renderProject(id){
     </div>` : '';
 
   const note = p.status !== 'live' ? `
-    <div class="nb-alert nb-alert--info" style="margin-top:22px; max-width:760px;">
-      <svg viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336l24 0 0-64-24 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0c13.3 0 24 10.7 24 24l0 88 8 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></svg>
-      <span>This is an <b>Innoproject</b>. We are exploring this corner of tech because we like building in it, not because it is an announced Swiftaw product. If it becomes one, the announcement goes up in the <a href="/newsroom">Newsroom</a>.</span>
-    </div>` : '';
+    <p class="proj-note">This is an <b>Innoproject</b>. We build in this corner because we like
+    building in it, not because it is an announced Swiftaw product. If it becomes one, the
+    announcement goes up in the <a href="/newsroom">Newsroom</a>.</p>` : '';
+
+  const banner = p.banner
+    ? `<div class="proj-banner-img" style="background-image:url('${esc(p.banner)}');"></div>`
+    : '';
 
   document.getElementById('project-content').innerHTML = `
     <article>
-      <div class="nb-card nb-card--lg nb-card--bare">
-        ${bannerHTML(p.banner, 'proj-banner-img')}
-        <div class="proj-banner-meta">
-          <div class="proj-eyebrow">
-            <span class="nb-tag nb-mono">${esc(p.innoLabel)}</span>
-            ${statePill(p)}
-          </div>
-          <h1 class="proj-title">${esc(p.title)}</h1>
-          <p class="proj-tagline">${esc(p.tagline)}</p>
-          <div class="proj-date">${esc(p.date)}</div>
+      <div class="proj-head">
+        <div class="proj-eyebrow">
+          <span class="nb-tag nb-mono">${esc(p.innoLabel)}</span>
         </div>
+        <h1 class="proj-title">${esc(p.title)}</h1>
+        <p class="proj-tagline">${esc(p.tagline)}</p>
       </div>
-      ${note}
-      ${works}
-      <div class="proj-body">${p.content}</div>
+      ${banner}
+      <div class="proj-wrap">
+        <aside class="proj-rail">
+          <div>
+            <span class="nb-eyebrow">State</span>
+            <div>${statePill(p)}</div>
+          </div>
+          <div>
+            <span class="nb-eyebrow">Filed</span>
+            <div class="proj-date">${esc(p.date)}</div>
+          </div>
+          ${works}
+          ${note}
+        </aside>
+        <div class="proj-body">${p.content}</div>
+      </div>
     </article>`;
 
   document.title = p.title + ' - Swiftaw Lab';
@@ -559,7 +605,7 @@ function closeProject(){
 document.getElementById('lab-back').addEventListener('click', closeProject);
 document.getElementById('lab-search-input').addEventListener('input', e => {
   labSearch = e.target.value || '';
-  renderGrid();
+  renderBench();
 });
 
 window.addEventListener('popstate', e => {
@@ -568,8 +614,8 @@ window.addEventListener('popstate', e => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-renderChips();
-renderGrid();
+renderBoard();
+renderBench();
 
 (function(){
   const id = new URLSearchParams(window.location.search).get('innoproject');
