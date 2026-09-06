@@ -215,6 +215,28 @@ Per page, in that page's own inline style:
   the thing is being filled in rather than after send has already been pressed.
   The rail's ID chip is the only part of it that is about the reader, so it
   hides when nobody is signed in instead of sitting there empty.
+- **Legal** is a document, and it was already built as one, so it did not get
+  rebuilt with the rest. `_css/swiftaw-legal.css`: an 860px shell, numbered
+  sections, accent slabs, and a contents list built at runtime from the page's
+  own `<h2>`s so it cannot drift from the text. Above 1420px the contents float
+  out of the shell entirely and sit in the right margin. Two things in that
+  sheet are load-bearing and easy to undo by accident. `.legal-sec` must not
+  carry `scroll-margin-top`, because `html` already has `scroll-padding-top`
+  and the two add up into a section that lands twice as far down as it should.
+  And the `:not(.legal-toc ...)` on the prose list and link rules is there
+  because the contents `<ol>` lives inside `.legal-prose` and would otherwise
+  be styled as body copy. There is a full print block: the palette repoints to
+  ink on white, because a dark page prints white on white.
+- **Home** is the board. The hero and the reaction widget stay as they were.
+  Between them, everything we run is one register at the width of the page:
+  a colour edge at the viewport edge, the mark, the name in Tropicon, one line
+  of what it is, and its status. Two two-up card grids under two headings asked
+  which of these do you want, twice, and buried the fact that one of the four
+  is not open yet. Only a row you can actually open takes the wash and the
+  shift, so the one still in build reads as a fact rather than a dead button.
+  How we build is three statements at headline size across ruled rows, and the
+  page ends on a three-way counter rather than a centred card with a slogan in
+  it.
 
 ## Comments do not ship
 

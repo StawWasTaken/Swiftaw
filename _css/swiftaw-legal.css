@@ -8,9 +8,9 @@
    the body of a legal page is legal text, and the safest rebuild is one that
    swaps the stylesheet and the shell and does not touch a word of the copy.
 
-   Each page sets its own accent:
-     --legal-accent: var(--nb-green)   privacy
-     --legal-accent: var(--nb-blue)    terms
+   Each page sets its own accent, as the pages actually set them today:
+     --legal-accent: var(--nb-blue)    privacy
+     --legal-accent: var(--nb-green)   terms
      --legal-accent: var(--nb-yellow)  products
    ══════════════════════════════════════════════════════════════════════════ */
 
