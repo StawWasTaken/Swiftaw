@@ -199,6 +199,14 @@ Per page, in that page's own inline style:
   drops its empty columns is not a picture of the whole bench. Numbers on the
   board are Syne, not Tropicon: Tropicon's figures are drawn for a headline and
   its 0 reads as a struck-through blob at counter size.
+- **Contact** is a desk. The form takes the page as a ruled register, label and
+  its explanation on the left, the control on the right, one rule between each
+  step. A form centred in a card in a 780px column is a widget dropped on a
+  page; a register is the page. The context that used to sit in a three-column
+  grid under the form moves into a sticky rail beside it, so it is read while
+  the thing is being filled in rather than after send has already been pressed.
+  The rail's ID chip is the only part of it that is about the reader, so it
+  hides when nobody is signed in instead of sitting there empty.
 
 ## Comments do not ship
 
