@@ -32,9 +32,6 @@ html { scroll-padding-top: 88px; }
 .pg-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-/* ═══════ THE OPENING STATEMENT ══════════════════════════════════════
-   The mission is an argument, so it opens like one: the claim at full
-   size against the page, and nothing framing it. No slab, no panel. */
 .ms-open { padding: clamp(46px, 7vw, 96px) 0 clamp(34px, 5vw, 62px); }
 .ms-open .nb-eyebrow { display: block; margin-bottom: clamp(14px, 2vw, 22px); }
 .ms-claim {
@@ -48,9 +45,6 @@ html { scroll-padding-top: 88px; }
 }
 .ms-stand b { color: var(--nb-yellow); font-weight: inherit; }
 
-/* ═══════ THE FOUR ═══════════════════════════════════════════════════
-   Each one is a stretch of argument with its marker in the rail, not a
-   tile in a grid. Read top to bottom, in order, the way it is meant. */
 .ms-val { padding: clamp(28px, 4vw, 46px) 0; border-top: var(--nb-bd); }
 .ms-val:last-child { border-bottom: var(--nb-bd); }
 .ms-val .nb-ed-mark { color: var(--ms-c, var(--nb-yellow)); }
@@ -60,9 +54,6 @@ html { scroll-padding-top: 88px; }
   font-size: clamp(25px, 3.2vw, 38px); letter-spacing: -.5px;
 }
 
-/* ═══════ THE TEST ═══════════════════════════════════════════════════
-   One full-bleed band, ink on yellow, carrying the line the whole
-   company is named after. It interrupts the page on purpose. */
 .ms-test {
   background: var(--nb-yellow); color: var(--nb-ink);
   border-top: var(--nb-bd); border-bottom: var(--nb-bd);
@@ -75,10 +66,6 @@ html { scroll-padding-top: 88px; }
 .ms-test p + p { margin-top: 14px; }
 @media (max-width: 860px) { .ms-test-in { grid-template-columns: 1fr; } }
 
-/* ═══════ WHAT IT RULES OUT ══════════════════════════════════════════
-   The same ruled rows as elsewhere, in the negative register: a struck
-   mark where the number would be, and red instead of yellow under the
-   cursor. A list of refusals should not look like a list of features. */
 .ms-no { --nb-mf-wash: var(--nb-red); }
 .ms-no .nb-mf-n {
   display: flex; align-items: center; justify-content: center;
@@ -90,7 +77,6 @@ html { scroll-padding-top: 88px; }
 .ms-no:hover .nb-mf-n { color: var(--nb-ink); }
 .ms-no .nb-mf-d { max-width: 64ch; }
 
-/* ═══════ CLOSING ════════════════════════════════════════════════════ */
 .ms-end { padding: clamp(46px, 6vw, 84px) 0 clamp(58px, 8vw, 106px); }
 </style>
 </head>

@@ -114,7 +114,10 @@ for (const file of process.argv.slice(2)) {
     (_m, attrs, body) => '<script' + attrs + '>' + tidy(stripJs(body)) + '</script>');
 
   // HTML comments last, so the ones above already went with their block.
-  s = s.replace(/<!--(?!\[if)[\s\S]*?-->/g, '');
+  // The footer markers are build machinery, not prose: min.mjs finds the
+  // footer by them, so stripping them would quietly orphan the footer and
+  // make the page permanently stale to --check.
+  s = s.replace(/<!--(?!\[if)(?!footer:)(?!\/footer)[\s\S]*?-->/g, '');
   s = s.replace(/^[ \t]+$/gm, '');
   s = tidy(s);
 

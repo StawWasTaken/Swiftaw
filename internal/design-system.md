@@ -153,6 +153,59 @@ a reason written next to each entry. A list of exceptions nobody can explain
 is how a system rots quietly, and writing the reason down is what stops an
 exception from being copied by the next person who needs one.
 
+## Page armatures
+
+A page is not a header and a grid of cards. Every page had that shape and it
+is why they all read as one page with the words swapped. A page gets an
+armature that suits what it is actually saying, and the reusable ones live in
+the token file so a second page can pick one up.
+
+In the token file, available anywhere:
+
+- `.nb-manifest` / `.nb-mf`. A numbered list at full measure, ruled between
+  entries, number left and status right. Reach for it when the entries belong
+  to one ordered set. A grid says pick one of these; a manifest says here is
+  all of it, in order. Only rows that go somewhere get `.nb-mf--live`, because
+  a row that is just a fact should not pretend to be a button. The hover wash
+  is a pseudo-element bled past the measure with negative insets, so the band
+  runs full width while the text stays on the grid.
+- `.nb-editorial`. A narrow sticky rail and one column of text at a real
+  reading measure. For a page that is an argument rather than a set of
+  features. The rail holds the section marker, and a `.nb-ed-note` can sit
+  level with the paragraph it belongs to instead of becoming a callout box in
+  the flow.
+
+Per page, in that page's own inline style:
+
+- **About us** is a record sheet. Stamp, name, the four register cells, then
+  the products and the roster as manifests. An open seat is a dashed chip, not
+  a hidden row.
+- **Mission** is the argument typeset. One claim, four values on the editorial
+  armature, a full-bleed yellow band for the test we hold ourselves to, then
+  the things we will not do as a manifest in the negative register.
+- **Newsroom** is a front page. Masthead, dateline, an index bar, a lead that
+  takes the width, and the rest in real columns with `column-rule` between
+  them. Gaps make a grid; rules make a page. It has to look right at zero
+  pieces, at one, and at many, so an empty front says it is empty rather than
+  filling itself with placeholder cards, and a single piece is the whole issue
+  rather than opening a half-filled second deck. A piece with no picture drops
+  the picture column instead of drawing an empty box.
+
+## Comments do not ship
+
+Every page under `docs/` is comment-free in the delivered source. Write the
+reasoning while you build, then strip it before you push:
+
+    node _build/clean-html.mjs docs/page.html
+
+It empties the comments out of the inline `<style>` and `<script>` blocks and
+out of the HTML, and leaves the `<!--footer:-->` markers alone because the
+build finds the footer by them. Sheets under `_css/` and scripts under `_js/`
+keep their comments: `min.mjs` strips those on the way to `docs/css/`, so the
+reasoning stays in the source and never reaches a browser.
+
+Anything worth keeping longer than the edit belongs here, not in the page.
+
 ## What to do when you build a new page
 
 - Load `/css/swiftaw-nb.css` and `/css/swiftaw-footer.css`, the shared Google

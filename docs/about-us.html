@@ -32,10 +32,6 @@ html { scroll-padding-top: 88px; }
 .pg-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-/* ═══════ THE RECORD SHEET ═══════════════════════════════════════════
-   The page opens as a filled-in record, not as a centred box with a
-   heading in it. Rule across the top, the name at full size, the facts
-   ruled off underneath in the order a register would hold them. */
 .ab-id { padding: clamp(40px, 6vw, 74px) 0 0; }
 
 .ab-stamp {
@@ -60,15 +56,13 @@ html { scroll-padding-top: 88px; }
   max-width: 46ch; font-size: clamp(17px, 1.8vw, 21px); line-height: 1.55;
 }
 
-/* Four cells divided by real rules rather than gaps. A register does not
-   float its entries apart from one another. */
 .ab-reg {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
   border-top: var(--nb-bd); border-bottom: var(--nb-bd);
 }
 .ab-reg > div {
   padding: clamp(16px, 2vw, 22px) clamp(14px, 2vw, 22px);
-  border-left: var(--nb-bd-thin) solid var(--nb-line);
+  border-left: var(--nb-bd-thin);
 }
 .ab-reg > div:first-child { border-left: 0; padding-left: 0; }
 .ab-reg .k {
@@ -85,11 +79,10 @@ html { scroll-padding-top: 88px; }
 @media (max-width: 860px) { .ab-reg > div:nth-child(3) { border-left: 0; padding-left: 0; } }
 @media (max-width: 480px) {
   .ab-reg { grid-template-columns: 1fr; }
-  .ab-reg > div { border-left: 0; padding-left: 0; border-top: var(--nb-bd-thin) solid var(--nb-line); }
+  .ab-reg > div { border-left: 0; padding-left: 0; border-top: var(--nb-bd-thin); }
   .ab-reg > div:first-child { border-top: 0; }
 }
 
-/* ═══════ SECTION MARKERS ════════════════════════════════════════════ */
 .ab-mark {
   display: grid; align-items: end;
   grid-template-columns: minmax(0, 1fr) minmax(0, 34ch);
@@ -100,10 +93,6 @@ html { scroll-padding-top: 88px; }
 .ab-mark p { margin: 0 0 6px; line-height: 1.5; }
 @media (max-width: 780px) { .ab-mark { grid-template-columns: 1fr; align-items: start; } }
 
-/* ═══════ THE ROSTER ═════════════════════════════════════════════════
-   Same ruled rows as the manifest, but a roster answers a different
-   question: not what a thing is, but who holds it. Role reads first,
-   because the seat exists whether or not anybody is in it. */
 .ab-seat {
   --nb-mf-wash: var(--nb-blue);
   grid-template-columns: clamp(104px, 15vw, 205px) minmax(0, 1fr) auto;
@@ -129,15 +118,12 @@ html { scroll-padding-top: 88px; }
   color: var(--nb-ink);
 }
 
-/* An open seat is drawn open. Dashed edge, no fill, no shadow: it is a
-   gap in the roster and it should look like one. */
 .ab-seat.is-open .ab-chip {
   background: none; box-shadow: none;
   border-style: dashed; color: var(--nb-fg-muted);
 }
 .ab-seat.is-open .who { color: var(--nb-fg-muted); }
 
-/* ═══════ THE LAST WORD ══════════════════════════════════════════════ */
 .ab-end { padding: clamp(46px, 6vw, 84px) 0 clamp(56px, 8vw, 104px); }
 .ab-end p { max-width: 50ch; }
 </style>

@@ -4,19 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Newsroom - Swiftaw</title>
-<meta name="description" content="Swiftaw's newsroom. We post when there is something worth posting, and not before.">
+<meta name="description" content="Swiftaw's newsroom. What we shipped, when we shipped it, written up by the people who did it.">
 <meta name="author" content="Swiftaw">
 <meta name="theme-color" content="#0C0F15">
 <link rel="canonical" href="https://swiftaw.com/newsroom">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Swiftaw">
 <meta property="og:title" content="Newsroom - Swiftaw">
-<meta property="og:description" content="We post when there is something worth posting. No noise, no filler.">
+<meta property="og:description" content="What we shipped, when we shipped it. Written up by the people who did it.">
 <meta property="og:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <meta property="og:url" content="https://swiftaw.com/newsroom">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Newsroom - Swiftaw">
-<meta name="twitter:description" content="We post when there is something worth posting. No noise, no filler.">
+<meta name="twitter:description" content="What we shipped, when we shipped it. Written up by the people who did it.">
 <meta name="twitter:image" content="https://swiftaw.com/SWFTW_Logomark.png">
 <link rel="icon" type="image/png" href="/Swiftaw%20Favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,121 +32,179 @@ html { scroll-padding-top: 88px; }
 .pg-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-.pg-head { position: relative; padding: clamp(64px, 9vw, 116px) 0 clamp(26px, 3.6vw, 44px); overflow: hidden; }
-.pg-slab {
-  position: relative; z-index: 2;
-  background: var(--nb-surface); color: var(--nb-surface-fg);
-  border: var(--nb-bd); border-radius: var(--nb-r-lg);
-  box-shadow: var(--nb-sh-lg);
-  padding: clamp(28px, 4vw, 52px);
-  max-width: 880px;
-  --nb-fg: var(--nb-surface-fg);
-  --nb-fg-muted: var(--nb-surface-fg-muted);
+.nr-mast { padding: clamp(34px, 5vw, 62px) 0 0; }
+.nr-mast-rule { height: var(--nb-bd-w); background: var(--nb-line); }
+.nr-name {
+  margin: clamp(16px, 2.4vw, 26px) 0 clamp(14px, 2vw, 22px);
+  font-size: clamp(46px, 10.5vw, 148px); line-height: .84; letter-spacing: -.03em;
+  text-align: center;
 }
-.pg-slab .dot { color: var(--nb-red); }
-.pg-slab .nb-lead { margin-top: 18px; max-width: 54ch; }
-.pg-slab .nb-eyebrow { display: block; margin-bottom: 14px; color: var(--nb-fg-muted); }
+.nr-name .dot { color: var(--nb-red); }
 
-[data-nb="dark"] .nb-dots {
-  background-image: radial-gradient(rgba(255,255,255,.28) 1.6px, transparent 1.6px);
+.nr-line {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  justify-content: center; text-align: center;
+  padding: 11px 0; border-top: var(--nb-bd-thin);
+  border-bottom: var(--nb-bd); 
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 11px; letter-spacing: .17em; text-transform: uppercase;
+  color: var(--nb-fg-muted);
 }
-.pg-head .nb-dots {
-  position: absolute; inset: auto -40px -30px auto;
-  width: 320px; height: 220px; z-index: 1; opacity: .55;
-}
+.nr-line b { color: var(--nb-yellow); font-weight: 700; }
 
 .news-controls {
-  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-  margin-bottom: 26px;
+  display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+  padding: 14px 0; border-bottom: var(--nb-bd);
+  margin-bottom: clamp(24px, 3.4vw, 40px);
 }
 .news-controls[hidden] { display: none; }
-.news-search { position: relative; flex: 1 1 260px; max-width: 380px; }
+.news-search { position: relative; flex: 1 1 240px; max-width: 340px; }
 .news-search svg {
   position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
   width: 15px; height: 15px; fill: var(--nb-fg-muted); pointer-events: none;
 }
 .news-search .nb-input { padding-left: 40px; }
-
-.news-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.news-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
 .news-chip {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--nb-font-head); font-weight: 700; font-size: 12.5px;
-  padding: 8px 13px;
+  padding: 7px 13px;
   background: var(--nb-surface); color: var(--nb-surface-fg);
   border: var(--nb-bd-thin); border-radius: var(--nb-r-pill);
-  box-shadow: var(--nb-sh-sm);
-  cursor: pointer;
+  box-shadow: var(--nb-sh-sm); cursor: pointer;
   transition: transform var(--nb-fast), box-shadow var(--nb-fast), background var(--nb-fast);
 }
 .news-chip:hover  { transform: translate(-1px, -1px); box-shadow: 3px 4px 0 var(--nb-ink); }
 .news-chip:active { transform: translate(2px, 3px);   box-shadow: 0 0 0 var(--nb-ink); }
 .news-chip[aria-pressed="true"] { background: var(--nb-yellow); color: var(--nb-ink); }
-.news-chip .n {
-  font-size: 11px; padding: 1px 6px; border-radius: var(--nb-r-pill);
-  background: rgba(0,0,0,.14); color: inherit;
-}
+.news-chip .n { font-size: 11px; padding: 1px 6px; border-radius: var(--nb-r-pill); background: rgba(0,0,0,.14); color: inherit; }
 [data-nb="dark"] .news-chip:not([aria-pressed="true"]) .n { background: rgba(255,255,255,.12); }
 
-.news-grid { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
-.news-card { display: flex; flex-direction: column; text-align: left; width: 100%; font-family: var(--nb-font-body); }
-.news-card-img {
-  display: block;
-  height: 168px; background: var(--nb-surface-2) center/cover no-repeat;
+.nr-lead {
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(20px, 3.5vw, 48px); align-items: start;
+  width: 100%; text-align: left; font-family: var(--nb-font-body);
+  padding-bottom: clamp(26px, 3.4vw, 42px); border-bottom: var(--nb-bd);
+  cursor: pointer; background: none; border-left: 0; border-right: 0; border-top: 0;
+  color: inherit;
+}
+.nr-lead-h {
+  display: block; margin: 12px 0 14px;
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(28px, 4.4vw, 54px); line-height: 1.03; letter-spacing: -.02em;
+  transition: color var(--nb-fast);
+}
+.nr-lead:hover .nr-lead-h { color: var(--nb-yellow); }
+.nr-lead-x { display: block; font-size: clamp(15px, 1.5vw, 18px); line-height: 1.6; color: var(--nb-fg-muted); max-width: 46ch; }
+.nr-lead-b { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; font-size: 13.5px; color: var(--nb-fg-muted); }
+.nr-lead-b b { color: var(--nb-fg); font-family: var(--nb-font-head); }
+.nr-lead-img {
+  display: block; width: 100%; aspect-ratio: 4 / 3;
+  background: var(--nb-surface-2) center/cover no-repeat;
+  border: var(--nb-bd); border-radius: var(--nb-r-sm); box-shadow: var(--nb-sh);
+}
+
+.nr-lead--nopic { grid-template-columns: 1fr; }
+.nr-lead--nopic .nr-lead-h { font-size: clamp(30px, 5.4vw, 68px); max-width: 18ch; }
+.nr-lead--nopic .nr-lead-x { max-width: 62ch; }
+@media (max-width: 780px) { .nr-lead { grid-template-columns: 1fr; } }
+
+.nr-cols {
+  columns: 3; column-gap: clamp(22px, 3vw, 40px);
+  column-rule: var(--nb-bd-w-thin) solid var(--nb-line);
+  margin-top: clamp(24px, 3.4vw, 40px);
+}
+@media (max-width: 980px) { .nr-cols { columns: 2; } }
+@media (max-width: 620px) { .nr-cols { columns: 1; column-rule: 0; } }
+
+.nr-item {
+  display: block; width: 100%; text-align: left; font-family: var(--nb-font-body);
+  break-inside: avoid; -webkit-column-break-inside: avoid;
+  padding: 0 0 18px; margin-bottom: 18px;
+  border-bottom: var(--nb-bd-thin);
+  background: none; border-left: 0; border-right: 0; border-top: 0;
+  color: inherit; cursor: pointer;
+}
+.nr-item-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.nr-item-d { font-family: var(--nb-font-mono); font-size: 11.5px; color: var(--nb-fg-muted); }
+.nr-item-h {
+  display: block; margin-bottom: 7px;
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 19px; line-height: 1.22; letter-spacing: -.2px;
+  transition: color var(--nb-fast);
+}
+.nr-item:hover .nr-item-h { color: var(--nb-yellow); }
+.nr-item-x { display: block; font-size: 13.5px; line-height: 1.55; color: var(--nb-fg-muted); }
+
+.nr-none {
+  text-align: center; padding: clamp(46px, 7vw, 90px) 0;
   border-bottom: var(--nb-bd);
 }
-.news-card-img.placeholder { display: grid; place-items: center; }
-.news-card-img.placeholder img { width: 56px; height: auto; opacity: .5; }
-.news-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
-.news-card-top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
-.news-card-date { font-family: var(--nb-font-mono); font-size: 11.5px; color: var(--nb-fg-muted); }
-.news-card-title { display: block; font-family: var(--nb-font-head); font-weight: 700; font-size: 20px; line-height: 1.2; }
-.news-card-excerpt { display: block; font-size: 14px; color: var(--nb-fg-muted); line-height: 1.55; }
-.news-card-more { display: block; margin-top: auto; padding-top: 12px; font-family: var(--nb-font-head); font-weight: 700; font-size: 13px; color: var(--nb-blue); }
+.nr-none img { width: 128px; height: auto; opacity: .45; margin: 0 auto 20px; }
+.nr-none h2 { margin: 0 0 12px; }
+.nr-none p { margin: 0 auto; max-width: 44ch; color: var(--nb-fg-muted); line-height: 1.6; }
+.nr-none a { color: var(--nb-blue); }
 
 #news-list-view.hidden { display: none; }
-#article-view { display: none; padding: clamp(28px, 5vw, 56px) 0 clamp(50px, 8vw, 100px); }
+#article-view { display: none; padding: clamp(26px, 4vw, 48px) 0 clamp(50px, 8vw, 100px); }
 #article-view.open { display: block; }
+.news-back { margin-bottom: 22px; }
 
-.article-banner-img {
-  height: clamp(180px, 26vw, 320px);
-  background: var(--nb-surface-2) center/cover no-repeat;
-  border-bottom: var(--nb-bd);
+.article-head { border-bottom: var(--nb-bd); padding-bottom: clamp(20px, 3vw, 30px); margin-bottom: clamp(24px, 3.4vw, 38px); }
+.article-title {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(30px, 5vw, 60px); line-height: 1.02; letter-spacing: -.025em;
+  margin: 12px 0 0; max-width: 22ch;
 }
-.article-banner-img.placeholder { display: grid; place-items: center; }
-.article-banner-img.placeholder img { width: 74px; height: auto; opacity: .5; }
-.article-meta { padding: 22px clamp(20px, 3vw, 34px) 26px; display: flex; flex-direction: column; gap: 12px; }
-.article-title { font-family: var(--nb-font-display); font-weight: 400; font-synthesis: none; font-size: clamp(30px, 4.6vw, 54px); line-height: .98; }
-.article-byline { display: flex; align-items: center; gap: 11px; flex-wrap: wrap; font-size: 14px; color: var(--nb-fg-muted); }
+
+.article-wrap {
+  display: grid; grid-template-columns: minmax(0, 206px) minmax(0, 1fr);
+  gap: clamp(22px, 5vw, 72px); align-items: start;
+}
+.article-rail { position: sticky; top: 104px; display: grid; gap: 14px; }
+.article-byline { display: grid; gap: 9px; font-size: 14px; color: var(--nb-fg-muted); }
+.article-byline .who { display: flex; align-items: center; gap: 10px; }
 .article-byline .av {
-  width: 34px; height: 34px; flex: none; border-radius: 50%;
-  border: var(--nb-bd-thin); background: var(--nb-surface-2) center/cover no-repeat;
+  width: 34px; height: 34px; border-radius: var(--nb-r-pill); flex: none;
+  background: var(--nb-surface-2) center/cover no-repeat; border: var(--nb-bd-thin);
 }
 .article-byline b { color: var(--nb-fg); font-family: var(--nb-font-head); }
+.article-byline .when { font-family: var(--nb-font-mono); font-size: 12px; }
+@media (max-width: 860px) {
+  .article-wrap { grid-template-columns: 1fr; gap: 20px; }
+  .article-rail { position: static; }
+  .article-byline { grid-auto-flow: column; justify-content: start; align-items: center; gap: 14px; }
+}
+.article-banner-img {
+  display: block; width: 100%; aspect-ratio: 21 / 9;
+  background: var(--nb-surface-2) center/cover no-repeat;
+  border: var(--nb-bd); border-radius: var(--nb-r-sm); box-shadow: var(--nb-sh);
+  margin-bottom: clamp(24px, 3.4vw, 38px);
+}
 
-.article-body { max-width: 720px; margin-top: 30px; font-size: 16.5px; line-height: 1.75; }
+.article-body { max-width: 66ch; font-size: 17px; line-height: 1.75; }
 .article-body p { margin-bottom: 17px; color: var(--nb-fg-muted); }
-.article-body .lead { font-size: 19px; color: var(--nb-fg); }
+.article-body .lead { font-size: 20px; line-height: 1.6; color: var(--nb-fg); }
 .article-body b, .article-body strong { color: var(--nb-fg); font-weight: 700; }
 .article-body h2, .article-body h3 {
   font-family: var(--nb-font-head); font-weight: 700;
-  font-size: clamp(20px, 2.2vw, 26px); margin: 34px 0 12px; color: var(--nb-fg);
+  margin: 30px 0 12px; color: var(--nb-fg);
 }
+.article-body h2 { font-size: 25px; }
+.article-body h3 { font-size: 20px; }
 .article-body ul, .article-body ol { margin: 0 0 18px 0; padding-left: 0; list-style: none; display: grid; gap: 10px; }
 .article-body li { position: relative; padding-left: 26px; color: var(--nb-fg-muted); }
 .article-body li::before {
-  content: ""; position: absolute; left: 0; top: .58em;
-  width: 12px; height: 12px; background: var(--nb-blue);
-  border: var(--nb-bd-w-thin) solid var(--nb-line);
+  content: ''; position: absolute; left: 4px; top: .62em;
+  width: 9px; height: 9px; background: var(--nb-yellow);
+  border: var(--nb-bd-thin);
 }
 .article-body blockquote {
-  margin: 24px 0; padding: 18px 20px;
-  background: var(--nb-surface); color: var(--nb-surface-fg);
-  border: var(--nb-bd); border-radius: var(--nb-r-sm); box-shadow: var(--nb-sh-sm);
-  --nb-fg: var(--nb-surface-fg); --nb-fg-muted: var(--nb-surface-fg-muted);
+  margin: 0 0 18px; padding: 4px 0 4px 20px;
+  border-left: var(--nb-bd-w) solid var(--nb-blue);
+  font-size: 19px; line-height: 1.55; color: var(--nb-fg);
 }
 .article-body img { max-width: 100%; height: auto; border: var(--nb-bd); border-radius: var(--nb-r-sm); }
-
-.news-back { margin-bottom: 22px; }
 </style>
 </head>
 <body>
@@ -215,20 +273,19 @@ html { scroll-padding-top: 88px; }
 
 <div id="news-list-view">
 
-  <section class="pg-head">
+  <section class="nr-mast">
     <div class="nb-wrap">
-      <div class="nb-dots" aria-hidden="true"></div>
-      <div class="pg-slab nb-reveal">
-        <span class="nb-eyebrow">The News</span>
-        <h1 class="nb-display nb-d2">The Newsroom<span class="dot">.</span></h1>
-        <p class="nb-lead nb-muted">
-          We post when there's something worth posting.
-        </p>
+      <div class="nr-mast-rule"></div>
+      <h1 class="nb-display nr-name nb-reveal">The Newsroom<span class="dot">.</span></h1>
+      <div class="nr-line">
+        <span><b>Swiftaw</b></span><span>·</span>
+        <span>Île-de-France</span><span>·</span>
+        <span id="nr-count">No issue yet</span>
       </div>
     </div>
   </section>
 
-  <section class="nb-section" style="padding-top:clamp(20px,3vw,34px);">
+  <section class="nb-section" style="padding-top:clamp(18px,2.4vw,28px);">
     <div class="nb-wrap">
 
       <div class="news-controls" id="news-controls" hidden>
@@ -240,7 +297,8 @@ html { scroll-padding-top: 88px; }
         <div class="news-chips" id="news-chips" role="group" aria-label="Filter by category"></div>
       </div>
 
-      <div class="news-grid" id="news-grid"></div>
+      <div id="news-lead"></div>
+      <div class="nr-cols" id="news-grid"></div>
 
     </div>
   </section>
@@ -310,19 +368,19 @@ const SW_ARTICLES = {};
 
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-function excerpt(html){
+function excerpt(html, len){
+  const n = len || 120;
   const tmp = document.createElement('div');
   tmp.innerHTML = html;
   const lead = tmp.querySelector('.lead');
   const t = (lead ? lead.textContent : tmp.textContent).trim();
-  return t.slice(0, 120) + (t.length > 120 ? '…' : '');
+  return t.slice(0, n) + (t.length > n ? '…' : '');
 }
 
 function bannerHTML(banner, cls, tag){
+  if (!banner) return '';
   const t = tag || 'div';
-  return banner
-    ? `<${t} class="${cls}" style="background-image:url('${esc(banner)}');"></${t}>`
-    : `<${t} class="${cls} placeholder"><img src="${DECO}" alt="" loading="lazy"></${t}>`;
+  return `<${t} class="${cls}" style="background-image:url('${esc(banner)}');"></${t}>`;
 }
 
 let activeCategory = 'All';
@@ -352,27 +410,48 @@ function renderChips(){
   }));
 }
 
-function cardHTML(id, a){
-  return `<button type="button" class="nb-card nb-card--live nb-card--bare news-card nb-reveal" data-article="${esc(id)}">
-    ${bannerHTML(a.banner, 'news-card-img', 'span')}
-    <span class="news-card-body">
-      <span class="news-card-top">
+function leadHTML(id, a){
+  return `<button type="button" class="nr-lead nb-reveal${a.banner ? '' : ' nr-lead--nopic'}" data-article="${esc(id)}">
+    <span>
+      <span class="nr-item-top">
+        <span class="nb-tag nb-tag--yellow">Lead</span>
         ${a.category ? `<span class="nb-tag nb-tag--blue">${esc(a.category)}</span>` : ''}
-        <span class="news-card-date">${esc(a.date)}</span>
+        <span class="nr-item-d">${esc(a.date)}</span>
       </span>
-      <span class="news-card-title">${esc(a.title)}</span>
-      <span class="news-card-excerpt">${esc(excerpt(a.content || ''))}</span>
-      <span class="news-card-more">Read more →</span>
+      <span class="nr-lead-h">${esc(a.title)}</span>
+      <span class="nr-lead-x">${esc(excerpt(a.content || '', 220))}</span>
+      <span class="nr-lead-b">
+        ${a.bylineAvatar ? `<span class="av" style="background-image:url('${esc(a.bylineAvatar)}');"></span>` : ''}
+        <span><b>${esc(a.bylineName || 'Swiftaw')}</b></span><span>·</span><span>Read the piece</span>
+      </span>
     </span>
+    ${bannerHTML(a.banner, 'nr-lead-img', 'span')}
+  </button>`;
+}
+
+function itemHTML(id, a){
+  return `<button type="button" class="nr-item nb-reveal" data-article="${esc(id)}">
+    <span class="nr-item-top">
+      ${a.category ? `<span class="nb-tag nb-tag--blue">${esc(a.category)}</span>` : ''}
+      <span class="nr-item-d">${esc(a.date)}</span>
+    </span>
+    <span class="nr-item-h">${esc(a.title)}</span>
+    <span class="nr-item-x">${esc(excerpt(a.content || ''))}</span>
   </button>`;
 }
 
 function renderGrid(){
+  const lead = document.getElementById('news-lead');
   const grid = document.getElementById('news-grid');
   const controls = document.getElementById('news-controls');
   const all = Object.entries(SW_ARTICLES);
 
   controls.hidden = all.length === 0;
+
+  const stamp = document.getElementById('nr-count');
+  if (stamp) stamp.textContent = all.length
+    ? (all.length === 1 ? '1 piece' : all.length + ' pieces')
+    : 'No issue yet';
 
   const q = newsSearch.toLowerCase().trim();
   const entries = all
@@ -384,20 +463,27 @@ function renderGrid(){
     .sort((x, y) => (y[1].sortIndex || 0) - (x[1].sortIndex || 0));
 
   if (!entries.length){
-    grid.innerHTML = `<div class="nb-card nb-card--lg nb-state" style="grid-column:1/-1;">
+    lead.innerHTML = `<div class="nr-none">
       <img src="${DECO}" alt="" loading="lazy">
-      <h3>${all.length ? 'Nothing here' : 'Nothing published yet'}</h3>
+      <h2 class="nb-h2">${all.length ? 'Nothing matches that' : 'No issue yet'}</h2>
       <p>${all.length
-        ? 'No post matches that.'
-        : 'When we ship something worth writing up, it lands here. In the meantime, the <a href="/innovation-room">Lab</a> shows what we are working on.'}</p>
+        ? 'No piece here matches what you typed. Clear the search, or pick another category.'
+        : 'When we ship something worth writing up, it runs here. Until then the <a href="/innovation-room">Lab</a> shows what is on the bench.'}</p>
     </div>`;
-    if (window.SwiftawObserveReveals) window.SwiftawObserveReveals(grid);
+    grid.innerHTML = '';
+    if (window.SwiftawObserveReveals) window.SwiftawObserveReveals(lead);
     return;
   }
-  grid.innerHTML = entries.map(([id, a]) => cardHTML(id, a)).join('');
-  grid.querySelectorAll('[data-article]').forEach(el =>
-    el.addEventListener('click', () => openArticle(el.dataset.article)));
-  if (window.SwiftawObserveReveals) window.SwiftawObserveReveals(grid);
+
+  const [leadId, leadArt] = entries[0];
+  lead.innerHTML = leadHTML(leadId, leadArt);
+  grid.innerHTML = entries.slice(1).map(([id, a]) => itemHTML(id, a)).join('');
+
+  [lead, grid].forEach(host => {
+    host.querySelectorAll('[data-article]').forEach(el =>
+      el.addEventListener('click', () => openArticle(el.dataset.article)));
+    if (window.SwiftawObserveReveals) window.SwiftawObserveReveals(host);
+  });
 }
 
 function renderArticle(id){
@@ -405,20 +491,24 @@ function renderArticle(id){
   if (!a) return false;
   document.getElementById('article-content').innerHTML = `
     <article>
-      <div class="nb-card nb-card--lg nb-card--bare">
-        ${bannerHTML(a.banner, 'article-banner-img')}
-        <div class="article-meta">
-          ${a.category ? `<div><span class="nb-tag nb-tag--blue">${esc(a.category)}</span></div>` : ''}
-          <h1 class="article-title">${esc(a.title)}</h1>
+      <div class="article-head">
+        ${a.category ? `<div><span class="nb-tag nb-tag--blue">${esc(a.category)}</span></div>` : ''}
+        <h1 class="article-title">${esc(a.title)}</h1>
+      </div>
+      ${bannerHTML(a.banner, 'article-banner-img')}
+      <div class="article-wrap">
+        <div class="article-rail">
+          <span class="nb-eyebrow">Written by</span>
           <div class="article-byline">
-            ${a.bylineAvatar ? `<span class="av" style="background-image:url('${esc(a.bylineAvatar)}');"></span>` : ''}
-            <span><b>${esc(a.bylineName || 'Swiftaw')}</b></span>
-            <span>·</span>
-            <span>${esc(a.date)}</span>
+            <span class="who">
+              ${a.bylineAvatar ? `<span class="av" style="background-image:url('${esc(a.bylineAvatar)}');"></span>` : ''}
+              <b>${esc(a.bylineName || 'Swiftaw')}</b>
+            </span>
+            <span class="when">${esc(a.date)}</span>
           </div>
         </div>
+        <div class="article-body">${a.content || ''}</div>
       </div>
-      <div class="article-body">${a.content || ''}</div>
     </article>`;
   document.title = a.title + ' - Swiftaw Newsroom';
   document.getElementById('news-list-view').classList.add('hidden');
