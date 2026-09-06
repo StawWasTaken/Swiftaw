@@ -199,6 +199,14 @@ Per page, in that page's own inline style:
   drops its empty columns is not a picture of the whole bench. Numbers on the
   board are Syne, not Tropicon: Tropicon's figures are drawn for a headline and
   its 0 reads as a struck-through blob at counter size.
+- **Press kit** is a specimen sheet. A contents strip, then every collection
+  as a plate the width of the page: the artwork at a size you can judge, and
+  the file list open beside it rather than folded into a disclosure. Colour is
+  the bar itself, full bleed, because Rainbaw is a bar on every other page of
+  the site and eight small cards is the one shape that does not say so. Type is
+  one real line per face at the size that face is actually set at, not three Aa
+  tiles. Same Tropicon rule as the Lab, twice over: the manifest counters and
+  the alphabet specimen both need a size at which Tropicon is still letters.
 - **Contact** is a desk. The form takes the page as a ruled register, label and
   its explanation on the left, the control on the right, one rule between each
   step. A form centred in a card in a 780px column is a widget dropped on a

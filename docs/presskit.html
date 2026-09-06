@@ -32,137 +32,158 @@ html { scroll-padding-top: 88px; }
 .pg-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-.pg-head { position: relative; padding: clamp(46px, 7vw, 92px) 0 clamp(16px, 2.4vw, 30px); overflow: hidden; }
-.pk-head { position: relative; z-index: 2; display: grid; align-items: center; gap: clamp(18px, 3vw, 44px); grid-template-columns: minmax(0, 1fr) 200px; }
-.pk-head-txt { max-width: 46ch; }
-.pk-eyebrow { color: var(--nb-yellow); display: block; margin-bottom: 16px; }
-.pk-head h1 { margin: 0; font-size: clamp(38px, 5.4vw, 74px); }
-.pk-head-lead { margin: 18px 0 24px; }
-.pk-head-art { width: 200px; height: auto; justify-self: end; }
-.pk-head-acts { display: flex; gap: 12px; flex-wrap: wrap; }
-@media (max-width: 820px) { .pk-head { grid-template-columns: 1fr; } .pk-head-art { display: none; } }
+.pk-head { padding: clamp(44px, 6vw, 82px) 0 0; }
+.pk-title { margin: 0 0 clamp(14px, 2vw, 20px); font-size: clamp(42px, 8.4vw, 116px); line-height: .86; letter-spacing: -.03em; }
+.pk-title .dot { color: var(--nb-yellow); }
+.pk-say {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40ch);
+  gap: clamp(16px, 4vw, 60px); align-items: end;
+  padding-bottom: clamp(22px, 3vw, 34px); border-bottom: var(--nb-bd);
+}
+.pk-say .nb-lead { margin: 0; font-size: clamp(19px, 2.2vw, 27px); line-height: 1.35; max-width: 24ch; color: var(--nb-fg); }
+.pk-say p:last-child { margin: 0; color: var(--nb-fg-muted); line-height: 1.6; max-width: 40ch; }
+@media (max-width: 820px) { .pk-say { grid-template-columns: 1fr; align-items: start; } }
 
-.pk-deco-1 { top: 22%; right: 4%; --nb-rot: 14deg; }
-@media (max-width: 1300px) { .pk-deco-1 { display: none; } }
+.pk-index { display: flex; align-items: center; gap: clamp(14px, 2.4vw, 30px); flex-wrap: wrap; padding: 13px 0; border-bottom: var(--nb-bd); }
+.pk-index a {
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 11.5px;
+  letter-spacing: .15em; text-transform: uppercase; color: var(--nb-fg-muted); text-decoration: none;
+}
+.pk-index a:hover { color: var(--nb-fg); }
+.pk-index .tot { margin-left: auto; font-family: var(--nb-font-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--nb-fg-muted); }
+@media (max-width: 620px) { .pk-index .tot { display: none; } }
 
-.pk-sec { padding: clamp(34px, 4.6vw, 64px) 0 0; }
-.pk-sec-head { margin-bottom: 24px; max-width: 56ch; }
-.pk-sec-head h2 { margin: 0 0 9px; }
+.pk-sec { padding: clamp(34px, 4.6vw, 62px) 0 0; }
+.pk-sec-head { margin-bottom: clamp(16px, 2.2vw, 26px); max-width: 58ch; }
+.pk-sec-head h2 { margin: 0 0 8px; }
 .pk-sec-head p { margin: 0; font-size: 14.5px; line-height: 1.6; color: var(--nb-fg-muted); }
 
-.pk-kits { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-@media (max-width: 860px) { .pk-kits { grid-template-columns: 1fr; } }
-
-.pk-kit { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
-
-.pk-kit-stage {
-  display: grid; place-items: center; padding: 20px;
-  height: 186px; background: var(--nb-surface-2);
-  border-bottom: var(--nb-bd-thin);
+.pk-plates { border-top: var(--nb-bd); }
+.pk-plate {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 306px);
+  gap: clamp(20px, 4vw, 56px); align-items: start;
+  padding: clamp(24px, 3.4vw, 46px) 0; border-bottom: var(--nb-bd);
 }
-.pk-kit-stage.on-light { background: #FFFFFF; }
+@media (max-width: 900px) { .pk-plate { grid-template-columns: 1fr; gap: 22px; } }
 
-.pk-strip { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; }
-.pk-strip img { display: block; max-width: 100%; height: auto; }
-
-.pk-strip--logos { flex-direction: column; gap: 18px; }
-.pk-strip--logos .a { max-height: 32px; width: auto; }
-.pk-strip--logos .b { max-height: 58px; width: auto; }
-
-.pk-strip--icons img { width: 60px; height: 60px; object-fit: contain; }
-@media (max-width: 420px) { .pk-strip--icons img { width: 46px; height: 46px; } }
-
-.pk-strip--wide img { width: calc(33.333% - 8px); height: auto; border: var(--nb-bd-thin); border-radius: 5px; }
-
-.pk-strip--tiles img { width: calc(25% - 9px); aspect-ratio: 1; object-fit: cover; border: var(--nb-bd-thin); border-radius: 5px; }
-
-.pk-kit-b { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
-.pk-kit-b h3 { margin: 0 0 6px; }
-.pk-kit-b > p { margin: 0 0 14px; font-size: 14px; line-height: 1.6; color: var(--nb-fg-muted); }
-.pk-kit-meta {
-  display: block; margin-bottom: 16px;
-  font-family: var(--nb-font-head); font-weight: 700; font-size: 11.5px;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--nb-fg-muted);
+.pk-stage {
+  display: grid; place-items: center; padding: clamp(18px, 2.6vw, 34px);
+  min-height: clamp(210px, 24vw, 310px);
+  background: var(--nb-surface-2);
+  border: var(--nb-bd); border-radius: var(--nb-r-sm); box-shadow: var(--nb-sh-sm);
 }
-.pk-kit-acts { margin-top: auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.pk-stage.on-light { background: #FFFFFF; }
+.pk-stage img { display: block; max-width: 100%; height: auto; }
 
-.pk-files { margin-top: 14px; font-size: 13.5px; }
-.pk-files summary {
-  cursor: pointer; list-style: none;
-  font-family: var(--nb-font-head); font-weight: 700; font-size: 13px;
-  color: var(--nb-fg-muted);
+.pk-set { display: flex; align-items: center; justify-content: center; gap: clamp(12px, 2vw, 26px); width: 100%; }
+.pk-set--logos { flex-direction: column; gap: clamp(18px, 3vw, 34px); }
+.pk-set--logos .a { max-height: clamp(30px, 4vw, 46px); width: auto; }
+.pk-set--logos .b { max-height: clamp(64px, 9vw, 104px); width: auto; }
+.pk-set--icons img { width: clamp(52px, 8vw, 96px); height: auto; }
+
+.pk-set--banners { display: grid; gap: clamp(10px, 1.4vw, 16px); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pk-set--banners img { width: 100%; border: var(--nb-bd-thin); border-radius: 6px; }
+.pk-set--banners img:first-child { grid-column: 1 / -1; }
+
+.pk-set--tiles { display: grid; gap: clamp(10px, 1.4vw, 16px); grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.pk-set--tiles img { width: 100%; aspect-ratio: 1; object-fit: cover; border: var(--nb-bd-thin); border-radius: 6px; }
+@media (max-width: 520px) { .pk-set--tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.pk-plate-n {
+  display: block; margin-bottom: 10px;
+  font-family: var(--nb-font-mono); font-size: 11.5px;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--nb-fg-muted);
 }
-.pk-files summary::-webkit-details-marker { display: none; }
-.pk-files summary::before { content: "+ "; }
-.pk-files[open] summary::before { content: "- "; }
-.pk-files summary:hover { color: var(--nb-fg); }
-.pk-files ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-.pk-files li { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
-.pk-files a { color: var(--nb-yellow); }
-.pk-files span { font-size: 12px; color: var(--nb-fg-muted); font-family: var(--nb-font-mono); flex: none; }
+.pk-plate-b h2 { margin: 0 0 8px; font-size: clamp(23px, 2.6vw, 30px); }
+.pk-plate-b > p { margin: 0 0 16px; font-size: 14.5px; line-height: 1.6; color: var(--nb-fg-muted); }
+.pk-plate-acts { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
-.pk-two { display: grid; gap: clamp(26px, 4vw, 52px); grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; }
-@media (max-width: 900px) { .pk-two { grid-template-columns: 1fr; } }
+.pk-list { margin: 18px 0 0; padding: 0; list-style: none; border-top: var(--nb-bd-thin); }
+.pk-list li { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 9px 0; border-bottom: var(--nb-bd-thin); }
+.pk-list a { font-size: 13.5px; color: var(--nb-yellow); }
+.pk-list span { flex: none; font-family: var(--nb-font-mono); font-size: 11.5px; color: var(--nb-fg-muted); }
+.pk-list .tot { justify-content: flex-end; font-family: var(--nb-font-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--nb-fg-muted); border-bottom: 0; }
 
-.pk-cols { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-@media (max-width: 1100px) { .pk-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 460px) { .pk-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.pk-col { padding: 0; overflow: hidden; text-align: left; width: 100%; cursor: pointer; }
-.pk-swatch { display: block; height: 62px; border-bottom: var(--nb-bd-thin); }
-.pk-col-b { display: block; padding: 11px 13px; }
-.pk-col-b b { display: block; font-family: var(--nb-font-head); font-weight: 700; font-size: 13.5px; }
-.pk-col-b code { display: block; margin-top: 3px; font-family: var(--nb-font-mono); font-size: 12px; color: var(--nb-fg-muted); }
-.pk-col.is-copied .pk-col-b code { color: var(--nb-green); }
-
-.pk-type { display: grid; gap: 0; }
-.pk-type-r { display: flex; align-items: baseline; gap: 18px; padding: 16px 0; border-top: var(--nb-bd-thin); }
-.pk-type-r:first-child { border-top: 0; padding-top: 0; }
-.pk-type-r h3 { margin: 0 0 4px; font-size: 16px; }
-.pk-type-r p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--nb-fg-muted); }
-.pk-type-r .pk-type-spec { margin: 0; flex: none; width: 74px; font-size: 40px; line-height: 1; letter-spacing: -.02em; color: var(--nb-fg); }
-.pk-type-r .pk-type-spec.is-syne { font-family: var(--nb-font-head); font-weight: 700; }
-.pk-type-note { margin: 18px 0 0; font-size: 13px; line-height: 1.6; color: var(--nb-fg-muted); }
-
-.pk-rules { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-@media (max-width: 780px) { .pk-rules { grid-template-columns: 1fr; } }
-.pk-rule { padding: 22px 24px; }
-.pk-rule h3 { margin: 0 0 14px; font-size: 17px; display: flex; align-items: center; gap: 10px; }
-.pk-rule ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 11px; }
-.pk-rule li { position: relative; padding-left: 26px; font-size: 14px; line-height: 1.6; }
-.pk-rule li::before {
-  content: ""; position: absolute; left: 0; top: 7px;
-  width: 13px; height: 7px;
-  border-left: 3px solid var(--nb-green); border-bottom: 3px solid var(--nb-green);
-  transform: rotate(-45deg);
+.pk-bar { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); border-top: var(--nb-bd); border-bottom: var(--nb-bd); }
+.pk-band {
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 3px;
+  width: 100%; text-align: left; cursor: pointer;
+  min-height: clamp(128px, 15vw, 196px); padding: 14px 15px;
+  background: var(--pk-c); color: var(--pk-ink);
+  border-left: 2px solid rgba(255, 255, 255, .22);
+  transition: padding-bottom var(--nb-fast) var(--nb-ease);
 }
-.pk-rule.is-no li::before {
-  width: 14px; height: 14px; top: 4px; transform: none; border: 0;
-  background:
-    linear-gradient(to bottom right, transparent 44%, var(--nb-red) 44%, var(--nb-red) 56%, transparent 56%),
-    linear-gradient(to bottom left,  transparent 44%, var(--nb-red) 44%, var(--nb-red) 56%, transparent 56%);
+.pk-band:first-child { border-left: 0; }
+.pk-band:hover { padding-bottom: 22px; }
+.pk-band b { font-family: var(--nb-font-head); font-weight: 700; font-size: 13.5px; }
+.pk-band code { font-family: var(--nb-font-mono); font-size: 12px; opacity: .78; }
+@media (max-width: 980px) {
+  .pk-bar { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .pk-band:nth-child(5) { border-left: 0; }
 }
-.pk-badge { width: 26px; height: 26px; flex: none; border: var(--nb-bd-thin); border-radius: 8px; background: var(--nb-green); }
-.pk-rule.is-no .pk-badge { background: var(--nb-red); }
+@media (max-width: 560px) {
+  .pk-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pk-band:nth-child(odd) { border-left: 0; }
+  .pk-band:nth-child(5) { border-left: 2px solid rgba(255, 255, 255, .22); }
+}
 
-.pk-facts { display: grid; gap: 0; margin: 0 0 22px; }
-.pk-fact { display: flex; gap: 18px; padding: 13px 0; border-top: var(--nb-bd-thin); }
-.pk-fact:first-child { border-top: 0; padding-top: 0; }
+.pk-faces { border-top: var(--nb-bd); }
+.pk-face {
+  display: grid; grid-template-columns: minmax(0, 192px) minmax(0, 1fr);
+  gap: clamp(14px, 3vw, 44px); align-items: start;
+  padding: clamp(22px, 3vw, 38px) 0; border-bottom: var(--nb-bd-thin);
+}
+@media (max-width: 760px) { .pk-face { grid-template-columns: 1fr; gap: 14px; } }
+.pk-face-l h3 { margin: 0 0 6px; font-size: 17px; }
+.pk-face-l p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--nb-fg-muted); }
+.pk-face-r { min-width: 0; }
+.pk-spec { margin: 0; line-height: 1; }
+.pk-spec--t { font-family: var(--nb-font-display); font-weight: 400; font-synthesis: none; font-size: clamp(34px, 6.4vw, 82px); }
+.pk-spec--s { font-family: var(--nb-font-head); font-weight: 700; font-size: clamp(24px, 4vw, 50px); letter-spacing: -.02em; }
+.pk-spec--b { font-family: var(--nb-font-body); font-size: clamp(19px, 3vw, 36px); }
+.pk-glyphs { margin: 14px 0 0; font-size: 12.5px; line-height: 1.5; letter-spacing: .07em; color: var(--nb-fg-muted); word-break: break-word; }
+
+.pk-glyphs.nb-display { font-size: clamp(16px, 1.9vw, 25px); letter-spacing: .04em; line-height: 1.35; margin-top: 18px; }
+.pk-face-note { margin: 18px 0 0; font-size: 13px; line-height: 1.6; color: var(--nb-fg-muted); max-width: 62ch; }
+
+.pk-rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 5vw, 66px); }
+@media (max-width: 780px) { .pk-rules { grid-template-columns: 1fr; gap: 30px; } }
+.pk-rule-h { display: flex; align-items: center; gap: 10px; margin: 0; padding-bottom: 13px; border-bottom: var(--nb-bd); font-size: 17px; }
+.pk-rule-h .m { width: 22px; height: 22px; flex: none; border: var(--nb-bd-thin); border-radius: 7px; background: var(--nb-green); }
+.pk-rules .is-no .m { background: var(--nb-red); }
+.pk-rule-l { margin: 0; padding: 0; list-style: none; }
+.pk-rule-l li { padding: 13px 0; border-bottom: var(--nb-bd-thin); font-size: 14.5px; line-height: 1.6; }
+
+.pk-facts { margin: 0 0 clamp(24px, 3.4vw, 40px); border-top: var(--nb-bd-thin); }
+.pk-fact { display: flex; gap: clamp(14px, 3vw, 34px); padding: 13px 0; border-bottom: var(--nb-bd-thin); }
 .pk-fact dt {
-  flex: none; width: 128px; margin: 0;
+  flex: none; width: clamp(96px, 14vw, 148px); margin: 0; padding-top: 3px;
   font-family: var(--nb-font-head); font-weight: 700; font-size: 11.5px;
-  letter-spacing: .1em; text-transform: uppercase; color: var(--nb-fg-muted);
-  padding-top: 3px;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--nb-fg-muted);
 }
 .pk-fact dd { margin: 0; font-family: var(--nb-font-head); font-weight: 700; font-size: 16px; line-height: 1.4; }
-.pk-para { padding: 22px 24px; }
-.pk-para p { margin: 0; font-size: 15px; line-height: 1.75; }
-.pk-lines { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
-.pk-lines li { display: flex; gap: 12px; align-items: baseline; font-size: 14px; line-height: 1.6; color: var(--nb-fg-muted); }
-.pk-lines b { flex: none; width: 96px; color: var(--nb-fg); font-family: var(--nb-font-head); font-weight: 700; font-size: 14.5px; }
 
-.pk-ask { background: var(--nb-yellow); color: var(--nb-ink); --nb-fg: var(--nb-ink); --nb-fg-muted: #3A3A2A; padding: clamp(26px, 4vw, 44px); text-align: center; }
-.pk-ask h2 { margin: 0; }
-.pk-ask p { max-width: 46ch; margin: 12px auto 22px; font-size: 15px; line-height: 1.6; }
+.pk-boiler { border: var(--nb-bd); border-radius: var(--nb-r-sm); box-shadow: var(--nb-sh-sm); padding: clamp(20px, 3vw, 30px); background: var(--nb-surface); color: var(--nb-surface-fg); }
+.pk-boiler-h { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.pk-boiler-h .nb-eyebrow { margin: 0; }
+.pk-boiler p { margin: 0; font-size: 15.5px; line-height: 1.75; max-width: 68ch; }
+
+.pk-prods .nb-mf-d { font-size: 15px; }
+
+.pk-prods .nb-mf-n { font-family: var(--nb-font-head); font-weight: 700; font-size: clamp(22px, 2.6vw, 34px); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+
+.pk-ask {
+  margin-top: clamp(46px, 6vw, 82px);
+  background: var(--nb-yellow); color: var(--nb-ink);
+  border-top: var(--nb-bd); border-bottom: var(--nb-bd);
+  padding: clamp(38px, 5.4vw, 74px) 0;
+  --nb-fg: var(--nb-ink); --nb-fg-muted: #3A3A2E;
+}
+.pk-ask-in { display: grid; grid-template-columns: 132px minmax(0, 1fr) auto; gap: clamp(18px, 4vw, 50px); align-items: center; }
+.pk-ask img { width: 132px; height: auto; display: block; }
+.pk-ask h2 { margin: 0 0 8px; font-size: clamp(26px, 3.4vw, 40px); }
+.pk-ask p { margin: 0; font-size: 15px; line-height: 1.6; max-width: 50ch; }
+@media (max-width: 900px) { .pk-ask-in { grid-template-columns: 1fr; } .pk-ask img { display: none; } }
 
 .pk-busy { display: inline-flex; align-items: center; gap: 9px; font-size: 13.5px; color: var(--nb-fg-muted); }
 .pk-busy[hidden] { display: none; }
@@ -233,148 +254,143 @@ html { scroll-padding-top: 88px; }
 
 <main id="main">
 
-<section class="pg-head">
+<section class="pk-head">
   <div class="nb-wrap">
-    <div class="pk-head">
-      <div class="pk-head-txt nb-reveal">
-        <span class="nb-eyebrow pk-eyebrow">Press kit</span>
-        <h1 class="nb-display">Take what you need.</h1>
-        <p class="nb-lead pk-head-lead">
-          Four collections, ready to download. Colours, typefaces and the plain
-          facts are underneath, so you should not have to ask us for anything.
-        </p>
-        <div class="pk-head-acts">
-          <a class="nb-btn nb-btn--primary nb-btn--lg" href="#kits">The collections</a>
-          <a class="nb-btn nb-btn--lg" href="#rules">Rules of use</a>
-        </div>
-      </div>
-      <img class="pk-head-art" src="/SWFT-Deco/pretty-logo.png" alt="" aria-hidden="true">
+    <span class="nb-eyebrow">Press kit</span>
+    <h1 class="nb-display pk-title">take what you need<span class="dot">.</span></h1>
+    <div class="pk-say">
+      <p class="nb-lead">Everything we would send you if you wrote in, already on the page.</p>
+      <p>
+        Four collections of artwork, the colours, the three faces, the rules
+        for the marks and the paragraph an editor can lift whole. If something
+        is missing, <a href="/contact">open a ticket</a> and it comes to us.
+      </p>
     </div>
+    <nav class="pk-index" aria-label="On this page">
+      <a href="#plates">Plates</a>
+      <a href="#colours">Colours</a>
+      <a href="#type">Type</a>
+      <a href="#marks">The marks</a>
+      <a href="#facts">The facts</a>
+      <span class="tot">4 collections &middot; 15 files &middot; 23 MB</span>
+    </nav>
   </div>
-  <span class="nb-deco nb-shape nb-shape--sq nb-poke nb-float pk-deco-1" data-depth="20" aria-hidden="true"></span>
 </section>
 
-<section class="pk-sec" id="kits">
+<section class="pk-sec" id="plates">
   <div class="nb-wrap">
     <div class="pk-sec-head nb-reveal">
-      <h2 class="nb-h2">Collections</h2>
+      <h2 class="nb-h2">The plates</h2>
       <p>
-        Each one downloads as a single zip. Every file is a PNG with a
-        transparent or flat background, at the size we use it ourselves.
+        Each collection downloads as one zip with a note inside it. Every file
+        is a PNG at the size we use it ourselves, so nothing needs resizing to
+        be usable.
       </p>
     </div>
 
-    <div class="pk-kits" id="pkKits">
+    <div class="pk-plates" id="pkKits">
 
-      <div class="nb-card pk-kit nb-reveal">
-        <div class="pk-kit-stage">
-          <div class="pk-strip pk-strip--logos">
+      <div class="pk-plate nb-reveal">
+        <div class="pk-stage">
+          <div class="pk-set pk-set--logos">
             <img class="a" src="/SWFTW_Logomark.png" alt="The Swiftaw wordmark">
             <img class="b" src="/SwiftawLogo.png" alt="The Swiftaw mark">
           </div>
         </div>
-        <div class="pk-kit-b">
-          <h3 class="nb-h4">Logos</h3>
+        <div class="pk-plate-b">
+          <span class="pk-plate-n">Plate 01</span>
+          <h2 class="nb-h">Logos</h2>
           <p>The wordmark in colour and in black, the mark on its own, and the favicon.</p>
-          <span class="pk-kit-meta">4 files &middot; PNG &middot; 260 KB</span>
-          <div class="pk-kit-acts">
+          <div class="pk-plate-acts">
             <button class="nb-btn nb-btn--primary" type="button" data-kit="logos">Download zip</button>
             <span class="pk-busy" hidden><span class="nb-loader" aria-hidden="true"></span> Packing</span>
           </div>
-          <details class="pk-files">
-            <summary>The files</summary>
-            <ul>
-              <li><a href="/SWFTW_Logomark.png" download>Wordmark, colour</a> <span>1368 x 328</span></li>
-              <li><a href="/SWFTW_Logomark%20black.png" download>Wordmark, black</a> <span>1368 x 328</span></li>
-              <li><a href="/SwiftawLogo.png" download>The mark</a> <span>401 x 503</span></li>
-              <li><a href="/Swiftaw%20Favicon.png" download>Favicon</a> <span>581 x 581</span></li>
-            </ul>
-          </details>
+          <ul class="pk-list">
+            <li><a href="/SWFTW_Logomark.png" download>Wordmark, colour</a> <span>1368 x 328</span></li>
+            <li><a href="/SWFTW_Logomark%20black.png" download>Wordmark, black</a> <span>1368 x 328</span></li>
+            <li><a href="/SwiftawLogo.png" download>The mark</a> <span>401 x 503</span></li>
+            <li><a href="/Swiftaw%20Favicon.png" download>Favicon</a> <span>581 x 581</span></li>
+            <li class="tot">4 files &middot; PNG &middot; 259 KB</li>
+          </ul>
         </div>
       </div>
 
-      <div class="nb-card pk-kit nb-reveal">
-        <div class="pk-kit-stage">
-          <div class="pk-strip pk-strip--icons">
+      <div class="pk-plate nb-reveal">
+        <div class="pk-stage">
+          <div class="pk-set pk-set--icons">
             <img src="/product-logos/Fortized%20icon.png" alt="The Fortized icon">
             <img src="/product-logos/Hereld%20icon.png" alt="The Hereld icon">
             <img src="/product-logos/Lifecheck%20icon.png" alt="The Lifecheck icon">
             <img src="/product-logos/Supernova%20icon.png" alt="The Supernova icon">
           </div>
         </div>
-        <div class="pk-kit-b">
-          <h3 class="nb-h4">Product icons</h3>
+        <div class="pk-plate-b">
+          <span class="pk-plate-n">Plate 02</span>
+          <h2 class="nb-h">Product icons</h2>
           <p>Fortized, Hereld, Lifecheck and Supernova. Already rounded, so do not add a frame.</p>
-          <span class="pk-kit-meta">4 files &middot; PNG &middot; 195 KB</span>
-          <div class="pk-kit-acts">
+          <div class="pk-plate-acts">
             <button class="nb-btn nb-btn--primary" type="button" data-kit="icons">Download zip</button>
             <span class="pk-busy" hidden><span class="nb-loader" aria-hidden="true"></span> Packing</span>
           </div>
-          <details class="pk-files">
-            <summary>The files</summary>
-            <ul>
-              <li><a href="/product-logos/Fortized%20icon.png" download>Fortized</a> <span>581 x 581</span></li>
-              <li><a href="/product-logos/Hereld%20icon.png" download>Hereld</a> <span>560 x 560</span></li>
-              <li><a href="/product-logos/Lifecheck%20icon.png" download>Lifecheck</a> <span>581 x 581</span></li>
-              <li><a href="/product-logos/Supernova%20icon.png" download>Supernova</a> <span>581 x 581</span></li>
-            </ul>
-          </details>
+          <ul class="pk-list">
+            <li><a href="/product-logos/Fortized%20icon.png" download>Fortized</a> <span>581 x 581</span></li>
+            <li><a href="/product-logos/Hereld%20icon.png" download>Hereld</a> <span>560 x 560</span></li>
+            <li><a href="/product-logos/Lifecheck%20icon.png" download>Lifecheck</a> <span>581 x 581</span></li>
+            <li><a href="/product-logos/Supernova%20icon.png" download>Supernova</a> <span>581 x 581</span></li>
+            <li class="tot">4 files &middot; PNG &middot; 193 KB</li>
+          </ul>
         </div>
       </div>
 
-      <div class="nb-card pk-kit nb-reveal">
-        <div class="pk-kit-stage">
-          <div class="pk-strip pk-strip--wide">
+      <div class="pk-plate nb-reveal">
+        <div class="pk-stage">
+          <div class="pk-set pk-set--banners">
             <img src="/presskit-thumbs/banner1.jpg" alt="The wordmark banner" loading="lazy" width="760" height="350">
             <img src="/presskit-thumbs/banner2.jpg" alt="The mark banner" loading="lazy" width="760" height="350">
             <img src="/presskit-thumbs/banner3.jpg" alt="The app icon banner" loading="lazy" width="760" height="430">
           </div>
         </div>
-        <div class="pk-kit-b">
-          <h3 class="nb-h4">Banners</h3>
+        <div class="pk-plate-b">
+          <span class="pk-plate-n">Plate 03</span>
+          <h2 class="nb-h">Banners</h2>
           <p>Wide artwork for a header or a thumbnail. Wordmark, mark and app icon.</p>
-          <span class="pk-kit-meta">3 files &middot; PNG &middot; 17 MB</span>
-          <div class="pk-kit-acts">
+          <div class="pk-plate-acts">
             <button class="nb-btn nb-btn--primary" type="button" data-kit="banners">Download zip</button>
             <span class="pk-busy" hidden><span class="nb-loader" aria-hidden="true"></span> Packing</span>
           </div>
-          <details class="pk-files">
-            <summary>The files</summary>
-            <ul>
-              <li><a href="/Swiftaw%20banner1.png" download>Banner 1, wordmark</a> <span>2864 x 1317</span></li>
-              <li><a href="/Swiftaw%20banner2.png" download>Banner 2, mark</a> <span>2864 x 1317</span></li>
-              <li><a href="/Swiftaw%20banner3.png" download>Banner 3, app icon</a> <span>2328 x 1317</span></li>
-            </ul>
-          </details>
+          <ul class="pk-list">
+            <li><a href="/Swiftaw%20banner1.png" download>Banner 1, wordmark</a> <span>2864 x 1317</span></li>
+            <li><a href="/Swiftaw%20banner2.png" download>Banner 2, mark</a> <span>2864 x 1317</span></li>
+            <li><a href="/Swiftaw%20banner3.png" download>Banner 3, app icon</a> <span>2328 x 1317</span></li>
+            <li class="tot">3 files &middot; PNG &middot; 16.7 MB</li>
+          </ul>
         </div>
       </div>
 
-      <div class="nb-card pk-kit nb-reveal">
-        <div class="pk-kit-stage on-light">
-          <div class="pk-strip pk-strip--tiles">
+      <div class="pk-plate nb-reveal">
+        <div class="pk-stage on-light">
+          <div class="pk-set pk-set--tiles">
             <img src="/presskit-thumbs/stylised1.jpg" alt="The mark painted in watercolour" loading="lazy" width="520" height="520">
             <img src="/presskit-thumbs/stylised2.jpg" alt="The mark cast in glass inside ice" loading="lazy" width="520" height="520">
             <img src="/presskit-thumbs/stylised3.jpg" alt="The mark drawn as a manga panel" loading="lazy" width="520" height="520">
             <img src="/presskit-thumbs/stylised4.jpg" alt="The mark frozen in a block of ice" loading="lazy" width="520" height="520">
           </div>
         </div>
-        <div class="pk-kit-b">
-          <h3 class="nb-h4">Stylised images</h3>
+        <div class="pk-plate-b">
+          <span class="pk-plate-n">Plate 04</span>
+          <h2 class="nb-h">Stylised images</h2>
           <p>The mark treated four ways. Square, for an article opener or a social post.</p>
-          <span class="pk-kit-meta">4 files &middot; PNG &middot; 6 MB</span>
-          <div class="pk-kit-acts">
+          <div class="pk-plate-acts">
             <button class="nb-btn nb-btn--primary" type="button" data-kit="stylised">Download zip</button>
             <span class="pk-busy" hidden><span class="nb-loader" aria-hidden="true"></span> Packing</span>
           </div>
-          <details class="pk-files">
-            <summary>The files</summary>
-            <ul>
-              <li><a href="/swiftaw-presskit1.png" download>Watercolour</a> <span>1024 x 1024</span></li>
-              <li><a href="/swiftaw-presskit2.png" download>Glass</a> <span>1024 x 1024</span></li>
-              <li><a href="/swiftaw-presskit3.png" download>Manga</a> <span>1024 x 1024</span></li>
-              <li><a href="/swiftaw-presskit4.png" download>Ice</a> <span>1024 x 1024</span></li>
-            </ul>
-          </details>
+          <ul class="pk-list">
+            <li><a href="/swiftaw-presskit1.png" download>Watercolour</a> <span>1024 x 1024</span></li>
+            <li><a href="/swiftaw-presskit2.png" download>Glass</a> <span>1024 x 1024</span></li>
+            <li><a href="/swiftaw-presskit3.png" download>Manga</a> <span>1024 x 1024</span></li>
+            <li><a href="/swiftaw-presskit4.png" download>Ice</a> <span>1024 x 1024</span></li>
+            <li class="tot">4 files &middot; PNG &middot; 5.9 MB</li>
+          </ul>
         </div>
       </div>
 
@@ -384,82 +400,91 @@ html { scroll-padding-top: 88px; }
 
 <section class="pk-sec" id="colours">
   <div class="nb-wrap">
-    <div class="pk-two">
-
-      <div class="nb-reveal">
-        <div class="pk-sec-head">
-          <h2 class="nb-h2">Colours</h2>
-          <p>Five colours, called the Rainbaw. Yellow leads. Click a swatch to copy the hex.</p>
-        </div>
-        <div class="pk-cols" id="pkCols">
-          <button type="button" class="nb-card pk-col" data-hex="#FFF93E"><span class="pk-swatch" style="background:#FFF93E"></span><span class="pk-col-b"><b>Yellow</b><code>#FFF93E</code></span></button>
-          <button type="button" class="nb-card pk-col" data-hex="#FF0033"><span class="pk-swatch" style="background:#FF0033"></span><span class="pk-col-b"><b>Red</b><code>#FF0033</code></span></button>
-          <button type="button" class="nb-card pk-col" data-hex="#3ECF6E"><span class="pk-swatch" style="background:#3ECF6E"></span><span class="pk-col-b"><b>Green</b><code>#3ECF6E</code></span></button>
-          <button type="button" class="nb-card pk-col" data-hex="#2CAFFC"><span class="pk-swatch" style="background:#2CAFFC"></span><span class="pk-col-b"><b>Blue</b><code>#2CAFFC</code></span></button>
-          <button type="button" class="nb-card pk-col" data-hex="#FF77E4"><span class="pk-swatch" style="background:#FF77E4"></span><span class="pk-col-b"><b>Pink</b><code>#FF77E4</code></span></button>
-          <button type="button" class="nb-card pk-col" data-hex="#0C0F15"><span class="pk-swatch" style="background:#0C0F15"></span><span class="pk-col-b"><b>Background</b><code>#0C0F15</code></span></button>
-          <button type="button" class="nb-card pk-col" data-hex="#000000"><span class="pk-swatch" style="background:#000000"></span><span class="pk-col-b"><b>Ink</b><code>#000000</code></span></button>
-          <button type="button" class="nb-card pk-col" data-hex="#FFFFFF"><span class="pk-swatch" style="background:#FFFFFF"></span><span class="pk-col-b"><b>Paper</b><code>#FFFFFF</code></span></button>
-        </div>
-      </div>
-
-      <div class="nb-reveal">
-        <div class="pk-sec-head">
-          <h2 class="nb-h2">Typefaces</h2>
-          <p>Three faces, in order of loudness.</p>
-        </div>
-        <div class="pk-type">
-          <div class="pk-type-r">
-            <p class="pk-type-spec nb-display">Aa</p>
-            <div>
-              <h3>Tropicon</h3>
-              <p>The headline face. One weight, used large and used rarely.</p>
-            </div>
-          </div>
-          <div class="pk-type-r">
-            <p class="pk-type-spec is-syne">Aa</p>
-            <div>
-              <h3>Syne</h3>
-              <p>Titles, buttons and labels. Bold, never heavier than bold.</p>
-            </div>
-          </div>
-          <div class="pk-type-r">
-            <p class="pk-type-spec">Aa</p>
-            <div>
-              <h3>DM Sans</h3>
-              <p>Body copy. The face that has to be read, not looked at.</p>
-            </div>
-          </div>
-        </div>
-        <p class="pk-type-note">
-          We do not redistribute the font files, so licence them from their
-          foundries if you need to set type as us.
-        </p>
-      </div>
-
+    <div class="pk-sec-head nb-reveal">
+      <h2 class="nb-h2">Colours</h2>
+      <p>Five colours, called the Rainbaw, and the three neutrals they sit on. Yellow leads. Click a band to copy the hex.</p>
     </div>
+  </div>
+  <div class="pk-bar" id="pkCols">
+    <button type="button" class="pk-band" data-hex="#FFF93E" style="--pk-c:#FFF93E;--pk-ink:#0C0F15"><b>Yellow</b><code>#FFF93E</code></button>
+    <button type="button" class="pk-band" data-hex="#FF0033" style="--pk-c:#FF0033;--pk-ink:#FFFFFF"><b>Red</b><code>#FF0033</code></button>
+    <button type="button" class="pk-band" data-hex="#3ECF6E" style="--pk-c:#3ECF6E;--pk-ink:#0C0F15"><b>Green</b><code>#3ECF6E</code></button>
+    <button type="button" class="pk-band" data-hex="#2CAFFC" style="--pk-c:#2CAFFC;--pk-ink:#0C0F15"><b>Blue</b><code>#2CAFFC</code></button>
+    <button type="button" class="pk-band" data-hex="#FF77E4" style="--pk-c:#FF77E4;--pk-ink:#0C0F15"><b>Pink</b><code>#FF77E4</code></button>
+    <button type="button" class="pk-band" data-hex="#0C0F15" style="--pk-c:#0C0F15;--pk-ink:#FFFFFF"><b>Background</b><code>#0C0F15</code></button>
+    <button type="button" class="pk-band" data-hex="#000000" style="--pk-c:#000000;--pk-ink:#FFFFFF"><b>Ink</b><code>#000000</code></button>
+    <button type="button" class="pk-band" data-hex="#FFFFFF" style="--pk-c:#FFFFFF;--pk-ink:#0C0F15"><b>Paper</b><code>#FFFFFF</code></button>
   </div>
 </section>
 
-<section class="pk-sec" id="rules">
+<section class="pk-sec" id="type">
   <div class="nb-wrap">
     <div class="pk-sec-head nb-reveal">
-      <h2 class="nb-h2">Using the marks</h2>
+      <h2 class="nb-h2">Type</h2>
+      <p>Three faces, in order of loudness. Each one is shown at the size it is actually set at.</p>
+    </div>
+    <div class="pk-faces">
+
+      <div class="pk-face nb-reveal">
+        <div class="pk-face-l">
+          <h3>Tropicon</h3>
+          <p>The headline face. One weight, used large and used rarely. Never made bolder than it is drawn.</p>
+        </div>
+        <div class="pk-face-r">
+          <p class="pk-spec pk-spec--t nb-display">Make It Matter.</p>
+          <p class="pk-glyphs nb-display">ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789</p>
+        </div>
+      </div>
+
+      <div class="pk-face nb-reveal">
+        <div class="pk-face-l">
+          <h3>Syne</h3>
+          <p>Titles, buttons and labels. Bold, and never heavier than bold.</p>
+        </div>
+        <div class="pk-face-r">
+          <p class="pk-spec pk-spec--s">Bastions, channels and DMs</p>
+          <p class="pk-glyphs">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
+        </div>
+      </div>
+
+      <div class="pk-face nb-reveal">
+        <div class="pk-face-l">
+          <h3>DM Sans</h3>
+          <p>Body copy. The face that has to be read rather than looked at.</p>
+        </div>
+        <div class="pk-face-r">
+          <p class="pk-spec pk-spec--b">Everything you are reading is set in it.</p>
+          <p class="pk-glyphs">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789</p>
+        </div>
+      </div>
+
+    </div>
+    <p class="pk-face-note">
+      We do not redistribute the font files, so licence them from their
+      foundries if you need to set type as us.
+    </p>
+  </div>
+</section>
+
+<section class="pk-sec" id="marks">
+  <div class="nb-wrap">
+    <div class="pk-sec-head nb-reveal">
+      <h2 class="nb-h2">The marks</h2>
       <p>Nothing unusual. It comes down to leaving the logo as it is.</p>
     </div>
     <div class="pk-rules">
-      <div class="nb-card pk-rule nb-reveal">
-        <h3><span class="pk-badge" aria-hidden="true"></span> Please do</h3>
-        <ul>
+      <div class="nb-reveal">
+        <h3 class="pk-rule-h"><span class="m" aria-hidden="true"></span> Please do</h3>
+        <ul class="pk-rule-l">
           <li>Write it <b>Swiftaw</b>. One word, one capital.</li>
           <li>Leave clear space around the mark, at least the height of the S.</li>
-          <li>Use the black or colour wordmark, whichever reads on your background.</li>
+          <li>Use the black or the colour wordmark, whichever reads on your background.</li>
           <li>Say Hereld is not open yet when you name it.</li>
         </ul>
       </div>
-      <div class="nb-card pk-rule is-no nb-reveal">
-        <h3><span class="pk-badge" aria-hidden="true"></span> Please do not</h3>
-        <ul>
+      <div class="is-no nb-reveal">
+        <h3 class="pk-rule-h"><span class="m" aria-hidden="true"></span> Please do not</h3>
+        <ul class="pk-rule-l">
           <li>Write SwiftAW, Swift Aw, SWIFTAW or Swiftaw Inc.</li>
           <li>Recolour, stretch, rotate, outline or add effects to the mark.</li>
           <li>Put the colour wordmark on a busy photograph or a mid grey.</li>
@@ -472,49 +497,75 @@ html { scroll-padding-top: 88px; }
 
 <section class="pk-sec" id="facts">
   <div class="nb-wrap">
-    <div class="pk-two">
-
-      <div class="nb-reveal">
-        <div class="pk-sec-head">
-          <h2 class="nb-h2">The facts</h2>
-          <p>Short version, for the box at the end of the article.</p>
-        </div>
-        <dl class="pk-facts">
-          <div class="pk-fact"><dt>Name</dt><dd>Swiftaw</dd></div>
-          <div class="pk-fact"><dt>Founded</dt><dd>2025</dd></div>
-          <div class="pk-fact"><dt>Based in</dt><dd>Île-de-France, France</dd></div>
-          <div class="pk-fact"><dt>Tagline</dt><dd>Make It Matter.</dd></div>
-        </dl>
-        <ul class="pk-lines">
-          <li><b>Fortized</b> A place for communities to talk. Bastions, channels and direct messages.</li>
-          <li><b>Hereld</b> A professional network, still in the workshop.</li>
-          <li><b>Lifecheck</b> Human verification a website can drop in.</li>
-          <li><b>Supernova</b> The AI service behind the assistants in our products.</li>
-        </ul>
-      </div>
-
-      <div class="nb-card pk-para nb-reveal">
-        <p>
-          Swiftaw is a European software company. It makes Fortized, a place for
-          communities to talk, and Hereld, a professional network still in the
-          workshop. It also runs Lifecheck, human verification for websites, and
-          Supernova, an AI service. The company was founded in 2025 and works out
-          of Île-de-France, France.
-        </p>
-      </div>
-
+    <div class="pk-sec-head nb-reveal">
+      <h2 class="nb-h2">The facts</h2>
+      <p>Short version, for the box at the end of the article.</p>
     </div>
+
+    <dl class="pk-facts nb-reveal">
+      <div class="pk-fact"><dt>Name</dt><dd>Swiftaw</dd></div>
+      <div class="pk-fact"><dt>Founded</dt><dd>2025</dd></div>
+      <div class="pk-fact"><dt>Based in</dt><dd>Île-de-France, France</dd></div>
+      <div class="pk-fact"><dt>Tagline</dt><dd>Make It Matter.</dd></div>
+    </dl>
+
+    <div class="nb-manifest pk-prods" style="margin-bottom: clamp(26px, 3.6vw, 44px);">
+      <div class="nb-mf nb-mf--live nb-reveal">
+        <div class="nb-mf-n">01</div>
+        <div>
+          <h3 class="nb-mf-t"><img src="/product-logos/Fortized%20icon.png" alt="" aria-hidden="true">Fortized</h3>
+          <p class="nb-mf-d">A place for communities to talk. Bastions, channels and direct messages.</p>
+        </div>
+        <div class="nb-mf-side"><span class="nb-tag nb-tag--green">Open</span></div>
+        <a class="nb-mf-link" href="https://fortized.com" rel="noopener"><span class="nb-sr">Fortized</span></a>
+      </div>
+      <div class="nb-mf nb-reveal">
+        <div class="nb-mf-n">02</div>
+        <div>
+          <h3 class="nb-mf-t"><img src="/product-logos/Hereld%20icon.png" alt="" aria-hidden="true">Hereld</h3>
+          <p class="nb-mf-d">A professional network, still in the workshop.</p>
+        </div>
+        <div class="nb-mf-side"><span class="nb-tag">Not open yet</span></div>
+      </div>
+      <div class="nb-mf nb-mf--live nb-reveal">
+        <div class="nb-mf-n">03</div>
+        <div>
+          <h3 class="nb-mf-t"><img src="/product-logos/Lifecheck%20icon.png" alt="" aria-hidden="true">Lifecheck</h3>
+          <p class="nb-mf-d">Human verification a website can drop in.</p>
+        </div>
+        <div class="nb-mf-side"><span class="nb-tag nb-tag--green">Open</span></div>
+        <a class="nb-mf-link" href="/lifecheck/"><span class="nb-sr">Lifecheck</span></a>
+      </div>
+      <div class="nb-mf nb-mf--live nb-reveal">
+        <div class="nb-mf-n">04</div>
+        <div>
+          <h3 class="nb-mf-t"><img src="/product-logos/Supernova%20icon.png" alt="" aria-hidden="true">Supernova</h3>
+          <p class="nb-mf-d">The AI service behind the assistants in our products.</p>
+        </div>
+        <div class="nb-mf-side"><span class="nb-tag nb-tag--green">Open</span></div>
+        <a class="nb-mf-link" href="/supernova/"><span class="nb-sr">Supernova</span></a>
+      </div>
+    </div>
+
+    <div class="pk-boiler nb-reveal">
+      <div class="pk-boiler-h">
+        <span class="nb-eyebrow">Boilerplate</span>
+        <button class="nb-btn nb-btn--sm" type="button" id="pkCopyBoiler">Copy</button>
+      </div>
+      <p id="pkBoilerTxt">Swiftaw is a European software company. It makes Fortized, a place for communities to talk, and Hereld, a professional network still in the workshop. It also runs Lifecheck, human verification for websites, and Supernova, an AI service. The company was founded in 2025 and works out of Île-de-France, France.</p>
+    </div>
+
   </div>
 </section>
 
-<section class="nb-section">
+<section class="pk-ask">
   <div class="nb-wrap">
-    <div class="nb-card pk-ask nb-reveal">
-      <h2 class="nb-h2">Need something that is not here?</h2>
-      <p>
-        Screenshots, a quote, a figure, someone to talk to. Open a ticket with
-        Press as the reason and it comes straight to us.
-      </p>
+    <div class="pk-ask-in">
+      <img src="/SWFT-Deco/pretty-logo.png" alt="" aria-hidden="true">
+      <div>
+        <h2 class="nb-h2">Need something that is not here?</h2>
+        <p>Screenshots, a quote, a figure, someone to talk to. Open a ticket with Press as the reason and it comes straight to us.</p>
+      </div>
       <a class="nb-btn nb-btn--ink nb-btn--lg" href="/contact">Ask us</a>
     </div>
   </div>
@@ -662,28 +713,39 @@ html { scroll-padding-top: 88px; }
     });
   }
 
-  var wrap = document.getElementById('pkCols');
-  if (wrap) {
+  function flash(el, said, back, ms) {
+    el.textContent = said;
+    setTimeout(function () { el.textContent = back; }, ms || 1400);
+  }
+
+  var bar = document.getElementById('pkCols');
+  if (bar) {
     var t = null;
-    wrap.addEventListener('click', function (e) {
-      var btn = e.target.closest('.pk-col');
+    bar.addEventListener('click', function (e) {
+      var btn = e.target.closest('.pk-band');
       if (!btn) return;
       var hex = btn.getAttribute('data-hex');
       var code = btn.querySelector('code');
       if (!navigator.clipboard || !navigator.clipboard.writeText) return;
       navigator.clipboard.writeText(hex).then(function () {
         clearTimeout(t);
-        wrap.querySelectorAll('.pk-col.is-copied').forEach(function (b) {
-          b.classList.remove('is-copied');
+        bar.querySelectorAll('.pk-band').forEach(function (b) {
           b.querySelector('code').textContent = b.getAttribute('data-hex');
         });
-        btn.classList.add('is-copied');
         code.textContent = 'Copied';
-        t = setTimeout(function () {
-          btn.classList.remove('is-copied');
-          code.textContent = hex;
-        }, 1400);
+        t = setTimeout(function () { code.textContent = hex; }, 1400);
       }).catch(function () {});
+    });
+  }
+
+  var copy = document.getElementById('pkCopyBoiler');
+  var txt = document.getElementById('pkBoilerTxt');
+  if (copy && txt) {
+    copy.addEventListener('click', function () {
+      if (!navigator.clipboard || !navigator.clipboard.writeText) return;
+      navigator.clipboard.writeText(txt.textContent.trim())
+        .then(function () { flash(copy, 'Copied', 'Copy'); })
+        .catch(function () { flash(copy, 'Select it instead', 'Copy', 2200); });
     });
   }
 })();
