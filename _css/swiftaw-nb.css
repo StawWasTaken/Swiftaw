@@ -971,6 +971,118 @@ h1, h2, h3, h4, h5, h6, .nb-h {
   .nb-reveal.is-in { animation: none; }
 }
 
+/* ═══════ MANIFEST ═══════════════════════════════════════════════════════
+   A numbered list that runs the full width of the measure, ruled between
+   entries. No card, no shadow, no radius: it is the other way of showing a
+   set of things, for the pages where a grid of boxes says nothing about
+   what the things are. Number left, substance middle, status right.
+
+   Reach for it when the entries belong to one ordered set. A grid says
+   "pick one of these"; a manifest says "here is all of it, in order". */
+.nb-manifest { border-top: var(--nb-bd); }
+
+.nb-mf {
+  position: relative;
+  display: grid;
+  grid-template-columns: clamp(52px, 7vw, 92px) minmax(0, 1fr) auto;
+  gap: clamp(14px, 3vw, 38px);
+  align-items: start;
+  padding: clamp(22px, 3.2vw, 38px) 0;
+  border-bottom: var(--nb-bd);
+}
+
+/* The wash is a pseudo-element bled past the measure with negative insets,
+   so a hovered row reads as a full-bleed band while the text stays on the
+   grid. Painting the row background itself would stop at the wrap. */
+.nb-mf::before {
+  content: ''; position: absolute; z-index: 0;
+  inset: 0 calc(var(--nb-bd-w) * -6);
+  background: var(--nb-mf-wash, var(--nb-yellow));
+  opacity: 0; transition: opacity var(--nb-fast) var(--nb-ease);
+}
+.nb-mf > * { position: relative; z-index: 1; }
+
+.nb-mf-n {
+  font-family: var(--nb-font-display);
+  font-size: clamp(26px, 3.4vw, 44px);
+  line-height: .9; color: var(--nb-fg-muted);
+  transition: color var(--nb-fast) var(--nb-ease);
+}
+.nb-mf-t {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(21px, 2.6vw, 30px); line-height: 1.15;
+  margin: 0 0 8px; display: flex; align-items: center; gap: 11px; flex-wrap: wrap;
+}
+.nb-mf-t img { width: 34px; height: 34px; flex: none; }
+.nb-mf-d { margin: 0; max-width: 58ch; color: var(--nb-fg-muted); line-height: 1.55; }
+.nb-mf-side {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Only the rows that go somewhere light up. A row that is just a fact
+   should not pretend to be a button. */
+.nb-mf--live { cursor: pointer; transition: transform var(--nb-fast) var(--nb-ease); }
+.nb-mf--live:hover { transform: translateX(6px); }
+.nb-mf--live:hover::before { opacity: 1; }
+.nb-mf--live:hover .nb-mf-n { color: var(--nb-ink); }
+.nb-mf--live:hover .nb-mf-t,
+.nb-mf--live:hover .nb-mf-d { color: var(--nb-ink); }
+.nb-mf--live:focus-within::before { opacity: 1; }
+
+.nb-mf-link { position: absolute; inset: 0; z-index: 2; }
+.nb-mf-link:focus-visible { outline: var(--nb-bd-w) solid var(--nb-blue); outline-offset: -4px; }
+
+@media (max-width: 720px) {
+  .nb-mf { grid-template-columns: clamp(40px, 12vw, 56px) minmax(0, 1fr); }
+  .nb-mf-side { grid-column: 2; justify-content: flex-start; }
+}
+
+/* ═══════ EDITORIAL ══════════════════════════════════════════════════════
+   Two tracks: a narrow rail that stays put while you read, and one column
+   of text at a real reading measure. For pages that are an argument rather
+   than a set of features, where a centred column of headings and a grid
+   underneath is just a shape with words dropped into it.
+
+   The rail is where the section marker lives, and where a note can sit
+   level with the paragraph it belongs to. */
+.nb-editorial {
+  display: grid;
+  grid-template-columns: minmax(0, 216px) minmax(0, 1fr);
+  gap: clamp(22px, 5vw, 76px);
+  align-items: start;
+}
+.nb-ed-rail { position: sticky; top: 104px; }
+.nb-ed-rail .nb-eyebrow { display: block; margin-bottom: 10px; }
+.nb-ed-mark {
+  font-family: var(--nb-font-display);
+  font-size: clamp(30px, 4vw, 52px); line-height: .85;
+  color: var(--nb-fg-muted);
+}
+.nb-ed-body { max-width: 62ch; }
+.nb-ed-body > p { font-size: clamp(16px, 1.5vw, 18.5px); line-height: 1.68; margin: 0 0 1.15em; }
+.nb-ed-body > p:last-child { margin-bottom: 0; }
+
+/* The opening paragraph of a section carries the weight, so the reader
+   knows where the argument starts without another heading. */
+.nb-ed-lead { font-size: clamp(19px, 2vw, 25px) !important; line-height: 1.45 !important; }
+
+/* A note in the margin, not a callout box in the flow. On a narrow screen
+   the rail collapses and it drops in line, indented behind a coloured
+   stripe so it still reads as an aside. */
+.nb-ed-note {
+  border-left: var(--nb-bd-w) solid var(--nb-note, var(--nb-blue));
+  padding-left: 15px; margin-top: 22px;
+  font-size: 14.5px; line-height: 1.5; color: var(--nb-fg-muted);
+}
+.nb-ed-note b { color: var(--nb-fg); font-family: var(--nb-font-head); }
+
+@media (max-width: 860px) {
+  .nb-editorial { grid-template-columns: 1fr; gap: 18px; }
+  .nb-ed-rail { position: static; }
+  .nb-ed-mark { display: none; }
+}
+
 /* ═══════ UTILITIES ══════════════════════════════════════════════════════ */
 .nb-tilt-l  { transform: rotate(-1.6deg); }
 .nb-tilt-r  { transform: rotate(1.6deg); }

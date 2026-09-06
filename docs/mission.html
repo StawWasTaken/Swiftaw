@@ -32,74 +32,66 @@ html { scroll-padding-top: 88px; }
 .pg-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-.pg-head { position: relative; padding: clamp(64px, 9vw, 116px) 0 clamp(30px, 4vw, 52px); overflow: hidden; }
-.pg-slab {
-  position: relative; z-index: 2;
-  background: var(--nb-surface); color: var(--nb-surface-fg);
-  border: var(--nb-bd); border-radius: var(--nb-r-lg);
-  box-shadow: var(--nb-sh-lg);
-  padding: clamp(28px, 4vw, 52px);
-  max-width: 880px;
-  --nb-fg: var(--nb-surface-fg);
-  --nb-fg-muted: var(--nb-surface-fg-muted);
+/* ═══════ THE OPENING STATEMENT ══════════════════════════════════════
+   The mission is an argument, so it opens like one: the claim at full
+   size against the page, and nothing framing it. No slab, no panel. */
+.ms-open { padding: clamp(46px, 7vw, 96px) 0 clamp(34px, 5vw, 62px); }
+.ms-open .nb-eyebrow { display: block; margin-bottom: clamp(14px, 2vw, 22px); }
+.ms-claim {
+  margin: 0; max-width: 15ch;
+  font-size: clamp(48px, 9.5vw, 132px); line-height: .88; letter-spacing: -.025em;
 }
-.pg-slab h1 { margin: 12px 0 16px; }
-.pg-slab .dot { color: var(--nb-red); }
-.pg-lede { max-width: 56ch; }
-.pg-lede b { color: var(--nb-surface-fg); font-weight: 700; }
+.ms-claim .dot { color: var(--nb-red); }
+.ms-stand {
+  margin: clamp(24px, 3vw, 38px) 0 0; max-width: 48ch;
+  font-size: clamp(18px, 2vw, 24px); line-height: 1.5;
+}
+.ms-stand b { color: var(--nb-yellow); font-weight: inherit; }
 
-.pg-deco-1 { top: 14%; right: 5%; --nb-rot: -9deg; }
-.pg-deco-2 { bottom: 10%; right: 17%; width: 42px; height: 42px; }
-[data-nb="dark"] .nb-dots {
-  background-image: radial-gradient(rgba(255,255,255,.28) 1.6px, transparent 1.6px);
+/* ═══════ THE FOUR ═══════════════════════════════════════════════════
+   Each one is a stretch of argument with its marker in the rail, not a
+   tile in a grid. Read top to bottom, in order, the way it is meant. */
+.ms-val { padding: clamp(28px, 4vw, 46px) 0; border-top: var(--nb-bd); }
+.ms-val:last-child { border-bottom: var(--nb-bd); }
+.ms-val .nb-ed-mark { color: var(--ms-c, var(--nb-yellow)); }
+.ms-val .nb-ed-body { max-width: 70ch; }
+.ms-val h2 {
+  margin: 0 0 14px;
+  font-size: clamp(25px, 3.2vw, 38px); letter-spacing: -.5px;
 }
 
-.ms-shead { margin-bottom: 30px; max-width: 62ch; }
-.ms-shead h2 { margin: 10px 0 12px; }
-
-.ms-grid { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.ms-pillar { padding: 0; overflow: hidden; }
-.ms-pillar .band { height: 12px; border-bottom: var(--nb-bd); background: var(--nb-yellow); }
-.ms-pillar.is-green .band { background: var(--nb-green); }
-.ms-pillar.is-blue  .band { background: var(--nb-blue); }
-.ms-pillar.is-pink  .band { background: var(--nb-pink); }
-.ms-pillar .body { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
-.ms-pillar .n {
-  font-family: var(--nb-font-head); font-weight: 700;
-  font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--nb-fg-muted);
-}
-@media (max-width: 720px) { .ms-grid { grid-template-columns: 1fr; } }
-
-.ms-thesis {
+/* ═══════ THE TEST ═══════════════════════════════════════════════════
+   One full-bleed band, ink on yellow, carrying the line the whole
+   company is named after. It interrupts the page on purpose. */
+.ms-test {
   background: var(--nb-yellow); color: var(--nb-ink);
-  border: var(--nb-bd); border-radius: var(--nb-r-lg);
-  box-shadow: var(--nb-sh-lg);
-  padding: clamp(30px, 4.4vw, 56px);
-  text-align: center;
-  --nb-fg: var(--nb-ink);
-  --nb-fg-muted: #3A3A2A;
+  border-top: var(--nb-bd); border-bottom: var(--nb-bd);
+  padding: clamp(46px, 7vw, 92px) 0;
+  --nb-fg: var(--nb-ink); --nb-fg-muted: #3A3A2E;
 }
-.ms-thesis .nb-display { max-width: 22ch; margin: 0 auto 16px; }
-.ms-thesis p { max-width: 56ch; margin: 0 auto; }
+.ms-test-in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40ch); gap: clamp(24px, 5vw, 72px); align-items: center; }
+.ms-test h2 { margin: 0; font-size: clamp(44px, 8vw, 108px); line-height: .9; letter-spacing: -.03em; }
+.ms-test p { margin: 0; font-size: clamp(16px, 1.6vw, 19px); line-height: 1.6; }
+.ms-test p + p { margin-top: 14px; }
+@media (max-width: 860px) { .ms-test-in { grid-template-columns: 1fr; } }
 
-.ms-nots { display: grid; gap: 14px; }
-.ms-not {
-  display: flex; align-items: flex-start; gap: 14px;
-  padding: 18px 20px;
-}
-.ms-not .x {
-  width: 28px; height: 28px; flex: none; margin-top: 1px;
-  border: var(--nb-bd-thin); border-radius: 50%;
-  background: var(--nb-red); color: #fff;
+/* ═══════ WHAT IT RULES OUT ══════════════════════════════════════════
+   The same ruled rows as elsewhere, in the negative register: a struck
+   mark where the number would be, and red instead of yellow under the
+   cursor. A list of refusals should not look like a list of features. */
+.ms-no { --nb-mf-wash: var(--nb-red); }
+.ms-no .nb-mf-n {
   display: flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px;
+  border: var(--nb-bd); border-radius: var(--nb-r-sm);
+  color: var(--nb-red);
 }
-.ms-not .x svg { width: 12px; height: 12px; fill: currentColor; }
-.ms-not b { font-family: var(--nb-font-head); font-weight: 700; font-size: 17px; }
-.ms-not p { color: var(--nb-fg-muted); font-size: 15px; margin-top: 3px; }
+.ms-no .nb-mf-n svg { width: 17px; height: 17px; fill: currentColor; }
+.ms-no:hover .nb-mf-n { color: var(--nb-ink); }
+.ms-no .nb-mf-d { max-width: 64ch; }
 
-.ms-out { text-align: center; padding-bottom: clamp(50px, 7vw, 90px); }
-.ms-out .nb-display { max-width: 22ch; margin: 0 auto 20px; }
+/* ═══════ CLOSING ════════════════════════════════════════════════════ */
+.ms-end { padding: clamp(46px, 6vw, 84px) 0 clamp(58px, 8vw, 106px); }
 </style>
 </head>
 <body>
@@ -166,97 +158,164 @@ html { scroll-padding-top: 88px; }
 
 <main id="main">
 
-<section class="pg-head">
-  <span class="nb-deco nb-shape nb-shape--tri nb-poke nb-float pg-deco-1" data-depth="14" aria-hidden="true"></span>
-  <span class="nb-deco nb-shape nb-shape--circle nb-poke nb-float pg-deco-2" data-depth="22" aria-hidden="true"></span>
-
+<section class="ms-open">
   <div class="nb-wrap">
-    <div class="pg-slab nb-reveal">
-      <span class="nb-eyebrow">Mission</span>
-      <h1 class="nb-display nb-d2">For the people<br>in the room<span class="dot">.</span></h1>
-      <p class="nb-lead pg-lede nb-muted">
-        We make software for communities, players and friend groups.
-        <b>If a thing is good for the room and bad for the chart, we build it
-        anyway.</b>
-      </p>
+    <span class="nb-eyebrow nb-reveal">Mission</span>
+    <h1 class="nb-display ms-claim nb-reveal">For the people in the room<span class="dot">.</span></h1>
+    <p class="ms-stand nb-reveal">
+      We make software for communities, players and friend groups. If a thing
+      is good for the room and bad for the chart, <b>we build it anyway</b>.
+    </p>
+  </div>
+</section>
+
+<section style="padding-bottom: clamp(30px, 5vw, 60px);">
+  <div class="nb-wrap">
+    <div class="ms-val nb-editorial nb-reveal" style="--ms-c: var(--nb-pink);">
+      <div class="nb-ed-rail">
+        <span class="nb-eyebrow">01 · Social</span>
+        <span class="nb-ed-mark">01</span>
+      </div>
+      <div class="nb-ed-body">
+        <h2 class="nb-h2">The internet is at its best as a group chat.</h2>
+        <p>
+          We design for the people inside the room, not for the ones counting
+          from outside it. A feature is good if the conversation got better.
+          Not if the session got longer.
+        </p>
+        <p class="nb-ed-note">
+          <b>Settles arguments.</b> This is the one that decides most of them,
+          and it is why some obvious features never got built.
+        </p>
+      </div>
+    </div>
+
+    <div class="ms-val nb-editorial nb-reveal" style="--ms-c: var(--nb-blue);">
+      <div class="nb-ed-rail">
+        <span class="nb-eyebrow">02 · Creative</span>
+        <span class="nb-ed-mark">02</span>
+      </div>
+      <div class="nb-ed-body">
+        <h2 class="nb-h2">Software should feel like somebody cared while making it.</h2>
+        <p>
+          Playful, colourful, a little odd on purpose. Hence the characters,
+          the shapes placed by hand, and nothing taken off a template.
+        </p>
+      </div>
+    </div>
+
+    <div class="ms-val nb-editorial nb-reveal" style="--ms-c: var(--nb-green);">
+      <div class="nb-ed-rail">
+        <span class="nb-eyebrow">03 · Practical</span>
+        <span class="nb-ed-mark">03</span>
+      </div>
+      <div class="nb-ed-body">
+        <h2 class="nb-h2">Leaving is as easy as arriving.</h2>
+        <p>
+          No dark patterns, no engagement traps, and the off switch sits where
+          you would go looking for it. A product that has to trap you to keep
+          you was not worth keeping.
+        </p>
+      </div>
+    </div>
+
+    <div class="ms-val nb-editorial nb-reveal" style="--ms-c: var(--nb-yellow);">
+      <div class="nb-ed-rail">
+        <span class="nb-eyebrow">04 · European</span>
+        <span class="nb-ed-mark">04</span>
+      </div>
+      <div class="nb-ed-body">
+        <h2 class="nb-h2">No quarterly graph to please.</h2>
+        <p>
+          Independent, and based in France. Nobody is waiting on a number from
+          us this quarter, so we can take the time to get a thing right before
+          it goes out.
+        </p>
+      </div>
     </div>
   </div>
 </section>
 
-<hr class="nb-rule">
+<section class="ms-test">
+  <div class="nb-wrap">
+    <div class="ms-test-in">
+      <h2 class="nb-display nb-reveal">Make It Matter.</h2>
+      <div class="nb-reveal">
+        <p><b>A test, not a slogan.</b></p>
+        <p>
+          If what we are about to ship would not matter to the person on the
+          other end of it, it does not go out. That is the whole idea, and it
+          is the last question asked before anything ships.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section class="nb-section">
   <div class="nb-wrap">
-    <div class="ms-shead nb-reveal">
-      <span class="nb-eyebrow">What we hold to</span>
-      <h2 class="nb-h1">What we hold to.</h2>
-      <p class="nb-muted">
-        Four of them. They are what we settle arguments with, and the reason
-        some obvious features never got built.
-      </p>
+    <div class="nb-editorial nb-reveal" style="margin-bottom: clamp(24px, 3vw, 38px);">
+      <div class="nb-ed-rail">
+        <span class="nb-eyebrow">The cost of it</span>
+      </div>
+      <div class="nb-ed-body">
+        <h2 class="nb-display nb-d3" style="margin:0 0 12px;">What that rules out.</h2>
+        <p class="nb-muted" style="margin:0;">
+          Four things we could do, that would work, and that we are not doing.
+        </p>
+      </div>
     </div>
 
-    <div class="ms-grid">
-      <article class="nb-card ms-pillar nb-reveal">
-        <div class="band" aria-hidden="true"></div>
-        <div class="body">
-          <span class="n">01 - Social</span>
-          <h3 class="nb-h3">The internet is at its best as a group chat.</h3>
-          <p class="nb-muted">
-            We design for the people inside the room. A feature is good if
-            the conversation got better, not if the session got longer.
+    <div class="nb-manifest">
+      <div class="nb-mf ms-no nb-reveal">
+        <span class="nb-mf-n"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></span>
+        <div>
+          <h3 class="nb-mf-t">An engagement feed</h3>
+          <p class="nb-mf-d">
+            A ranked, endless feed grows the numbers and wrecks the room. Our
+            products show you what the people you chose said, in the order
+            they said it.
           </p>
         </div>
-      </article>
+        <div class="nb-mf-side"></div>
+      </div>
 
-      <article class="nb-card ms-pillar is-blue nb-reveal">
-        <div class="band" aria-hidden="true"></div>
-        <div class="body">
-          <span class="n">02 - Creative</span>
-          <h3 class="nb-h3">Playful, colourful, a little odd on purpose.</h3>
-          <p class="nb-muted">
-            Software should feel like somebody cared while making it. Hence
-            the characters, the hand-placed shapes, and nothing off a template.
+      <div class="nb-mf ms-no nb-reveal">
+        <span class="nb-mf-n"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></span>
+        <div>
+          <h3 class="nb-mf-t">Selling what you say to each other</h3>
+          <p class="nb-mf-d">
+            Messages between people are not inventory. Lifecheck exists partly
+            because the usual way of proving someone is human means watching
+            them across the rest of the web.
           </p>
         </div>
-      </article>
+        <div class="nb-mf-side"></div>
+      </div>
 
-      <article class="nb-card ms-pillar is-green nb-reveal">
-        <div class="band" aria-hidden="true"></div>
-        <div class="body">
-          <span class="n">03 - Practical</span>
-          <h3 class="nb-h3">No dark patterns. No engagement traps.</h3>
-          <p class="nb-muted">
-            Leaving is as easy as arriving, and the off switch is where you
-            would look for it.
+      <div class="nb-mf ms-no nb-reveal">
+        <span class="nb-mf-n"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></span>
+        <div>
+          <h3 class="nb-mf-t">Passing AI off as a person</h3>
+          <p class="nb-mf-d">
+            Supernova labels what it writes, where you read it rather than in
+            a footnote at the bottom of a page nobody opens.
           </p>
         </div>
-      </article>
+        <div class="nb-mf-side"></div>
+      </div>
 
-      <article class="nb-card ms-pillar is-pink nb-reveal">
-        <div class="band" aria-hidden="true"></div>
-        <div class="body">
-          <span class="n">04 - European</span>
-          <h3 class="nb-h3">No quarterly graph to please.</h3>
-          <p class="nb-muted">
-            Independent, and based in France. Nobody is waiting on a number
-            from us this quarter, so we can take the time to get it right.
+      <div class="nb-mf ms-no nb-reveal">
+        <span class="nb-mf-n"><svg viewBox="0 0 384 512" aria-hidden="true"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></span>
+        <div>
+          <h3 class="nb-mf-t">Announcing things that do not exist</h3>
+          <p class="nb-mf-d">
+            Hereld is in build, and every page that mentions it says so. No
+            waiting list, no countdown. It gets a launch when it is ready.
           </p>
         </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section class="nb-section" style="padding-top:0;">
-  <div class="nb-wrap">
-    <div class="ms-thesis nb-reveal">
-      <span class="nb-eyebrow">The whole idea</span>
-      <p class="nb-display nb-d3">Make It Matter.</p>
-      <p class="nb-lead">
-        A test, not a slogan. If what we are about to ship would not matter
-        to the person on the other end of it, it does not go out.
-      </p>
+        <div class="nb-mf-side"></div>
+      </div>
     </div>
   </div>
 </section>
@@ -274,78 +333,25 @@ html { scroll-padding-top: 88px; }
   </div>
 </div>
 
-<section class="nb-section">
+<section class="ms-end">
   <div class="nb-wrap">
-    <div class="ms-shead nb-reveal">
-      <span class="nb-eyebrow">The cost of it</span>
-      <h2 class="nb-h1">What that rules out.</h2>
-      <p class="nb-muted">
-        Things we could do, that would work, and that we are not doing.
-      </p>
-    </div>
-
-    <div class="ms-nots">
-      <div class="nb-card ms-not nb-reveal">
-        <span class="x" aria-hidden="true"><svg viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></span>
-        <div>
-          <b>An engagement feed</b>
-          <p>
-            A ranked, endless feed grows the numbers and wrecks the room. Our
-            products show you what the people you chose said, in the order they
-            said it.
-          </p>
+    <div class="nb-editorial">
+      <div class="nb-ed-rail nb-reveal">
+        <span class="nb-eyebrow">So far</span>
+      </div>
+      <div class="nb-ed-body nb-reveal">
+        <p class="nb-ed-lead">
+          Fortized was the first thing we shipped.
+        </p>
+        <p>
+          A community platform for gamers and the friend groups around them.
+          Whatever ships next is held to the same four.
+        </p>
+        <div class="nb-row" style="margin-top:26px;">
+          <a class="nb-btn nb-btn--primary" href="https://fortized.com" rel="noopener">Open Fortized</a>
+          <a class="nb-btn nb-btn--paper" href="/about-us">Who we are</a>
         </div>
       </div>
-
-      <div class="nb-card ms-not nb-reveal">
-        <span class="x" aria-hidden="true"><svg viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></span>
-        <div>
-          <b>Selling what you say to each other</b>
-          <p>
-            Messages between people are not inventory. Lifecheck exists partly
-            because the usual way of proving someone is human means watching
-            them across the rest of the web.
-          </p>
-        </div>
-      </div>
-
-      <div class="nb-card ms-not nb-reveal">
-        <span class="x" aria-hidden="true"><svg viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></span>
-        <div>
-          <b>Passing AI off as a person</b>
-          <p>
-            Supernova labels what it writes, where you read it rather than in
-            a footnote.
-          </p>
-        </div>
-      </div>
-
-      <div class="nb-card ms-not nb-reveal">
-        <span class="x" aria-hidden="true"><svg viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg></span>
-        <div>
-          <b>Announcing things that do not exist</b>
-          <p>
-            Hereld is in build, and every page that mentions it says so. No
-            waiting list, no countdown. It gets a launch when it is ready.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="nb-rule">
-
-<section class="nb-section ms-out">
-  <div class="nb-wrap">
-    <h2 class="nb-display nb-d3 nb-reveal">Fortized was the first thing we shipped.</h2>
-    <p class="nb-lead nb-muted nb-reveal" style="max-width:54ch; margin:0 auto 26px;">
-      A community platform for gamers and the friend groups around them.
-      Whatever ships next is held to the same four.
-    </p>
-    <div class="nb-row nb-reveal" style="justify-content:center;">
-      <a class="nb-btn nb-btn--primary nb-btn--lg" href="https://fortized.com" rel="noopener">Open Fortized</a>
-      <a class="nb-btn nb-btn--paper nb-btn--lg" href="/about-us">Who we are</a>
     </div>
   </div>
 </section>

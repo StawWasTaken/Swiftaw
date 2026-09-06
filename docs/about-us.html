@@ -32,81 +32,114 @@ html { scroll-padding-top: 88px; }
 .pg-nav-cta { margin-left: 2px; }
 @media (max-width: 560px) { .pg-nav-cta { display: none; } }
 
-.pg-head { position: relative; padding: clamp(64px, 9vw, 116px) 0 clamp(30px, 4vw, 52px); overflow: hidden; }
+/* ═══════ THE RECORD SHEET ═══════════════════════════════════════════
+   The page opens as a filled-in record, not as a centred box with a
+   heading in it. Rule across the top, the name at full size, the facts
+   ruled off underneath in the order a register would hold them. */
+.ab-id { padding: clamp(40px, 6vw, 74px) 0 0; }
 
-.pg-slab {
-  position: relative; z-index: 2;
-  background: var(--nb-surface); color: var(--nb-surface-fg);
-  border: var(--nb-bd); border-radius: var(--nb-r-lg);
-  box-shadow: var(--nb-sh-lg);
-  padding: clamp(28px, 4vw, 52px);
-  max-width: 880px;
-
-  --nb-fg: var(--nb-surface-fg);
-  --nb-fg-muted: var(--nb-surface-fg-muted);
-}
-.pg-slab h1 { margin: 12px 0 16px; }
-.pg-slab .dot { color: var(--nb-red); }
-.pg-lede { max-width: 56ch; }
-
-.pg-deco-1 { top: 12%; right: 4%; --nb-rot: 12deg; }
-.pg-deco-2 { bottom: 8%; right: 15%; width: 40px; height: 40px; }
-[data-nb="dark"] .nb-dots {
-
-  background-image: radial-gradient(rgba(255,255,255,.28) 1.6px, transparent 1.6px);
-}
-
-.ab-facts { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 34px; }
-.ab-fact { display: flex; flex-direction: column; gap: 7px; }
-.ab-fact .k {
+.ab-stamp {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding-bottom: 14px; border-bottom: var(--nb-bd);
   font-family: var(--nb-font-head); font-weight: 700;
-  font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--nb-yellow);
+  font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--nb-fg-muted);
 }
-.ab-fact .v { font-family: var(--nb-font-head); font-weight: 700; font-size: 20px; letter-spacing: -.4px; }
-@media (max-width: 720px) { .ab-facts { grid-template-columns: 1fr; } }
+.ab-stamp b { color: var(--nb-yellow); font-weight: 700; }
+.ab-stamp .sp { flex: 1; }
 
-.ab-shead { margin-bottom: 26px; max-width: 62ch; }
-.ab-shead h2 { margin: 10px 0 12px; }
+.ab-name {
+  margin: clamp(20px, 3vw, 34px) 0 0;
+  font-size: clamp(52px, 12vw, 168px); line-height: .84;
+  letter-spacing: -.03em;
+}
+.ab-name .dot { color: var(--nb-red); }
 
-.ab-seats { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.ab-seat { display: flex; align-items: center; gap: 16px; }
-.ab-seat .av {
+.ab-said {
+  margin: clamp(20px, 3vw, 30px) 0 clamp(30px, 4vw, 44px);
+  max-width: 46ch; font-size: clamp(17px, 1.8vw, 21px); line-height: 1.55;
+}
+
+/* Four cells divided by real rules rather than gaps. A register does not
+   float its entries apart from one another. */
+.ab-reg {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: var(--nb-bd); border-bottom: var(--nb-bd);
+}
+.ab-reg > div {
+  padding: clamp(16px, 2vw, 22px) clamp(14px, 2vw, 22px);
+  border-left: var(--nb-bd-thin) solid var(--nb-line);
+}
+.ab-reg > div:first-child { border-left: 0; padding-left: 0; }
+.ab-reg .k {
+  display: block; margin-bottom: 7px;
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--nb-fg-muted);
+}
+.ab-reg .v {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(15px, 1.5vw, 19px); letter-spacing: -.3px; line-height: 1.25;
+}
+@media (max-width: 860px) { .ab-reg { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 860px) { .ab-reg > div:nth-child(3) { border-left: 0; padding-left: 0; } }
+@media (max-width: 480px) {
+  .ab-reg { grid-template-columns: 1fr; }
+  .ab-reg > div { border-left: 0; padding-left: 0; border-top: var(--nb-bd-thin) solid var(--nb-line); }
+  .ab-reg > div:first-child { border-top: 0; }
+}
+
+/* ═══════ SECTION MARKERS ════════════════════════════════════════════ */
+.ab-mark {
+  display: grid; align-items: end;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 34ch);
+  gap: clamp(16px, 4vw, 56px);
+  margin-bottom: clamp(20px, 2.6vw, 32px);
+}
+.ab-mark h2 { margin: 0; }
+.ab-mark p { margin: 0 0 6px; line-height: 1.5; }
+@media (max-width: 780px) { .ab-mark { grid-template-columns: 1fr; align-items: start; } }
+
+/* ═══════ THE ROSTER ═════════════════════════════════════════════════
+   Same ruled rows as the manifest, but a roster answers a different
+   question: not what a thing is, but who holds it. Role reads first,
+   because the seat exists whether or not anybody is in it. */
+.ab-seat {
+  --nb-mf-wash: var(--nb-blue);
+  grid-template-columns: clamp(104px, 15vw, 205px) minmax(0, 1fr) auto;
+}
+.ab-seat .nb-mf-n {
+  font-family: var(--nb-font-head); font-weight: 700;
+  font-size: clamp(10.5px, 1.1vw, 12px); letter-spacing: .13em;
+  text-transform: uppercase; line-height: 1.45; padding-top: 5px;
+}
+@media (max-width: 720px) {
+  .ab-seat { grid-template-columns: 1fr; gap: 12px; }
+  .ab-seat .nb-mf-side { grid-column: 1; justify-content: flex-start; }
+}
+.ab-seat .who { font-family: var(--nb-font-head); font-weight: 700; font-size: clamp(22px, 3vw, 34px); letter-spacing: -.5px; margin: 0; }
+.ab-seat .since { margin: 6px 0 0; font-size: 14px; color: var(--nb-fg-muted); }
+
+.ab-chip {
   width: 58px; height: 58px; flex: none;
   border: var(--nb-bd); border-radius: var(--nb-r-sm);
   box-shadow: var(--nb-sh-sm);
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--nb-font-head); font-weight: 700; font-size: 22px;
+  font-family: var(--nb-font-head); font-weight: 700; font-size: 23px;
   color: var(--nb-ink);
 }
-.ab-seat .role {
-  font-family: var(--nb-font-head); font-weight: 700;
-  font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--nb-yellow); margin-bottom: 3px;
+
+/* An open seat is drawn open. Dashed edge, no fill, no shadow: it is a
+   gap in the roster and it should look like one. */
+.ab-seat.is-open .ab-chip {
+  background: none; box-shadow: none;
+  border-style: dashed; color: var(--nb-fg-muted);
 }
-.ab-seat .name { font-family: var(--nb-font-head); font-weight: 700; font-size: 19px; letter-spacing: -.3px; }
-.ab-seat .since { font-size: 13px; color: var(--nb-fg-muted); margin-top: 2px; }
+.ab-seat.is-open .who { color: var(--nb-fg-muted); }
 
-.ab-seat.is-open .av { background: var(--nb-surface-2); color: var(--nb-fg-muted); }
-.ab-seat.is-open .role { color: var(--nb-fg-muted); }
-@media (max-width: 720px) { .ab-seats { grid-template-columns: 1fr; } }
-
-.ab-make { display: grid; gap: var(--nb-gap); grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.ab-item { display: flex; flex-direction: column; gap: 10px; }
-.ab-item .top { display: flex; align-items: center; gap: 12px; }
-
-.ab-item img {
-  width: 48px; height: 48px; flex: none; border: 0; object-fit: contain;
-  transition: transform var(--nb-fast);
-}
-.ab-item:hover img { transform: rotate(-5deg) scale(1.06); }
-.ab-item h3 { flex: 1; }
-
-.ab-item .nb-btn { align-self: flex-start; margin-top: auto; }
-@media (max-width: 720px) { .ab-make { grid-template-columns: 1fr; } }
-
-.ab-out { text-align: center; padding-bottom: clamp(50px, 7vw, 90px); }
-.ab-out .nb-display { max-width: 20ch; margin: 0 auto 20px; }
+/* ═══════ THE LAST WORD ══════════════════════════════════════════════ */
+.ab-end { padding: clamp(46px, 6vw, 84px) 0 clamp(56px, 8vw, 104px); }
+.ab-end p { max-width: 50ch; }
 </style>
 </head>
 <body>
@@ -173,140 +206,170 @@ html { scroll-padding-top: 88px; }
 
 <main id="main">
 
-<section class="pg-head">
-  <span class="nb-deco nb-shape nb-shape--sq nb-poke nb-float pg-deco-1" data-depth="16" aria-hidden="true"></span>
-  <span class="nb-deco nb-shape nb-shape--circle nb-poke nb-float pg-deco-2" data-depth="24" aria-hidden="true"></span>
-
+<section class="ab-id">
   <div class="nb-wrap">
-    <div class="pg-slab nb-reveal">
-      <span class="nb-eyebrow">About</span>
-      <h1 class="nb-display nb-d2">Who we are<span class="dot">.</span></h1>
-      <p class="nb-lead pg-lede nb-muted">
-        A European software company. We make social platforms, and we run the
-        services behind them. Fortized shipped first.
-      </p>
+    <div class="ab-stamp nb-reveal">
+      <span>Record</span><span>·</span><b>Swiftaw</b><span>·</span><span>Île-de-France</span>
+      <span class="sp"></span>
+      <span>Est. August 2025</span>
+    </div>
 
-      <div class="ab-facts">
-        <div class="ab-fact"><span class="k">Based in</span><span class="v">Île-de-France, France</span></div>
-        <div class="ab-fact"><span class="k">Founded</span><span class="v">August 2025</span></div>
-        <div class="ab-fact"><span class="k">Ownership</span><span class="v">Independent</span></div>
-      </div>
+    <h1 class="nb-display ab-name nb-reveal">Who we are<span class="dot">.</span></h1>
+
+    <p class="ab-said nb-reveal">
+      A European software company. We make social platforms and we run the
+      services behind them. Fortized shipped first.
+    </p>
+
+    <div class="ab-reg nb-reveal">
+      <div><span class="k">Based in</span><span class="v">Île-de-France, France</span></div>
+      <div><span class="k">Founded</span><span class="v">August 2025</span></div>
+      <div><span class="k">Ownership</span><span class="v">Independent</span></div>
+      <div><span class="k">Seats filled</span><span class="v">Three of four</span></div>
     </div>
   </div>
 </section>
 
-<hr class="nb-rule">
-
 <section class="nb-section">
   <div class="nb-wrap">
-    <div class="ab-shead nb-reveal">
-      <span class="nb-eyebrow">What we make</span>
-      <h2 class="nb-h1">What we make.</h2>
+    <div class="ab-mark nb-reveal">
+      <h2 class="nb-display nb-d3">What we make.</h2>
       <p class="nb-muted">
         Two platforms and two services. Anything new turns up here first.
       </p>
     </div>
 
-    <div class="ab-make">
-      <article class="nb-card ab-item nb-reveal">
-        <div class="top">
-          <img width="48" height="48" src="/product-logos/Fortized%20icon.png" alt="" onerror="this.remove()">
-          <h3 class="nb-h3">Fortized</h3>
-          <span class="nb-tag nb-tag--green">Live</span>
+    <div class="nb-manifest">
+      <div class="nb-mf nb-mf--live nb-reveal">
+        <span class="nb-mf-n">01</span>
+        <div>
+          <h3 class="nb-mf-t">
+            <img src="/product-logos/Fortized%20icon.png" alt="" onerror="this.remove()">
+            Fortized
+          </h3>
+          <p class="nb-mf-d">
+            A community platform for gamers and the friend groups around them.
+            Bastions, channels and direct messages. The one that is out in the
+            world.
+          </p>
         </div>
-        <p class="nb-muted">
-          A community platform for gamers and the friend groups around them.
-          Bastions, channels and direct messages.
-        </p>
-        <a class="nb-btn nb-btn--sm nb-btn--paper" href="https://fortized.com" rel="noopener">Open Fortized</a>
-      </article>
+        <div class="nb-mf-side">
+          <span class="nb-tag nb-tag--green">Live</span>
+          <span class="nb-btn nb-btn--sm nb-btn--paper" aria-hidden="true">Open</span>
+        </div>
+        <a class="nb-mf-link" href="https://fortized.com" rel="noopener"><span class="nb-sr">Open Fortized</span></a>
+      </div>
 
-      <article class="nb-card ab-item nb-reveal">
-        <div class="top">
-          <img width="48" height="48" src="/product-logos/Hereld%20icon.png" alt="" onerror="this.remove()">
-          <h3 class="nb-h3">Hereld</h3>
+      <div class="nb-mf nb-reveal">
+        <span class="nb-mf-n">02</span>
+        <div>
+          <h3 class="nb-mf-t">
+            <img src="/product-logos/Hereld%20icon.png" alt="" onerror="this.remove()">
+            Hereld
+          </h3>
+          <p class="nb-mf-d">
+            Our second platform, a professional network. Still in build, so
+            there is nothing to sign up to yet and no waiting list in front
+            of it.
+          </p>
+        </div>
+        <div class="nb-mf-side">
           <span class="nb-tag">In build</span>
         </div>
-        <p class="nb-muted">
-          Our second platform, a professional network. Still in build, so
-          there is nothing to sign up to yet.
-        </p>
-      </article>
+      </div>
 
-      <article class="nb-card ab-item nb-reveal">
-        <div class="top">
-          <img width="48" height="48" src="/product-logos/Lifecheck%20icon.png" alt="" onerror="this.remove()">
-          <h3 class="nb-h3">Lifecheck</h3>
-          <span class="nb-tag nb-tag--green">Live</span>
+      <div class="nb-mf nb-mf--live nb-reveal">
+        <span class="nb-mf-n">03</span>
+        <div>
+          <h3 class="nb-mf-t">
+            <img src="/product-logos/Lifecheck%20icon.png" alt="" onerror="this.remove()">
+            Lifecheck
+          </h3>
+          <p class="nb-mf-d">
+            Our human-verification widget. It asks a visitor to do something a
+            person finds easy, and does not track them afterwards.
+          </p>
         </div>
-        <p class="nb-muted">
-          Our human-verification widget. It asks a visitor to do something a
-          person finds easy, without tracking them afterwards.
-        </p>
-        <a class="nb-btn nb-btn--sm nb-btn--paper" href="/lifecheck/">Open Lifecheck</a>
-      </article>
+        <div class="nb-mf-side">
+          <span class="nb-tag nb-tag--green">Live</span>
+          <span class="nb-btn nb-btn--sm nb-btn--paper" aria-hidden="true">Open</span>
+        </div>
+        <a class="nb-mf-link" href="/lifecheck/"><span class="nb-sr">Open Lifecheck</span></a>
+      </div>
 
-      <article class="nb-card ab-item nb-reveal">
-        <div class="top">
-          <img width="48" height="48" src="/product-logos/Supernova%20icon.png" alt="" onerror="this.remove()">
-          <h3 class="nb-h3">Supernova</h3>
-          <span class="nb-tag nb-tag--green">Live</span>
+      <div class="nb-mf nb-mf--live nb-reveal">
+        <span class="nb-mf-n">04</span>
+        <div>
+          <h3 class="nb-mf-t">
+            <img src="/product-logos/Supernova%20icon.png" alt="" onerror="this.remove()">
+            Supernova
+          </h3>
+          <p class="nb-mf-d">
+            Our AI service, and what the other products ask when they need an
+            answer. Anything it writes is labelled as written by it.
+          </p>
         </div>
-        <p class="nb-muted">
-          Our AI service. Anything it writes is labelled as written by it.
-        </p>
-        <a class="nb-btn nb-btn--sm nb-btn--paper" href="/supernova/">Open Supernova</a>
-      </article>
+        <div class="nb-mf-side">
+          <span class="nb-tag nb-tag--green">Live</span>
+          <span class="nb-btn nb-btn--sm nb-btn--paper" aria-hidden="true">Open</span>
+        </div>
+        <a class="nb-mf-link" href="/supernova/"><span class="nb-sr">Open Supernova</span></a>
+      </div>
     </div>
   </div>
 </section>
 
-<hr class="nb-rule">
-
-<section class="nb-section">
+<section class="nb-section" style="padding-top:0;">
   <div class="nb-wrap">
-    <div class="ab-shead nb-reveal">
-      <span class="nb-eyebrow">Who runs what</span>
-      <h2 class="nb-h1">Leadership.</h2>
+    <div class="ab-mark nb-reveal">
+      <h2 class="nb-display nb-d3">Who runs what.</h2>
       <p class="nb-muted">
         Four seats. One is open, and it says so.
       </p>
     </div>
 
-    <div class="ab-seats">
-      <div class="nb-card ab-seat nb-reveal">
-        <div class="av" style="background: var(--nb-yellow);">S</div>
+    <div class="nb-manifest">
+      <div class="nb-mf ab-seat nb-reveal">
+        <span class="nb-mf-n">Chief Executive<br>Officer</span>
         <div>
-          <div class="role">Chief Executive Officer</div>
-          <div class="name">Staw</div>
-          <div class="since">Founder · since August 2025</div>
+          <p class="who">Staw</p>
+          <p class="since">Founder · since August 2025</p>
+        </div>
+        <div class="nb-mf-side">
+          <span class="ab-chip" style="background: var(--nb-yellow);">S</span>
         </div>
       </div>
 
-      <div class="nb-card ab-seat nb-reveal">
-        <div class="av" style="background: var(--nb-blue);">T</div>
+      <div class="nb-mf ab-seat nb-reveal">
+        <span class="nb-mf-n">Chief R&amp;D<br>Officer</span>
         <div>
-          <div class="role">Chief R&amp;D Officer</div>
-          <div class="name">Tyrianum</div>
-          <div class="since">Since December 2025</div>
+          <p class="who">Tyrianum</p>
+          <p class="since">Since December 2025</p>
+        </div>
+        <div class="nb-mf-side">
+          <span class="ab-chip" style="background: var(--nb-blue);">T</span>
         </div>
       </div>
 
-      <div class="nb-card ab-seat nb-reveal">
-        <div class="av" style="background: var(--nb-pink);">W</div>
+      <div class="nb-mf ab-seat nb-reveal">
+        <span class="nb-mf-n">Chief Communication<br>Officer</span>
         <div>
-          <div class="role">Chief Communication Officer</div>
-          <div class="name">Weaverdant</div>
-          <div class="since">Since February 2026</div>
+          <p class="who">Weaverdant</p>
+          <p class="since">Since February 2026</p>
+        </div>
+        <div class="nb-mf-side">
+          <span class="ab-chip" style="background: var(--nb-pink);">W</span>
         </div>
       </div>
 
-      <div class="nb-card ab-seat is-open nb-reveal">
-        <div class="av">?</div>
+      <div class="nb-mf ab-seat is-open nb-reveal">
+        <span class="nb-mf-n">Chief Safety<br>Officer</span>
         <div>
-          <div class="role">Chief Safety Officer</div>
-          <div class="name">Open seat</div>
-          <div class="since">Unfilled since February 2026</div>
+          <p class="who">Open seat</p>
+          <p class="since">Unfilled since February 2026</p>
+        </div>
+        <div class="nb-mf-side">
+          <span class="ab-chip">?</span>
         </div>
       </div>
     </div>
@@ -326,16 +389,25 @@ html { scroll-padding-top: 88px; }
   </div>
 </div>
 
-<section class="nb-section ab-out">
+<section class="ab-end">
   <div class="nb-wrap">
-    <h2 class="nb-display nb-d3 nb-reveal">That is all of it.</h2>
-    <p class="nb-lead nb-muted nb-reveal" style="max-width:52ch; margin:0 auto 26px;">
-      No customer count, no uptime badge, no borrowed logos. When there is
-      something worth showing, it goes in the newsroom.
-    </p>
-    <div class="nb-row nb-reveal" style="justify-content:center;">
-      <a class="nb-btn nb-btn--primary nb-btn--lg" href="/mission">Read the mission</a>
-      <a class="nb-btn nb-btn--paper nb-btn--lg" href="/newsroom">Newsroom</a>
+    <div class="nb-editorial">
+      <div class="nb-ed-rail nb-reveal">
+        <span class="nb-eyebrow">End of record</span>
+        <span class="nb-ed-mark">Swiftaw</span>
+      </div>
+      <div class="nb-ed-body nb-reveal">
+        <p class="nb-ed-lead">That is all of it.</p>
+        <p>
+          No customer count, no uptime badge, no borrowed logos. When there is
+          something worth showing it goes in the newsroom, and when there is
+          not, the page stays quiet.
+        </p>
+        <div class="nb-row" style="margin-top:26px;">
+          <a class="nb-btn nb-btn--primary" href="/mission">Read the mission</a>
+          <a class="nb-btn nb-btn--paper" href="/newsroom">Newsroom</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
